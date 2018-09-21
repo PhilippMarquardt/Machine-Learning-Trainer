@@ -11,52 +11,77 @@ namespace MachineLearningTrainer
     {
         WelcomePage,
         DataDecision,
+        TabularDataDecision,
+        CNNDataDecision,
        
     }
 
     public enum Command
     {
         Previous,
-        Next
+        Next,
+        Left,
+        Right
     }
 
     public class WizardStateMachine
     {
-        private ProcessState _currentState = ProcessState.WelcomePage;
-        
-        public void NextState(Grid GridToChangeControl)
+        class StateTransition
         {
-            this._currentState = GetNextState();
-            UserControl usc = GetUserControlToCurrentState();
-            SetNextState(GridToChangeControl, usc);
-        }
+            readonly ProcessState CurrentState;
+            readonly Command Command;
 
-        private UserControl GetUserControlToCurrentState()
-        {
-            switch (_currentState)
+            public StateTransition(ProcessState currentState, Command command)
             {
-                case ProcessState.WelcomePage:
-                    return new WelcomePage();
-                default:
-                    return new DataDecision();
+                CurrentState = currentState;
+                Command = command;
+            }
+
+            public override int GetHashCode()
+            {
+                return 17 + 31 * CurrentState.GetHashCode() + 31 * Command.GetHashCode();
+            }
+
+            public override bool Equals(object obj)
+            {
+                StateTransition other = obj as StateTransition;
+                return other != null && this.CurrentState == other.CurrentState && this.Command == other.Command;
             }
         }
 
-        private void SetNextState(Grid GridToChangeControl, UserControl ControlToSet)
+        Dictionary<StateTransition, ProcessState> transitions;
+        public ProcessState CurrentState { get; private set; }
+
+        public WizardStateMachine()
         {
-            GridToChangeControl.Children.Clear();
-            GridToChangeControl.Children.Add(ControlToSet);
+            CurrentState = ProcessState.WelcomePage;
+            transitions = new Dictionary<StateTransition, ProcessState>
+            {
+                { new StateTransition(ProcessState.WelcomePage, Command.Next), ProcessState.DataDecision },
+                { new StateTransition(ProcessState.WelcomePage, Command.Previous), ProcessState.WelcomePage },
+
+                { new StateTransition(ProcessState.DataDecision, Command.Previous), ProcessState.WelcomePage },
+                { new StateTransition(ProcessState.DataDecision, Command.Left), ProcessState.TabularDataDecision },
+                { new StateTransition(ProcessState.DataDecision, Command.Right), ProcessState.CNNDataDecision },
+
+            };
         }
 
-        private ProcessState GetNextState()
+        public ProcessState GetNext(Command command)
         {
-            switch (_currentState)
-            {
-                case ProcessState.WelcomePage:
-                    return ProcessState.DataDecision;
-                default:
-                    return ProcessState.WelcomePage;
-            }
+            StateTransition transition = new StateTransition(CurrentState, command);
+            ProcessState nextState;
+            if (!transitions.TryGetValue(transition, out nextState))
+                throw new Exception("Invalid transition: " + CurrentState + " -> " + command);
+            return nextState;
         }
+
+        public ProcessState MoveNext(Command command)
+        {
+            CurrentState = GetNext(command);
+            return CurrentState;
+        }
+
+
     }
 }

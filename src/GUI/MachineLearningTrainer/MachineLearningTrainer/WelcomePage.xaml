@@ -53,12 +53,12 @@
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
         <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="115,120,115,121">
-            <Button x:Name="btnNextPage" Click="btnNextPage_Click" Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="30" Height="Auto">Click Here to start</Button>
+            <Button x:Name="btnNextPage" Click="btnNextPage_Click" Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="30" Height="Auto">Click Here to start</Button>
         </materialDesign:Card>
         <Button Background="Transparent" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
-        <Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
+        <Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
             <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
         </Button>
     </Grid>

@@ -27,7 +27,7 @@ namespace MachineLearningTrainer
 
         private void btnNextPage_Click(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as MainViewModel).SetNextState();
+           // (this.DataContext as MainViewModel).SetNextState();
         }
     }
 }
