@@ -54,17 +54,19 @@
         </Grid.RowDefinitions>
         <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"    Margin="115,120,115,121">
             <StackPanel Margin="10">
-                <Button Foreground="#FF2196F3" Background="Transparent" Margin="30,50,30,50">
+                <Button Foreground="#FF2196F3" Background="Transparent" Margin="30,50,30,50" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                    CommandTarget="{Binding ElementName=InfoCardDecisionTree}">
                     <materialDesign:PackIcon Kind="Information"/>
                 </Button>
                 <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto" >
-                    <TextBlock TextWrapping="Wrap" Text="I wanna use decision trees" Width="Auto"/>
+                    <TextBlock TextWrapping="Wrap" Text="I wanto to use decision trees / SVMs" Width="Auto"/>
                 </Button>
             </StackPanel>
         </materialDesign:Card>
         <materialDesign:Card Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"  Margin="115,120,115,121">
             <StackPanel Margin="10">
-                <Button Foreground="#FF2196F3" Background="Transparent" Margin="30,50,30,50" >
+                <Button Foreground="#FF2196F3" Background="Transparent" Margin="30,50,30,50" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}"
+                    CommandTarget="{Binding ElementName=InfoCardDeepLearning}" >
                     <materialDesign:PackIcon Kind="Information"/>
                 </Button>
                 <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">
@@ -78,5 +80,41 @@
         <!--<Button Background="Transparent" Foreground="#FF2196F3"  Grid.Row="1" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
             <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
         </Button>-->
+
+        <materialDesign:DialogHost
+            x:Name="InfoCardDecisionTree"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Padding="10"
+            IsOpen="False">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel>
+                    <TextBlock Margin="10" TextWrapping="Wrap" Text="Use this option if you have little data or you don't want to set many hyperparameters. It will also train very much faster compared to the Deep Learning option." MaxWidth="500" MinWidth="500"/>
+                    <Button Content="Got it!" 
+                            Background="{DynamicResource MaterialDesignBackground}"
+                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                            Margin="10"
+                            FontFamily="Bold" Foreground="#FF2196F3"/>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
+
+        <materialDesign:DialogHost
+            x:Name="InfoCardDeepLearning"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Padding="10"
+            IsOpen="False">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel>
+                    <TextBlock Margin="10" TextWrapping="Wrap" Text="Use this option if you have little data or you don't want to set many hyperparameters. It will also train very much faster compared to the Deep Learning option." MaxWidth="500" MinWidth="500"/>
+                    <Button Content="Got it!" 
+                            Background="{DynamicResource MaterialDesignBackground}"
+                            Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                            Margin="10"
+                            FontFamily="Bold" Foreground="#FF2196F3"/>
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
     </Grid>
 </UserControl>

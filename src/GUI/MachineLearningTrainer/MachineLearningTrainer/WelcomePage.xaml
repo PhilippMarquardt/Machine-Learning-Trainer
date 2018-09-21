@@ -67,5 +67,10 @@
         <!--<Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
             <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
         </Button>-->
+
+
+
+       
+
     </Grid>
 </UserControl>
