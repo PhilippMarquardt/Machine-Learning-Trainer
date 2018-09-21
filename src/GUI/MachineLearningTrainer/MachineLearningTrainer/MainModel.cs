@@ -26,14 +26,14 @@ namespace MachineLearningTrainer
         private UserControl SetNewWizardPage(Grid mainGrid)
         {
             UserControl usc = new UserControl();
-            System.Windows.MessageBox.Show(this._stateMachine.CurrentState.ToString());
             switch (this._stateMachine.CurrentState)
             {
                 case ProcessState.WelcomePage:
-                    return new WelcomePage();
-                    
+                    return new WelcomePage();                 
                 case ProcessState.DataDecision:
                     return new DataDecision();
+                case ProcessState.TabularDataDecision:
+                    return new TabularDataDecision();
                 default:
                     return new WelcomePage();
             }

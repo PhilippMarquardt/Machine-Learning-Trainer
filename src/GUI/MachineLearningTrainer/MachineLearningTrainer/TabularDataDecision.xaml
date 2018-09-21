@@ -1,4 +1,4 @@
-﻿<UserControl x:Class="MachineLearningTrainer.WelcomePage"
+﻿<UserControl x:Class="MachineLearningTrainer.TabularDataDecision"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
@@ -14,7 +14,7 @@
                 <Storyboard>
                     <DoubleAnimation
               Storyboard.TargetProperty="Opacity"
-              From="0.0" To="1.0" Duration="0:0:1"/>
+              From="0.0" To="1.0" Duration="0:0:3"/>
                 </Storyboard>
             </BeginStoryboard>
         </EventTrigger>
@@ -52,22 +52,31 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="115,120,115,121">
-            <Button x:Name="btnNextPage" Click="btnNextPage_Click" Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold" VerticalContentAlignment="Center" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">
-                <TextBlock VerticalAlignment="Center">
-                    <Run BaselineAlignment="Center" Text="                                        Welcome!"/>
-                    <LineBreak/>
-                    <Run Text="This wizard will guide you through the training process"/> 
-                    <LineBreak/>
-                    <Run Text="                                      Click to start"/>
-                </TextBlock>
-            </Button>
+        <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"    Margin="115,120,115,121">
+            <StackPanel Margin="10">
+                <Button Foreground="#FF2196F3" Background="Transparent" Margin="30,50,30,50">
+                    <materialDesign:PackIcon Kind="Information"/>
+                </Button>
+                <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto" >
+                    <TextBlock TextWrapping="Wrap" Text="I wanna use decision trees" Width="Auto"/>
+                </Button>
+            </StackPanel>
         </materialDesign:Card>
-        <Button Background="Transparent" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+        <materialDesign:Card Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"  Margin="115,120,115,121">
+            <StackPanel Margin="10">
+                <Button Foreground="#FF2196F3" Background="Transparent" Margin="30,50,30,50" >
+                    <materialDesign:PackIcon Kind="Information"/>
+                </Button>
+                <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">
+                    <TextBlock TextWrapping="Wrap" Text="I want to use Deep Learning" Width="Auto"/>
+                </Button>
+            </StackPanel>
+        </materialDesign:Card>
+        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
-        <Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
+        <!--<Button Background="Transparent" Foreground="#FF2196F3"  Grid.Row="1" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
             <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
-        </Button>
+        </Button>-->
     </Grid>
 </UserControl>

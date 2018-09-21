@@ -18,6 +18,14 @@ namespace MachineLearningTrainer
             this._mainModel = model;
             this._mainGrid = mainGrid;
         }
+        private ICommand _leftTransition;
+        public ICommand LeftTransition
+        {
+            get
+            {
+                return _leftTransition ?? (_leftTransition = new CommandHandler(() => SetNextState(Command.Left), _canExecute));
+            }
+        }
 
         private ICommand _nextPage;
         public ICommand NextPage
@@ -39,7 +47,6 @@ namespace MachineLearningTrainer
 
         public void SetNextState(Command command)
         {
-            System.Windows.MessageBox.Show(command.ToString());
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
             this._mainGrid.Children.Clear();
             usc.DataContext = this;

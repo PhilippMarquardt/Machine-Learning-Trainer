@@ -64,6 +64,8 @@ namespace MachineLearningTrainer
                 { new StateTransition(ProcessState.DataDecision, Command.Left), ProcessState.TabularDataDecision },
                 { new StateTransition(ProcessState.DataDecision, Command.Right), ProcessState.CNNDataDecision },
 
+                { new StateTransition(ProcessState.TabularDataDecision, Command.Previous), ProcessState.DataDecision },
+
             };
         }
 

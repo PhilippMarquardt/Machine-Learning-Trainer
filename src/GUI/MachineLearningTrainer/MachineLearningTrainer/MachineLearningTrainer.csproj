@@ -66,6 +66,9 @@
     <Compile Include="DataDecision.xaml.cs">
       <DependentUpon>DataDecision.xaml</DependentUpon>
     </Compile>
+    <Compile Include="TabularDataDecision.xaml.cs">
+      <DependentUpon>TabularDataDecision.xaml</DependentUpon>
+    </Compile>
     <Compile Include="MainModel.cs" />
     <Compile Include="MainViewModel.cs" />
     <Compile Include="WelcomePage.xaml.cs">
@@ -73,6 +76,10 @@
     </Compile>
     <Compile Include="WizardStateMachine.cs" />
     <Page Include="DataDecision.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="TabularDataDecision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

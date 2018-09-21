@@ -5,8 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MachineLearningTrainer"
         mc:Ignorable="d"
-        MinHeight="800"
-        MinWidth="800"
+        MinHeight="1000"
+        MinWidth="1000"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Foreground="White"
@@ -14,7 +14,7 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Normal"
         WindowStyle="None"
-        Title="MainWindow" Height="350" Width="525">
+        Title="MainWindow" Height="800" Width="800">
     <Grid x:Name="MainGrid">
        
         
