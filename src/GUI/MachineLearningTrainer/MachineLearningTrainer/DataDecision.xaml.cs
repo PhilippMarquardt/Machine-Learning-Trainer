@@ -16,18 +16,13 @@ using System.Windows.Shapes;
 namespace MachineLearningTrainer
 {
     /// <summary>
-    /// Interaktionslogik für WelcomePage.xaml
+    /// Interaktionslogik für DataDecision.xaml
     /// </summary>
-    public partial class WelcomePage : UserControl
+    public partial class DataDecision : UserControl
     {
-        public WelcomePage()
+        public DataDecision()
         {
             InitializeComponent();
-        }
-
-        private void btnNextPage_Click(object sender, RoutedEventArgs e)
-        {
-            (this.DataContext as MainViewModel).SetNextState();
         }
     }
 }

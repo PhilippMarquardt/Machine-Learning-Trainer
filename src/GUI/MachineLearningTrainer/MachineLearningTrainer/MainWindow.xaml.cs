@@ -23,7 +23,10 @@ namespace MachineLearningTrainer
         public MainWindow()
         {
             InitializeComponent();
-            MainGrid.Children.Add(new WelcomePage());
+            WelcomePage page = new WelcomePage();
+            MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
+            page.DataContext = viewModel;
+            MainGrid.Children.Add(page);
         }
     }
 }
