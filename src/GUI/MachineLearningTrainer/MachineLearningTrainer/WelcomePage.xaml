@@ -63,11 +63,9 @@
                 </TextBlock>
             </Button>
         </materialDesign:Card>
-        <Button Background="Transparent" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
-            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
-        </Button>
-        <Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
+        
+        <!--<Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
             <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
-        </Button>
+        </Button>-->
     </Grid>
 </UserControl>
