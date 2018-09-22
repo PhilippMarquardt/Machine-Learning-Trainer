@@ -16,19 +16,13 @@ using System.Windows.Shapes;
 namespace MachineLearningTrainer
 {
     /// <summary>
-    /// Interaktionslogik für MainWindow.xaml
+    /// Interaktionslogik für DeepNeuralNetwork.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class DeepNeuralNetwork : UserControl
     {
-        public MainWindow()
+        public DeepNeuralNetwork()
         {
             InitializeComponent();
-            WelcomePage page = new WelcomePage();
-            MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
-            page.DataContext = viewModel;
-            MainGrid.Children.Add(page);
-            string path = "C:/Users/Philipp/Desktop/prepro.py";
-            System.Windows.MessageBox.Show(PythonRunner.RunScript(path, false));
         }
     }
 }
