@@ -34,6 +34,8 @@ namespace MachineLearningTrainer
                     return new DataDecision();
                 case ProcessState.TabularDataDecision:
                     return new TabularDataDecision();
+                case ProcessState.DNN:
+                    return new DeepNeuralNetwork();
                 default:
                     return new WelcomePage();
             }

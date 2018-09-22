@@ -10,6 +10,8 @@ namespace MachineLearningTrainer
 {
     public class MainViewModel
     {
+        #region NoContentPages
+
         private MainModel _mainModel;
         private Grid _mainGrid;
         private bool _canExecute = true;
@@ -24,6 +26,15 @@ namespace MachineLearningTrainer
             get
             {
                 return _leftTransition ?? (_leftTransition = new CommandHandler(() => SetNextState(Command.Left), _canExecute));
+            }
+        }
+
+        private ICommand _rightTransition;
+        public ICommand RightTransition
+        {
+            get
+            {
+                return _rightTransition ?? (_rightTransition = new CommandHandler(() => SetNextState(Command.Right), _canExecute));
             }
         }
 
@@ -52,6 +63,11 @@ namespace MachineLearningTrainer
             usc.DataContext = this;
             this._mainGrid.Children.Add(usc);
         }
+        #endregion
+
+        #region DeepNeuralNetwork
+        public DeepNeuralNetworkLayer InputLayer { get; set; } = new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5));
+        #endregion
     }
 
 

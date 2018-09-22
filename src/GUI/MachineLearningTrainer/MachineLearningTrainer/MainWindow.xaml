@@ -12,7 +12,7 @@
         Foreground="White"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
-        WindowState="Normal"
+        WindowState="Maximized"
         WindowStyle="None"
         Title="MainWindow" Height="800" Width="800">
     <Grid x:Name="MainGrid">

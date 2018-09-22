@@ -5,8 +5,74 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MachineLearningTrainer"
              mc:Ignorable="d" 
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             Background="{DynamicResource MaterialDesignPaper}"
              d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+              Storyboard.TargetProperty="Opacity"
+              From="0.0" To="1.0" Duration="0:0:3"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+    <UserControl.Resources>
+        <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                              Storyboard.TargetProperty="Opacity"
+                              From="0.3" To="1.0" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="1.0" To="0.3" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+    </UserControl.Resources>
     <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.7*"/>
+            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <materialDesign:Card Grid.Row="0" VerticalAlignment="Center"  Margin="10">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="0.33*"/>
+                    <ColumnDefinition Width="0.33*"/>
+                    <ColumnDefinition Width="0.33*"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Path=InputLayer.NumberOfNodes }" Foreground="Black" FontSize="23"/>
+                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Path=InputLayer.Dimension }" Foreground="Black" FontSize="23"/>
+                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Path=InputLayer.ActivationFunction }" Foreground="Black" FontSize="23"/>
+            </Grid>
             
+           
+        </materialDesign:Card>
+        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="3" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+        </Button>
+        <!--<Button Background="Transparent" Foreground="#FF2196F3"  Grid.Row="1" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
+            <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
+        </Button>-->
     </Grid>
 </UserControl>

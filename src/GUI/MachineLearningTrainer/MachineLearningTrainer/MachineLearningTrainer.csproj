@@ -66,6 +66,11 @@
     <Compile Include="DataDecision.xaml.cs">
       <DependentUpon>DataDecision.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeepNeuralNetwork.xaml.cs">
+      <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Dimension.cs" />
+    <Compile Include="NeuralNetworkLayer.cs" />
     <Compile Include="PythonRunner.cs" />
     <Compile Include="TabularDataDecision.xaml.cs">
       <DependentUpon>TabularDataDecision.xaml</DependentUpon>
@@ -77,6 +82,10 @@
     </Compile>
     <Compile Include="WizardStateMachine.cs" />
     <Page Include="DataDecision.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeepNeuralNetwork.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

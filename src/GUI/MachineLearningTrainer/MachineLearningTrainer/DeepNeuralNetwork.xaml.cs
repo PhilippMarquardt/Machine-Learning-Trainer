@@ -23,6 +23,8 @@ namespace MachineLearningTrainer
         public DeepNeuralNetwork()
         {
             InitializeComponent();
+
         }
     }
+       
 }

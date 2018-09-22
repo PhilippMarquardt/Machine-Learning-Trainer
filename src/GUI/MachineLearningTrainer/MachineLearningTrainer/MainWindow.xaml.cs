@@ -27,8 +27,7 @@ namespace MachineLearningTrainer
             MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
             page.DataContext = viewModel;
             MainGrid.Children.Add(page);
-            string path = "C:/Users/Philipp/Desktop/prepro.py";
-            System.Windows.MessageBox.Show(PythonRunner.RunScript(path, false));
+           
         }
     }
 }

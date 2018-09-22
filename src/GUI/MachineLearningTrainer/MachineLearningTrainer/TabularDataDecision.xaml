@@ -69,7 +69,7 @@
                     CommandTarget="{Binding ElementName=InfoCardDeepLearning}" >
                     <materialDesign:PackIcon Kind="Information"/>
                 </Button>
-                <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">
+                <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto" Command="{Binding RightTransition}">
                     <TextBlock TextWrapping="Wrap" Text="I want to use Deep Learning" Width="Auto"/>
                 </Button>
             </StackPanel>
