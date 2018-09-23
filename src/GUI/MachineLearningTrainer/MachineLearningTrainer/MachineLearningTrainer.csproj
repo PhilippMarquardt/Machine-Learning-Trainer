@@ -63,33 +63,33 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DataDecision.xaml.cs">
+    <Compile Include="DecisionPages\DataDecision.xaml.cs">
       <DependentUpon>DataDecision.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DeepNeuralNetwork.xaml.cs">
+    <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
       <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Dimension.cs" />
-    <Compile Include="NeuralNetworkLayer.cs" />
+    <Compile Include="Layer\Dimension.cs" />
+    <Compile Include="Layer\NeuralNetworkLayer.cs" />
     <Compile Include="PythonRunner.cs" />
-    <Compile Include="TabularDataDecision.xaml.cs">
+    <Compile Include="DecisionPages\TabularDataDecision.xaml.cs">
       <DependentUpon>TabularDataDecision.xaml</DependentUpon>
     </Compile>
     <Compile Include="MainModel.cs" />
     <Compile Include="MainViewModel.cs" />
-    <Compile Include="WelcomePage.xaml.cs">
+    <Compile Include="DecisionPages\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="WizardStateMachine.cs" />
-    <Page Include="DataDecision.xaml">
+    <Page Include="DecisionPages\DataDecision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="DeepNeuralNetwork.xaml">
+    <Page Include="DeepNN\DeepNeuralNetwork.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="TabularDataDecision.xaml">
+    <Page Include="DecisionPages\TabularDataDecision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -105,7 +105,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="WelcomePage.xaml">
+    <Page Include="DecisionPages\WelcomePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

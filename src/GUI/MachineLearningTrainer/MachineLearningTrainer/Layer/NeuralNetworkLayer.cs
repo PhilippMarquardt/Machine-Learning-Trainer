@@ -25,7 +25,14 @@ namespace MachineLearningTrainer
             this.NumberOfNodes = numberOfNodes;
             this.Dimension = dim;
         }
-     
+
+        public DeepNeuralNetworkLayer()
+        {
+
+        }
+
+        
+
 
     }
 }

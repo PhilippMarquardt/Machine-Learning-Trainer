@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -67,9 +68,32 @@ namespace MachineLearningTrainer
 
         #region DeepNeuralNetwork
         public DeepNeuralNetworkLayer InputLayer { get; set; } = new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5));
+
+        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 3, new Dimension(3, 2, 4)) };
+
+        private ICommand _addDNNLayer;
+        public ICommand AddDNNLayer
+        {
+            get
+            {
+                return _addDNNLayer ?? (_addDNNLayer = new CommandHandler(() => AddLayer(), _canExecute));
+            }
+        }
+        public string NewLayerNumberOfNodes { get; set; }
+        public string NewLayerDimension { get; set; }
+        public ComboBoxItem NewLayerSelectedActivationFunction { get; set; }
+
+       
+        
+        private void AddLayer()
+        {
+            var newLayer = _mainModel.AddNewDNNLayer(NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension);
+            if(newLayer != null)
+                DeepNeuralNetworkHiddenLayers.Add(newLayer);
+        }
         #endregion
     }
-
+  
 
     public class CommandHandler : ICommand
     {

@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 namespace MachineLearningTrainer
 {
     /// <summary>
-    /// This class provides the functions, to call python scripts from c# code and reveive it's result.
+    /// This class provides the functions, to call python scripts from c# code and revieve it's result.
     /// </summary>
     public static class PythonRunner
     {
@@ -18,7 +18,7 @@ namespace MachineLearningTrainer
         /// Finds the installation Path of 3.6 python.
         /// </summary>
         /// <returns></returns>
-        public static string FindPythonInstallationPath()
+        private static string FindPythonInstallationPath()
         {
             try
             {
@@ -43,14 +43,20 @@ namespace MachineLearningTrainer
         }
 
 
-
-        public static string RunScript(string path, bool showOutputWindow)
+        /// <summary>
+        /// Runs a python script.
+        /// </summary>
+        /// <param name="path">Path to the .py file.</param>
+        /// <param name="showOutputWindow">When true, console window is shown.</param>
+        /// <param name="args">Cmd args for the script.</param>
+        /// <returns></returns>
+        public static string RunScript(string path, bool showOutputWindow, string [] args)
         {
             try
             {
                 ProcessStartInfo start = new ProcessStartInfo();
                 start.FileName = FindPythonInstallationPath();
-                start.Arguments = string.Format("{0} {1}", path, "test");
+                start.Arguments = string.Format("{0} {1}", path, string.Join(" ", args));
                 start.CreateNoWindow = showOutputWindow ? false : true;
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
