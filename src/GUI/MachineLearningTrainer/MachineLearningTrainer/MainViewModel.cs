@@ -20,6 +20,7 @@ namespace MachineLearningTrainer
         {
             this._mainModel = model;
             this._mainGrid = mainGrid;
+           
         }
         private ICommand _leftTransition;
         public ICommand LeftTransition
@@ -67,9 +68,8 @@ namespace MachineLearningTrainer
         #endregion
 
         #region DeepNeuralNetwork
-        public DeepNeuralNetworkLayer InputLayer { get; set; } = new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5), false);
-
-        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5),true), new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5),true) };
+        
+        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0),true), new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(),true) };
 
         private ICommand _addDNNLayer;
         public ICommand AddDNNLayer

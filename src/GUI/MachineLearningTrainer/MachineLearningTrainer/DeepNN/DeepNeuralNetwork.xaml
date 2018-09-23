@@ -7,21 +7,21 @@
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              Background="{DynamicResource MaterialDesignPaper}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="800" d:DesignWidth="800">
 
 
-    <UserControl.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation
-              Storyboard.TargetProperty="Opacity"
-              From="0.0" To="1.0" Duration="0:0:3"/>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </UserControl.Triggers>
-    <UserControl.Resources>
+            <UserControl.Triggers>
+                <EventTrigger RoutedEvent="Loaded">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                      Storyboard.TargetProperty="Opacity"
+                      From="0.0" To="1.0" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </UserControl.Triggers>
+        <UserControl.Resources> 
 
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
@@ -53,14 +53,7 @@
             </Style.Triggers>
         </Style>
         
-        
-        
-       
-        
-        
-        
-       
-
+      
     </UserControl.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
@@ -68,29 +61,25 @@
             <ColumnDefinition Width="0.7*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.1*"/>
-            <RowDefinition Height="0.7*"/>
-            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.9*"/>
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
 
+        <StackPanel Grid.Column="0" Grid.Row="0" Margin="10">
+            <materialDesign:Card Padding="10" Margin="10">
+                <StackPanel>
+                    <TextBlock Text="Welcome to the DNN designer" Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
+                    <TextBlock Text="The first two layers are the input and output layer. Feel free to add hidden layers" Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
+                    <TextBlock Text="When you've specified your architecture you can specify the hyperparameters and start the training afterwards." Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
+                </StackPanel>
+            </materialDesign:Card>
 
-        <materialDesign:Card Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"  Margin="10">
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="0.33*"/>
-                    <ColumnDefinition Width="0.33*"/>
-                    <ColumnDefinition Width="0.33*"/>
-                </Grid.ColumnDefinitions>
-                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Path=InputLayer.NumberOfNodes }" Foreground="Black" FontSize="23"/>
-                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Path=InputLayer.Dimension }" Foreground="Black" FontSize="23"/>
-                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Path=InputLayer.ActivationFunction }" Foreground="Black" FontSize="23"/>
-            </Grid>
-        </materialDesign:Card>
-
-
+            <materialDesign:Card Padding="10" Margin="10">
+                
+            </materialDesign:Card>
+        </StackPanel>
        
-        <Grid Grid.Column="1" Grid.Row="1">
+        <Grid Grid.Column="1" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.9*"/>
                 <RowDefinition Height="0.1*"/>
@@ -173,14 +162,14 @@
             IsOpen="False">
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
-                    <TextBox Text="{Binding Path=NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes"/>
-                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}"  >
+                    <TextBox Text="{Binding Path=NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes" Margin="5"/>
+                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}" Margin="5" >
                         <ComboBoxItem Content="ReLu"/>
                         <ComboBoxItem Content="Sigmoid"/>
                         <ComboBoxItem Content="Softmax"/>
                     </ComboBox>
-                    <TextBox Text="{Binding Path=NewLayerDimension}" materialDesign:HintAssist.Hint="Dimension in format rows,colums,channel"/>
-                    <Button x:Name="btnSaveChanges" Content="Save changes" Style="{StaticResource BasicButtonStyle}"  Command="{Binding SaveChangesHiddenLayer}"/>
+                    <TextBox Text="{Binding Path=NewLayerDimension}" materialDesign:HintAssist.Hint="Dimension in format rows,colums,channel" Margin="5"/>
+                    <Button x:Name="btnSaveChanges" Content="Save changes" Style="{StaticResource BasicButtonStyle}"  Command="{Binding SaveChangesHiddenLayer}" Margin="5"/>
                     <Button
                         Width="Auto"
                         Height="Auto"
@@ -188,6 +177,7 @@
                         BorderThickness="0"
                         Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                         Content="Close"
+                        Margin="5"
                          />
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
@@ -201,14 +191,14 @@
             IsOpen="False">
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
-                    <TextBox Text="{Binding NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes"/>
-                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}"  >
+                    <TextBox Text="{Binding NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes" Margin="5"/>
+                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}" Margin="5" >
                         <ComboBoxItem Content="ReLu"/>
                         <ComboBoxItem Content="Sigmoid"/>
                         <ComboBoxItem Content="Softmax"/>
                     </ComboBox>
-                    <TextBox Text="{Binding NewLayerDimension}" materialDesign:HintAssist.Hint="Dimension in format rows,colums,channel"/>
-                    <Button Content="Add Layer" Style="{StaticResource BasicButtonStyle}" Command="{Binding AddDNNLayer}"/>
+                    <TextBox Text="{Binding NewLayerDimension}" materialDesign:HintAssist.Hint="Number of elements input layer" Margin="5"/>
+                    <Button Content="Add Layer" Style="{StaticResource BasicButtonStyle}" Command="{Binding AddDNNLayer}" Margin="5"/>
                     <Button                       
                         Width="Auto"
                         Height="Auto"
@@ -216,6 +206,7 @@
                         BorderThickness="0"
                         Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                         Content="Close"
+                        Margin="5"
                          />
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>

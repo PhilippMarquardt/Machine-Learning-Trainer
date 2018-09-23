@@ -26,7 +26,8 @@ namespace MachineLearningTrainer
             WelcomePage page = new WelcomePage();
             MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
             page.DataContext = viewModel;
-            MainGrid.Children.Add(page);      
+            MainGrid.Children.Add(page);
+            //MessageBox.Show(PythonRunner.RunScript("C:/Users/Philipp/Desktop/prepro.py", true, new string[] { "" })); 
         }
     }
 }

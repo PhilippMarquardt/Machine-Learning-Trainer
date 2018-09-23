@@ -44,13 +44,26 @@ namespace MachineLearningTrainer
         public DeepNeuralNetworkLayer AddNewDNNLayer(string numberOfNodes, string activationFunction, string dim)
         {   try
             {
-                List<string> tmp = dim.Split(',').ToList();
-                if (tmp.Count > 3)
-                    throw new Exception("Dimension muss im richtigen Format vorliegen, siehe hint");
-                int rows = Convert.ToInt32(tmp[0]);
-                int columns = Convert.ToInt32(tmp[1]);
-                int channel = Convert.ToInt32(tmp[2]);
-                return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false);
+                if (dim == null || dim == "")
+                {
+                    return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(), false);
+                }
+                else
+                {
+                    List<string> tmp = dim.Split(',').ToList();
+                    if (tmp.Count > 3)
+                        throw new Exception("Dimension muss im richtigen Format vorliegen, siehe hint");
+                    int rows = Convert.ToInt32(tmp[0]);
+                    int columns = 0;
+                    int channel = 0;
+                    if (tmp.Count > 1)
+                    {
+                        columns = Convert.ToInt32(tmp[1]);
+                        channel = Convert.ToInt32(tmp[2]);
+                    }
+                    return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false);
+                }
+                
             }
             catch(Exception ex)
             {
@@ -59,24 +72,43 @@ namespace MachineLearningTrainer
             }
         }
 
-        public void EditCurrentDNNLayer(DeepNeuralNetworkLayer layer,string numberOfNodes, string activationFunction, string dim)
+        public void EditCurrentDNNLayer(DeepNeuralNetworkLayer layer, string numberOfNodes, string activationFunction, string dim)
         {
             try
             {
+                if (dim == null || dim == "")
+                {
+                    layer.ActivationFunction = ConvertStringToActFunction(activationFunction);
+                    layer.NumberOfNodes = Convert.ToInt32(numberOfNodes);
+                    return;
+                }
+
                 List<string> tmp = dim.Split(',').ToList();
                 if (tmp.Count > 3)
                     throw new Exception("Dimension muss im richtigen Format vorliegen, siehe hint");
-                int rows = Convert.ToInt32(tmp[0]);
-                int columns = Convert.ToInt32(tmp[1]);
-                int channel = Convert.ToInt32(tmp[2]);
+                int rows = 0;
+                int columns = 0;
+                int channel = 0;
+                if (tmp.Count == 3)
+                {
+                    rows = Convert.ToInt32(tmp[0]);
+                    columns = Convert.ToInt32(tmp[1]);
+                    channel = Convert.ToInt32(tmp[2]);
+                }
+                else if (tmp.Count == 1)
+                {
+                    rows = Convert.ToInt32(tmp[0]);
+                }
                 layer.ActivationFunction = ConvertStringToActFunction(activationFunction);
                 layer.NumberOfNodes = Convert.ToInt32(numberOfNodes);
-                layer.Dimension = new Dimension(rows, columns, channel);
+                if (layer.IsFirstOrLastLayer)
+                    layer.Dimension = new Dimension(rows, columns, channel);
             }
-            catch (Exception ex)
+            catch(Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
             }
+            
         }
 
         private ActivationFunction ConvertStringToActFunction(string actFun)

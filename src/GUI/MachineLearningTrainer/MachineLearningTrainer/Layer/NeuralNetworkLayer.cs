@@ -16,6 +16,8 @@ namespace MachineLearningTrainer
     public class DeepNeuralNetworkLayer : INotifyPropertyChanged
     {
 
+        
+
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -80,6 +82,8 @@ namespace MachineLearningTrainer
 
         public bool IsFirstOrLastLayer { get; set; } = false;
 
+
+      
         public DeepNeuralNetworkLayer(ActivationFunction actFun, int numberOfNodes, Dimension dim, bool isFirstOrLast)
         {
             this.ActivationFunction = actFun;
