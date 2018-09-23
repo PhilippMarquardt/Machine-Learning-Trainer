@@ -79,12 +79,48 @@ namespace MachineLearningTrainer
                 return _addDNNLayer ?? (_addDNNLayer = new CommandHandler(() => AddLayer(), _canExecute));
             }
         }
+
+        private ICommand _saveChangedHiddenLayer;
+
+        public ICommand SaveChangesHiddenLayer
+        {
+            get
+            {
+                return _saveChangedHiddenLayer ?? (_saveChangedHiddenLayer = new CommandHandler(() => EditCurrentSelectedHiddenLayer(), _canExecute));
+            }
+        }
+
+
+        private void EditCurrentSelectedHiddenLayer()
+        {
+           _mainModel.EditCurrentDNNLayer(SelectedDeepNeuralNetworkLayer, NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension);
+        }
+
+
+
         public string NewLayerNumberOfNodes { get; set; }
         public string NewLayerDimension { get; set; }
         public ComboBoxItem NewLayerSelectedActivationFunction { get; set; }
 
-       
-        
+        public void DeleteHiddenLayer(DeepNeuralNetworkLayer layer)
+        {
+            DeepNeuralNetworkHiddenLayers.Remove(layer);
+        }
+
+        private DeepNeuralNetworkLayer _selectedDeepNeuralNetworkLayer;
+        public DeepNeuralNetworkLayer SelectedDeepNeuralNetworkLayer
+        {
+            get
+            {
+                return _selectedDeepNeuralNetworkLayer;
+            }
+            set
+            {
+                if(value != null)
+                    this._selectedDeepNeuralNetworkLayer = value;
+            }
+        }
+  
         private void AddLayer()
         {
             var newLayer = _mainModel.AddNewDNNLayer(NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension);

@@ -88,22 +88,40 @@
             </Grid>
         </materialDesign:Card>
 
-        <StackPanel Grid.Column="1"  Grid.Row="1">
-            <ListBox
-            x:Name="calendarListBox"        
-            ItemsSource="{Binding DeepNeuralNetworkHiddenLayers}"           
-            Padding="10" >
+        
+        
+        <Grid Grid.Column="1" Grid.Row="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="0.9*"/>
+                <RowDefinition Height="0.1*"/>
+            </Grid.RowDefinitions>
+     
+                <ListBox
+                    x:Name="listboxHiddenLayers"
+                    SelectionChanged="listboxHiddenLayers_SelectionChanged"
+                    Grid.Row="0"
+                    SelectedItem="{Binding SelectedDeepNeuralNetworkLayer}"
+                    ItemsSource="{Binding DeepNeuralNetworkHiddenLayers}"           
+                    Padding="10" >
                 <ListBox.ItemContainerStyle>
                     <Style BasedOn="{StaticResource {x:Type ListBoxItem}}" TargetType="ListBoxItem">
                         <Setter Property="VerticalContentAlignment" Value="Stretch" />
                         <Setter Property="HorizontalContentAlignment" Value="Stretch" />
                     </Style>
                 </ListBox.ItemContainerStyle>
+
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <materialDesign:Card
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="0.9*"/>
+                                <ColumnDefinition Width="0.1*"/>
+                            </Grid.ColumnDefinitions>
+                        
+                            <materialDesign:Card
                             Height="Auto"
                             Margin="10"
+                            Grid.Column="0"
                             HorizontalAlignment="Stretch"
                             VerticalAlignment="Stretch"
                             Background="{DynamicResource MaterialDesignBackground}">
@@ -124,18 +142,50 @@
                                 <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23"/>
                             </Grid>
                         </materialDesign:Card>
+                            <Button x:Name="btnDeleteHiddenLayer" Click="btnDeleteHiddenLayer_Click" Style="{StaticResource BasicButtonStyle}" Grid.Column="1">
+                                <materialDesign:PackIcon Kind="Delete"/>
+                            </Button>
+                            
+                        </Grid>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
             </ListBox>
-            <Button Style="{StaticResource BasicButtonStyle}"  Height="Auto" Width="Auto" Content="Add new layer" Margin="10" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" CommandTarget="{Binding ElementName=AddNewLayerDialogHost}"/>
-        </StackPanel>
+           
+            <Button Style="{StaticResource BasicButtonStyle}"  Grid.Row="1" Height="Auto" Width="Auto" Content="Add new layer" Margin="10" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" CommandTarget="{Binding ElementName=AddNewLayerDialogHost}"/>
+        </Grid>
         <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="3" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
-      
 
 
 
+        <materialDesign:DialogHost
+            x:Name="EditHiddenLayer"
+            Grid.RowSpan="2"
+            Grid.ColumnSpan="2"
+            Padding="10"
+            IsOpen="False">
+            <materialDesign:DialogHost.DialogContent>
+                <StackPanel Orientation="Vertical" Margin="20">
+                    <TextBox Text="{Binding Path=NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes"/>
+                    <ComboBox SelectedItem="{Binding Path=NewLayerSelectedActivationFunction.Content}"  >
+                        <ComboBoxItem Content="ReLu"/>
+                        <ComboBoxItem Content="Sigmoid"/>
+                        <ComboBoxItem Content="Softmax"/>
+                    </ComboBox>
+                    <TextBox Text="{Binding Path=NewLayerDimension}" materialDesign:HintAssist.Hint="Dimension in format rows,colums,channel"/>
+                    <Button x:Name="btnSaveChanges" Content="Save changes" Style="{StaticResource BasicButtonStyle}"  Command="{Binding SaveChangesHiddenLayer}"/>
+                    <Button
+                        Width="Auto"
+                        Height="Auto"
+                        Style="{StaticResource BasicButtonStyle}"                       
+                        BorderThickness="0"
+                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                        Content="Close"
+                         />
+                </StackPanel>
+            </materialDesign:DialogHost.DialogContent>
+        </materialDesign:DialogHost>
 
         <materialDesign:DialogHost
             x:Name="AddNewLayerDialogHost"
@@ -146,15 +196,14 @@
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
                     <TextBox Text="{Binding NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes"/>
-                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}"  >
+                    <ComboBox SelectedItem="{Binding Path=NewLayerSelectedActivationFunction.Content}"  >
                         <ComboBoxItem Content="ReLu"/>
                         <ComboBoxItem Content="Sigmoid"/>
                         <ComboBoxItem Content="Softmax"/>
                     </ComboBox>
                     <TextBox Text="{Binding NewLayerDimension}" materialDesign:HintAssist.Hint="Dimension in format rows,colums,channel"/>
                     <Button Content="Add Layer" Style="{StaticResource BasicButtonStyle}" Command="{Binding AddDNNLayer}"/>
-                    <Button
-                        x:Name="btnSaveChanges"
+                    <Button                       
                         Width="Auto"
                         Height="Auto"
                         Style="{StaticResource BasicButtonStyle}"                       
@@ -162,12 +211,8 @@
                         Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                         Content="Close"
                          />
-                        
-
                 </StackPanel>
-
             </materialDesign:DialogHost.DialogContent>
-
         </materialDesign:DialogHost>
 
         <!--<Button Background="Transparent" Foreground="#FF2196F3"  Grid.Row="1" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">

@@ -59,6 +59,26 @@ namespace MachineLearningTrainer
             }
         }
 
+        public void EditCurrentDNNLayer(DeepNeuralNetworkLayer layer,string numberOfNodes, string activationFunction, string dim)
+        {
+            try
+            {
+                List<string> tmp = dim.Split(',').ToList();
+                if (tmp.Count > 3)
+                    throw new Exception("Dimension muss im richtigen Format vorliegen, siehe hint");
+                int rows = Convert.ToInt32(tmp[0]);
+                int columns = Convert.ToInt32(tmp[1]);
+                int channel = Convert.ToInt32(tmp[2]);
+                layer.ActivationFunction = ConvertStringToActFunction(activationFunction);
+                layer.NumberOfNodes = Convert.ToInt32(numberOfNodes);
+                layer.Dimension = new Dimension(rows, columns, channel);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
         private ActivationFunction ConvertStringToActFunction(string actFun)
         {
             switch (actFun)

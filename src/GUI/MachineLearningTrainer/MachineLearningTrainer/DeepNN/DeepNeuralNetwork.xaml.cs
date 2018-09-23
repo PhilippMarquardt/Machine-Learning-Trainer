@@ -25,6 +25,18 @@ namespace MachineLearningTrainer
             InitializeComponent();
 
         }
+
+        private void btnDeleteHiddenLayer_Click(object sender, RoutedEventArgs e)
+        {
+            object dataContext = ((sender as Button).DataContext);
+            DeepNeuralNetworkLayer layerToDelete = dataContext as DeepNeuralNetworkLayer;
+            (this.DataContext as MainViewModel).DeleteHiddenLayer(layerToDelete);
+        }
+
+        private void listboxHiddenLayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            EditHiddenLayer.IsOpen = true;
+        }
     }
        
 }
