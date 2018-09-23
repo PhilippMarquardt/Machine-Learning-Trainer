@@ -88,8 +88,8 @@
             </Grid>
         </materialDesign:Card>
 
-        
-        
+
+       
         <Grid Grid.Column="1" Grid.Row="1">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.9*"/>
@@ -117,32 +117,38 @@
                                 <ColumnDefinition Width="0.9*"/>
                                 <ColumnDefinition Width="0.1*"/>
                             </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="0.9*"/>
+                                <RowDefinition Height="0.1*"/>
+                            </Grid.RowDefinitions>
                         
                             <materialDesign:Card
-                            Height="Auto"
-                            Margin="10"
-                            Grid.Column="0"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Stretch"
-                            Background="{DynamicResource MaterialDesignBackground}">
-                            <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="0.33*"/>
-                                    <ColumnDefinition Width="0.33*"/>
-                                    <ColumnDefinition Width="0.33*"/>
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="0.1*"/>
-                                    <RowDefinition Height="0.7*"/>
-                                    <RowDefinition Height="0.1*"/>
-                                    <RowDefinition Height="0.1*"/>
-                                </Grid.RowDefinitions>
-                                <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Path=NumberOfNodes }" Foreground="Black" FontSize="23"/>
-                                <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Path=Dimension }" Foreground="Black" FontSize="23"/>
-                                <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23"/>
-                            </Grid>
-                        </materialDesign:Card>
-                            <Button x:Name="btnDeleteHiddenLayer" Click="btnDeleteHiddenLayer_Click" Style="{StaticResource BasicButtonStyle}" Grid.Column="1">
+                                Height="Auto"
+                                Margin="10"
+                                Grid.Row="0"
+                                Grid.Column="0"
+                                HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                Background="{DynamicResource MaterialDesignBackground}">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="0.33*"/>
+                                        <ColumnDefinition Width="0.33*"/>
+                                        <ColumnDefinition Width="0.33*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="0.1*"/>
+                                        <RowDefinition Height="0.7*"/>
+                                        <RowDefinition Height="0.1*"/>
+                                        <RowDefinition Height="0.1*"/>
+                                    </Grid.RowDefinitions>
+                                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Path=NumberOfNodes }" Foreground="Black" FontSize="23"/>
+                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Path=Dimension }" Foreground="Black" FontSize="23"/>
+                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23"/>
+                                </Grid>
+                            </materialDesign:Card>
+                            <materialDesign:PackIcon VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="Black"  Kind="ArrowDownBold"  Grid.Row="1"/>
+                            <Button x:Name="btnDeleteHiddenLayer" Click="btnDeleteHiddenLayer_Click" Style="{StaticResource BasicButtonStyle}" Grid.Column="1"  Grid.Row="0">
                                 <materialDesign:PackIcon Kind="Delete"/>
                             </Button>
                             
@@ -168,7 +174,7 @@
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
                     <TextBox Text="{Binding Path=NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes"/>
-                    <ComboBox SelectedItem="{Binding Path=NewLayerSelectedActivationFunction.Content}"  >
+                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}"  >
                         <ComboBoxItem Content="ReLu"/>
                         <ComboBoxItem Content="Sigmoid"/>
                         <ComboBoxItem Content="Softmax"/>
@@ -196,7 +202,7 @@
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
                     <TextBox Text="{Binding NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes"/>
-                    <ComboBox SelectedItem="{Binding Path=NewLayerSelectedActivationFunction.Content}"  >
+                    <ComboBox SelectedItem="{Binding NewLayerSelectedActivationFunction}"  >
                         <ComboBoxItem Content="ReLu"/>
                         <ComboBoxItem Content="Sigmoid"/>
                         <ComboBoxItem Content="Softmax"/>

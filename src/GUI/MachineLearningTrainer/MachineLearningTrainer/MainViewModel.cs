@@ -67,9 +67,9 @@ namespace MachineLearningTrainer
         #endregion
 
         #region DeepNeuralNetwork
-        public DeepNeuralNetworkLayer InputLayer { get; set; } = new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5));
+        public DeepNeuralNetworkLayer InputLayer { get; set; } = new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5), false);
 
-        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 3, new Dimension(3, 2, 4)) };
+        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5),true), new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 4, 5),true) };
 
         private ICommand _addDNNLayer;
         public ICommand AddDNNLayer
@@ -104,7 +104,9 @@ namespace MachineLearningTrainer
 
         public void DeleteHiddenLayer(DeepNeuralNetworkLayer layer)
         {
-            DeepNeuralNetworkHiddenLayers.Remove(layer);
+            var isFirstOrLast = DeepNeuralNetworkHiddenLayers.Where(x => x == layer).First().IsFirstOrLastLayer;
+            if(!isFirstOrLast)
+                DeepNeuralNetworkHiddenLayers.Remove(layer);
         }
 
         private DeepNeuralNetworkLayer _selectedDeepNeuralNetworkLayer;
@@ -125,7 +127,7 @@ namespace MachineLearningTrainer
         {
             var newLayer = _mainModel.AddNewDNNLayer(NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension);
             if(newLayer != null)
-                DeepNeuralNetworkHiddenLayers.Add(newLayer);
+                DeepNeuralNetworkHiddenLayers.Insert(DeepNeuralNetworkHiddenLayers.Count-1,newLayer);
         }
         #endregion
     }

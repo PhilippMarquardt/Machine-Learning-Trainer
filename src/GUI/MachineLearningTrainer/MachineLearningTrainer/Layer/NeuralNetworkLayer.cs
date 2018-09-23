@@ -78,11 +78,14 @@ namespace MachineLearningTrainer
             }
         }
 
-        public DeepNeuralNetworkLayer(ActivationFunction actFun, int numberOfNodes, Dimension dim)
+        public bool IsFirstOrLastLayer { get; set; } = false;
+
+        public DeepNeuralNetworkLayer(ActivationFunction actFun, int numberOfNodes, Dimension dim, bool isFirstOrLast)
         {
             this.ActivationFunction = actFun;
             this.NumberOfNodes = numberOfNodes;
             this.Dimension = dim;
+            this.IsFirstOrLastLayer = isFirstOrLast;
         }
 
         public DeepNeuralNetworkLayer()

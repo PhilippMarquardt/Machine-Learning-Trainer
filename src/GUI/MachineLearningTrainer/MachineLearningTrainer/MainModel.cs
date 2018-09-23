@@ -50,7 +50,7 @@ namespace MachineLearningTrainer
                 int rows = Convert.ToInt32(tmp[0]);
                 int columns = Convert.ToInt32(tmp[1]);
                 int channel = Convert.ToInt32(tmp[2]);
-                return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel));
+                return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false);
             }
             catch(Exception ex)
             {
