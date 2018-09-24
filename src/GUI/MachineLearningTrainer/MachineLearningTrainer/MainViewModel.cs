@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MachineLearningTrainer.Layer;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -69,16 +70,16 @@ namespace MachineLearningTrainer
 
         #region DeepNeuralNetwork
         
-        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0),true), new DeepNeuralNetworkLayer(ActivationFunction.ReLu, 5, new Dimension(),true) };
+        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new Dense(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0),true), new Dense(ActivationFunction.ReLu, 5, new Dimension(),true) };
 
-        private ICommand _addDNNLayer;
-        public ICommand AddDNNLayer
-        {
-            get
-            {
-                return _addDNNLayer ?? (_addDNNLayer = new CommandHandler(() => AddLayer(), _canExecute));
-            }
-        }
+        //private ICommand _addDNNLayer;
+        //public ICommand AddDNNLayer
+        //{
+        //    get
+        //    {
+        //        return _addDNNLayer ?? (_addDNNLayer = new CommandHandler(() => AddLayer(), _canExecute));
+        //    }
+        //}
 
         private ICommand _saveChangedHiddenLayer;
 
@@ -89,17 +90,34 @@ namespace MachineLearningTrainer
                 return _saveChangedHiddenLayer ?? (_saveChangedHiddenLayer = new CommandHandler(() => EditCurrentSelectedHiddenLayer(), _canExecute));
             }
         }
+        
 
+        private ICommand _deepNNWriteXML;
+
+        public ICommand DeepNNWriteXML
+        {
+            get
+            {
+                return _deepNNWriteXML ?? (_deepNNWriteXML = new CommandHandler(() => WriteDNNXML(), _canExecute));
+            }
+        }
+
+        private void WriteDNNXML()
+        {
+           
+            XMLWriter.WriteLayersToXML(DeepNeuralNetworkHiddenLayers.ToList());
+            System.Windows.MessageBox.Show(PythonRunner.RunScript("prepro.py", true, new string[] { "" }));
+        }
 
         private void EditCurrentSelectedHiddenLayer()
         {
-           _mainModel.EditCurrentDNNLayer(SelectedDeepNeuralNetworkLayer, NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension);
+           _mainModel.EditCurrentDNNLayer(SelectedDeepNeuralNetworkLayer, NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension, NewLayerDropout);
         }
 
 
-
-        public string NewLayerNumberOfNodes { get; set; }
-        public string NewLayerDimension { get; set; }
+        public string NewLayerDropout { get; set; } = "";
+        public string NewLayerNumberOfNodes { get; set; } = "";
+        public string NewLayerDimension { get; set; } = "";
         public ComboBoxItem NewLayerSelectedActivationFunction { get; set; }
 
         public void DeleteHiddenLayer(DeepNeuralNetworkLayer layer)
@@ -123,9 +141,10 @@ namespace MachineLearningTrainer
             }
         }
   
-        private void AddLayer()
+        public void AddLayer(LayerType type)
         {
-            var newLayer = _mainModel.AddNewDNNLayer(NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension);
+
+            var newLayer = _mainModel.AddNewDNNLayer(NewLayerNumberOfNodes, NewLayerSelectedActivationFunction == null ? "" : NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension, type, NewLayerDropout);
             if(newLayer != null)
                 DeepNeuralNetworkHiddenLayers.Insert(DeepNeuralNetworkHiddenLayers.Count-1,newLayer);
         }

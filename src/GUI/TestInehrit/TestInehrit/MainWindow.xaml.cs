@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace MachineLearningTrainer
+namespace TestInehrit
 {
     /// <summary>
     /// Interaktionslogik für MainWindow.xaml
@@ -23,11 +23,7 @@ namespace MachineLearningTrainer
         public MainWindow()
         {
             InitializeComponent();
-            WelcomePage page = new WelcomePage();
-            MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
-            page.DataContext = viewModel;
-            MainGrid.Children.Add(page);
-            //MessageBox.Show(PythonRunner.RunScript("prepro.py", true, new string[] { "" })); 
+            this.DataContext = new MVW();
         }
     }
 }

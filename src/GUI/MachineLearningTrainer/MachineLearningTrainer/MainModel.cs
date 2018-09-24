@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MachineLearningTrainer.Layer;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -41,12 +42,38 @@ namespace MachineLearningTrainer
             }
         }
 
-        public DeepNeuralNetworkLayer AddNewDNNLayer(string numberOfNodes, string activationFunction, string dim)
-        {   try
+        public DeepNeuralNetworkLayer AddNewDNNLayer(string numberOfNodes = "", string activationFunction = "relu", string dim="", LayerType type = LayerType.Dense, string dropout = "")
+        {   
+            if(type == LayerType.Dense)
+            {
+                return AddNewDenseLayer(numberOfNodes, activationFunction, dim);
+            }
+            else if(type == LayerType.Dropout)
+            {
+                return (AddNewDropoutLayer(dropout));
+            }
+            return null;
+        }
+
+        private Dropout AddNewDropoutLayer(string dropoutValue)
+        {
+            try
+            {
+                return new Dropout(Convert.ToDouble(dropoutValue));
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private Dense AddNewDenseLayer(string numberOfNodes, string activationFunction, string dim)
+        {
+            try
             {
                 if (dim == null || dim == "")
                 {
-                    return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(), false);
+                    return new Dense(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(), false);
                 }
                 else
                 {
@@ -61,21 +88,46 @@ namespace MachineLearningTrainer
                         columns = Convert.ToInt32(tmp[1]);
                         channel = Convert.ToInt32(tmp[2]);
                     }
-                    return new DeepNeuralNetworkLayer(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false);
+                    return new Dense(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false);
                 }
-                
+
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
                 return null;
             }
         }
 
-        public void EditCurrentDNNLayer(DeepNeuralNetworkLayer layer, string numberOfNodes, string activationFunction, string dim)
+        public void EditCurrentDNNLayer(DeepNeuralNetworkLayer layer, string numberOfNodes = "0", string activationFunction = "relu", string dim = "", string dropoutValue = "")
+        {
+            if(layer.Type == LayerType.Dense)
+            {
+                EditCurrentDenseLayer(layer as Dense, numberOfNodes, activationFunction, dim);
+            }
+            else if(layer.Type == LayerType.Dropout)
+            {
+                EditCurrentDropoutLayer(layer as Dropout, dropoutValue);
+            }
+        }
+        private void EditCurrentDropoutLayer(Dropout layer, string dropoutValue)
         {
             try
             {
+                System.Windows.MessageBox.Show(dropoutValue);
+                layer.DropoutValue = Convert.ToDouble(dropoutValue);
+            }
+            catch (Exception)
+            {
+
+            }
+        }
+
+        private void EditCurrentDenseLayer(Dense layer, string numberOfNodes, string activationFunction, string dim)
+        {
+            try
+            {
+                
                 if (dim == null || dim == "")
                 {
                     layer.ActivationFunction = ConvertStringToActFunction(activationFunction);
@@ -103,12 +155,12 @@ namespace MachineLearningTrainer
                 layer.NumberOfNodes = Convert.ToInt32(numberOfNodes);
                 if (layer.IsFirstOrLastLayer)
                     layer.Dimension = new Dimension(rows, columns, channel);
+                
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 System.Windows.MessageBox.Show(ex.Message);
             }
-            
         }
 
         private ActivationFunction ConvertStringToActFunction(string actFun)

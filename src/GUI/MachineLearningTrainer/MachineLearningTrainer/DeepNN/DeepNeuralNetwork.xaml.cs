@@ -35,7 +35,34 @@ namespace MachineLearningTrainer
 
         private void listboxHiddenLayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            EditHiddenLayer.IsOpen = true;
+            
+            switch((this.DataContext as MainViewModel).SelectedDeepNeuralNetworkLayer.Type)
+            {
+                case LayerType.Dense:
+                    EditHiddenLayer.IsOpen = true;
+                    break;
+                case LayerType.Dropout:
+                    EditDropoutLayer.IsOpen = true;
+                    break;
+            }
+        }
+
+        private void btnAddLayer_Click(object sender, RoutedEventArgs e)
+        {
+            var checkedButton = radioBTNPanel.Children.OfType<RadioButton>()
+                                      .FirstOrDefault(r => (bool)r.IsChecked);
+            LayerType type = LayerType.Dense;
+            switch (checkedButton.Content.ToString())
+            {
+                case "Dense":
+                    type = LayerType.Dense;
+                    break;
+                case "Dropout":
+                    type = LayerType.Dropout;
+                    break;
+            }
+            (this.DataContext as MainViewModel).AddLayer(type);
+
         }
     }
        

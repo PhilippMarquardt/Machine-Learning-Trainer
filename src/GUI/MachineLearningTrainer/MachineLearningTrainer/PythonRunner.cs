@@ -36,7 +36,7 @@ namespace MachineLearningTrainer
                 }
                 throw new Exception("Couldn't find path");
             }
-            catch (Exception ex)  //just for demonstration...it's always best to handle specific exceptions
+            catch (Exception ex)  
             {
                 return "";
             }
@@ -55,21 +55,26 @@ namespace MachineLearningTrainer
             try
             {
                 ProcessStartInfo start = new ProcessStartInfo();
-                start.FileName = FindPythonInstallationPath();
+                start.FileName = "C:/Users/Philipp/Anaconda3/python.exe";
                 start.Arguments = string.Format("{0} {1}", path, string.Join(" ", args));
                 start.CreateNoWindow = showOutputWindow ? false : true;
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
+
                 using (Process process = Process.Start(start))
                 {
+                    
                     using (StreamReader reader = process.StandardOutput)
                     {
-                        return reader.ReadToEnd();
+                        var std_out = reader.ReadToEnd();
+                        return std_out == "" ? "There went something wrong" : std_out;
                     }
+                
                 }
             }
             catch (Exception ex)
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 return null;
             }
         }

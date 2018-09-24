@@ -13,6 +13,15 @@ namespace MachineLearningTrainer
         Sigmoid,
         Softmax
     }
+
+    public enum LayerType
+    {
+        Dense,
+        Conv2D,
+        Dropout,
+        BatchNormalization
+    }
+
     public class DeepNeuralNetworkLayer : INotifyPropertyChanged
     {
 
@@ -35,60 +44,15 @@ namespace MachineLearningTrainer
         }
         #endregion
 
-
-        private ActivationFunction _activationFunction;
-        private int _numberOfNode;
-        private Dimension _dimension;
-
-
-        public ActivationFunction ActivationFunction
-        {
-            get
-            {
-                return this._activationFunction;
-            }
-            set
-            {             
-                this._activationFunction = value;
-                OnPropertyChanged("ActivationFunction");
-            }
-        }
-        public int NumberOfNodes
-        {
-            get
-            {
-                return this._numberOfNode;
-            }
-            set
-            {
-                this._numberOfNode = value;
-                OnPropertyChanged("NumberOfNodes");
-            }
-        }
-
-        public Dimension Dimension
-        {
-            get
-            {
-                return this._dimension;
-            }
-            set
-            {
-                if(value != null)
-                    this._dimension = value;
-                OnPropertyChanged("Dimension");
-            }
-        }
+        public LayerType Type { get; set; }    
 
         public bool IsFirstOrLastLayer { get; set; } = false;
 
 
       
-        public DeepNeuralNetworkLayer(ActivationFunction actFun, int numberOfNodes, Dimension dim, bool isFirstOrLast)
+        public DeepNeuralNetworkLayer(bool isFirstOrLast)
         {
-            this.ActivationFunction = actFun;
-            this.NumberOfNodes = numberOfNodes;
-            this.Dimension = dim;
+
             this.IsFirstOrLastLayer = isFirstOrLast;
         }
 

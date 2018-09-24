@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{8E5C47CC-99F4-48A6-B660-32E609184165}</ProjectGuid>
+    <ProjectGuid>{3DC8C999-C278-44A0-A524-1FD91D38BBDA}</ProjectGuid>
     <OutputType>WinExe</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>MachineLearningTrainer</RootNamespace>
-    <AssemblyName>MachineLearningTrainer</AssemblyName>
+    <RootNamespace>TestInehrit</RootNamespace>
+    <AssemblyName>TestInehrit</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -35,14 +35,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="MaterialDesignColors, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignColors.1.1.2\lib\net45\MaterialDesignColors.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
-    <Reference Include="MaterialDesignThemes.Wpf, Version=2.4.1.1101, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MaterialDesignThemes.2.4.1.1101\lib\net45\MaterialDesignThemes.Wpf.dll</HintPath>
-      <Private>True</Private>
-    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Xml" />
@@ -63,39 +55,6 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="DecisionPages\DataDecision.xaml.cs">
-      <DependentUpon>DataDecision.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
-      <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Layer\Dense.cs" />
-    <Compile Include="Layer\Dimension.cs" />
-    <Compile Include="Layer\Dropout.cs" />
-    <Compile Include="Layer\NeuralNetworkLayer.cs" />
-    <Compile Include="PythonRunner.cs" />
-    <Compile Include="DecisionPages\TabularDataDecision.xaml.cs">
-      <DependentUpon>TabularDataDecision.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="MainModel.cs" />
-    <Compile Include="MainViewModel.cs" />
-    <Compile Include="DecisionPages\WelcomePage.xaml.cs">
-      <DependentUpon>WelcomePage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="WizardStateMachine.cs" />
-    <Compile Include="XMLWriter.cs" />
-    <Page Include="DecisionPages\DataDecision.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DeepNN\DeepNeuralNetwork.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DecisionPages\TabularDataDecision.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -104,16 +63,15 @@
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="Dense.cs" />
+    <Compile Include="Layer.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="DecisionPages\WelcomePage.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="MVW.cs" />
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
     </Compile>
@@ -131,7 +89,6 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
-    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
