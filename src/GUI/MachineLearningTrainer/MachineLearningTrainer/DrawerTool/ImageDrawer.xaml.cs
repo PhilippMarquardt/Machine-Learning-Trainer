@@ -22,8 +22,7 @@ namespace MachineLearningTrainer.DrawerTool
     {
         public ImageDrawer()
         {
-            InitializeComponent();
-          
+            InitializeComponent();          
         }
 
         

@@ -82,6 +82,20 @@ namespace MachineLearningTrainer
         public bool Enabled { get; set; } = true;
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+
+        private ICommand _exportPascalVoc;
+        public ICommand ExportPascalVoc
+        {
+            get
+            {
+                return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
+            }
+        }
+        private void ExportToPascal()
+        {
+            XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), "file.xml", 1337, 1337, 3);
+        }
+
         private ICommand _loadImageCommand;
         public ICommand LoadImageCommand
         {
@@ -142,6 +156,8 @@ namespace MachineLearningTrainer
                 return _saveChangedHiddenLayer ?? (_saveChangedHiddenLayer = new CommandHandler(() => EditCurrentSelectedHiddenLayer(), _canExecute));
             }
         }
+
+ 
 
        
 
