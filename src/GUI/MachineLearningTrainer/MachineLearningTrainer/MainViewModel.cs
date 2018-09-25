@@ -1,17 +1,36 @@
 ﻿using MachineLearningTrainer.Layer;
 using System;
+using MachineLearningTrainer.DrawerTool;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
+using Microsoft.Win32;
 
 namespace MachineLearningTrainer
 {
-    public class MainViewModel
+    public class MainViewModel : INotifyPropertyChanged
     {
+        #region Property changed area
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+
+                handler(this, new PropertyChangedEventArgs(name));
+
+            }
+
+        }
+        #endregion
         #region NoContentPages
 
         private MainModel _mainModel;
@@ -59,10 +78,43 @@ namespace MachineLearningTrainer
             }
         }
 
+        #region Drawer
+        public bool Enabled { get; set; } = true;
+
+        public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+        private ICommand _loadImageCommand;
+        public ICommand LoadImageCommand
+        {
+            get
+            {
+                return _loadImageCommand ?? (_loadImageCommand = new CommandHandler(() => LoadImage(), _canExecute));
+            }
+        }
+        private void LoadImage()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                ImagePath = openFileDialog.FileName;
+        }
+        private string _imagePath;
+        public string ImagePath
+        {
+            get
+            {
+                return this._imagePath;
+            }
+            set
+            {
+                this._imagePath = value;
+                OnPropertyChanged("ImagePath");
+            }
+        }
+
+        #endregion
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
-            this._mainGrid.Children.Clear();
+            this._mainGrid.Children.Clear();           
             usc.DataContext = this;
             this._mainGrid.Children.Add(usc);
         }
@@ -90,7 +142,9 @@ namespace MachineLearningTrainer
                 return _saveChangedHiddenLayer ?? (_saveChangedHiddenLayer = new CommandHandler(() => EditCurrentSelectedHiddenLayer(), _canExecute));
             }
         }
-        
+
+       
+
 
         private ICommand _deepNNWriteXML;
 
@@ -100,6 +154,25 @@ namespace MachineLearningTrainer
             {
                 return _deepNNWriteXML ?? (_deepNNWriteXML = new CommandHandler(() => WriteDNNXML(), _canExecute));
             }
+        }
+
+        private ICommand _closePopup;
+        
+        public ICommand ClosePopupCommand
+        {
+            get
+            {
+               
+                return _closePopup ?? (_closePopup = new RelayCommand((param) => ClosePopup(param), _canExecute));
+            }
+        }
+
+
+        private void ClosePopup(object param)
+        {
+            
+            (param as MaterialDesignThemes.Wpf.DialogHost).IsOpen = false;
+           
         }
 
         private void WriteDNNXML()
@@ -118,7 +191,23 @@ namespace MachineLearningTrainer
         public string NewLayerDropout { get; set; } = "";
         public string NewLayerNumberOfNodes { get; set; } = "";
         public string NewLayerDimension { get; set; } = "";
+        public string LearningRate { get; set; }
+        public string Epochs { get; set; }
+        public ComboBoxItem Optimizer { get; set; }
         public ComboBoxItem NewLayerSelectedActivationFunction { get; set; }
+        private bool _autoFindParameter = false;
+        public bool AutoFindParameter
+        {
+            get
+            {
+                return this._autoFindParameter;
+            }
+            set
+            {
+                this._autoFindParameter = value;
+                OnPropertyChanged("AutoFindParameter");
+            }
+        }
 
         public void DeleteHiddenLayer(DeepNeuralNetworkLayer layer)
         {
@@ -172,6 +261,29 @@ namespace MachineLearningTrainer
         public void Execute(object parameter)
         {
             _action();
+        }
+    }
+
+    public class RelayCommand : ICommand
+    {
+        private Action<object> _action;
+        private bool _canExecute;
+        public RelayCommand(Action<object> action, bool canExecute)
+        {
+            _action = action;
+            _canExecute = canExecute;
+        }
+
+        public bool CanExecute(object parameter)
+        {
+            return _canExecute;
+        }
+
+        public event EventHandler CanExecuteChanged;
+
+        public void Execute(object parameter)
+        {
+            _action(parameter);
         }
     }
 }

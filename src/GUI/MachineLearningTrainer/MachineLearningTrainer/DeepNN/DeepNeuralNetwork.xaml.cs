@@ -35,8 +35,8 @@ namespace MachineLearningTrainer
 
         private void listboxHiddenLayers_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            
-            switch((this.DataContext as MainViewModel).SelectedDeepNeuralNetworkLayer.Type)
+
+            switch ((this.DataContext as MainViewModel).SelectedDeepNeuralNetworkLayer.Type)
             {
                 case LayerType.Dense:
                     EditHiddenLayer.IsOpen = true;
@@ -64,6 +64,8 @@ namespace MachineLearningTrainer
             (this.DataContext as MainViewModel).AddLayer(type);
 
         }
+
+        
     }
        
 }

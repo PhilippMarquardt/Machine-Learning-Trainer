@@ -69,6 +69,20 @@
     <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
       <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DrawerTool\CustomThumb.xaml.cs">
+      <DependentUpon>CustomThumb.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DrawerTool\DesignerItemDecorator.cs" />
+    <Compile Include="DrawerTool\DrawerViewModel.cs" />
+    <Compile Include="DrawerTool\ImageDrawer.xaml.cs">
+      <DependentUpon>ImageDrawer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DrawerTool\MoveThumb.cs" />
+    <Compile Include="DrawerTool\ResizableRectangle.xaml.cs">
+      <DependentUpon>ResizableRectangle.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DrawerTool\ResizeThumb.cs" />
+    <Compile Include="DrawerTool\ZoomBorder.cs" />
     <Compile Include="Layer\Dense.cs" />
     <Compile Include="Layer\Dimension.cs" />
     <Compile Include="Layer\Dropout.cs" />
@@ -82,6 +96,9 @@
     <Compile Include="DecisionPages\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverter\SelectedLayerDense.cs" />
+    <Compile Include="ValueConverter\SelectedLayerDropout.cs" />
+    <Compile Include="ValueConverter\ToggleBoolean.cs" />
     <Compile Include="WizardStateMachine.cs" />
     <Compile Include="XMLWriter.cs" />
     <Page Include="DecisionPages\DataDecision.xaml">
@@ -93,6 +110,18 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DecisionPages\TabularDataDecision.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawerTool\CustomThumb.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawerTool\ImageDrawer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawerTool\ResizableRectangle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -141,6 +170,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

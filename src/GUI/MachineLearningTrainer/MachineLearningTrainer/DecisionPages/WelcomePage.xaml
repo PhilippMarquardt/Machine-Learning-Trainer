@@ -52,18 +52,22 @@
             <RowDefinition Height="*"/>
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
-        <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="115,120,115,121">
+        <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center"   Margin="115,120,115,121">
             <Button x:Name="btnNextPage" Click="btnNextPage_Click" Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold" VerticalContentAlignment="Center" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">
-                <TextBlock VerticalAlignment="Center">
-                    <Run BaselineAlignment="Center" Text="                                        Welcome!"/>
-                    <LineBreak/>
-                    <Run Text="This wizard will guide you through the training process"/> 
-                    <LineBreak/>
-                    <Run Text="                                      Click to start"/>
-                </TextBlock>
+                <TextBlock VerticalAlignment="Center" Text="Machine Learning Trainer" Margin="5"/>
+
+
             </Button>
         </materialDesign:Card>
-        
+
+        <materialDesign:Card Grid.Row="0" Grid.Column="1" VerticalAlignment="Center"   Margin="115,120,115,121">
+            <Button  Command="{Binding RightTransition}" Margin="30,50,30,50" FontFamily="Bold" VerticalContentAlignment="Center" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">
+                <TextBlock VerticalAlignment="Center" Text="Annotation Tool" Margin="5"/>
+
+
+            </Button>
+        </materialDesign:Card>
+
         <!--<Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
             <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
         </Button>-->

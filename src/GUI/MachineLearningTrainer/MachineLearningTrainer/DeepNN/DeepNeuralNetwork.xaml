@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MachineLearningTrainer"
+             xmlns:v="clr-namespace:MachineLearningTrainer.ValueConverter"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              Background="{DynamicResource MaterialDesignPaper}"
@@ -23,7 +24,10 @@
     </UserControl.Triggers>
     
     <UserControl.Resources>
+        <v:ToggleBoolean x:Key="ToggleBoolean"/>
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
+        <v:SelectedLayerDense x:Key="SelectedLayerDenseToBoolean"/>
+        <v:SelectedLayerDropout x:Key="SelectedLayerDropoutToBoolean"/>
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -75,9 +79,24 @@
                     <TextBlock Text="Important note: For now only Sequential models work. Because of that, the architecture at right will be interpreted from top to bottom like the arrows indicate." Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
                 </StackPanel>
             </materialDesign:Card>
-
             <materialDesign:Card Padding="10" Margin="10">
-                <Button Command="{Binding DeepNNWriteXML}"/>
+                <StackPanel>
+                    <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
+                        <materialDesign:PackIcon Kind="AutoFix" Height="Auto" Foreground="Black"/>
+                        <ToggleButton x:Name="AutoFindHyperparameters" HorizontalAlignment="Right" materialDesign:HintAssist.Hint="Auto" Margin="20,0,0,0" Height="Auto" IsChecked="{Binding AutoFindParameter}"/>
+                    </StackPanel>
+                    <StackPanel IsEnabled="{Binding AutoFindParameter, Converter={StaticResource ToggleBoolean}}" HorizontalAlignment="Center">
+
+                        <TextBox materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding LearningRate}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
+                        <TextBox materialDesign:HintAssist.Hint="Epochs" Text="{Binding Epochs}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
+                        <ComboBox Width="Auto" Foreground="Black" Margin="10" SelectedItem="{Binding Optimizer}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Optimizer" HorizontalContentAlignment="Center">
+                            <ComboBoxItem Content="adam"/>
+                        </ComboBox>
+                    </StackPanel>
+                </StackPanel>
+            </materialDesign:Card>
+            <materialDesign:Card Padding="10" Margin="10">
+                <Button Command="{Binding DeepNNWriteXML}" Style="{StaticResource BasicButtonStyle}" Content="Start the training"/>
             </materialDesign:Card>
         </StackPanel>
        
@@ -162,7 +181,8 @@
             Grid.RowSpan="2"
             Grid.ColumnSpan="2"
             Padding="10"
-            IsOpen="False">
+            >
+            <!--IsOpen="{Binding SelectedDeepNeuralNetworkLayer, Converter={StaticResource SelectedLayerDenseToBoolean}}"-->
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
                     <TextBox Text="{Binding Path=NewLayerNumberOfNodes}" materialDesign:HintAssist.Hint="Number of nodes" Margin="5"/>
@@ -178,20 +198,25 @@
                         Height="Auto"
                         Style="{StaticResource BasicButtonStyle}"                       
                         BorderThickness="0"
-                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                        Content="Close"
+                         Content="Close"
                         Margin="5"
+                        Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                          />
+                        <!--Command="{Binding ClosePopupCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                         AncestorType={x:Type materialDesign:DialogHost}}}"-->
+                       
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
         </materialDesign:DialogHost>
 
         <materialDesign:DialogHost
             x:Name="EditDropoutLayer"
-            Grid.RowSpan="2"
+            Grid.RowSpan="2"   
             Grid.ColumnSpan="2"
             Padding="10"
-            IsOpen="False">
+            >
+            <!--IsOpen="{Binding SelectedDeepNeuralNetworkLayer, Converter={StaticResource SelectedLayerDropoutToBoolean}}"-->
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
                     <TextBox Text="{Binding Path=NewLayerDropout}" materialDesign:HintAssist.Hint="Number of nodes" Margin="5"/>
@@ -205,6 +230,9 @@
                         Content="Close"
                         Margin="5"
                          />
+                    <!--Command="{Binding ClosePopupCommand}"
+                        CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
+                         AncestorType={x:Type materialDesign:DialogHost}}}"-->
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
         </materialDesign:DialogHost>

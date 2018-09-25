@@ -1,0 +1,104 @@
+﻿<UserControl x:Class="MachineLearningTrainer.DrawerTool.ImageDrawer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MachineLearningTrainer.DrawerTool"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetProperty="Opacity"
+                      From="0.0" To="1.0" Duration="0:0:1"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <UserControl.Resources>
+       
+        <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
+        
+        <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Content" Value="Hello World"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF2196F3" />
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+
+        <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                              Storyboard.TargetProperty="Opacity"
+                              From="0.3" To="1.0" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="1.0" To="0.3" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+
+    </UserControl.Resources>
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="0.8*"/>
+            <ColumnDefinition Width="0.1*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.9*"/>
+            <RowDefinition Height="0.1*"/>
+        </Grid.RowDefinitions>
+        <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0">
+            <materialDesign:Card Margin="10">
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="10">
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Rectangle" x:Name="btnAddRectangle" Click="btnAddRectangle_Click"/>
+            </materialDesign:Card>
+        </StackPanel>
+        <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0">
+            <Canvas Background="White" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
+                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Stretch="Uniform" MouseDown="imgCamera_MouseDown" MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" Height="{Binding Path=ActualHeight, ElementName=cnvImage}" />
+                <TextBox x:Name="txtLabel" Foreground="Black" Visibility="Collapsed" TextChanged="txtLabel_TextChanged" Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
+            </Canvas>
+        </local:ZoomBorder>
+
+        <ListBox ItemsSource="{Binding AllRectangles}" Foreground="Black" Grid.Column="2"  FontSize="20" x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="0">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <TextBlock Text="{Binding Label}" Foreground="Black" FontSize="30"></TextBlock>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+
+
+        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+        </Button>
+
+
+
+
+
+    </Grid>
+</UserControl>

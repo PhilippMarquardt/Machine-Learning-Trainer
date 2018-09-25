@@ -14,6 +14,7 @@ namespace MachineLearningTrainer
         TabularDataDecision,
         CNNDataDecision,
         DNN,
+        Drawer
        
     }
 
@@ -60,6 +61,7 @@ namespace MachineLearningTrainer
             {
                 { new StateTransition(ProcessState.WelcomePage, Command.Next), ProcessState.DataDecision },
                 { new StateTransition(ProcessState.WelcomePage, Command.Previous), ProcessState.WelcomePage },
+                 { new StateTransition(ProcessState.WelcomePage, Command.Right), ProcessState.Drawer },
 
                 { new StateTransition(ProcessState.DataDecision, Command.Previous), ProcessState.WelcomePage },
                 { new StateTransition(ProcessState.DataDecision, Command.Left), ProcessState.TabularDataDecision },
@@ -69,6 +71,8 @@ namespace MachineLearningTrainer
                 { new StateTransition(ProcessState.TabularDataDecision, Command.Right), ProcessState.DNN },
 
                 { new StateTransition(ProcessState.DNN, Command.Previous), ProcessState.TabularDataDecision },
+
+                { new StateTransition(ProcessState.Drawer, Command.Previous), ProcessState.WelcomePage },
 
             };
         }

@@ -60,7 +60,6 @@ namespace MachineLearningTrainer
                 start.CreateNoWindow = showOutputWindow ? false : true;
                 start.UseShellExecute = false;
                 start.RedirectStandardOutput = true;
-
                 using (Process process = Process.Start(start))
                 {
                     
@@ -68,8 +67,7 @@ namespace MachineLearningTrainer
                     {
                         var std_out = reader.ReadToEnd();
                         return std_out == "" ? "There went something wrong" : std_out;
-                    }
-                
+                    }               
                 }
             }
             catch (Exception ex)

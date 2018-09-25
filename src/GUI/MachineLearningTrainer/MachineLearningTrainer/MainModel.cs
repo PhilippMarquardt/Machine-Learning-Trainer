@@ -37,6 +37,8 @@ namespace MachineLearningTrainer
                     return new TabularDataDecision();
                 case ProcessState.DNN:
                     return new DeepNeuralNetwork();
+                case ProcessState.Drawer:
+                    return new DrawerTool.ImageDrawer();                   
                 default:
                     return new WelcomePage();
             }
