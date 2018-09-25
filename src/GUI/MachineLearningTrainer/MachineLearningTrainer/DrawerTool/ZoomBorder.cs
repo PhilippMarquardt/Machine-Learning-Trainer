@@ -25,6 +25,12 @@
                 .Children.First(tr => tr is ScaleTransform);
         }
 
+        private RotateTransform GetRotateTransform(UIElement element)
+        {
+            return (RotateTransform)((TransformGroup)element.RenderTransform)
+                .Children.First(tr => tr is RotateTransform);
+        }
+
         public override UIElement Child
         {
             get { return base.Child; }
@@ -47,6 +53,8 @@
                 group.Children.Add(st);
                 TranslateTransform tt = new TranslateTransform();
                 group.Children.Add(tt);
+                RotateTransform rt = new RotateTransform();
+                group.Children.Add(rt);
                 child.RenderTransform = group;
                 child.RenderTransformOrigin = new Point(0.0, 0.0);
                 this.MouseWheel += child_MouseWheel;
@@ -67,7 +75,9 @@
                     var st = GetScaleTransform(child);
                     st.ScaleX = 1.0;
                     st.ScaleY = 1.0;
-
+                 
+                        
+                
                     // reset pan
                     var tt = GetTranslateTransform(child);
                     tt.X = 0.0;
