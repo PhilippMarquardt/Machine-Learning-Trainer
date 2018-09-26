@@ -190,7 +190,7 @@ namespace MachineLearningTrainer
         {
             get
             {
-                return _openinputtDirectory ?? (_openinputtDirectory = new CommandHandler(() => SpecifyOutputDirectory(), _canExecute));
+                return _openinputtDirectory ?? (_openinputtDirectory = new CommandHandler(() => SpecifyInputDirectory(), _canExecute));
             }
         }
 
@@ -209,7 +209,7 @@ namespace MachineLearningTrainer
             }
         }
 
-        private void SpecifyOutputDirectory()
+        private void SpecifyInputDirectory()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
@@ -228,7 +228,7 @@ namespace MachineLearningTrainer
         private void WriteDNNXML()
         {
            
-            XMLWriter.WriteLayersToXML(DeepNeuralNetworkHiddenLayers.ToList());
+            XMLWriter.WriteLayersToXML(DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate),Convert.ToInt32(Epochs), Optimizer.Content.ToString(), OutputPath);
             System.Windows.MessageBox.Show(PythonRunner.RunScript("prepro.py", true, new string[] { "" }));
         }
 
