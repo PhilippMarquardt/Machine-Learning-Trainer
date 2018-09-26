@@ -155,6 +155,7 @@ namespace MachineLearningTrainer
 
                 writer.WriteEndDocument();
                 writer.Close();
+                System.Windows.MessageBox.Show("Erfolgreich");
             }
             catch (Exception ex)
             {

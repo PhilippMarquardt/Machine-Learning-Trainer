@@ -86,15 +86,21 @@
                         <ToggleButton x:Name="AutoFindHyperparameters" HorizontalAlignment="Right" materialDesign:HintAssist.Hint="Auto" Margin="20,0,0,0" Height="Auto" IsChecked="{Binding AutoFindParameter}"/>
                     </StackPanel>
                     <StackPanel IsEnabled="{Binding AutoFindParameter, Converter={StaticResource ToggleBoolean}}" HorizontalAlignment="Center">
-
                         <TextBox materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding LearningRate}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
                         <TextBox materialDesign:HintAssist.Hint="Epochs" Text="{Binding Epochs}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
                         <ComboBox Width="Auto" Foreground="Black" Margin="10" SelectedItem="{Binding Optimizer}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Optimizer" HorizontalContentAlignment="Center">
-                            <ComboBoxItem Content="adam"/>
+                            <ComboBoxItem Content="Adam"/>
+                            <ComboBoxItem Content="RMSProp"/>
                         </ComboBox>
+                        <TextBlock materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding OutputPath}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" />
                     </StackPanel>
                 </StackPanel>
             </materialDesign:Card>
+            
+            <materialDesign:Card Padding="10" Margin="10">
+                <Button Command="{Binding OpenInputDirectory}" Style="{StaticResource BasicButtonStyle}" Content="Specify input file"/>
+            </materialDesign:Card>
+            
             <materialDesign:Card Padding="10" Margin="10">
                 <Button Command="{Binding DeepNNWriteXML}" Style="{StaticResource BasicButtonStyle}" Content="Start the training"/>
             </materialDesign:Card>

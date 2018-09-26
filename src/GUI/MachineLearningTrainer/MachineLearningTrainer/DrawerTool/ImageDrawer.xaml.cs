@@ -30,7 +30,7 @@ namespace MachineLearningTrainer.DrawerTool
         // This is the rectangle to be shown when mouse is dragged on camera image.
         private Point startPoint;
         private ResizableRectangle rectSelectArea;
-        private Point endPoint;
+
 
        
         /// <summary>
@@ -40,18 +40,18 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="e"></param>
         private void imgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if ((this.DataContext as MainViewModel).Enabled == false)
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
 
                 startPoint = e.GetPosition(cnvImage);
 
 
                 txtLabel.Visibility = Visibility.Collapsed;
-                foreach (var q in (this.DataContext as MainViewModel).AllRectangles)
+                foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
                     q.RectangleMovable = false;
 
                 rectSelectArea = new ResizableRectangle();
-                (this.DataContext as MainViewModel).AllRectangles.Add(rectSelectArea);
+                (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
 
 
 
@@ -68,7 +68,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="e"></param>
         private void imgCamera_MouseMove(object sender, MouseEventArgs e)
         {
-            if ((this.DataContext as MainViewModel).Enabled == false)
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
                 if (e.LeftButton == MouseButtonState.Released || rectSelectArea == null)
                     return;
@@ -102,7 +102,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="e"></param>
         private void imgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if ((this.DataContext as MainViewModel).Enabled == false)
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
 
                 txtLabel.Visibility = Visibility.Visible;
@@ -110,9 +110,9 @@ namespace MachineLearningTrainer.DrawerTool
                 txtLabel.Focus();
                 Canvas.SetLeft(txtLabel, rectSelectArea.X + rectSelectArea.RectangleWidth + 5);
                 Canvas.SetTop(txtLabel, rectSelectArea.Y - 35);
-                foreach (var q in (this.DataContext as MainViewModel).AllRectangles)
+                foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
                     q.RectangleMovable = true;
-                (this.DataContext as MainViewModel).Enabled = true;
+                (this.DataContext as DrawerViewModel).Enabled = true;
                 // rectSelectArea = null;
             }
         }
@@ -125,7 +125,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as MainViewModel).Enabled = false;
+            (this.DataContext as DrawerViewModel).Enabled = false;
         }
     }
 }

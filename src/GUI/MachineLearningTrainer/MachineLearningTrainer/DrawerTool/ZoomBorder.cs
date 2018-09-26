@@ -101,7 +101,7 @@
 
         private void child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            var enabled = ((sender as ZoomBorder).DataContext as MainViewModel).Enabled;
+            var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
             if (child != null)
             {
                 var st = GetScaleTransform(child);
@@ -128,7 +128,7 @@
 
         private void child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            var enabled = ((sender as ZoomBorder).DataContext as MainViewModel).Enabled;
+            var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
             if (child != null && enabled)
             {
                 var tt = GetTranslateTransform(child);
@@ -141,7 +141,7 @@
 
         private void child_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
-            var enabled = ((sender as ZoomBorder).DataContext as MainViewModel).Enabled;
+            var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
             if (child != null)
             {
                 child.ReleaseMouseCapture();
@@ -157,7 +157,7 @@
 
         private void child_MouseMove(object sender, MouseEventArgs e)
         {
-            var enabled = ((sender as ZoomBorder).DataContext as MainViewModel).Enabled;
+            var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
             if (child != null)
             {
                 if (child.IsMouseCaptured)

@@ -40,7 +40,7 @@ namespace MachineLearningTrainer
         {
             this._mainModel = model;
             this._mainGrid = mainGrid;
-           
+
         }
         private ICommand _leftTransition;
         public ICommand LeftTransition
@@ -79,64 +79,71 @@ namespace MachineLearningTrainer
         }
 
         #region Drawer
-        public bool Enabled { get; set; } = true;
+        //public bool Enabled { get; set; } = true;
 
-        public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+        //public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
 
-        private ICommand _exportPascalVoc;
-        public ICommand ExportPascalVoc
-        {
-            get
-            {
-                return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
-            }
-        }
-        private void ExportToPascal()
-        {
-            XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), "file.xml", 1337, 1337, 3);
-        }
+        //private ICommand _exportPascalVoc;
+        //public ICommand ExportPascalVoc
+        //{
+        //    get
+        //    {
+        //        return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
+        //    }
+        //}
+        //private void ExportToPascal()
+        //{
+        //    XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), "file.xml", 1337, 1337, 3);
+        //}
 
-        private ICommand _loadImageCommand;
-        public ICommand LoadImageCommand
-        {
-            get
-            {
-                return _loadImageCommand ?? (_loadImageCommand = new CommandHandler(() => LoadImage(), _canExecute));
-            }
-        }
-        private void LoadImage()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            if (openFileDialog.ShowDialog() == true)
-                ImagePath = openFileDialog.FileName;
-        }
-        private string _imagePath;
-        public string ImagePath
-        {
-            get
-            {
-                return this._imagePath;
-            }
-            set
-            {
-                this._imagePath = value;
-                OnPropertyChanged("ImagePath");
-            }
-        }
+        //private ICommand _loadImageCommand;
+        //public ICommand LoadImageCommand
+        //{
+        //    get
+        //    {
+        //        return _loadImageCommand ?? (_loadImageCommand = new CommandHandler(() => LoadImage(), _canExecute));
+        //    }
+        //}
+        //private void LoadImage()
+        //{
+        //    OpenFileDialog openFileDialog = new OpenFileDialog();
+        //    if (openFileDialog.ShowDialog() == true)
+        //        ImagePath = openFileDialog.FileName;
+        //}
+        //private string _imagePath;
+        //public string ImagePath
+        //{
+        //    get
+        //    {
+        //        return this._imagePath;
+        //    }
+        //    set
+        //    {
+        //        this._imagePath = value;
+        //        OnPropertyChanged("ImagePath");
+        //    }
+        //}
 
         #endregion
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
-            this._mainGrid.Children.Clear();           
-            usc.DataContext = this;
+            this._mainGrid.Children.Clear();
+            if (usc is ImageDrawer)
+            {
+                usc.DataContext = new DrawerViewModel(new DrawerModel());
+            }
+            else 
+            {
+                usc.DataContext = this;
+            }
             this._mainGrid.Children.Add(usc);
         }
         #endregion
 
         #region DeepNeuralNetwork
-        
-        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new Dense(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0),true), new Dense(ActivationFunction.ReLu, 5, new Dimension(),true) };
+
+        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new Dense(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0), true), new Dense(ActivationFunction.ReLu, 5, new Dimension(), true) };
 
         //private ICommand _addDNNLayer;
         //public ICommand AddDNNLayer
@@ -157,11 +164,6 @@ namespace MachineLearningTrainer
             }
         }
 
- 
-
-       
-
-
         private ICommand _deepNNWriteXML;
 
         public ICommand DeepNNWriteXML
@@ -173,15 +175,47 @@ namespace MachineLearningTrainer
         }
 
         private ICommand _closePopup;
-        
+
         public ICommand ClosePopupCommand
         {
             get
             {
-               
                 return _closePopup ?? (_closePopup = new RelayCommand((param) => ClosePopup(param), _canExecute));
             }
         }
+
+        public ICommand _openinputtDirectory;
+
+        public ICommand OpenInputDirectory
+        {
+            get
+            {
+                return _openinputtDirectory ?? (_openinputtDirectory = new CommandHandler(() => SpecifyOutputDirectory(), _canExecute));
+            }
+        }
+
+        private string _outputPath;
+
+        public string OutputPath
+        {
+            get
+            {
+                return this._outputPath;
+            }
+            set
+            {
+                this._outputPath = value;
+                OnPropertyChanged("OutputPath");
+            }
+        }
+
+        private void SpecifyOutputDirectory()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            if (openFileDialog.ShowDialog() == true)
+                OutputPath = openFileDialog.FileName;
+        }
+    
 
 
         private void ClosePopup(object param)
