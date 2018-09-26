@@ -12,13 +12,20 @@ namespace MachineLearningTrainer
 {
     public static class XMLWriter
     {
-        public static void WriteLayersToXML(List<DeepNeuralNetworkLayer> allLayers, double learningRate, int epochs, string optimizer)
+        public static void WriteLayersToXML(List<DeepNeuralNetworkLayer> allLayers, double learningRate = 0.1, int epochs = 500, string optimizer = "adam", string input_path = "")
         {
             try
             {
                 System.Windows.MessageBox.Show("Start writing xml file");
                 XmlWriter writer = XmlWriter.Create("layers.xml");
                 writer.WriteStartDocument();
+
+             
+
+                writer.WriteStartElement("layers");
+                writer.WriteStartElement("input_path");
+                writer.WriteString(input_path);
+                writer.WriteEndElement();
 
                 writer.WriteStartElement("learning_rate");
                 writer.WriteString(learningRate.ToString());
@@ -31,9 +38,6 @@ namespace MachineLearningTrainer
                 writer.WriteStartElement("optimizer");
                 writer.WriteString(optimizer);
                 writer.WriteEndElement();
-
-                writer.WriteStartElement("layers");
-
                 foreach (var l in allLayers)
                 {
                    
@@ -69,6 +73,10 @@ namespace MachineLearningTrainer
                     }
 
                 }
+
+                writer.WriteEndElement();
+
+            
 
                 writer.WriteEndDocument();
                 writer.Close();
