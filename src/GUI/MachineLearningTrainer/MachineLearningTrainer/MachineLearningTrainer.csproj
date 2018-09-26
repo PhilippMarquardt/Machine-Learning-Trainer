@@ -66,6 +66,7 @@
     <Compile Include="DecisionPages\DataDecision.xaml.cs">
       <DependentUpon>DataDecision.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DeepNN\CustomListBoxItem.cs" />
     <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
       <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
     </Compile>

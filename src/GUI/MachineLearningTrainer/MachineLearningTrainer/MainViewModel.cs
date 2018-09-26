@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Microsoft.Win32;
+using MachineLearningTrainer.DeepNN;
 
 namespace MachineLearningTrainer
 {
@@ -183,7 +184,7 @@ namespace MachineLearningTrainer
             }
         }
 
-        public ICommand _openinputtDirectory;
+        private ICommand _openinputtDirectory;
 
         public ICommand OpenInputDirectory
         {
@@ -192,6 +193,18 @@ namespace MachineLearningTrainer
                 return _openinputtDirectory ?? (_openinputtDirectory = new CommandHandler(() => SpecifyInputDirectory(), _canExecute));
             }
         }
+
+        private ICommand _radioButtonCheckedCommand;
+
+        public ICommand RadioButtonCheckedCommand
+        {
+            get
+            {
+                return _radioButtonCheckedCommand ?? (_radioButtonCheckedCommand = new CommandHandler(() => System.Windows.MessageBox.Show("sad"), _canExecute));
+            }
+        }
+
+
 
         private string _outputPath;
 
@@ -237,7 +250,8 @@ namespace MachineLearningTrainer
            _mainModel.EditCurrentDNNLayer(SelectedDeepNeuralNetworkLayer, NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension, NewLayerDropout);
         }
 
-        public ObservableCollection<string> CSVHeaders { get; set; } = new ObservableCollection<string>();
+        public ObservableCollection<CustomListBoxItem> CSVHeaders { get; set; } = new ObservableCollection<CustomListBoxItem>();
+        public ObservableCollection<CustomListBoxItem> CSVTarget { get; set; } = new ObservableCollection<CustomListBoxItem>();
 
         private void ReadCsvHeaders()
         {
@@ -247,7 +261,10 @@ namespace MachineLearningTrainer
             var headersList = headers.Split(',');
 
             foreach (var header in headersList)
-                CSVHeaders.Add(header);
+            {
+                CSVHeaders.Add(new CustomListBoxItem(header));
+                CSVTarget.Add(new CustomListBoxItem(header));
+            }
         }
 
 

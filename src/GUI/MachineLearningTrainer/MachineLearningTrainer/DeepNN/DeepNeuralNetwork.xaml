@@ -24,6 +24,68 @@
     </UserControl.Triggers>
     
     <UserControl.Resources>
+
+        <Style x:Key="RadioButtonList" TargetType="{x:Type ListBox}">
+            <!-- ControlTemplate taken from MSDN http://msdn.microsoft.com/en-us/library/ms754242.aspx -->
+            <Setter Property="SnapsToDevicePixels" Value="true"/>
+            <Setter Property="OverridesDefaultStyle" Value="true"/>
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
+            <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
+            
+            <Setter Property="MinHeight" Value="95"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBox">
+                        <Border 
+                              Name="Border" 
+                              Background="Transparent"
+                              BorderBrush="Transparent"
+                              BorderThickness="0"
+                              CornerRadius="2">
+                            <ScrollViewer 
+                                Margin="0"
+                                Focusable="false">          
+                                <StackPanel Margin="2" IsItemsHost="True" />
+                            </ScrollViewer>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsEnabled" Value="false">
+                                <Setter TargetName="Border" Property="Background"
+                                 Value="Transparent" />
+                                <Setter TargetName="Border" Property="BorderBrush"
+                                  Value="Transparent" />
+                            </Trigger>
+                            <Trigger Property="IsGrouping" Value="true">
+                                <Setter Property="ScrollViewer.CanContentScroll" Value="false"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="ItemContainerStyle">
+                <Setter.Value>
+                    <Style TargetType="{x:Type ListBoxItem}" >
+                        <Setter Property="Margin" Value="2" />
+                        <Setter Property="Template">
+                            <Setter.Value>
+                                <ControlTemplate TargetType="{x:Type ListBoxItem}">
+                                    <Border Name="theBorder" Background="Transparent">
+                                        <RadioButton Focusable="False"
+                                              IsHitTestVisible="False"   
+                                            
+                                              IsChecked="{TemplateBinding IsSelected}">
+                                            <TextBlock Text="{Binding Content}" Width="Auto" Background="Transparent" Foreground="Black" Height="Auto" FontSize="10"/>
+                                        </RadioButton>
+                                    </Border>
+                                </ControlTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
         <v:ToggleBoolean x:Key="ToggleBoolean"/>
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
         <v:SelectedLayerDense x:Key="SelectedLayerDenseToBoolean"/>
@@ -67,7 +129,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
-            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="0.05*"/>
         </Grid.RowDefinitions>
 
         <StackPanel Grid.Column="0" Grid.Row="0" Margin="10">
@@ -93,7 +155,8 @@
                             <ComboBoxItem Content="RMSProp"/>
                         </ComboBox>
                         <TextBlock materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding OutputPath}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" />
-                        <ListBox ItemsSource="{Binding CSVHeaders}">
+                        <TextBlock   Text="Select all feautures you want to use to train your model." TextWrapping="Wrap" Margin="10" Width="Auto" Foreground="Black" />
+                        <ListBox ItemsSource="{Binding CSVHeaders}"  Margin="10" MaxHeight="100">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal"/>
@@ -101,12 +164,13 @@
                             </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <ToggleButton Content="{Binding}" Style="{x:Null}"/>
+                                    <ToggleButton Content="{Binding Content}" IsChecked="{Binding IsChecked}" Style="{x:Null}"/>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
 
-                        <ListBox ItemsSource="{Binding CSVHeaders}">
+                        <TextBlock Text="Select your class that you want the model to learn." TextWrapping="Wrap" Margin="10" Width="Auto" Foreground="Black" />
+                        <ListBox ItemsSource="{Binding CSVTarget}"  MaxHeight="100" Margin="10">
                             <ListBox.ItemsPanel>
                                 <ItemsPanelTemplate>
                                     <WrapPanel Orientation="Horizontal"/>
@@ -114,10 +178,11 @@
                             </ListBox.ItemsPanel>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <RadioButton />
+                                    <RadioButton Content="{Binding Content}" GroupName="Feauture" IsChecked="{Binding IsChecked}"></RadioButton>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+
 
                     </StackPanel>
                 </StackPanel>
