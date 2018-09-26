@@ -32,6 +32,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             this.Label = label;
         }
+
         public static readonly DependencyProperty RectangleHeightProperty =
         DependencyProperty.Register("RectangleHeight", typeof(double), typeof(ResizableRectangle));
         public double RectangleHeight
@@ -60,7 +61,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         } 
 
-        public static readonly DependencyProperty RectangleWidthProperty =
+       public static readonly DependencyProperty RectangleWidthProperty =
        DependencyProperty.Register("RectangleWidth", typeof(double), typeof(ResizableRectangle));
         public double RectangleWidth
         {
@@ -75,7 +76,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        public static readonly DependencyProperty XProperty =
+       public static readonly DependencyProperty XProperty =
        DependencyProperty.Register("X", typeof(double), typeof(ResizableRectangle));
         public double X
         {

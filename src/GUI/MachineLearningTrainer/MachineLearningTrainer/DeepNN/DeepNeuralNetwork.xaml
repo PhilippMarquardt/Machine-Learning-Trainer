@@ -93,6 +93,32 @@
                             <ComboBoxItem Content="RMSProp"/>
                         </ComboBox>
                         <TextBlock materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding OutputPath}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" />
+                        <ListBox ItemsSource="{Binding CSVHeaders}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <ToggleButton Content="{Binding}" Style="{x:Null}"/>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                        <ListBox ItemsSource="{Binding CSVHeaders}">
+                            <ListBox.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <WrapPanel Orientation="Horizontal"/>
+                                </ItemsPanelTemplate>
+                            </ListBox.ItemsPanel>
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <RadioButton />
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
                     </StackPanel>
                 </StackPanel>
             </materialDesign:Card>
@@ -242,15 +268,12 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
         </materialDesign:DialogHost>
-
-
         <materialDesign:DialogHost
             x:Name="AddNewLayerDialogHost"
             Grid.RowSpan="2"
             Grid.ColumnSpan="2"
             Padding="10"
             IsOpen="False">
-            
             <materialDesign:DialogHost.DialogContent>
                 <Grid>
                     <Grid.RowDefinitions>

@@ -84,7 +84,6 @@
                 <TextBox x:Name="txtLabel" Foreground="Black" Visibility="Collapsed" TextChanged="txtLabel_TextChanged" Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
             </Canvas>
         </local:ZoomBorder>
-
         <ListBox ItemsSource="{Binding AllRectangles}" Foreground="Black" Grid.Column="2"  FontSize="20" x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="0">
             <ListBox.ItemTemplate>
                 <DataTemplate>

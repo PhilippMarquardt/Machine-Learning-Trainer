@@ -119,8 +119,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            rectSelectArea.Label = txtLabel.Text;
-            
+            rectSelectArea.Label = txtLabel.Text;           
         }
 
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)

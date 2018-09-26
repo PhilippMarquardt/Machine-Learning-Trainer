@@ -40,7 +40,6 @@ namespace MachineLearningTrainer
         {
             this._mainModel = model;
             this._mainGrid = mainGrid;
-
         }
         private ICommand _leftTransition;
         public ICommand LeftTransition
@@ -205,6 +204,7 @@ namespace MachineLearningTrainer
             set
             {
                 this._outputPath = value;
+                ReadCsvHeaders();
                 OnPropertyChanged("OutputPath");
             }
         }
@@ -235,6 +235,19 @@ namespace MachineLearningTrainer
         private void EditCurrentSelectedHiddenLayer()
         {
            _mainModel.EditCurrentDNNLayer(SelectedDeepNeuralNetworkLayer, NewLayerNumberOfNodes, NewLayerSelectedActivationFunction.Content.ToString(), NewLayerDimension, NewLayerDropout);
+        }
+
+        public ObservableCollection<string> CSVHeaders { get; set; } = new ObservableCollection<string>();
+
+        private void ReadCsvHeaders()
+        {
+            var headers = PythonRunner.RunScript("csv_header_reader.py", false, new string[] { OutputPath });
+            headers = headers.Replace("[", "");
+            headers = headers.Replace("]", "");
+            var headersList = headers.Split(',');
+
+            foreach (var header in headersList)
+                CSVHeaders.Add(header);
         }
 
 
