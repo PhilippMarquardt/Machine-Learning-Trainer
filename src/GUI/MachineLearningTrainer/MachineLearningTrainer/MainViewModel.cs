@@ -241,7 +241,7 @@ namespace MachineLearningTrainer
         private void WriteDNNXML()
         {
            
-            XMLWriter.WriteLayersToXML(DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate),Convert.ToInt32(Epochs), Optimizer.Content.ToString(), OutputPath);
+            XMLWriter.WriteLayersToXML(CSVHeaders.Where(x=>x.IsChecked).ToList(), CSVTarget.Where(x=>x.IsChecked).FirstOrDefault(),DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate),Convert.ToInt32(Epochs), Optimizer.Content.ToString(), OutputPath);
             System.Windows.MessageBox.Show(PythonRunner.RunScript("prepro.py", true, new string[] { "" }));
         }
 

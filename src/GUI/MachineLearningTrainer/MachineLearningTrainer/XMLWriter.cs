@@ -1,4 +1,5 @@
-﻿using MachineLearningTrainer.DrawerTool;
+﻿using MachineLearningTrainer.DeepNN;
+using MachineLearningTrainer.DrawerTool;
 using MachineLearningTrainer.Layer;
 using System;
 using System.Collections.Generic;
@@ -12,35 +13,44 @@ namespace MachineLearningTrainer
 {
     public static class XMLWriter
     {
-        public static void WriteLayersToXML(List<DeepNeuralNetworkLayer> allLayers, double learningRate = 0.1, int epochs = 500, string optimizer = "adam", string input_path = "")
+        public static void WriteLayersToXML(List<CustomListBoxItem> feautures, CustomListBoxItem target, List<DeepNeuralNetworkLayer> allLayers, double learningRate = 0.1, int epochs = 500, string optimizer = "adam", string input_path = "" )
         {
             try
             {
                 System.Windows.MessageBox.Show("Start writing xml file");
                 XmlWriter writer = XmlWriter.Create("layers.xml");
                 writer.WriteStartDocument();
+                
 
-             
 
                 writer.WriteStartElement("layers");
-                writer.WriteStartElement("input_path");
-                writer.WriteString(input_path);
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("learning_rate");
-                writer.WriteString(learningRate.ToString());
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("epochs");
-                writer.WriteString(epochs.ToString());
-                writer.WriteEndElement();
-
-                writer.WriteStartElement("optimizer");
-                writer.WriteString(optimizer);
-                writer.WriteEndElement();
+               
                 foreach (var l in allLayers)
                 {
-                   
+                    writer.WriteStartElement("inputpath");
+                    writer.WriteString(input_path);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("learningrate");
+                    writer.WriteString(learningRate.ToString());
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("epochs");
+                    writer.WriteString(epochs.ToString());
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("optimizer");
+                    writer.WriteString(optimizer);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("features");
+                    writer.WriteString(String.Join(", ",feautures) );
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("target");
+                    writer.WriteString(target.ToString().Replace("'", ""));
+                    writer.WriteEndElement();
+
                     if (l.Type == LayerType.Dense)
                     {
                         Dense lay = l as Dense;

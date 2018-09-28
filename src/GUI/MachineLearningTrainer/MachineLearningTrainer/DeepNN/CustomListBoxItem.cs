@@ -40,7 +40,7 @@ namespace MachineLearningTrainer.DeepNN
         {
             get
             {
-                return this._content.Replace("'","");
+                return this._content;
             }
             set
             {
@@ -63,6 +63,11 @@ namespace MachineLearningTrainer.DeepNN
                 OnPropertyChanged("IsChecked");
               
             }
+        }
+
+        public override string ToString()
+        {
+            return Content.ToString();
         }
     }
 }
