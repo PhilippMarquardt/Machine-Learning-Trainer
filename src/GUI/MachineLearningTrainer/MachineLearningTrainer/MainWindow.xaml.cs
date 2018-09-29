@@ -27,7 +27,7 @@ namespace MachineLearningTrainer
             MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
             page.DataContext = viewModel;           
             MainGrid.Children.Add(page);
-            //MessageBox.Show(PythonRunner.RunScript("prepro.py", true, new string[] { "" })); 
+            MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" })); 
         }
     }
 }

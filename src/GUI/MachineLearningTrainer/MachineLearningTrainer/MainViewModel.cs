@@ -206,19 +206,19 @@ namespace MachineLearningTrainer
 
 
 
-        private string _outputPath;
+        private string _inputPath;
 
-        public string OutputPath
+        public string InputPath
         {
             get
             {
-                return this._outputPath;
+                return this._inputPath;
             }
             set
             {
-                this._outputPath = value;
+                this._inputPath = value;
                 ReadCsvHeaders();
-                OnPropertyChanged("OutputPath");
+                OnPropertyChanged("InputPath");
             }
         }
 
@@ -226,7 +226,7 @@ namespace MachineLearningTrainer
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
-                OutputPath = openFileDialog.FileName;
+                InputPath = openFileDialog.FileName;
         }
     
 
@@ -241,8 +241,8 @@ namespace MachineLearningTrainer
         private void WriteDNNXML()
         {
            
-            XMLWriter.WriteLayersToXML(CSVHeaders.Where(x=>x.IsChecked).ToList(), CSVTarget.Where(x=>x.IsChecked).FirstOrDefault(),DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate),Convert.ToInt32(Epochs), Optimizer.Content.ToString(), OutputPath);
-            System.Windows.MessageBox.Show(PythonRunner.RunScript("prepro.py", true, new string[] { "" }));
+            XMLWriter.WriteLayersToXML(CSVHeaders.Where(x=>x.IsChecked).ToList(), CSVTarget.Where(x=>x.IsChecked).FirstOrDefault(),DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate),Convert.ToInt32(Epochs), Optimizer.Content.ToString(), InputPath, ModelName);
+            System.Windows.MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, false));
         }
 
         private void EditCurrentSelectedHiddenLayer()
@@ -255,7 +255,7 @@ namespace MachineLearningTrainer
 
         private void ReadCsvHeaders()
         {
-            var headers = PythonRunner.RunScript("csv_header_reader.py", false, new string[] { OutputPath });
+            var headers = PythonRunner.RunScriptSynchronous("csv_header_reader.py", false, new string[] { InputPath });
             headers = headers.Replace("[", "");
             headers = headers.Replace("]", "");
             var headersList = headers.Split(',');
@@ -273,6 +273,7 @@ namespace MachineLearningTrainer
         public string NewLayerDimension { get; set; } = "";
         public string LearningRate { get; set; }
         public string Epochs { get; set; }
+        public string ModelName { get; set; }
         public ComboBoxItem Optimizer { get; set; }
         public ComboBoxItem NewLayerSelectedActivationFunction { get; set; }
         private bool _autoFindParameter = false;

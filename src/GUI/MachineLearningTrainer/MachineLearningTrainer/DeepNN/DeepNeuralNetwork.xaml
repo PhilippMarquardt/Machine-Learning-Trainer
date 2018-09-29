@@ -147,6 +147,7 @@
                         <ToggleButton x:Name="AutoFindHyperparameters" HorizontalAlignment="Right" materialDesign:HintAssist.Hint="Auto" Margin="20,0,0,0" Height="Auto" IsChecked="{Binding AutoFindParameter}"/>
                     </StackPanel>
                     <StackPanel IsEnabled="{Binding AutoFindParameter, Converter={StaticResource ToggleBoolean}}" HorizontalAlignment="Center">
+                        <TextBox materialDesign:HintAssist.Hint="Model Name" Text="{Binding ModelName}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="8" HorizontalContentAlignment="Center"/>
                         <TextBox materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding LearningRate}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
                         <TextBox materialDesign:HintAssist.Hint="Epochs" Text="{Binding Epochs}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
                         <ComboBox Width="Auto" Foreground="Black" Margin="10" SelectedItem="{Binding Optimizer}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Optimizer" HorizontalContentAlignment="Center">

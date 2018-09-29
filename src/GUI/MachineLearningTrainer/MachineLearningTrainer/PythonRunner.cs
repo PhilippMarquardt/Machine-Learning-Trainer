@@ -50,10 +50,11 @@ namespace MachineLearningTrainer
         /// <param name="showOutputWindow">When true, console window is shown.</param>
         /// <param name="args">Cmd args for the script.</param>
         /// <returns></returns>
-        public static string RunScript(string path, bool showOutputWindow, string [] args, bool redirectStdOut = true)
+        public static string RunScriptAsynchronous(string path, bool showOutputWindow, string [] args, bool redirectStdOut = true)
         {
             try
             {
+                stdOut = new StringBuilder();
                 ProcessStartInfo start = new ProcessStartInfo();
                 start.FileName = "C:/Users/Philipp/Anaconda3/python.exe";
                 start.Arguments = string.Format("{0} {1}", path, string.Join(" ", args));
@@ -64,9 +65,44 @@ namespace MachineLearningTrainer
                 p.StartInfo = start;
                 p.OutputDataReceived += OutputHandler;
                 p.Start();
-                p.BeginOutputReadLine();
+                if(redirectStdOut)
+                    p.BeginOutputReadLine();
                 p.WaitForExit();
-                return stdOut.ToString();
+                return "";
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+                return null;
+            }
+        }
+
+        /// <summary>
+        /// Runs a python script.
+        /// </summary>
+        /// <param name="path">Path to the .py file.</param>
+        /// <param name="showOutputWindow">When true, console window is shown.</param>
+        /// <param name="args">Cmd args for the script.</param>
+        /// <returns></returns>
+        public static string RunScriptSynchronous(string path, bool showOutputWindow, string[] args, bool redirectStdOut = true)
+        {
+            try
+            {
+                ProcessStartInfo start = new ProcessStartInfo();
+                start.FileName = "C:/Users/Philipp/Anaconda3/python.exe";
+                start.Arguments = string.Format("{0} {1}", path, string.Join(" ", args));
+                start.CreateNoWindow = showOutputWindow ? false : true;
+                start.UseShellExecute = false;
+                start.RedirectStandardOutput = true;
+                using (Process process = Process.Start(start))
+                {
+
+                    using (StreamReader reader = process.StandardOutput)
+                    {
+                        var std_out = reader.ReadToEnd();
+                        return std_out == "" ? "There went something wrong" : std_out;
+                    }
+                }
             }
             catch (Exception ex)
             {
@@ -80,6 +116,7 @@ namespace MachineLearningTrainer
             //* Do your stuff with the output (write to console/log/StringBuilder)
             Console.WriteLine(outLine.Data);
             stdOut.Append(outLine.Data);
+            //stdOut.Append('\n');
         }
 
 
