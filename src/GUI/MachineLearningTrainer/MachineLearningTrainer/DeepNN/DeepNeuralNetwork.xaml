@@ -31,7 +31,6 @@
             <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Auto"/>
             <Setter Property="ScrollViewer.VerticalScrollBarVisibility" Value="Auto"/>
             <Setter Property="ScrollViewer.CanContentScroll" Value="true"/>
-            
             <Setter Property="MinHeight" Value="95"/>
             <Setter Property="Template">
                 <Setter.Value>
@@ -86,6 +85,8 @@
         </Style>
 
         <v:ToggleBoolean x:Key="ToggleBoolean"/>
+        <v:SelectedTypeDense x:Key="SelectedTypeDense"/>
+        <v:SelectedTypeDropout x:Key="SelectedTypeDropout"/>
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
         <v:SelectedLayerDense x:Key="SelectedLayerDenseToBoolean"/>
         <v:SelectedLayerDropout x:Key="SelectedLayerDropoutToBoolean"/>
@@ -245,17 +246,43 @@
                                     </Grid.ColumnDefinitions>
                                     <Grid.RowDefinitions>
                                         <RowDefinition Height="0.1*"/>
-                                        <RowDefinition Height="0.7*"/>
-                                        <RowDefinition Height="0.1*"/>
-                                        <RowDefinition Height="0.1*"/>
+                                        <RowDefinition Height="0.9*"/>
                                     </Grid.RowDefinitions>
-                                    <TextBlock Grid.Column="0" HorizontalAlignment="Center" Text="{Binding Path=NumberOfNodes }" Foreground="Black" FontSize="23"/>
-                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Path=Dimension }" Foreground="Black" FontSize="23"/>
-                                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" Text="{Binding Path=DropoutValue }" Foreground="Black" FontSize="23"/>
-                                    <TextBlock Grid.Column="2" HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23"/>
+                                    
+                                    
+                                    <Border BorderThickness="1" BorderBrush="#FF2196F3" Grid.Row="0" Grid.ColumnSpan="4">
+                                        <TextBlock Foreground="Black" HorizontalAlignment="Center"  FontSize="23" Text="{Binding Path=Type}"/>
+                                    </Border>
+
+
+
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDense}}">
+                                        <!--<Label Content="Number of Nodes: " FontSize="23"/>-->
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Path=NumberOfNodes }" Foreground="Black" FontSize="23"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="{Binding IsFirstOrLastLayer, Converter={StaticResource booleanToVisibiliy}}">
+                                        <!--<Label Content="Input dimnension: " FontSize="23"/>-->
+                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=Dimension}" Foreground="Black" FontSize="23"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDropout}}">
+                                        <!--<Label Content="Dropout value: " FontSize="23" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDropout}}"/>-->
+                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=DropoutValue }" Foreground="Black" FontSize="23"/>
+                                    </StackPanel>
+
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDense}}">
+                                        <!--<Label Content="Number of Nodes: " FontSize="23"/>-->
+                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23"/>
+                                    </StackPanel>
+                                    
+                                                                       
                                 </Grid>
                             </materialDesign:Card>
                             <materialDesign:PackIcon VerticalAlignment="Bottom" HorizontalAlignment="Center" Foreground="Black"  Kind="ArrowDownBold"  Grid.Row="1"/>
+                            
+                            
                             <Button x:Name="btnDeleteHiddenLayer" Click="btnDeleteHiddenLayer_Click" Style="{StaticResource BasicButtonStyle}" Grid.Column="1"  Grid.Row="0">
                                 <materialDesign:PackIcon Kind="Delete"/>
                             </Button>
@@ -272,7 +299,7 @@
         </Button>
 
 
-
+<!--EDIT DENSE LAYER-->
         <materialDesign:DialogHost
             x:Name="EditHiddenLayer"
             Grid.RowSpan="2"
@@ -306,7 +333,7 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
         </materialDesign:DialogHost>
-
+        <!--EDIT DROPOUT LAYER-->
         <materialDesign:DialogHost
             x:Name="EditDropoutLayer"
             Grid.RowSpan="2"   
@@ -316,8 +343,8 @@
             <!--IsOpen="{Binding SelectedDeepNeuralNetworkLayer, Converter={StaticResource SelectedLayerDropoutToBoolean}}"-->
             <materialDesign:DialogHost.DialogContent>
                 <StackPanel Orientation="Vertical" Margin="20">
-                    <TextBox Text="{Binding Path=NewLayerDropout}" materialDesign:HintAssist.Hint="Number of nodes" Margin="5"/>
-                    <Button Content="Save changes" Style="{StaticResource BasicButtonStyle}"  Command="{Binding SaveChangesHiddenLayer}" Margin="5"/>
+                    <TextBox Text="{Binding Path=NewLayerDropout}" materialDesign:HintAssist.Hint="Dropout Value" Margin="10"/>
+                    <Button Content="Save changes" Style="{StaticResource BasicButtonStyle}"  Command="{Binding SaveChangesHiddenLayer}" Margin="10"/>
                     <Button
                         Width="Auto"
                         Height="Auto"
@@ -325,7 +352,7 @@
                         BorderThickness="0"
                         Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
                         Content="Close"
-                        Margin="5"
+                        Margin="10"
                          />
                     <!--Command="{Binding ClosePopupCommand}"
                         CommandParameter="{Binding RelativeSource={RelativeSource Mode=FindAncestor,
@@ -333,6 +360,8 @@
                 </StackPanel>
             </materialDesign:DialogHost.DialogContent>
         </materialDesign:DialogHost>
+        
+        <!--ADD NEW LAYER INCLUDING DROPOUT-->
         <materialDesign:DialogHost
             x:Name="AddNewLayerDialogHost"
             Grid.RowSpan="2"
@@ -360,7 +389,7 @@
                         <TextBox Text="{Binding NewLayerDimension}" materialDesign:HintAssist.Hint="Number of elements input layer" Margin="5"/>
                     </StackPanel>
                     <StackPanel Orientation="Vertical" Margin="20" Visibility="{Binding IsChecked,ElementName=RadioBTNDropout,Converter={StaticResource booleanToVisibiliy}}" Grid.Row="1">
-                        <TextBox Text="{Binding NewLayerDropout}" materialDesign:HintAssist.Hint="Number of nodes" Margin="5"/>
+                        <TextBox Text="{Binding NewLayerDropout}" materialDesign:HintAssist.Hint="Dropout Value" Margin="5"/>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" Margin="20" Grid.Row="2">
                         <Button Content="Add Layer" Style="{StaticResource BasicButtonStyle}" x:Name="btnAddLayer" Click="btnAddLayer_Click" Margin="5"/>

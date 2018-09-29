@@ -68,7 +68,7 @@ namespace MachineLearningTrainer
                 if(redirectStdOut)
                     p.BeginOutputReadLine();
                 p.WaitForExit();
-                return "";
+                return stdOut.ToString();
             }
             catch (Exception ex)
             {

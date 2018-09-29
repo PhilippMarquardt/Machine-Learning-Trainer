@@ -239,10 +239,20 @@ namespace MachineLearningTrainer
         }
 
         private void WriteDNNXML()
-        {
-           
-            XMLWriter.WriteLayersToXML(CSVHeaders.Where(x=>x.IsChecked).ToList(), CSVTarget.Where(x=>x.IsChecked).FirstOrDefault(),DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate),Convert.ToInt32(Epochs), Optimizer.Content.ToString(), InputPath, ModelName);
-            System.Windows.MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, false));
+        {try
+            {
+                if (CSVHeaders.Where(x => x.IsChecked).ToList().Count == 0)
+                    throw new Exception("Please select feautures");
+                if (CSVTarget.Where(x => x.IsChecked).ToList().Count == 0)
+                    throw new Exception("Please select a target");
+
+                XMLWriter.WriteLayersToXML(CSVHeaders.Where(x => x.IsChecked).ToList(), CSVTarget.Where(x => x.IsChecked).FirstOrDefault(), DeepNeuralNetworkHiddenLayers.ToList(), Convert.ToDouble(LearningRate), Convert.ToInt32(Epochs), Optimizer.Content.ToString(), InputPath, ModelName);
+                System.Windows.MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, false));
+            }
+            catch(Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
         }
 
         private void EditCurrentSelectedHiddenLayer()

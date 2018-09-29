@@ -7,13 +7,13 @@ using System.Windows.Data;
 
 namespace MachineLearningTrainer.ValueConverter
 {
-    class SelectedLayerDropout : IValueConverter
+    public class SelectedTypeDropout : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, System.Globalization.CultureInfo culture)
         {
             if (value == null)
                 return false;
-            if ((value as DeepNeuralNetworkLayer).Type == LayerType.Dropout)
+            if (((LayerType)value) == LayerType.Dropout)
                 return true;
             return false;
         }
