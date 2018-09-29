@@ -42,7 +42,7 @@ namespace MachineLearningTrainer
             }
         }
 
-
+        private static StringBuilder stdOut = new StringBuilder();
         /// <summary>
         /// Runs a python script.
         /// </summary>
@@ -50,7 +50,7 @@ namespace MachineLearningTrainer
         /// <param name="showOutputWindow">When true, console window is shown.</param>
         /// <param name="args">Cmd args for the script.</param>
         /// <returns></returns>
-        public static string RunScript(string path, bool showOutputWindow, string [] args)
+        public static string RunScript(string path, bool showOutputWindow, string [] args, bool redirectStdOut = true)
         {
             try
             {
@@ -59,16 +59,14 @@ namespace MachineLearningTrainer
                 start.Arguments = string.Format("{0} {1}", path, string.Join(" ", args));
                 start.CreateNoWindow = showOutputWindow ? false : true;
                 start.UseShellExecute = false;
-                start.RedirectStandardOutput = true;
-                using (Process process = Process.Start(start))
-                {
-                    
-                    using (StreamReader reader = process.StandardOutput)
-                    {
-                        var std_out = reader.ReadToEnd();
-                        return std_out == "" ? "There went something wrong" : std_out;
-                    }               
-                }
+                start.RedirectStandardOutput = redirectStdOut;
+                Process p = new Process();
+                p.StartInfo = start;
+                p.OutputDataReceived += OutputHandler;
+                p.Start();
+                p.BeginOutputReadLine();
+                p.WaitForExit();
+                return stdOut.ToString();
             }
             catch (Exception ex)
             {
@@ -76,6 +74,15 @@ namespace MachineLearningTrainer
                 return null;
             }
         }
+
+        static void OutputHandler(object sendingProcess, DataReceivedEventArgs outLine)
+        {
+            //* Do your stuff with the output (write to console/log/StringBuilder)
+            Console.WriteLine(outLine.Data);
+            stdOut.Append(outLine.Data);
+        }
+
+
 
     }
 }
