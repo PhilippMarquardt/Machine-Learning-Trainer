@@ -46,7 +46,8 @@ namespace MachineLearningTrainer
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("features");
-                writer.WriteString(String.Join(", ", feautures));
+               
+                writer.WriteString(String.Join(",", feautures));
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("target");

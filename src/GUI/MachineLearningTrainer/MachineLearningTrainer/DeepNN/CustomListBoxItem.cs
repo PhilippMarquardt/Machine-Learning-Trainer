@@ -67,7 +67,7 @@ namespace MachineLearningTrainer.DeepNN
 
         public override string ToString()
         {
-            return Content.ToString();
+            return Content.ToString().Replace(" ","");
         }
     }
 }
