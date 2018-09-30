@@ -10,9 +10,10 @@ namespace MachineLearningTrainer.Layer
     public class Dropout : DeepNeuralNetworkLayer
     {
       
-        public Dropout(double dropout, bool isFirstOrLast = false, LayerType type = LayerType.Dropout)
+        public Dropout(double dropout, bool isFirst = false,bool isLast = false, LayerType type = LayerType.Dropout)
         {
-            this.IsFirstOrLastLayer = isFirstOrLast;
+            this.IsFirstLayer = isFirst;
+            this.IsLastLayer = isLast;
             this.DropoutValue = dropout;
             this.Type = type;
         }

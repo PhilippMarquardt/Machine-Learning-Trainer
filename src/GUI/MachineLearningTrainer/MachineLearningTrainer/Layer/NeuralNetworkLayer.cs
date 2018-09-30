@@ -46,14 +46,15 @@ namespace MachineLearningTrainer
 
         public LayerType Type { get; set; }    
 
-        public bool IsFirstOrLastLayer { get; set; } = false;
+        public bool IsFirstLayer { get; set; } = false;
 
-
+        public bool IsLastLayer { get; set; } = false;
       
-        public DeepNeuralNetworkLayer(bool isFirstOrLast)
+        public DeepNeuralNetworkLayer(bool isFirst, bool isLast)
         {
 
-            this.IsFirstOrLastLayer = isFirstOrLast;
+            this.IsFirstLayer = isFirst;
+            this.IsLastLayer = isLast;
         }
 
         public DeepNeuralNetworkLayer()

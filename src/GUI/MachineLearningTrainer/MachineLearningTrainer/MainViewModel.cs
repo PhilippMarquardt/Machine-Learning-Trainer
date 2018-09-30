@@ -131,7 +131,7 @@ namespace MachineLearningTrainer
             this._mainGrid.Children.Clear();
             if (usc is ImageDrawer)
             {
-                usc.DataContext = new DrawerViewModel(new DrawerModel());
+                usc.DataContext = new DrawerViewModel(new DrawerModel(), this._mainModel, this._mainGrid, this);
             }
             else 
             {
@@ -143,7 +143,7 @@ namespace MachineLearningTrainer
 
         #region DeepNeuralNetwork
 
-        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new Dense(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0), true), new Dense(ActivationFunction.ReLu, 5, new Dimension(), true) };
+        public ObservableCollection<DeepNeuralNetworkLayer> DeepNeuralNetworkHiddenLayers { get; set; } = new ObservableCollection<DeepNeuralNetworkLayer>() { new Dense(ActivationFunction.ReLu, 5, new Dimension(3, 0, 0), true, false), new Dense(ActivationFunction.ReLu, 5, new Dimension(), false, true) };
 
         //private ICommand _addDNNLayer;
         //public ICommand AddDNNLayer
@@ -239,7 +239,8 @@ namespace MachineLearningTrainer
         }
 
         private void WriteDNNXML()
-        {try
+        {
+            try
             {
                 if (CSVHeaders.Where(x => x.IsChecked).ToList().Count == 0)
                     throw new Exception("Please select feautures");
@@ -302,8 +303,9 @@ namespace MachineLearningTrainer
 
         public void DeleteHiddenLayer(DeepNeuralNetworkLayer layer)
         {
-            var isFirstOrLast = DeepNeuralNetworkHiddenLayers.Where(x => x == layer).First().IsFirstOrLastLayer;
-            if(!isFirstOrLast)
+            var isFirstOrLast = DeepNeuralNetworkHiddenLayers.Where(x => x == layer).First().IsFirstLayer;
+            var isLastLayer = DeepNeuralNetworkHiddenLayers.Where(x => x == layer).First().IsLastLayer;
+            if (!(isFirstOrLast||isLastLayer))
                 DeepNeuralNetworkHiddenLayers.Remove(layer);
         }
 

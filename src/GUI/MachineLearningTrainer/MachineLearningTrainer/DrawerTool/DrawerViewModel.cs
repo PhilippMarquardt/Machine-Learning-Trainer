@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using System.Windows.Input;
 using System.Collections.ObjectModel;
 using Microsoft.Win32;
+using System.Windows.Controls;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -32,11 +33,17 @@ namespace MachineLearningTrainer.DrawerTool
 
         private DrawerModel _drawerModel;
         private bool _canExecute = true;
-        private ResizableRectangle rectSelectArea;
 
-        public DrawerViewModel(DrawerModel drawerModel)
+        private MainModel _mainModel;
+        private Grid _mainGrid;
+        private MainViewModel _mainViewModel;
+
+        public DrawerViewModel(DrawerModel drawerModel, MainModel model, Grid mainGrid, MainViewModel mainViewModel)
         {
             this._drawerModel = drawerModel;
+            this._mainGrid = mainGrid;
+            this._mainModel = model;
+            this._mainViewModel = mainViewModel;
         }
 
 
@@ -100,6 +107,25 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("ImagePath");
             }
         }
+
+
+        private ICommand _previousPage;
+        public ICommand PreviousPage
+        {
+            get
+            {
+                return _previousPage ?? (_previousPage = new CommandHandler(() => SetNextState(Command.Previous), _canExecute));
+            }
+        }
+
+        public void SetNextState(Command command)
+        {
+            UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
+            this._mainGrid.Children.Clear();        
+            usc.DataContext = this._mainViewModel;           
+            this._mainGrid.Children.Add(usc);
+        }
+
 
 
 

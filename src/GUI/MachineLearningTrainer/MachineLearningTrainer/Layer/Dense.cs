@@ -9,22 +9,7 @@ namespace MachineLearningTrainer.Layer
 {
     public class Dense : DeepNeuralNetworkLayer, INotifyPropertyChanged
     {
-        #region Property changed area
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-
-                handler(this, new PropertyChangedEventArgs(name));
-
-            }
-
-        }
-        #endregion
+      
 
         private ActivationFunction _activationFunction;
         private int _numberOfNode;
@@ -68,9 +53,10 @@ namespace MachineLearningTrainer.Layer
             }
         }
 
-        public Dense(ActivationFunction actFun, int numberOfNodes, Dimension dim, bool isFirstOrLast)
+        public Dense(ActivationFunction actFun, int numberOfNodes, Dimension dim, bool isFirst, bool isLast)
         {
-            this.IsFirstOrLastLayer = isFirstOrLast;
+            this.IsFirstLayer = isFirst;
+            this.IsLastLayer = isLast;
             this.ActivationFunction = actFun;
             this.NumberOfNodes = numberOfNodes;
             this.Dimension = dim;

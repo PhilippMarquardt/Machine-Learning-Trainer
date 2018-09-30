@@ -38,6 +38,7 @@ namespace MachineLearningTrainer
             }
             catch (Exception ex)  
             {
+                System.Windows.MessageBox.Show(ex.Message);
                 return "";
             }
         }

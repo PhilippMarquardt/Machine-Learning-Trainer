@@ -75,7 +75,7 @@ namespace MachineLearningTrainer
             {
                 if (dim == null || dim == "")
                 {
-                    return new Dense(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(), false);
+                    return new Dense(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(), false, false);
                 }
                 else
                 {
@@ -90,7 +90,7 @@ namespace MachineLearningTrainer
                         columns = Convert.ToInt32(tmp[1]);
                         channel = Convert.ToInt32(tmp[2]);
                     }
-                    return new Dense(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false);
+                    return new Dense(ConvertStringToActFunction(activationFunction), Convert.ToInt32(numberOfNodes), new Dimension(rows, columns, channel), false, false);
                 }
 
             }
@@ -155,7 +155,7 @@ namespace MachineLearningTrainer
                 }
                 layer.ActivationFunction = ConvertStringToActFunction(activationFunction);
                 layer.NumberOfNodes = Convert.ToInt32(numberOfNodes);
-                if (layer.IsFirstOrLastLayer)
+                if (layer.IsFirstLayer)
                     layer.Dimension = new Dimension(rows, columns, channel);
                 
             }

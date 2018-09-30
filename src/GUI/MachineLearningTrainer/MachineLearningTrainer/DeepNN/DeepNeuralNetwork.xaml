@@ -258,23 +258,23 @@
 
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="0" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDense}}">
-                                        <!--<Label Content="Number of Nodes: " FontSize="23"/>-->
-                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Path=NumberOfNodes }" Foreground="Black" FontSize="23"/>
+                                        <Label Content="Number of Nodes: " FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock HorizontalAlignment="Center" Text="{Binding Path=NumberOfNodes }" Foreground="Black" FontSize="23" VerticalAlignment="Center"/>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="{Binding IsFirstOrLastLayer, Converter={StaticResource booleanToVisibiliy}}">
-                                        <!--<Label Content="Input dimnension: " FontSize="23"/>-->
-                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=Dimension}" Foreground="Black" FontSize="23"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="{Binding Path=IsFirstLayer, Converter={StaticResource booleanToVisibiliy}}">
+                                        <Label Content="Input dimension: " FontSize="23" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=Dimension}" Foreground="Black" FontSize="23" VerticalAlignment="Center"/>
                                     </StackPanel>
 
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDropout}}">
-                                        <!--<Label Content="Dropout value: " FontSize="23" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDropout}}"/>-->
-                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=DropoutValue }" Foreground="Black" FontSize="23"/>
+                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="1" Grid.Row="1" Visibility="{Binding Path=Type, Converter={StaticResource SelectedTypeDropout}}">
+                                        <Label Content="Dropout value: " FontSize="23" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDropout}}" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=DropoutValue }" Foreground="Black" FontSize="23" VerticalAlignment="Center"/>
                                     </StackPanel>
 
                                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Grid.Column="2" Grid.Row="1" Visibility="{Binding Type, Converter={StaticResource SelectedTypeDense}}">
-                                        <!--<Label Content="Number of Nodes: " FontSize="23"/>-->
-                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23"/>
+                                        <Label Content="Activation Function: " FontSize="23" VerticalAlignment="Center" HorizontalAlignment="Center"/>
+                                        <TextBlock  HorizontalAlignment="Center" Text="{Binding Path=ActivationFunction }" Foreground="Black" FontSize="23" VerticalAlignment="Center"/>
                                     </StackPanel>
                                     
                                                                        
