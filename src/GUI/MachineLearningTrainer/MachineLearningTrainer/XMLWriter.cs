@@ -45,9 +45,12 @@ namespace MachineLearningTrainer
                 writer.WriteString(optimizer);
                 writer.WriteEndElement();
 
-                writer.WriteStartElement("features");
-               
+                writer.WriteStartElement("features");        
                 writer.WriteString(String.Join(",", feautures));
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("number_of_features");
+                writer.WriteString(feautures.Count.ToString());
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("target");
@@ -73,6 +76,14 @@ namespace MachineLearningTrainer
 
                         writer.WriteStartElement("nodes");
                         writer.WriteString(lay.NumberOfNodes.ToString());
+                        writer.WriteEndElement();
+
+                        writer.WriteStartElement("first");
+                        writer.WriteString(lay.IsFirstLayer.ToString());
+                        writer.WriteEndElement();
+
+                        writer.WriteStartElement("last");
+                        writer.WriteString(lay.IsLastLayer.ToString());
                         writer.WriteEndElement();
 
                         writer.WriteEndElement();
