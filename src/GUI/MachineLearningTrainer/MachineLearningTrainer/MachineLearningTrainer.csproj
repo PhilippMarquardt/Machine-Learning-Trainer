@@ -63,6 +63,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ControlOperations.cs" />
     <Compile Include="DecisionPages\DataDecision.xaml.cs">
       <DependentUpon>DataDecision.xaml</DependentUpon>
     </Compile>

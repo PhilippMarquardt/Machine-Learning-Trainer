@@ -18,7 +18,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void ResizeThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Control designerItem = this.DataContext as Control;
-
+            var rec = ControlOperations.GetParentOfType<UserControl>(designerItem) as ResizableRectangle;
             if (designerItem != null)
             {
                 double deltaVertical, deltaHorizontal;
@@ -52,6 +52,9 @@ namespace MachineLearningTrainer.DrawerTool
                     default:
                         break;
                 }
+
+                rec.RectangleWidth = designerItem.Width;
+                rec.RectangleHeight = designerItem.Height;
             }
 
             e.Handled = true;

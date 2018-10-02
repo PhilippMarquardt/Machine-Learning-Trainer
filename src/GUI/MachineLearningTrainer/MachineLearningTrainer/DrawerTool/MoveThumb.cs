@@ -18,7 +18,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void MoveThumb_DragDelta(object sender, DragDeltaEventArgs e)
         {
             Control designerItem = this.DataContext as Control;
-
+            var rec = ControlOperations.GetParentOfType<UserControl>(designerItem) as ResizableRectangle;
             if (designerItem != null)
             {
                 double left = Canvas.GetLeft(designerItem);
@@ -26,6 +26,11 @@ namespace MachineLearningTrainer.DrawerTool
 
                 Canvas.SetLeft(designerItem, left + e.HorizontalChange);
                 Canvas.SetTop(designerItem, top + e.VerticalChange);
+
+                rec.X = rec.X + e.HorizontalChange;
+                rec.Y = rec.Y + e.VerticalChange;
+
+
             }
         }
     }
