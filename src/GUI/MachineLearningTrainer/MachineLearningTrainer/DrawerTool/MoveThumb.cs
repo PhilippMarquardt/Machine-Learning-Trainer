@@ -26,10 +26,11 @@ namespace MachineLearningTrainer.DrawerTool
 
                 Canvas.SetLeft(designerItem, left + e.HorizontalChange);
                 Canvas.SetTop(designerItem, top + e.VerticalChange);
-
-                rec.X = rec.X + e.HorizontalChange;
-                rec.Y = rec.Y + e.VerticalChange;
-
+                if (rec != null)
+                {
+                    rec.X = rec.X + e.HorizontalChange;
+                    rec.Y = rec.Y + e.VerticalChange;
+                }
 
             }
         }

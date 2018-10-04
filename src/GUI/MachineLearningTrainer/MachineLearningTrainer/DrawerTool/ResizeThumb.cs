@@ -52,9 +52,11 @@ namespace MachineLearningTrainer.DrawerTool
                     default:
                         break;
                 }
-
-                rec.RectangleWidth = designerItem.Width;
-                rec.RectangleHeight = designerItem.Height;
+                if (rec != null)
+                {
+                    rec.RectangleWidth = designerItem.Width;
+                    rec.RectangleHeight = designerItem.Height;
+                }
             }
 
             e.Handled = true;
