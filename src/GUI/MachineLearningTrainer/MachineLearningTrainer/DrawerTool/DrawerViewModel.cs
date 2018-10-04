@@ -93,6 +93,10 @@ namespace MachineLearningTrainer.DrawerTool
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 ImagePath = openFileDialog.FileName;
+            if (ImagePath != null)
+            {
+                this.IsEnabled = true;
+            }
         }
         private string _imagePath;
         public string ImagePath
@@ -107,6 +111,22 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("ImagePath");
             }
         }
+
+        private bool _isEnabled = false;
+
+        public bool IsEnabled
+        {
+            get
+            {
+                return this._isEnabled;
+            }
+            set
+            {
+                this._isEnabled = value;
+                OnPropertyChanged("IsEnabled");
+            }
+        }
+
 
 
         private ICommand _previousPage;
