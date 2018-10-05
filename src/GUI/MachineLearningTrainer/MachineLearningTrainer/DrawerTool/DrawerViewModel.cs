@@ -145,7 +145,7 @@ namespace MachineLearningTrainer.DrawerTool
             foreach (var rec in AllRectangles)
             {
                 int recStartX = (Convert.ToInt16(rec.X));
-                int recStartY = (Convert.ToInt16(rec.Y));
+                int recStartY = (Convert.ToInt16(rec.Y-23));
                 int recWidth  = (Convert.ToInt16(rec.RectangleWidth));
                 int recHeight = (Convert.ToInt16(rec.RectangleHeight));
                 
@@ -159,7 +159,7 @@ namespace MachineLearningTrainer.DrawerTool
                 convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
                 CroppedImage = convertedImg;
                 croppedImage.SaveImage("output.png");
-                MessageBox.Show("Höhe: " + recHeight + "  Breite: " + recWidth);
+                MessageBox.Show("Höhe: " + recHeight + "  Breite: " + recWidth + "  X: "+recStartX + "  Y: "+recStartY);
             }
         }
         
