@@ -67,34 +67,21 @@
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="2" Background="White">
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Rectangle" x:Name="btnAddRectangle" 
                         Click="btnAddRectangle_Click" IsEnabled="{Binding IsEnabled}">
                     <Button.ToolTip>
                         <TextBlock Text="(STRG + D)"/>
                     </Button.ToolTip>
                 </Button>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}"/>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Test" Click="Button_Click_1"/>
-            </materialDesign:Card>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}" IsEnabled="{Binding IsEnabled}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Test" Click="Button_Click_1"/>
             <Image Source="{Binding CroppedImage}" Height="100"/>
-            <!--<Image x:Name="Icon" Source="C:\Users\hsa\Pictures\6hr-001-DIC.tif"/>-->
         </StackPanel> 
-        <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2">
-            <Canvas Background="White" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
+        <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray" BorderBrush="Gray" BorderThickness="1,0,1,0">
+            <Canvas Background="LightGray" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Stretch="Uniform" MouseDown="imgCamera_MouseDown" 
                        MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" 
                        Height="{Binding Path=ActualHeight, ElementName=cnvImage}" Grid.RowSpan="2"/>
