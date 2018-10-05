@@ -66,7 +66,7 @@
             <RowDefinition Height="0.9*"/>
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Panel.ZIndex="0" Grid.Row="0">
+        <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="2" Background="White">
             <materialDesign:Card Margin="10">
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
             </materialDesign:Card>
@@ -81,8 +81,19 @@
             <materialDesign:Card Margin="10">
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             </materialDesign:Card>
-        </StackPanel>
-        <local:ZoomBorder Grid.Column="1" Panel.ZIndex="1" Grid.Row="0">
+            <materialDesign:Card Margin="10">
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="10">
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}"/>
+            </materialDesign:Card>
+            <materialDesign:Card Margin="10">
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Test" Click="Button_Click_1"/>
+            </materialDesign:Card>
+            <Image Source="{Binding CroppedImage}" Height="100"/>
+            <!--<Image x:Name="Icon" Source="C:\Users\hsa\Pictures\6hr-001-DIC.tif"/>-->
+        </StackPanel> 
+        <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2">
             <Canvas Background="White" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Stretch="Uniform" MouseDown="imgCamera_MouseDown" 
                        MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" 
@@ -91,7 +102,8 @@
                          Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
             </Canvas>
         </local:ZoomBorder>
-        <ListBox ItemsSource="{Binding AllRectangles}" Foreground="Black" Grid.Column="2" Background="White" FontSize="20" x:Name="listBoxLabels" Panel.ZIndex="0" Grid.Row="0">
+        <ListBox ItemsSource="{Binding AllRectangles}" Foreground="Black" Grid.Column="2" Background="White" FontSize="20" 
+                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
@@ -101,7 +113,6 @@
                 </DataTemplate>
             </ListBox.ItemTemplate>
         </ListBox>
-
         <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" 
                 HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />

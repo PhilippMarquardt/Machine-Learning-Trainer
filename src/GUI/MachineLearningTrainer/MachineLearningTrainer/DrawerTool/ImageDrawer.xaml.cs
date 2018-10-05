@@ -22,7 +22,7 @@ namespace MachineLearningTrainer.DrawerTool
     {
         public ImageDrawer()
         {
-            InitializeComponent();          
+            InitializeComponent();
         }
 
         
@@ -125,6 +125,16 @@ namespace MachineLearningTrainer.DrawerTool
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).Enabled = false;
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            MessageBox.Show("Test");
         }
     }
 }
