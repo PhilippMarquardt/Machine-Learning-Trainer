@@ -142,14 +142,25 @@ namespace MachineLearningTrainer.DrawerTool
         public BitmapImage convertedImg;
         private void TestImage()
         {
-            Bitmap src = new Bitmap(ImagePath); 
-            Mat mat = SupportCode.convertBmp2Mat(src);
+            foreach (var rec in AllRectangles)
+            {
+                int recStartX = (Convert.ToInt16(rec.X));
+                int recStartY = (Convert.ToInt16(rec.Y));
+                int recWidth  = (Convert.ToInt16(rec.RectangleWidth));
+                int recHeight = (Convert.ToInt16(rec.RectangleHeight));
+                
+                
+                Bitmap src = new Bitmap(ImagePath);
+                Mat mat = SupportCode.convertBmp2Mat(src);
 
-            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(0, 0, 300, 200);
-            Mat croppedImage = new Mat(mat, rectCrop);
+                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
+                Mat croppedImage = new Mat(mat, rectCrop);
 
-            convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
-            CroppedImage = convertedImg;
+                convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
+                CroppedImage = convertedImg;
+                croppedImage.SaveImage("output.png");
+                MessageBox.Show("Höhe: " + recHeight + "  Breite: " + recWidth);
+            }
         }
         
 
