@@ -79,8 +79,8 @@
             </materialDesign:Card>
         </StackPanel>
         <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0">
-            <Canvas Background="White" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
-                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Stretch="Uniform" MouseDown="imgCamera_MouseDown" MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" Height="{Binding Path=ActualHeight, ElementName=cnvImage}" />
+            <Canvas Background="Black" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
+                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Stretch="Fill" MouseDown="imgCamera_MouseDown" MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" Height="{Binding Path=ActualHeight, ElementName=cnvImage}" />
                 <TextBox x:Name="txtLabel" Foreground="Black" Visibility="Collapsed" TextChanged="txtLabel_TextChanged" Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
             </Canvas>
         </local:ZoomBorder>

@@ -59,7 +59,7 @@
                     <materialDesign:PackIcon Kind="Information"/>
                 </Button>
                 <Button  Margin="30,50,30,50" FontFamily="Bold" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto" >
-                    <TextBlock TextWrapping="Wrap" Text="I wanto to use decision trees / SVMs" Width="Auto"/>
+                    <TextBlock TextWrapping="Wrap" Text="I want to use decision trees / SVMs" Width="Auto"/>
                 </Button>
             </StackPanel>
         </materialDesign:Card>
