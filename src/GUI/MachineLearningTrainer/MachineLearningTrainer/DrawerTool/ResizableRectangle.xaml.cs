@@ -30,8 +30,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         public ResizableRectangle(string label)
         {
-            this.Label = label;
+            this.Viktor = label;
         }
+
+        public BitmapImage croppedImage = null;
 
         public static readonly DependencyProperty RectangleHeightProperty =
         DependencyProperty.Register("RectangleHeight", typeof(double), typeof(ResizableRectangle));
@@ -106,8 +108,8 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         public static readonly DependencyProperty LabelProperty =
-          DependencyProperty.Register("Label", typeof(string), typeof(ResizableRectangle));
-        public string Label
+          DependencyProperty.Register("Viktor", typeof(string), typeof(ResizableRectangle));
+        public string Viktor
         {
             get
             {
@@ -118,5 +120,20 @@ namespace MachineLearningTrainer.DrawerTool
                 this.SetValue(LabelProperty, value);
             }
         }
+
+        private static DependencyProperty CroppedImageProperty =
+            DependencyProperty.Register("CroppedImage", typeof(BitmapImage), typeof(ResizableRectangle));
+        public BitmapImage CroppedImage
+        {
+            get
+            {
+                return (BitmapImage)GetValue(CroppedImageProperty);
+            }
+            set
+            {
+                SetValue(CroppedImageProperty, value);
+            }
+        }
+
     }
 }

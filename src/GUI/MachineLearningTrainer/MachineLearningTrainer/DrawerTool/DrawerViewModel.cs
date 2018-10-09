@@ -51,8 +51,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
         }
-
-        //-----------------------------------------------------------------------------------------------------------------
+        
         //TODO: Mouse event handler
         //private ICommand _imageMouseDown;
 
@@ -63,12 +62,11 @@ namespace MachineLearningTrainer.DrawerTool
         //        return _imageMouseDown ?? (_imageMouseDown = new CommandHandler(() => WriteDNNXML(), _canExecute));
         //    }
         //}
-        //-----------------------------------------------------------------------------------------------------------------
 
         public bool Enabled { get; set; } = true;
-
+        
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-
+        
         
 
         private ICommand _exportPascalVoc;
@@ -144,26 +142,33 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (var rec in AllRectangles)
             {
-                int recStartX = (Convert.ToInt16(rec.X));
-                int recStartY = (Convert.ToInt16(rec.Y-23));
-                int recWidth  = (Convert.ToInt16(rec.RectangleWidth));
-                int recHeight = (Convert.ToInt16(rec.RectangleHeight));
                 
-                
-                Bitmap src = new Bitmap(ImagePath);
-                Mat mat = SupportCode.convertBmp2Mat(src);
+                for (int i = 0; i < AllRectangles.Count; i++)
+                {
 
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
-                Mat croppedImage = new Mat(mat, rectCrop);
+                    int recStartX = (Convert.ToInt16(rec.X));
+                    int recStartY = (Convert.ToInt16(rec.Y));
+                    int recWidth = (Convert.ToInt16(rec.RectangleWidth));
+                    int recHeight = (Convert.ToInt16(rec.RectangleHeight));
 
-                convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
-                CroppedImage = convertedImg;
-                croppedImage.SaveImage("output.png");
-                MessageBox.Show("Höhe: " + recHeight + "  Breite: " + recWidth + "  X: "+recStartX + "  Y: "+recStartY);
+
+                    Bitmap src = new Bitmap(ImagePath);
+                    Mat mat = SupportCode.convertBmp2Mat(src);
+
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
+                    Mat croppedImage = new Mat(mat, rectCrop);
+
+                    convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
+                    CroppedImage = convertedImg;
+                    
+                    //MessageBox.Show("Anzahl der Rechtecke:" + AllRectangles.Count);
+
+                    //MessageBox.Show(i+"Höhe:"+CroppedImage.Height);
+                }
+                MessageBox.Show("OK");
             }
         }
         
-
         private BitmapImage _croppedImage;
         public BitmapImage CroppedImage
         {

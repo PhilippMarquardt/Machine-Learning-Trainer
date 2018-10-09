@@ -8,28 +8,28 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle Fill="Blue" Opacity="0.2" IsHitTestVisible="{Binding RectangleMovable}"/>
+            <Rectangle Fill="Blue" Opacity="0.1" IsHitTestVisible="{Binding RectangleMovable}"/>
         </ControlTemplate>
 
         <!-- ResizeDecorator Template -->
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
             <Grid>
-                <local:ResizeThumb Height="3" Cursor="SizeNS" Margin="0 -4 0 0"
+                <local:ResizeThumb Height="1" Background="Black" Cursor="SizeNS" Margin="0 -1 0 0"
                        VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
-                <local:ResizeThumb Width="3" Cursor="SizeWE" Margin="-4 0 0 0"
+                <local:ResizeThumb Width="1" Background="Black" Cursor="SizeWE" Margin="-1 0 0 0"
                        VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
-                <local:ResizeThumb Width="3" Cursor="SizeWE" Margin="0 0 -4 0"
+                <local:ResizeThumb Width="1" Background="Black" Cursor="SizeWE" Margin="0 0 -1 0"
                        VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
-                <local:ResizeThumb Height="3" Cursor="SizeNS" Margin="0 0 0 -4"
+                <local:ResizeThumb Height="1" Background="Black" Cursor="SizeNS" Margin="0 0 0 -1"
                        VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
-                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNWSE" Margin="-6 -6 0 0"
-                       VerticalAlignment="Top" HorizontalAlignment="Left"/>
-                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNESW" Margin="0 -6 -6 0"
-                       VerticalAlignment="Top" HorizontalAlignment="Right"/>
-                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNESW" Margin="-6 0 0 -6"
-                       VerticalAlignment="Bottom" HorizontalAlignment="Left"/>
-                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNWSE" Margin="0 0 -6 -6"
-                       VerticalAlignment="Bottom" HorizontalAlignment="Right"/>
+                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNWSE" Margin="-4 -4 0 0"
+                       VerticalAlignment="Top" HorizontalAlignment="Left" Background="LawnGreen"/>
+                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNESW" Margin="0 -4 -4 0"
+                       VerticalAlignment="Top" HorizontalAlignment="Right" Background="LawnGreen"/>
+                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNESW" Margin="-4 0 0 -4"
+                       VerticalAlignment="Bottom" HorizontalAlignment="Left" Background="LawnGreen"/>
+                <local:ResizeThumb Width="7" Height="7" Cursor="SizeNWSE" Margin="0 0 -4 -4"
+                       VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="LawnGreen"/>
             </Grid>
         </ControlTemplate>
 

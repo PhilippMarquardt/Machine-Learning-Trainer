@@ -1,5 +1,9 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -18,17 +22,34 @@ namespace MachineLearningTrainer.DrawerTool
     /// <summary>
     /// Interaktionslogik für ImageDrawer.xaml
     /// </summary>
-    public partial class ImageDrawer : UserControl
+    public partial class ImageDrawer : UserControl, INotifyPropertyChanged
     {
         public ImageDrawer()
         {
             InitializeComponent();
         }
 
-        
+        #region Property changed area
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+
+                handler(this, new PropertyChangedEventArgs(name));
+
+            }
+
+        }
+        #endregion
+
+
 
         // This is the rectangle to be shown when mouse is dragged on camera image.
-        private Point startPoint;
+        private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
 
 
@@ -42,23 +63,20 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
-
                 startPoint = e.GetPosition(cnvImage);
-
-
+                
                 txtLabel.Visibility = Visibility.Collapsed;
                 foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
                     q.RectangleMovable = false;
 
                 rectSelectArea = new ResizableRectangle();
                 (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
-
-
-
+                
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 cnvImage.Children.Add(rectSelectArea);
-                }
+                
+            }           
         }
 
         /// <summary>
@@ -91,9 +109,50 @@ namespace MachineLearningTrainer.DrawerTool
 
                 rectSelectArea.X = x;
                 rectSelectArea.Y = y;
+
+                int recStartX = (Convert.ToInt16(x));
+                int recStartY = (Convert.ToInt16(y));
+                int recWidth = (Convert.ToInt16(w));
+                int recHeight = (Convert.ToInt16(h));
+                
+
+                /*
+                //Bitmap src = new Bitmap(imgPreview.Source);
+                BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+                Bitmap src;
+
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    BitmapEncoder enc = new BmpBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bImage));
+                    enc.Save(outStream);
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                    src = new Bitmap(bitmap);
+                }
+
+                Mat mat = SupportCode.convertBmp2Mat(src);
+
+                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
+                Mat croppedImage = new Mat(mat, rectCrop);
+
+                rectSelectArea.CroppedImage = SupportCode.convertMat2BmpImg(croppedImage);
+
+                //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
+
+                */
             }
 
         }
+
+        private string _lastLabel = "Label";
+        public string LastLabel
+        {
+            get { return _lastLabel; }
+            set { _lastLabel = value; }
+        }
+
+
 
         /// <summary>
         /// 
@@ -112,14 +171,46 @@ namespace MachineLearningTrainer.DrawerTool
                 Canvas.SetTop(txtLabel, rectSelectArea.Y - 35);
                 foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
                     q.RectangleMovable = true;
+                //imgPreview.Source = rectSelectArea.cropedImage;
                 (this.DataContext as DrawerViewModel).Enabled = true;
                 // rectSelectArea = null;
+
+                //Bitmap src = new Bitmap(imgPreview.Source);
+                BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+                Bitmap src;
+
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    BitmapEncoder enc = new BmpBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bImage));
+                    enc.Save(outStream);
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                    src = new Bitmap(bitmap);
+                }
+
+                Mat mat = SupportCode.convertBmp2Mat(src);
+
+                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
+                Mat croppedImage = new Mat(mat, rectCrop);
+
+                rectSelectArea.CroppedImage = SupportCode.convertMat2BmpImg(croppedImage);
+                txtLabel.Text = LastLabel;
+                txtLabel.SelectAll();
+                //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
+
+
             }
         }
 
         private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            rectSelectArea.Label = txtLabel.Text;           
+            if(txtLabel.Text != "")
+            {
+                rectSelectArea.Viktor = txtLabel.Text;
+                LastLabel = txtLabel.Text;
+            }
+            
         }
 
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
@@ -131,10 +222,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             Application.Current.Shutdown();
         }
-
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            MessageBox.Show("Test");
-        }
+        
     }
 }

@@ -9,6 +9,7 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              d:DesignHeight="1080" d:DesignWidth="1920">
+
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -22,9 +23,8 @@
     </UserControl.Triggers>
 
     <UserControl.Resources>
-       
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
-        
+
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -54,9 +54,15 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
-
     </UserControl.Resources>
+
     <Grid>
+        <Grid.InputBindings>
+            <KeyBinding Command="{Binding Path=LoadImageCommand}" 
+                Key="O" 
+                Modifiers="Alt"/>
+        </Grid.InputBindings>
+        
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="0.1*"/>
             <ColumnDefinition Width="0.8*"/>
@@ -68,18 +74,18 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="2" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Rectangle" x:Name="btnAddRectangle" 
+            <Button Style="{StaticResource BasicButtonStyle}" x:Name="btnAddRectangle" 
                         Click="btnAddRectangle_Click" IsEnabled="{Binding IsEnabled}">
-                    <Button.ToolTip>
-                        <TextBlock Text="(STRG + D)"/>
+                <AccessText>_Rectangle</AccessText>
+                <Button.ToolTip>
+                        <TextBlock Text="(Alt + R)"/>
                     </Button.ToolTip>
                 </Button>
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}" IsEnabled="{Binding IsEnabled}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Test" Click="Button_Click_1"/>
             <Image Source="{Binding CroppedImage}" Height="50" Width="auto"/>
-        </StackPanel> 
+        </StackPanel>
         <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray" BorderBrush="Gray" BorderThickness="1,0,1,0">
             <Canvas Background="LightGray" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" MouseDown="imgCamera_MouseDown" 
@@ -94,8 +100,8 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
-                        <Image Source="C:\Users\hsa\Pictures\flower.jpg" Height="50" Width="auto" Margin="0,0,10,0"/>
-                        <TextBlock Text="{Binding Label}" Foreground="Black" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left"/>
+                        <Image Source="{Binding CroppedImage}" Height="50" Width="50" Margin="0,0,10,0"/>
+                        <TextBlock Text="{Binding Viktor}" Foreground="Black" FontSize="20" VerticalAlignment="Center" HorizontalAlignment="Left" />
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
