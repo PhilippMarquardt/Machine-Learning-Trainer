@@ -85,12 +85,17 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}" IsEnabled="{Binding IsEnabled}"/>
             <Image Source="{Binding CroppedImage}" Height="50" Width="auto"/>
+            <Label Content="{Binding Path=ActualHeight, ElementName=cnvImage}"/>
+            <Label Content="{Binding Path=ActualWidth, ElementName=cnvImage}"/>
+            <Label Content="{Binding Path=ActualHeight, ElementName=imgPreview}"/>
+            <Label Content="{Binding Path=ActualWidth, ElementName=imgPreview}"/>
         </StackPanel>
         <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray" BorderBrush="Gray" BorderThickness="1,0,1,0">
-            <Canvas Background="LightGray" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
-                <Image x:Name="imgPreview" Source="{Binding ImagePath}" MouseDown="imgCamera_MouseDown" 
-                       MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" 
-                       Height="{Binding Path=ActualHeight, ElementName=cnvImage}" Grid.RowSpan="2"/>
+            <Canvas Background="LightBlue" x:Name="cnvImage" MouseUp="imgCamera_MouseUp" Width="{Binding Path=ActualWidth, ElementName=imgPreview}" 
+                       Height="{Binding Path=ActualHeight, ElementName=imgPreview}" >
+                <Image x:Name="imgPreview" Source="{Binding ImagePath}" MouseDown="imgCamera_MouseDown"
+                       MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="auto" 
+                       Height="auto" Grid.RowSpan="2"/>
                 <TextBox x:Name="txtLabel" Foreground="Black" Visibility="Collapsed" TextChanged="txtLabel_TextChanged" 
                          Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
             </Canvas>

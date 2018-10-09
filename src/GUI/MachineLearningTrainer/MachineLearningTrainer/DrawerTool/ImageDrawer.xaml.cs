@@ -190,7 +190,6 @@ namespace MachineLearningTrainer.DrawerTool
                 }
 
                 Mat mat = SupportCode.convertBmp2Mat(src);
-
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
@@ -199,7 +198,9 @@ namespace MachineLearningTrainer.DrawerTool
                 txtLabel.SelectAll();
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
 
-
+                Console.WriteLine("Höhe Y" + (int)rectSelectArea.Y);
+                Console.WriteLine("Höhe X" + (int)rectSelectArea.X);
+                Console.WriteLine(mat.Height);
             }
         }
 
