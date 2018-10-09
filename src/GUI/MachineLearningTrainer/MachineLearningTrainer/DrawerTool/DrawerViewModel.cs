@@ -67,8 +67,6 @@ namespace MachineLearningTrainer.DrawerTool
         
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         
-        
-
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -128,61 +126,61 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private ICommand _btnCroppedImage;
-        public ICommand BtnCroppedImage
-        {
-            get
-            {
-                return _btnCroppedImage ?? (_btnCroppedImage = new CommandHandler(() => TestImage(), _canExecute));
-            }
-        }
+        //private ICommand _btnCroppedImage;
+        //public ICommand BtnCroppedImage
+        //{
+        //    get
+        //    {
+        //        return _btnCroppedImage ?? (_btnCroppedImage = new CommandHandler(() => TestImage(), _canExecute));
+        //    }
+        //}
 
-        public BitmapImage convertedImg;
-        private void TestImage()
-        {
-            foreach (var rec in AllRectangles)
-            {
+        //public BitmapImage convertedImg;
+        //private void TestImage()
+        //{
+        //    foreach (var rec in AllRectangles)
+        //    {
                 
-                for (int i = 0; i < AllRectangles.Count; i++)
-                {
+        //        for (int i = 0; i < AllRectangles.Count; i++)
+        //        {
 
-                    int recStartX = (Convert.ToInt16(rec.X));
-                    int recStartY = (Convert.ToInt16(rec.Y));
-                    int recWidth = (Convert.ToInt16(rec.RectangleWidth));
-                    int recHeight = (Convert.ToInt16(rec.RectangleHeight));
+        //            int recStartX = (Convert.ToInt16(rec.X));
+        //            int recStartY = (Convert.ToInt16(rec.Y));
+        //            int recWidth = (Convert.ToInt16(rec.RectangleWidth));
+        //            int recHeight = (Convert.ToInt16(rec.RectangleHeight));
 
 
-                    Bitmap src = new Bitmap(ImagePath);
-                    Mat mat = SupportCode.convertBmp2Mat(src);
+        //            Bitmap src = new Bitmap(ImagePath);
+        //            Mat mat = SupportCode.convertBmp2Mat(src);
 
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
-                    Mat croppedImage = new Mat(mat, rectCrop);
+        //            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
+        //            Mat croppedImage = new Mat(mat, rectCrop);
 
-                    convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
-                    CroppedImage = convertedImg;
+        //            convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
+        //            CroppedImage = convertedImg;
                     
-                    //MessageBox.Show("Anzahl der Rechtecke:" + AllRectangles.Count);
+        //            //MessageBox.Show("Anzahl der Rechtecke:" + AllRectangles.Count);
 
-                    //MessageBox.Show(i+"Höhe:"+CroppedImage.Height);
-                }
-                MessageBox.Show("OK");
-            }
-        }
+        //            //MessageBox.Show(i+"Höhe:"+CroppedImage.Height);
+        //        }
+        //        MessageBox.Show("OK");
+        //    }
+        //}
         
-        private BitmapImage _croppedImage;
-        public BitmapImage CroppedImage
-        {
-            get
-            {
-                return this._croppedImage;
-            }
+        //private BitmapImage _croppedImage;
+        //public BitmapImage CroppedImage
+        //{
+        //    get
+        //    {
+        //        return this._croppedImage;
+        //    }
 
-            set
-            {
-                this._croppedImage = value;
-                OnPropertyChanged("CroppedImage");
-            }
-        }
+        //    set
+        //    {
+        //        this._croppedImage = value;
+        //        OnPropertyChanged("CroppedImage");
+        //    }
+        //}
 
 
         private ICommand _previousPage;
