@@ -98,6 +98,7 @@
       <DependentUpon>ImageDrawer.xaml</DependentUpon>
     </Compile>
     <Compile Include="DrawerTool\MoveThumb.cs" />
+    <Compile Include="DrawerTool\MyICommand.cs" />
     <Compile Include="DrawerTool\ResizableRectangle.xaml.cs">
       <DependentUpon>ResizableRectangle.xaml</DependentUpon>
     </Compile>

@@ -148,8 +148,15 @@ namespace MachineLearningTrainer.DrawerTool
         private string _lastLabel = "Label";
         public string LastLabel
         {
-            get { return _lastLabel; }
-            set { _lastLabel = value; }
+            get
+            {
+                return _lastLabel;
+            }
+
+            set
+            {   _lastLabel = value;
+                OnPropertyChanged("LastLabel");
+            }
         }
 
 
@@ -197,10 +204,6 @@ namespace MachineLearningTrainer.DrawerTool
                 txtLabel.Text = LastLabel;
                 txtLabel.SelectAll();
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
-
-                Console.WriteLine("Höhe Y" + (int)rectSelectArea.Y);
-                Console.WriteLine("Höhe X" + (int)rectSelectArea.X);
-                Console.WriteLine(mat.Height);
             }
         }
 
@@ -223,6 +226,5 @@ namespace MachineLearningTrainer.DrawerTool
         {
             Application.Current.Shutdown();
         }
-        
     }
 }

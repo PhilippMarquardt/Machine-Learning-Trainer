@@ -50,8 +50,9 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainGrid = mainGrid;
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
+            DeleteCommand = new MyICommand(OnDelete, CanDelete);
         }
-        
+
         //TODO: Mouse event handler
         //private ICommand _imageMouseDown;
 
@@ -63,8 +64,10 @@ namespace MachineLearningTrainer.DrawerTool
         //    }
         //}
 
+        public MyICommand DeleteCommand { get; set; }
         public bool Enabled { get; set; } = true;
-        
+        public System.Windows.Controls.Canvas cnvImage { get; }
+
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         
         private ICommand _exportPascalVoc;
@@ -97,6 +100,9 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 this.IsEnabled = true;
             }
+            
+            //AllRectangles.Clear();
+            
         }
         private string _imagePath;
         public string ImagePath
@@ -200,8 +206,33 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainGrid.Children.Add(usc);
         }
 
+        
 
+        private ResizableRectangle _selectedResizableRectangle;
 
+        public ResizableRectangle SelectedResizableRectangle
+        {
+            get
+            {
+                return _selectedResizableRectangle;
+            }
+
+            set
+            {
+                _selectedResizableRectangle = value;
+                DeleteCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        private void OnDelete()
+        {
+            AllRectangles.Remove(SelectedResizableRectangle);
+        }
+
+        private bool CanDelete()
+        {
+            return SelectedResizableRectangle != null;
+        }
 
 
     }
