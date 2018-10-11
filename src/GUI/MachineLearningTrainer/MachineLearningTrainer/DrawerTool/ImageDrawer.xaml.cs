@@ -46,9 +46,8 @@ namespace MachineLearningTrainer.DrawerTool
         }
         #endregion
 
-        
 
-        // This is the rectangle to be shown when mouse is dragged on camera image.
+        public ResizableRectangle SelectedResizableRectangle { get; }
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
 
@@ -71,7 +70,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             }
 
-            
+
         }
 
         /// <summary>
@@ -109,9 +108,9 @@ namespace MachineLearningTrainer.DrawerTool
                 int recStartY = (Convert.ToInt16(y));
                 int recWidth = (Convert.ToInt16(w));
                 int recHeight = (Convert.ToInt16(h));
-                
+
             }
-            
+
         }
 
         private string _lastLabel = "Label";
@@ -123,11 +122,12 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
             set
-            {   _lastLabel = value;
+            {
+                _lastLabel = value;
                 OnPropertyChanged("LastLabel");
             }
         }
-        
+
 
         /// <summary>
         /// 
@@ -177,7 +177,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if(txtLabel.Text != "")
+            if (txtLabel.Text != "")
             {
                 rectSelectArea.Viktor = txtLabel.Text;
                 LastLabel = txtLabel.Text;
@@ -194,7 +194,7 @@ namespace MachineLearningTrainer.DrawerTool
             //        }
             //    }
             //}
-            
+
         }
 
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
@@ -210,9 +210,22 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Button_Click_1(object sender, EventArgs e)
         {
-            //while(cnvImage.Children.Count>1)
-                cnvImage.Children.RemoveAt(2);
+            deleteRectangles();
         }
-        
+
+        public int Index { get; set; } = 2;
+        public void deleteRectangles()
+        {
+            if (cnvImage.Children.Count>1)
+            {
+                cnvImage.Children.RemoveAt(cnvImage.Children.Count - 1);
+            }
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            while (cnvImage.Children.Count > 1)
+            cnvImage.Children.RemoveAt(cnvImage.Children.Count-1);
+        }
     }
 }

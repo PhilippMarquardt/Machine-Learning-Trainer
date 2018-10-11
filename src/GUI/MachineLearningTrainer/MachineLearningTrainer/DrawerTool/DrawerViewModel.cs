@@ -66,10 +66,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         public MyICommand DeleteCommand { get; set; }
         public bool Enabled { get; set; } = true;
-        public System.Windows.Controls.Canvas cnvImage { get; }
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         
+
+
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -101,9 +102,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 this.IsEnabled = true;
             }
-            
-            //AllRectangles.Clear();
-            
+
         }
         private string _imagePath;
         public string ImagePath
@@ -133,63 +132,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        //private ICommand _btnCroppedImage;
-        //public ICommand BtnCroppedImage
-        //{
-        //    get
-        //    {
-        //        return _btnCroppedImage ?? (_btnCroppedImage = new CommandHandler(() => TestImage(), _canExecute));
-        //    }
-        //}
-
-        //public BitmapImage convertedImg;
-        //private void TestImage()
-        //{
-        //    foreach (var rec in AllRectangles)
-        //    {
-                
-        //        for (int i = 0; i < AllRectangles.Count; i++)
-        //        {
-
-        //            int recStartX = (Convert.ToInt16(rec.X));
-        //            int recStartY = (Convert.ToInt16(rec.Y));
-        //            int recWidth = (Convert.ToInt16(rec.RectangleWidth));
-        //            int recHeight = (Convert.ToInt16(rec.RectangleHeight));
-
-
-        //            Bitmap src = new Bitmap(ImagePath);
-        //            Mat mat = SupportCode.convertBmp2Mat(src);
-
-        //            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
-        //            Mat croppedImage = new Mat(mat, rectCrop);
-
-        //            convertedImg = SupportCode.convertMat2BmpImg(croppedImage);
-        //            CroppedImage = convertedImg;
-                    
-        //            //MessageBox.Show("Anzahl der Rechtecke:" + AllRectangles.Count);
-
-        //            //MessageBox.Show(i+"Höhe:"+CroppedImage.Height);
-        //        }
-        //        MessageBox.Show("OK");
-        //    }
-        //}
-        
-        //private BitmapImage _croppedImage;
-        //public BitmapImage CroppedImage
-        //{
-        //    get
-        //    {
-        //        return this._croppedImage;
-        //    }
-
-        //    set
-        //    {
-        //        this._croppedImage = value;
-        //        OnPropertyChanged("CroppedImage");
-        //    }
-        //}
-
-
         private ICommand _previousPage;
         public ICommand PreviousPage
         {
@@ -206,9 +148,7 @@ namespace MachineLearningTrainer.DrawerTool
             usc.DataContext = this._mainViewModel;           
             this._mainGrid.Children.Add(usc);
         }
-
         
-
         private ResizableRectangle _selectedResizableRectangle;
 
         public ResizableRectangle SelectedResizableRectangle
@@ -224,18 +164,40 @@ namespace MachineLearningTrainer.DrawerTool
                 DeleteCommand.RaiseCanExecuteChanged();
             }
         }
-
-        //public void MoveRectangle(ResizableRectangle rec)
-        //{
-            
-        //}
         public ResizableRectangle rectSelectedArea { get; }
+
+        private ICommand _deleteRectanglesCommand;
+        public ICommand DeleteRectanglesCommand
+        {
+            get
+            {
+                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
+            }
+        }
 
         private void OnDelete()
         {
             AllRectangles.Remove(SelectedResizableRectangle);
-            Console.WriteLine("Index: " + AllRectangles.IndexOf(SelectedResizableRectangle));
+            
+        }
 
+        private void DeleteAll()
+        {
+            AllRectangles.Clear();
+        }
+
+        private int _index = 3;
+        public int Index
+        {
+            get
+            {
+                return _index;
+            }
+            set
+            {
+                _index = value;
+                OnPropertyChanged("Index");
+            }
         }
         
 

@@ -77,7 +77,8 @@
                 </Button>
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear" Click="Button_Click_1"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Last Rectangle" Click="Button_Click_1"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear All" Click="Button_Click_2"/>
             <!--<Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}" IsEnabled="{Binding IsEnabled}"/>-->
             <!--<Label Content="{Binding Path=ActualHeight, ElementName=cnvImage}"/>-->
             <!--<Label Content="{Binding Path=ActualWidth, ElementName=cnvImage}"/>-->
@@ -86,6 +87,7 @@
         </StackPanel>
         <StackPanel x:Name="cnvDelete" Grid.Column="2" Grid.Row="1" Panel.ZIndex="1" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Delete" Command="{Binding DeleteCommand}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteRectanglesCommand}"/>
         </StackPanel>
         <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray" 
                           BorderBrush="Gray" BorderThickness="1,0,1,0">
