@@ -51,6 +51,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
+            
         }
 
         //TODO: Mouse event handler
@@ -177,13 +178,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
+            Console.WriteLine("Hello: " + AllRectangles.IndexOf(SelectedResizableRectangle));
             AllRectangles.Remove(SelectedResizableRectangle);
-            Console.WriteLine(AllRectangles.IndexOf(SelectedResizableRectangle));
+            
         }
 
         private void DeleteAll()
         {
             AllRectangles.Clear();
+
         }
 
         private int _index = 3;
@@ -205,6 +208,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             return SelectedResizableRectangle != null;
         }
-
+        
     }
 }
