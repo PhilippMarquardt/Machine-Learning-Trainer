@@ -77,6 +77,7 @@
                 </Button>
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear" Click="Button_Click_1"/>
             <!--<Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}" IsEnabled="{Binding IsEnabled}"/>-->
             <!--<Label Content="{Binding Path=ActualHeight, ElementName=cnvImage}"/>-->
             <!--<Label Content="{Binding Path=ActualWidth, ElementName=cnvImage}"/>-->
@@ -86,14 +87,16 @@
         <StackPanel x:Name="cnvDelete" Grid.Column="2" Grid.Row="1" Panel.ZIndex="1" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Delete" Command="{Binding DeleteCommand}"/>
         </StackPanel>
-        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray" BorderBrush="Gray" BorderThickness="1,0,1,0">
+        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="2" Background="LightGray" 
+                          BorderBrush="Gray" BorderThickness="1,0,1,0">
             <Canvas Background="LightBlue" x:Name="cnvImage" MouseUp="imgCamera_MouseUp" Width="{Binding Path=ActualWidth, ElementName=imgPreview}" 
                        Height="{Binding Path=ActualHeight, ElementName=imgPreview}">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" MouseDown="imgCamera_MouseDown"
                        MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="auto" 
                        Height="auto" Grid.RowSpan="2"/>
-                <TextBox x:Name="txtLabel" Foreground="Black" Visibility="Collapsed" TextChanged="txtLabel_TextChanged" 
-                         Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
+                <TextBox x:Name="txtLabel"  Text="{Binding Path=Viktor,ElementName=lblTextBox, Mode=TwoWay}" Foreground="Black" 
+                         Visibility="Collapsed" TextChanged="txtLabel_TextChanged" 
+                         Background="White" materialDesign:HintAssist.Hint="Label" FontSize="16" />
             </Canvas>
         </local:ZoomBorder>
         <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="2" Background="White"
@@ -102,7 +105,7 @@
                 <DataTemplate>
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage}" Height="50" Width="50" Margin="0,0,10,0"/>
-                        <TextBox Text="{Binding Viktor, Mode=TwoWay}" Foreground="Black" FontSize="16" VerticalAlignment="Center" 
+                        <TextBox x:Name="lblTextBox" Text="{Binding Viktor, Mode=TwoWay}" Foreground="Black" FontSize="16" VerticalAlignment="Center" 
                                    TextAlignment="Left" HorizontalAlignment="Left"/>
                     </WrapPanel>
                 </DataTemplate>

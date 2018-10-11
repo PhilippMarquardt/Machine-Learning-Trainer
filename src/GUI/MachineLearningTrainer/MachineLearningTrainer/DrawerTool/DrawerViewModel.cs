@@ -75,6 +75,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
+               
                 return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
             }
         }
@@ -224,16 +225,24 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        //public void MoveRectangle(ResizableRectangle rec)
+        //{
+            
+        //}
+        public ResizableRectangle rectSelectedArea { get; }
+
         private void OnDelete()
         {
             AllRectangles.Remove(SelectedResizableRectangle);
+            Console.WriteLine("Index: " + AllRectangles.IndexOf(SelectedResizableRectangle));
+
         }
+        
 
         private bool CanDelete()
         {
             return SelectedResizableRectangle != null;
         }
-
 
     }
 }

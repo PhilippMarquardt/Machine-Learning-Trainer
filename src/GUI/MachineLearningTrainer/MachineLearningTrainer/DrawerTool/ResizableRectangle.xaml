@@ -8,13 +8,13 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle Fill="Blue" Opacity="0.1" IsHitTestVisible="{Binding RectangleMovable}"/>
+            <Rectangle Fill="LightBlue" Opacity="0.1" IsHitTestVisible="{Binding RectangleMovable}"/>
         </ControlTemplate>
 
-        <!-- ResizeDecorator Template -->
+         <!--ResizeDecorator Template--> 
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
             <Grid>
-                <local:ResizeThumb Height="1" Background="Black" Cursor="SizeNS" Margin="0 -1 0 0"
+                <local:ResizeThumb Height="1" Background="Green" Cursor="SizeNS" Margin="0 -1 0 0"
                        VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
                 <local:ResizeThumb Width="1" Background="Black" Cursor="SizeWE" Margin="-1 0 0 0"
                        VerticalAlignment="Stretch" HorizontalAlignment="Left"/>

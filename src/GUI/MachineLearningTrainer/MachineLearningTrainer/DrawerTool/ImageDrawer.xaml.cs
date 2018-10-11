@@ -46,37 +46,32 @@ namespace MachineLearningTrainer.DrawerTool
         }
         #endregion
 
-
+        
 
         // This is the rectangle to be shown when mouse is dragged on camera image.
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
 
 
-       
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+
         private void imgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
                 startPoint = e.GetPosition(cnvImage);
-                
+
                 txtLabel.Visibility = Visibility.Collapsed;
-                foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
-                    q.RectangleMovable = false;
 
                 rectSelectArea = new ResizableRectangle();
                 (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
-                
+
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 cnvImage.Children.Add(rectSelectArea);
-                
-            }           
+
+            }
+
+            
         }
 
         /// <summary>
@@ -115,34 +110,8 @@ namespace MachineLearningTrainer.DrawerTool
                 int recWidth = (Convert.ToInt16(w));
                 int recHeight = (Convert.ToInt16(h));
                 
-
-                /*
-                //Bitmap src = new Bitmap(imgPreview.Source);
-                BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-                Bitmap src;
-
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                    src = new Bitmap(bitmap);
-                }
-
-                Mat mat = SupportCode.convertBmp2Mat(src);
-
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect(recStartX, recStartY, recWidth, recHeight);
-                Mat croppedImage = new Mat(mat, rectCrop);
-
-                rectSelectArea.CroppedImage = SupportCode.convertMat2BmpImg(croppedImage);
-
-                //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
-
-                */
             }
-
+            
         }
 
         private string _lastLabel = "Label";
@@ -158,8 +127,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("LastLabel");
             }
         }
-
-
+        
 
         /// <summary>
         /// 
@@ -214,17 +182,37 @@ namespace MachineLearningTrainer.DrawerTool
                 rectSelectArea.Viktor = txtLabel.Text;
                 LastLabel = txtLabel.Text;
             }
+
+            //foreach(var child in cnvImage.Children)
+            //{
+            //    if (child != null)
+            //    {
+            //        if (child is ResizableRectangle)
+            //        {
+            //            var rect = child as ResizableRectangle;
+            //            cnvImage.Children.Remove(rect);
+            //        }
+            //    }
+            //}
             
         }
 
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).Enabled = false;
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             Application.Current.Shutdown();
         }
+
+        private void Button_Click_1(object sender, EventArgs e)
+        {
+            //while(cnvImage.Children.Count>1)
+                cnvImage.Children.RemoveAt(2);
+        }
+        
     }
 }
