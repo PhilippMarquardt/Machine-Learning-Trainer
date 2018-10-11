@@ -77,13 +77,18 @@
                 </Button>
                 <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Last Rectangle" Click="Button_Click_1"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear All" Click="Button_Click_2"/>
-            <!--<Button Style="{StaticResource BasicButtonStyle}" Content="Cropped Image" Command="{Binding BtnCroppedImage}" IsEnabled="{Binding IsEnabled}"/>-->
-            <!--<Label Content="{Binding Path=ActualHeight, ElementName=cnvImage}"/>-->
-            <!--<Label Content="{Binding Path=ActualWidth, ElementName=cnvImage}"/>-->
-            <!--<Label Content="{Binding Path=ActualHeight, ElementName=imgPreview}"/>-->
-            <!--<Label Content="{Binding Path=ActualWidth, ElementName=imgPreview}"/>-->
+            <Button Style="{StaticResource BasicButtonStyle}" Click="Button_Click_1">
+                <AccessText>_Delete Last Rectangle</AccessText>
+                <Button.ToolTip>
+                    <TextBlock Text="(Alt + D)"/>
+                </Button.ToolTip>
+            </Button>
+            <Button Style="{StaticResource BasicButtonStyle}" Click="Button_Click_2">
+                <AccessText>_Clear All</AccessText>
+                <Button.ToolTip>
+                    <TextBlock Text="(Alt + C)"/>
+                </Button.ToolTip>
+            </Button>
         </StackPanel>
         <StackPanel x:Name="cnvDelete" Grid.Column="2" Grid.Row="1" Panel.ZIndex="1" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Delete" Command="{Binding DeleteCommand}"/>

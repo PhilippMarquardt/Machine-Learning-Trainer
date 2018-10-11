@@ -178,7 +178,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void OnDelete()
         {
             AllRectangles.Remove(SelectedResizableRectangle);
-            
+            Console.WriteLine(AllRectangles.IndexOf(SelectedResizableRectangle));
         }
 
         private void DeleteAll()

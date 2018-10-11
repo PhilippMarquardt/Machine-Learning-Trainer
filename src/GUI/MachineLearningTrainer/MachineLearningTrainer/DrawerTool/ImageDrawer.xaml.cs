@@ -218,7 +218,10 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (cnvImage.Children.Count>1)
             {
-                cnvImage.Children.RemoveAt(cnvImage.Children.Count - 1);
+                while (cnvImage.Children.Count > 1)
+                    cnvImage.Children.RemoveAt(cnvImage.Children.Count - 1);
+                //cnvImage.Children.RemoveAt((this.DataContext as DrawerViewModel).AllRectangles.IndexOf(SelectedResizableRectangle));
+                //Console.WriteLine((this.DataContext as DrawerViewModel).AllRectangles.IndexOf(SelectedResizableRectangle));
             }
         }
 
