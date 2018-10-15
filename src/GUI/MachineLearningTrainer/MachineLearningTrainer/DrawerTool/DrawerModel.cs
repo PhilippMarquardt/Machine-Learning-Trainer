@@ -7,9 +7,6 @@ using System.Windows.Controls;
 
 namespace MachineLearningTrainer.DrawerTool
 {
-    public class DrawerModel
-    {
-        
-
-    }
+    public class DrawerModel { }
+    
 }

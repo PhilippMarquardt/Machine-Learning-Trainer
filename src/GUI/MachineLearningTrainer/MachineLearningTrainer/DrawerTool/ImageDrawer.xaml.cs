@@ -25,32 +25,11 @@ namespace MachineLearningTrainer.DrawerTool
     /// </summary>
     public partial class ImageDrawer : UserControl, INotifyPropertyChanged
     {
-        private Button c;
-
         public ImageDrawer()
         {
             InitializeComponent();
-            this.DataContext = this;
-            var rec = new ResizableRectangle("asd");
-            rec.RectangleHeight = 100;
-            rec.RectangleWidth = 50;
-            var r = new Button();
-            r.Width = 100;
-            r.Content = "a";
-            r.Height = 200;
-            RectItems.Add(r);
-            RectItems.Add(r);
-            RectItems.Add(r);
-            RectItems.Add(r);
-            RectItems.Add(r);
-            this.c = new Button();
-            c.Width = 50;
-            c.Content = "asda";
-            c.Height = 50;
-            RectItems.Add(c);
         }
-        public ObservableCollection<Button> RectItems { get; set; } = new ObservableCollection<Button>();
-        
+
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -78,14 +57,15 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 startPoint = e.GetPosition(cnvImage);
 
-                txtLabel.Visibility = Visibility.Collapsed;
+                //txtLabel.Visibility = Visibility.Collapsed;
 
                 rectSelectArea = new ResizableRectangle();
                 (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
 
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
-                cnvImage.Children.Add(rectSelectArea);
+                //cnvImage.Children.Add(rectSelectArea);
+                
             }
 
 
@@ -157,11 +137,11 @@ namespace MachineLearningTrainer.DrawerTool
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
 
-                txtLabel.Visibility = Visibility.Visible;
-                txtLabel.Text = "";
-                txtLabel.Focus();
-                Canvas.SetLeft(txtLabel, rectSelectArea.X + rectSelectArea.RectangleWidth + 5);
-                Canvas.SetTop(txtLabel, rectSelectArea.Y - 35);
+                //txtLabel.Visibility = Visibility.Visible;
+                //txtLabel.Text = "";
+                //txtLabel.Focus();
+                //Canvas.SetLeft(txtLabel, rectSelectArea.X + rectSelectArea.RectangleWidth + 5);
+                //Canvas.SetTop(txtLabel, rectSelectArea.Y - 35);
                 foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
                     q.RectangleMovable = true;
                 //imgPreview.Source = rectSelectArea.cropedImage;
@@ -187,19 +167,19 @@ namespace MachineLearningTrainer.DrawerTool
                 Mat croppedImage = new Mat(mat, rectCrop);
 
                 rectSelectArea.CroppedImage = SupportCode.convertMat2BmpImg(croppedImage);
-                txtLabel.Text = LastLabel;
-                txtLabel.SelectAll();
+                //txtLabel.Text = LastLabel;
+                //txtLabel.SelectAll();
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
             }
         }
 
         private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (txtLabel.Text != "")
-            {
-                rectSelectArea.Viktor = txtLabel.Text;
-                LastLabel = txtLabel.Text;
-            }
+            //if (txtLabel.Text != "")
+            //{
+            //    rectSelectArea.Viktor = txtLabel.Text;
+            //    LastLabel = txtLabel.Text;
+            //}
 
             //foreach(var child in cnvImage.Children)
             //{
@@ -218,7 +198,6 @@ namespace MachineLearningTrainer.DrawerTool
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).Enabled = false;
-
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
@@ -229,20 +208,13 @@ namespace MachineLearningTrainer.DrawerTool
         private void Button_Click_1(object sender, EventArgs e)
         {
             deleteRectangles();
-            Console.WriteLine(RectItems.IndexOf(c));
         }
-
-        public int Index { get; set; } = 2;
+        
         public void deleteRectangles()
         {
             if (cnvImage.Children.Count>1)
             {
-                Console.WriteLine((this.DataContext as DrawerViewModel).AllRectangles.IndexOf(SelectedResizableRectangle));
-                Console.WriteLine(cnvImage.Children.GetType());
-                //while (cnvImage.Children.Count > 1)
                 cnvImage.Children.RemoveAt(cnvImage.Children.Count - 1);
-                //cnvImage.Children.RemoveAt((this.DataContext as DrawerViewModel).AllRectangles.IndexOf(SelectedResizableRectangle));
-
             }
         }
 
@@ -251,5 +223,8 @@ namespace MachineLearningTrainer.DrawerTool
             while (cnvImage.Children.Count > 1)
             cnvImage.Children.RemoveAt(cnvImage.Children.Count-1);
         }
+
+        
+
     }
 }

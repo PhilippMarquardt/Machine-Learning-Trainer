@@ -51,8 +51,8 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
-            
         }
+
 
         //TODO: Mouse event handler
         //private ICommand _imageMouseDown;
@@ -69,6 +69,16 @@ namespace MachineLearningTrainer.DrawerTool
         public bool Enabled { get; set; } = true;
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+
+        public void TestRectangles()
+        {
+            ObservableCollection<ResizableRectangle> allRectangles = new ObservableCollection<ResizableRectangle>();
+
+            allRectangles.Add(new ResizableRectangle { X = 0, Y = 0, RectangleHeight = 100, RectangleWidth = 100, Viktor = "Test" });
+            allRectangles.Add(new ResizableRectangle { X = 400, Y = 300, RectangleHeight = 100, RectangleWidth = 100, Viktor = "Test" });
+
+            AllRectangles = allRectangles;
+        }
         
 
 
@@ -102,6 +112,7 @@ namespace MachineLearningTrainer.DrawerTool
             if (ImagePath != null)
             {
                 this.IsEnabled = true;
+                AllRectangles.Clear();
             }
 
         }
@@ -151,7 +162,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
         
         private ResizableRectangle _selectedResizableRectangle;
-
         public ResizableRectangle SelectedResizableRectangle
         {
             get
@@ -161,11 +171,10 @@ namespace MachineLearningTrainer.DrawerTool
 
             set
             {
-                _selectedResizableRectangle = value;
-                DeleteCommand.RaiseCanExecuteChanged();
+                _selectedResizableRectangle = value; 
+                DeleteCommand.RaiseCanExecuteChanged(); 
             }
-        }
-        public ResizableRectangle rectSelectedArea { get; }
+        }  
 
         private ICommand _deleteRectanglesCommand;
         public ICommand DeleteRectanglesCommand
@@ -178,36 +187,49 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
-            Console.WriteLine("Hello: " + AllRectangles.IndexOf(SelectedResizableRectangle));
             AllRectangles.Remove(SelectedResizableRectangle);
-            
+        }
+        
+        private bool CanDelete()
+        {
+            return SelectedResizableRectangle != null;
         }
 
         private void DeleteAll()
         {
             AllRectangles.Clear();
-
         }
 
-        private int _index = 3;
-        public int Index
+        private ICommand _changeFillCommand;
+        public ICommand ChangeFillCommand
         {
             get
             {
-                return _index;
+                return _changeFillCommand ?? (_changeFillCommand = new CommandHandler(() => ChangeOpacity(), _canExecute));
+            }
+        }
+
+        public void ChangeOpacity()
+        {
+            _rectangleOpacity = 1.0;
+            OnPropertyChanged("RectangleOpacity");
+            MessageBox.Show("Test");
+        }
+
+        private double _rectangleOpacity = 0.1;
+
+        public double RectangleOpacity
+        {
+            get
+            {
+                return _rectangleOpacity;
             }
             set
             {
-                _index = value;
-                OnPropertyChanged("Index");
+                _rectangleOpacity = value;
+                OnPropertyChanged("RectangleOpacity");
             }
         }
-        
 
-        private bool CanDelete()
-        {
-            return SelectedResizableRectangle != null;
-        }
-        
     }
 }

@@ -21,11 +21,11 @@ namespace MachineLearningTrainer.DrawerTool
     /// </summary>
     public partial class ResizableRectangle : UserControl
     {
-
         public ResizableRectangle()
         {
             InitializeComponent();
             this.DataContext = this;
+            
         }
 
         public ResizableRectangle(string label)
@@ -33,7 +33,7 @@ namespace MachineLearningTrainer.DrawerTool
             this.Viktor = label;
         }
         
-
+        
         public BitmapImage croppedImage = null;
 
         public static readonly DependencyProperty RectangleHeightProperty =
@@ -135,6 +135,5 @@ namespace MachineLearningTrainer.DrawerTool
                 SetValue(CroppedImageProperty, value);
             }
         }
-
     }
 }
