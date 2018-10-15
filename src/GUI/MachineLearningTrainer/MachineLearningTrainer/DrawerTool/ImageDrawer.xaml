@@ -24,7 +24,7 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
-
+        
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -58,9 +58,9 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.1*"/>
-            <ColumnDefinition Width="0.75*"/>
-            <ColumnDefinition Width="0.15*"/>
+            <ColumnDefinition Width="2*"/>
+            <ColumnDefinition Width="15*"/>
+            <ColumnDefinition Width="3*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="0.9*"/>
@@ -72,10 +72,10 @@
                         Click="btnAddRectangle_Click" IsEnabled="{Binding IsEnabled}">
                 <AccessText>_Rectangle</AccessText>
                 <Button.ToolTip>
-                        <TextBlock Text="(Alt + R)"/>
-                    </Button.ToolTip>
-                </Button>
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
+                    <TextBlock Text="(Alt + R)"/>
+                </Button.ToolTip>
+            </Button>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
             <Button Style="{StaticResource BasicButtonStyle}" Click="Button_Click_1">
                 <AccessText>_Delete Last Rectangle</AccessText>
@@ -123,4 +123,5 @@
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
     </Grid>
+
 </UserControl>

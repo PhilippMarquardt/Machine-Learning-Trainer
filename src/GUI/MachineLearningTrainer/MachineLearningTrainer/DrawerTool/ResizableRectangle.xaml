@@ -11,7 +11,7 @@
             <Rectangle Fill="LightBlue" Opacity="0.1" IsHitTestVisible="{Binding RectangleMovable}"/>
         </ControlTemplate>
 
-         <!--ResizeDecorator Template--> 
+        <!--ResizeDecorator Template--> 
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
             <Grid>
                 <local:ResizeThumb Height="1" Background="Green" Cursor="SizeNS" Margin="0 -1 0 0"
