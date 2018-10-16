@@ -29,13 +29,8 @@ namespace MachineLearningTrainer.DrawerTool
             txtLabel.Text = LastLabel;
             txtLabel.Focus();
             txtLabel.SelectAll();
-            txtLabel.Focus();
         }
 
-        public ResizableRectangle(string label)
-        {
-            this.Viktor = label;
-        }
         
         public BitmapImage croppedImage = null;
 
@@ -158,11 +153,11 @@ namespace MachineLearningTrainer.DrawerTool
             if (txtLabel.Text != "")
             {
                 Viktor = txtLabel.Text;
-                LastLabel = txtLabel.Text;
+                this.LastLabel = txtLabel.Text;
             }
         }
 
-        private string _lastLabel = "Label";
+        private string _lastLabel = "Test";
         public string LastLabel
         {
             get

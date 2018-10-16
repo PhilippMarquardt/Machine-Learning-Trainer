@@ -8,25 +8,16 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
 
-        <Style TargetType="{x:Type Rectangle}">
-            <Setter Property="Fill" Value="Blue"/>
-            <Setter Property="Opacity" Value="0.2"/>
-            <Style.Triggers>
-                <Trigger Property="IsMouseOver" Value="True">
-                    <Setter Property="Fill" Value="Red"/>
-                    <Setter Property="Opacity" Value="0.8"/>
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
             <Rectangle MouseDown="imgCamera_MouseDown1" MouseRightButtonUp="imgCamera_MouseRightDown1">
                 <Rectangle.Style>
                     <Style TargetType="Rectangle">
-                        <Setter Property="Fill" Value="Green"/>
+                        <Setter Property="Fill" Value="Blue"/>
+                        <Setter Property="Opacity" Value="0.1"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Fill" Value="Red"/>
+                                <Setter Property="Fill" Value="ForestGreen"/>
+                                <Setter Property="Opacity" Value="0.6"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
@@ -79,7 +70,7 @@
                     Canvas.Top="0"
                     Canvas.Left="0"
                     Template="{StaticResource DesignerItemTemplate}">
-
+         
         </ContentControl>
         <TextBox x:Name="txtLabel" TextChanged="txtLabel_TextChanged" Text="{Binding Viktor, Mode=TwoWay}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 
                  MinHeight="20" MinWidth="40" Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center" 

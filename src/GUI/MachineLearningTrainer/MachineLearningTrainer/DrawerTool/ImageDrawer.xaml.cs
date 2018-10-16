@@ -51,7 +51,7 @@ namespace MachineLearningTrainer.DrawerTool
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
 
-
+        
         private void imgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             
