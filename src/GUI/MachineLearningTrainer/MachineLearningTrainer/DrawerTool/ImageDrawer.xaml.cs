@@ -50,7 +50,8 @@ namespace MachineLearningTrainer.DrawerTool
         public ResizableRectangle SelectedResizableRectangle { get; }
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
-        
+
+
         private void imgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)

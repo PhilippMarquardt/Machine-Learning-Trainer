@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -28,6 +29,8 @@ namespace MachineLearningTrainer
             page.DataContext = viewModel;           
             MainGrid.Children.Add(page);
             //MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, true)); 
+            this.Icon = new BitmapImage(new Uri(@"C:\Users\hsa\Pictures\icon3_32.png"));
         }
+        
     }
 }

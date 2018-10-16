@@ -8,8 +8,9 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle Fill="LightBlue" Opacity="0.1" IsHitTestVisible="{Binding RectangleMovable}"/>
+            <Rectangle Fill="Blue" Opacity=".1" IsHitTestVisible="{Binding RectangleMovable}"/>
         </ControlTemplate>
+        <BooleanToVisibilityConverter x:Key="boolToVis" />
 
         <!--ResizeDecorator Template-->
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
@@ -53,6 +54,6 @@
 
         </ContentControl>
         <TextBox Text="{Binding Viktor, Mode=TwoWay}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" MinHeight="20" MinWidth="40"
-                 Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center"/>
+                 Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center" Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}"/>
     </Canvas>
 </UserControl>

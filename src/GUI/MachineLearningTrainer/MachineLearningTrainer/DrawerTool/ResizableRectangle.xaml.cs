@@ -25,6 +25,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
             this.DataContext = this;
+            VisibilityChanged = false;
             
         }
 
@@ -133,6 +134,20 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 SetValue(CroppedImageProperty, value);
+            }
+        }
+
+        private static DependencyProperty VisibilityChangedProperty =
+            DependencyProperty.Register("VisibilityChanged", typeof(bool), typeof(ResizableRectangle));
+        public bool VisibilityChanged
+        {
+            get
+            {
+                return (bool)GetValue(VisibilityChangedProperty);
+            }
+            set
+            {
+                SetValue(VisibilityChangedProperty, value);
             }
         }
     }

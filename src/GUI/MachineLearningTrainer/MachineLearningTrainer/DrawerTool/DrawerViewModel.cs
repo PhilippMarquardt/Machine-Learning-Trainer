@@ -69,19 +69,7 @@ namespace MachineLearningTrainer.DrawerTool
         public bool Enabled { get; set; } = true;
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-
-        public void TestRectangles()
-        {
-            ObservableCollection<ResizableRectangle> allRectangles = new ObservableCollection<ResizableRectangle>();
-
-            allRectangles.Add(new ResizableRectangle { X = 0, Y = 0, RectangleHeight = 100, RectangleWidth = 100, Viktor = "Test" });
-            allRectangles.Add(new ResizableRectangle { X = 400, Y = 300, RectangleHeight = 100, RectangleWidth = 100, Viktor = "Test" });
-
-            AllRectangles = allRectangles;
-        }
         
-
-
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -171,7 +159,9 @@ namespace MachineLearningTrainer.DrawerTool
 
             set
             {
-                _selectedResizableRectangle = value; 
+                _visibilityChanged = true;
+                _selectedResizableRectangle = value;
+                Console.WriteLine(VisibilityChanged.ToString());
                 DeleteCommand.RaiseCanExecuteChanged(); 
             }
         }  
@@ -205,31 +195,50 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _changeFillCommand ?? (_changeFillCommand = new CommandHandler(() => ChangeOpacity(), _canExecute));
+                return _changeFillCommand ?? (_changeFillCommand = new CommandHandler(() => TestVisbility(), _canExecute));
             }
         }
 
-        public void ChangeOpacity()
+        public void TestVisbility()
         {
-            _rectangleOpacity = 1.0;
-            OnPropertyChanged("RectangleOpacity");
-            MessageBox.Show("Test");
+            MessageBox.Show(VisibilityChanged.ToString());
         }
 
-        private double _rectangleOpacity = 0.1;
+        public void ChangeFill()
+        {
+            _rectColor = 0.75;
+            OnPropertyChanged("RectColor");
+        }
 
-        public double RectangleOpacity
+        private double _rectColor = 0.1;
+
+        public double RectColor
         {
             get
             {
-                return _rectangleOpacity;
+                return _rectColor;
             }
             set
             {
-                _rectangleOpacity = value;
-                OnPropertyChanged("RectangleOpacity");
+                _rectColor = value;
+                OnPropertyChanged("RectColor");
             }
         }
+
+        private bool _visibilityChanged = false;
+        public bool VisibilityChanged
+        {
+            get
+            {
+                return _visibilityChanged;
+            }
+            set
+            {
+                _visibilityChanged = value;
+                OnPropertyChanged("VisibilityChanged");
+            }
+        }
+
 
     }
 }
