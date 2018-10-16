@@ -54,6 +54,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void imgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
                 startPoint = e.GetPosition(cnvImage);
@@ -66,20 +67,15 @@ namespace MachineLearningTrainer.DrawerTool
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 //cnvImage.Children.Add(rectSelectArea);
-                
             }
-
-
+            
         }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
+        
         private void imgCamera_MouseMove(object sender, MouseEventArgs e)
         {
+
             if ((this.DataContext as DrawerViewModel).Enabled == false)
+
             {
                 if (e.LeftButton == MouseButtonState.Released || rectSelectArea == null)
                     return;
@@ -127,17 +123,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
         private void imgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
-
                 //txtLabel.Visibility = Visibility.Visible;
                 //txtLabel.Text = "";
                 //txtLabel.Focus();
@@ -173,28 +162,7 @@ namespace MachineLearningTrainer.DrawerTool
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
             }
         }
-
-        private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            //if (txtLabel.Text != "")
-            //{
-            //    rectSelectArea.Viktor = txtLabel.Text;
-            //    LastLabel = txtLabel.Text;
-            //}
-
-            //foreach(var child in cnvImage.Children)
-            //{
-            //    if (child != null)
-            //    {
-            //        if (child is ResizableRectangle)
-            //        {
-            //            var rect = child as ResizableRectangle;
-            //            cnvImage.Children.Remove(rect);
-            //        }
-            //    }
-            //}
-
-        }
+        
 
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
         {
@@ -224,8 +192,6 @@ namespace MachineLearningTrainer.DrawerTool
             while (cnvImage.Children.Count > 1)
             cnvImage.Children.RemoveAt(cnvImage.Children.Count-1);
         }
-
-        
 
     }
 }

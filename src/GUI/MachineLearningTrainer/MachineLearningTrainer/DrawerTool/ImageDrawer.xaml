@@ -78,18 +78,6 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Change Fill" Command="{Binding ChangeFillCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Close" Click="Button_Click"/>
-            <!--<Button Style="{StaticResource BasicButtonStyle}" Click="Button_Click_1">
-                <AccessText>_Delete Last Rectangle</AccessText>
-                <Button.ToolTip>
-                    <TextBlock Text="(Alt + D)"/>
-                </Button.ToolTip>
-            </Button>-->
-            <!--<Button Style="{StaticResource BasicButtonStyle}" Click="Button_Click_2">
-                <AccessText>_Clear All</AccessText>
-                <Button.ToolTip>
-                    <TextBlock Text="(Alt + C)"/>
-                </Button.ToolTip>
-            </Button>-->
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="1" Panel.ZIndex="1" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Command="{Binding DeleteCommand}">
@@ -132,7 +120,7 @@
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage}" Height="50" Width="50" Margin="0,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding Viktor, Mode=TwoWay}" Foreground="Black" FontSize="16" VerticalAlignment="Center" 
-                                   TextAlignment="Left" HorizontalAlignment="Left"/>
+                                   TextAlignment="Left" HorizontalAlignment="Left" SelectionBrush="Red" SelectionOpacity="0.4"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

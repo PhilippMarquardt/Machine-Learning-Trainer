@@ -7,12 +7,36 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
+
+        <Style TargetType="{x:Type Rectangle}">
+            <Setter Property="Fill" Value="Blue"/>
+            <Setter Property="Opacity" Value="0.2"/>
+            <Style.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter Property="Fill" Value="Red"/>
+                    <Setter Property="Opacity" Value="0.8"/>
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle Fill="Blue" Opacity=".1" IsHitTestVisible="{Binding RectangleMovable}"/>
+            <Rectangle MouseDown="imgCamera_MouseDown1" MouseRightButtonUp="imgCamera_MouseRightDown1">
+                <Rectangle.Style>
+                    <Style TargetType="Rectangle">
+                        <Setter Property="Fill" Value="Green"/>
+                        <Style.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Fill" Value="Red"/>
+                            </Trigger>
+                        </Style.Triggers>
+                    </Style>
+                </Rectangle.Style>
+            </Rectangle>
         </ControlTemplate>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
 
         <!--ResizeDecorator Template-->
+        
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
             <Grid>
                 <local:ResizeThumb Height="1" Background="Black" Cursor="SizeNS" Margin="0 -1 0 0"
@@ -32,16 +56,20 @@
                 <local:ResizeThumb BorderBrush="LawnGreen" BorderThickness="2" Width="3" Height="3" Cursor="SizeNWSE" Margin="0 0 -2 -2"
                        VerticalAlignment="Bottom" HorizontalAlignment="Right" Background="LawnGreen"/>
             </Grid>
-        </ControlTemplate>
-
-
+            </ControlTemplate>
+        
+        
         <!-- Designer Item Template-->
         <ControlTemplate x:Key="DesignerItemTemplate" TargetType="ContentControl">
             <Grid DataContext="{Binding RelativeSource={RelativeSource TemplatedParent}}">
-                <local:MoveThumb Template="{StaticResource MoveThumbTemplate}" Cursor="SizeAll"/>
-                <Control Template="{StaticResource ResizeDecoratorTemplate}"/>
-                <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
-            </Grid>
+                    <local:MoveThumb Template="{StaticResource MoveThumbTemplate}" Cursor="SizeAll"/>
+                    <Control Template="{StaticResource ResizeDecoratorTemplate}"/>
+                    <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
+                <!--<TextBox Text="{Binding Viktor, Mode=TwoWay}" Width="auto" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Right"
+                 MinHeight="20" MinWidth="40" Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="0,0,-100,0" TextAlignment="Center" 
+                 Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}"/>-->
+                
+            </Grid>     
         </ControlTemplate>
     </UserControl.Resources>
     <Canvas>
@@ -53,7 +81,8 @@
                     Template="{StaticResource DesignerItemTemplate}">
 
         </ContentControl>
-        <TextBox Text="{Binding Viktor, Mode=TwoWay}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" MinHeight="20" MinWidth="40"
-                 Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center" Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}"/>
+        <TextBox x:Name="txtLabel" TextChanged="txtLabel_TextChanged" Text="{Binding Viktor, Mode=TwoWay}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 
+                 MinHeight="20" MinWidth="40" Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center" 
+                 Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}" SelectionBrush="Red" SelectionOpacity="0.4"/>
     </Canvas>
 </UserControl>

@@ -26,14 +26,16 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             this.DataContext = this;
             VisibilityChanged = true;
-            
+            txtLabel.Text = LastLabel;
+            txtLabel.Focus();
+            txtLabel.SelectAll();
+            txtLabel.Focus();
         }
 
         public ResizableRectangle(string label)
         {
             this.Viktor = label;
         }
-        
         
         public BitmapImage croppedImage = null;
 
@@ -150,5 +152,40 @@ namespace MachineLearningTrainer.DrawerTool
                 SetValue(VisibilityChangedProperty, value);
             }
         }
+        
+        private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            if (txtLabel.Text != "")
+            {
+                Viktor = txtLabel.Text;
+                LastLabel = txtLabel.Text;
+            }
+        }
+
+        private string _lastLabel = "Label";
+        public string LastLabel
+        {
+            get
+            {
+                return _lastLabel;
+            }
+
+            set
+            {
+                _lastLabel = value;
+            }
+        }
+        
+        private void imgCamera_MouseDown1(object sender, MouseButtonEventArgs e)
+        {
+            txtLabel.Visibility = Visibility.Hidden;
+            
+        }
+
+        private void imgCamera_MouseRightDown1(object sender, MouseButtonEventArgs e)
+        {
+            txtLabel.Visibility = Visibility.Visible;
+        }
+
     }
 }
