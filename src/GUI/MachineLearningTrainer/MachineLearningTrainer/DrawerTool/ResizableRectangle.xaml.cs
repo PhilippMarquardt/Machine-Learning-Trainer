@@ -25,7 +25,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
             this.DataContext = this;
-            VisibilityChanged = false;
+            VisibilityChanged = true;
             
         }
 
