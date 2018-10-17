@@ -16,6 +16,7 @@ using System.Windows.Media;
 using System.IO;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
+using MachineLearningTrainer.DrawerTool;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -51,6 +52,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
+            Console.WriteLine(_drawerModel.RectangleFill.ToString());
         }
 
 
@@ -159,10 +161,11 @@ namespace MachineLearningTrainer.DrawerTool
 
             set
             {
-                _visibilityChanged = true;
+                _drawerModel._rectangleFill = System.Windows.Media.Brushes.Red;
                 _selectedResizableRectangle = value;
-                Console.WriteLine(VisibilityChanged.ToString());
-                DeleteCommand.RaiseCanExecuteChanged(); 
+                DeleteCommand.RaiseCanExecuteChanged();
+                OnPropertyChanged("RectangleFill");
+                Console.WriteLine(_drawerModel.RectangleFill.ToString());
             }
         }
 
@@ -189,42 +192,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             AllRectangles.Clear();
         }
-
-        private ICommand _changeFillCommand;
-        public ICommand ChangeFillCommand
-        {
-            get
-            {
-                return _changeFillCommand ?? (_changeFillCommand = new CommandHandler(() => TestVisbility(), _canExecute));
-            }
-        }
-
-        public void TestVisbility()
-        {
-            MessageBox.Show(VisibilityChanged.ToString());
-        }
-
-        public void ChangeFill()
-        {
-            _rectColor = 0.75;
-            OnPropertyChanged("RectColor");
-        }
-
-        private double _rectColor = 0.1;
-
-        public double RectColor
-        {
-            get
-            {
-                return _rectColor;
-            }
-            set
-            {
-                _rectColor = value;
-                OnPropertyChanged("RectColor");
-            }
-        }
-
+        
         private bool _visibilityChanged = false;
         public bool VisibilityChanged
         {
@@ -239,6 +207,83 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private string _lastLabel = "Label";
+        public string LastLabel
+        {
+            get
+            {
+                return _lastLabel;
+            }
+
+            set
+            {
+                if (_lastLabel != value)
+                {
+                    _lastLabel = value;
+                    OnPropertyChanged("LastLabel");
+                }
+            }
+        }
+
+        private bool _isChecked = false;
+
+        public bool IsChecked
+        {
+            get
+            {
+                return _isChecked;
+            }
+            set
+            {
+                _isChecked = value;
+                OnPropertyChanged("IsChecked");
+            }
+        }
+
+        private string _defaultLabel = "Test";
+
+        public string DefaultLabel
+        {
+            get
+            {
+                return _defaultLabel;
+            }
+            set
+            {
+                _defaultLabel = value;
+                OnPropertyChanged("DefaultLabel");
+            }
+        }
+
+        public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
+
+        public System.Windows.Media.Brush RectangleFill
+        {
+            get
+            {
+                return _rectangleFill;
+            }
+            set
+            {
+                _rectangleFill = value;
+                OnPropertyChanged("RectangleFill");
+            }
+        }
+
+        private double _rectangleOpacity = 0.1;
+
+        public double RectangleOpacity
+        {
+            get
+            {
+                return _rectangleOpacity;
+            }
+            set
+            {
+                _rectangleOpacity = value;
+                OnPropertyChanged("RectangleOpacity");
+            }
+        }
 
     }
 }

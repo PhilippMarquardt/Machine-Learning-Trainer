@@ -7,11 +7,12 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-
+        <!--<local:DrawerModel x:Key="DrawerModel"/>-->
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle 
+            <Rectangle Fill="{Binding RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"  
+                       Opacity="{Binding RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
                        MouseDown="imgCamera_MouseDown1" MouseRightButtonUp="imgCamera_MouseRightDown1">
-                <Rectangle.Style>
+                <!--<Rectangle.Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill" Value="Blue"/>
                         <Setter Property="Opacity" Value="0.1"/>
@@ -22,7 +23,7 @@
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                </Rectangle.Style>
+                </Rectangle.Style>-->
             </Rectangle>
         </ControlTemplate>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
@@ -73,7 +74,7 @@
                     Template="{StaticResource DesignerItemTemplate}">
          
         </ContentControl>
-        <TextBox x:Name="txtLabel" TextChanged="txtLabel_TextChanged" Text="{Binding Viktor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 
+        <TextBox x:Name="txtLabel" Text="{Binding Viktor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 
                  MinHeight="20" MinWidth="40" Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center" 
                  Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}"/>
     </Canvas>

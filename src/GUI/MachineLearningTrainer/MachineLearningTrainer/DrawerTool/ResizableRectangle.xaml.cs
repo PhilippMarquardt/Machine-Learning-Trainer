@@ -26,7 +26,7 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             this.DataContext = this;
             VisibilityChanged = true;
-            txtLabel.Text = LastLabel;
+            Viktor = "Test";
             txtLabel.SelectAll();
             txtLabel.Focus();
 
@@ -149,28 +149,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            if (txtLabel.Text != "")
-            {
-                Viktor = txtLabel.Text;
-                LastLabel = txtLabel.Text;
-            }
-        }
-
-        private string _lastLabel = "Test";
-        public string LastLabel
-        {
-            get
-            {
-                return _lastLabel;
-            }
-
-            set
-            {
-                _lastLabel = value;
-            }
-        }
+        
 
         private void imgCamera_MouseDown1(object sender, MouseButtonEventArgs e)
         {
