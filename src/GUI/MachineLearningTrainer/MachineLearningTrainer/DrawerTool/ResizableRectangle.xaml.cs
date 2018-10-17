@@ -27,8 +27,9 @@ namespace MachineLearningTrainer.DrawerTool
             this.DataContext = this;
             VisibilityChanged = true;
             txtLabel.Text = LastLabel;
-            txtLabel.Focus();
             txtLabel.SelectAll();
+            txtLabel.Focus();
+
         }
 
         
@@ -147,13 +148,13 @@ namespace MachineLearningTrainer.DrawerTool
                 SetValue(VisibilityChangedProperty, value);
             }
         }
-        
+
         private void txtLabel_TextChanged(object sender, TextChangedEventArgs e)
         {
             if (txtLabel.Text != "")
             {
                 Viktor = txtLabel.Text;
-                this.LastLabel = txtLabel.Text;
+                LastLabel = txtLabel.Text;
             }
         }
 
@@ -170,16 +171,16 @@ namespace MachineLearningTrainer.DrawerTool
                 _lastLabel = value;
             }
         }
-        
+
         private void imgCamera_MouseDown1(object sender, MouseButtonEventArgs e)
         {
-            txtLabel.Visibility = Visibility.Hidden;
-            
+            //txtLabel.Visibility = Visibility.Hidden;
+
         }
 
         private void imgCamera_MouseRightDown1(object sender, MouseButtonEventArgs e)
         {
-            txtLabel.Visibility = Visibility.Visible;
+            //txtLabel.Visibility = Visibility.Visible;
         }
 
     }

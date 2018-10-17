@@ -108,21 +108,6 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
 
-        private string _lastLabel = "Label";
-        public string LastLabel
-        {
-            get
-            {
-                return _lastLabel;
-            }
-
-            set
-            {
-                _lastLabel = value;
-                OnPropertyChanged("LastLabel");
-            }
-        }
-
         private void imgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -163,35 +148,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
         
-
         private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).Enabled = false;
         }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
-
-        private void Button_Click_1(object sender, EventArgs e)
-        {
-            deleteRectangles();
-        }
-        
-        public void deleteRectangles()
-        {
-            if (cnvImage.Children.Count>1)
-            {
-                cnvImage.Children.RemoveAt(cnvImage.Children.Count - 1);
-            }
-        }
-
-        private void Button_Click_2(object sender, RoutedEventArgs e)
-        {
-            while (cnvImage.Children.Count > 1)
-            cnvImage.Children.RemoveAt(cnvImage.Children.Count-1);
-        }
-
     }
 }

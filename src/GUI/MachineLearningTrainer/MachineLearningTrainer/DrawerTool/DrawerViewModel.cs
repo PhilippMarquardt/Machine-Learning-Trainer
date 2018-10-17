@@ -164,7 +164,17 @@ namespace MachineLearningTrainer.DrawerTool
                 Console.WriteLine(VisibilityChanged.ToString());
                 DeleteCommand.RaiseCanExecuteChanged(); 
             }
-        }  
+        }
+
+        private void OnDelete()
+        {
+            AllRectangles.Remove(SelectedResizableRectangle);
+        }
+
+        private bool CanDelete()
+        {
+            return SelectedResizableRectangle != null;
+        }
 
         private ICommand _deleteRectanglesCommand;
         public ICommand DeleteRectanglesCommand
@@ -174,17 +184,7 @@ namespace MachineLearningTrainer.DrawerTool
                 return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
             }
         }
-
-        private void OnDelete()
-        {
-            AllRectangles.Remove(SelectedResizableRectangle);
-        }
         
-        private bool CanDelete()
-        {
-            return SelectedResizableRectangle != null;
-        }
-
         private void DeleteAll()
         {
             AllRectangles.Clear();

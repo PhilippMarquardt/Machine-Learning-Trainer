@@ -9,7 +9,8 @@
     <UserControl.Resources>
 
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle MouseDown="imgCamera_MouseDown1" MouseRightButtonUp="imgCamera_MouseRightDown1">
+            <Rectangle 
+                       MouseDown="imgCamera_MouseDown1" MouseRightButtonUp="imgCamera_MouseRightDown1">
                 <Rectangle.Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill" Value="Blue"/>
@@ -56,7 +57,7 @@
                     <local:MoveThumb Template="{StaticResource MoveThumbTemplate}" Cursor="SizeAll"/>
                     <Control Template="{StaticResource ResizeDecoratorTemplate}"/>
                     <ContentPresenter Content="{TemplateBinding ContentControl.Content}"/>
-                <!--<TextBox Text="{Binding Viktor, Mode=TwoWay}" Width="auto" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Right"
+                <!--<TextBox Text="{Binding Viktor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}}" Width="auto" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Right"
                  MinHeight="20" MinWidth="40" Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="0,0,-100,0" TextAlignment="Center" 
                  Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}"/>-->
                 
@@ -72,8 +73,8 @@
                     Template="{StaticResource DesignerItemTemplate}">
          
         </ContentControl>
-        <TextBox x:Name="txtLabel" TextChanged="txtLabel_TextChanged" Text="{Binding Viktor, Mode=TwoWay}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 
+        <TextBox x:Name="txtLabel" TextChanged="txtLabel_TextChanged" Text="{Binding Viktor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 
                  MinHeight="20" MinWidth="40" Background="White" Padding="3,0,3,0" Opacity="0.9" Margin="10,3" TextAlignment="Center" 
-                 Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}" SelectionBrush="Red" SelectionOpacity="0.4"/>
+                 Visibility="{Binding VisibilityChanged, Converter={StaticResource boolToVis}}"/>
     </Canvas>
 </UserControl>
