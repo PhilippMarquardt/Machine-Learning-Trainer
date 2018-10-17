@@ -7,10 +7,9 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <!--<local:DrawerModel x:Key="DrawerModel"/>-->
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle Fill="{Binding RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"  
-                       Opacity="{Binding RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+            <Rectangle Fill="{Binding RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
+                       Opacity="{Binding RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" 
                        MouseDown="imgCamera_MouseDown1" MouseRightButtonUp="imgCamera_MouseRightDown1">
                 <!--<Rectangle.Style>
                     <Style TargetType="Rectangle">

@@ -52,7 +52,6 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
-            Console.WriteLine(_drawerModel.RectangleFill.ToString());
         }
 
 
@@ -161,11 +160,10 @@ namespace MachineLearningTrainer.DrawerTool
 
             set
             {
-                _drawerModel._rectangleFill = System.Windows.Media.Brushes.Red;
+
                 _selectedResizableRectangle = value;
                 DeleteCommand.RaiseCanExecuteChanged();
-                OnPropertyChanged("RectangleFill");
-                Console.WriteLine(_drawerModel.RectangleFill.ToString());
+                OnPropertyChanged("RectangleOpacity");
             }
         }
 
@@ -254,22 +252,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("DefaultLabel");
             }
         }
-
-        public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
-
-        public System.Windows.Media.Brush RectangleFill
-        {
-            get
-            {
-                return _rectangleFill;
-            }
-            set
-            {
-                _rectangleFill = value;
-                OnPropertyChanged("RectangleFill");
-            }
-        }
-
+        
         private double _rectangleOpacity = 0.1;
 
         public double RectangleOpacity
@@ -285,5 +268,19 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
+
+        public System.Windows.Media.Brush RectangleFill
+        {
+            get
+            {
+                return _rectangleFill;
+            }
+            set
+            {
+                _rectangleFill = value;
+                OnPropertyChanged("RectangleFill");
+            }
+        }
     }
 }

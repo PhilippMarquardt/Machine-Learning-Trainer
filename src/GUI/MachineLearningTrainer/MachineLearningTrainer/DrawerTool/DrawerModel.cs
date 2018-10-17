@@ -27,35 +27,35 @@ namespace MachineLearningTrainer.DrawerTool
         }
         #endregion
 
-        public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
+        //public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Green;
 
-        public System.Windows.Media.Brush RectangleFill
-        {
-            get
-            {
-                return _rectangleFill;
-            }
-            set
-            {
-                _rectangleFill = value;
-                OnPropertyChanged("RectangleFill");
-            }
-        }
+        //public System.Windows.Media.Brush RectangleFill
+        //{
+        //    get
+        //    {
+        //        return _rectangleFill;
+        //    }
+        //    set
+        //    {
+        //        _rectangleFill = value;
+        //        OnPropertyChanged("RectangleFill");
+        //    }
+        //}
 
-        private double _rectangleOpacity = 0.1;
+        //private double _rectangleOpacity = 0.2;
 
-        public double RectangleOpacity
-        {
-            get
-            {
-                return _rectangleOpacity;
-            }
-            set
-            {
-                _rectangleOpacity = value;
-                OnPropertyChanged("RectColor");
-            }
-        }
+        //public double RectangleOpacity
+        //{
+        //    get
+        //    {
+        //        return _rectangleOpacity;
+        //    }
+        //    set
+        //    {
+        //        _rectangleOpacity = value;
+        //        OnPropertyChanged("RectColor");
+        //    }
+        //}
     }
 
 

@@ -149,7 +149,35 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        
+        private static DependencyProperty RectangleOpacityProperty =
+            DependencyProperty.Register("RectangleOpacity", typeof(double), typeof(ResizableRectangle));
+        public double RectangleOpacity
+        {
+            get
+            {
+                return (double)GetValue(RectangleOpacityProperty);
+            }
+            set
+            {
+                SetValue(RectangleOpacityProperty, value);
+            }
+        }
+
+        private static DependencyProperty RectangleFillProperty =
+            DependencyProperty.Register("RectangleFill", typeof(Brush), typeof(ResizableRectangle));
+        public Brush RectangleFill
+        {
+            get
+            {
+                return (Brush)GetValue(RectangleFillProperty);
+            }
+            set
+            {
+                SetValue(RectangleFillProperty, value);
+            }
+        }
+
+
 
         private void imgCamera_MouseDown1(object sender, MouseButtonEventArgs e)
         {
