@@ -199,7 +199,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
+                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => SetDefaultLabel(), _canExecute));
             }
         }
         
@@ -222,21 +222,26 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private string _lastLabel = "Label";
-        public string LastLabel
+        private string _viktor = "Test";
+        public string Viktor
         {
             get
             {
-                return _lastLabel;
+                return _viktor;
             }
 
             set
             {
-                if (_lastLabel != value)
-                {
-                    _lastLabel = value;
-                    OnPropertyChanged("LastLabel");
-                }
+                _viktor = value;
+                OnPropertyChanged("Viktor");
+            }
+        }
+
+        private void SetDefaultLabel()
+        {
+            if(IsChecked == true && DefaultLabel.Length>0)
+            {
+                Viktor = DefaultLabel;
             }
         }
 
@@ -255,7 +260,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private string _defaultLabel = "Test";
+        private string _defaultLabel = "";
 
         public string DefaultLabel
         {
@@ -343,9 +348,9 @@ namespace MachineLearningTrainer.DrawerTool
                     rect.VisibilityChanged = false;
                 }
 
-                SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.MediumVioletRed;
-                SelectedResizableRectangle.RectangleOpacity = 0.8;
-                SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Yellow;
+                SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
+                SelectedResizableRectangle.RectangleOpacity = 0.5;
+                SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.DarkBlue;
                 SelectedResizableRectangle.ThumbSize = 5;
                 SelectedResizableRectangle.VisibilityChanged = true;
                 OnPropertyChanged("RectangleFill");

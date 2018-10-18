@@ -102,17 +102,17 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        public static readonly DependencyProperty LabelProperty =
+        public static readonly DependencyProperty ViktorProperty =
           DependencyProperty.Register("Viktor", typeof(string), typeof(ResizableRectangle));
         public string Viktor
         {
             get
             {
-                return Convert.ToString(this.GetValue(LabelProperty));
+                return Convert.ToString(this.GetValue(ViktorProperty));
             }
             set
             {
-                this.SetValue(LabelProperty, value);
+                this.SetValue(ViktorProperty, value);
             }
         }
 
