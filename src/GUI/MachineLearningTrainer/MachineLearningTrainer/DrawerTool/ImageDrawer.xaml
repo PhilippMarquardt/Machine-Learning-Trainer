@@ -61,6 +61,7 @@
                     Command="{Binding DeleteCommand}"
                     CommandParameter="Delete"/>
         <KeyBinding Key="R"
+                    Modifiers="Alt"
                     Command="{Binding AddRectangle}"
                     CommandParameter="R"/>
         <KeyBinding Key="Esc"
@@ -80,8 +81,7 @@
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
-            <RowDefinition Height="177*"/>
-            <RowDefinition Height="263*"/>
+            <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="3" Background="White">
@@ -89,7 +89,7 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
         </StackPanel>
-        <StackPanel Grid.Column="2" Grid.Row="3" Panel.ZIndex="1" Background="White">
+        <StackPanel Grid.Column="2" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
         </StackPanel>
@@ -117,7 +117,7 @@
                             <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                             <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                             <Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="Viktor" Value="{Binding DataContext.Viktor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
@@ -126,18 +126,18 @@
         </local:ZoomBorder>
 
         <StackPanel Grid.Column="2" Grid.Row="0" Background="White" Panel.ZIndex="1">
-            <CheckBox Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked}" Margin="10,15,10,10"/>
-            <TextBox Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+            <CheckBox Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
+            <TextBox x:Name="txtDefaultLabel" TextChanged="TextBox_TextChanged" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
         </StackPanel>
 
         <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="2" Background="White"
-                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" Grid.RowSpan="2">
+                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage}" Height="50" Width="50" Margin="0,0,10,0"/>
-                        <TextBox x:Name="lblTextBox" Text="{Binding Viktor, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="16" VerticalAlignment="Center" 
+                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="16" VerticalAlignment="Center" 
                                    TextAlignment="Left" HorizontalAlignment="Left"/>
                     </WrapPanel>
                 </DataTemplate>

@@ -17,6 +17,7 @@ using System.IO;
 using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using MachineLearningTrainer.DrawerTool;
+using System.Runtime.CompilerServices;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -100,6 +101,10 @@ namespace MachineLearningTrainer.DrawerTool
         public void AddNewRectangle()
         {
             Enabled = false;
+            if (IsChecked == true && DefaultLabel.Length > 0)
+                _rectangleText = _defaultLabel;
+            else
+                _rectangleText = "";
         }
         
 
@@ -199,7 +204,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => SetDefaultLabel(), _canExecute));
+                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
             }
         }
         
@@ -222,26 +227,18 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private string _viktor = "Test";
-        public string Viktor
+        private string _rectangleText = "Label";
+        public string RectangleText
         {
             get
             {
-                return _viktor;
+                return _rectangleText;
             }
 
             set
             {
-                _viktor = value;
-                OnPropertyChanged("Viktor");
-            }
-        }
-
-        private void SetDefaultLabel()
-        {
-            if(IsChecked == true && DefaultLabel.Length>0)
-            {
-                Viktor = DefaultLabel;
+                _rectangleText = value;
+                OnPropertyChanged("RectangleText");
             }
         }
 
@@ -260,7 +257,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private string _defaultLabel = "";
+        private string _defaultLabel = "DefaultLabel";
 
         public string DefaultLabel
         {
@@ -271,10 +268,19 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 _defaultLabel = value;
-                OnPropertyChanged("DefaultLabel");
+                RaisePropertyChanged("DefaultLabel");
+            }
+
+        }
+
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
             }
         }
-        
+
         private double _rectangleOpacity = 0.07;
 
         public double RectangleOpacity

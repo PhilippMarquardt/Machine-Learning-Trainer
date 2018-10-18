@@ -161,7 +161,7 @@ namespace MachineLearningTrainer
                     writer.WriteStartElement("object");
 
                     writer.WriteStartElement("name");
-                    writer.WriteString(rec.Viktor);
+                    writer.WriteString(rec.RectangleText);
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("pose");
