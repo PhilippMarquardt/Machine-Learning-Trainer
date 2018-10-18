@@ -56,6 +56,15 @@
         </Style>
     </UserControl.Resources>
 
+    <UserControl.InputBindings>
+        <KeyBinding Key="Delete"
+                    Command="{Binding DeleteCommand}"
+                    CommandParameter="Delete"/>
+        <KeyBinding Key="R"
+                    Command="{Binding AddRectangle}"
+                    CommandParameter="R"/>
+    </UserControl.InputBindings>
+    
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
@@ -69,22 +78,11 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="2" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" x:Name="btnAddRectangle" 
-                        Click="btnAddRectangle_Click" IsEnabled="{Binding IsEnabled}">
-                <AccessText>New _Rectangle</AccessText>
-                <Button.ToolTip>
-                    <TextBlock Text="(Alt + R)"/>
-                </Button.ToolTip>
-            </Button>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
         </StackPanel>
         <StackPanel Grid.Column="2" Grid.Row="2" Panel.ZIndex="1" Background="White">
-            <Button Style="{StaticResource BasicButtonStyle}" Command="{Binding DeleteCommand}">
-                <AccessText>_Delete Rectangle</AccessText>
-                <Button.ToolTip>
-                    <TextBlock Text="(Alt + D)"/>
-                </Button.ToolTip>
-            </Button>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
         </StackPanel>
         <StackPanel Grid.Row="2" Background="White" Panel.ZIndex="1"/>
@@ -108,6 +106,9 @@
                             <Setter Property="Canvas.Top" Value="{Binding Y}"/>
                             <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                             <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
@@ -132,6 +133,11 @@
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <!--<ListBox.ItemContainerStyle>
+                <Style TargetType="local:ResizableRectangle">
+                    <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                </Style>
+            </ListBox.ItemContainerStyle>-->
         </ListBox>
         <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" 
                 HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">

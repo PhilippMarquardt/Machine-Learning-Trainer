@@ -13,12 +13,12 @@ namespace MachineLearningTrainer.DrawerTool
 {
     public class SupportCode
     {
-        public static Mat convertBmp2Mat(Bitmap bitmap)
+        public static Mat ConvertBmp2Mat(Bitmap bitmap)
         {
             return OpenCvSharp.Extensions.BitmapConverter.ToMat(bitmap);
         }
 
-        public static BitmapImage convertMat2BmpImg(Mat mat)
+        public static BitmapImage ConvertMat2BmpImg(Mat mat)
         {
 
             Bitmap convertedImg = OpenCvSharp.Extensions.BitmapConverter.ToBitmap(mat);

@@ -52,7 +52,7 @@ namespace MachineLearningTrainer.DrawerTool
         private ResizableRectangle rectSelectArea;
 
         
-        private void imgCamera_MouseDown(object sender, MouseButtonEventArgs e)
+        private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -71,7 +71,7 @@ namespace MachineLearningTrainer.DrawerTool
             
         }
         
-        private void imgCamera_MouseMove(object sender, MouseEventArgs e)
+        private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -108,7 +108,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
 
-        private void imgCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
@@ -137,22 +137,17 @@ namespace MachineLearningTrainer.DrawerTool
                     src = new Bitmap(bitmap);
                 }
 
-                Mat mat = SupportCode.convertBmp2Mat(src);
+                Mat mat = SupportCode.ConvertBmp2Mat(src);
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                rectSelectArea.CroppedImage = SupportCode.convertMat2BmpImg(croppedImage);
+                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
                 //txtLabel.Text = LastLabel;
                 //txtLabel.SelectAll();
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
             }
         }
         
-        private void btnAddRectangle_Click(object sender, RoutedEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).Enabled = false;
-        }
-
         private void CreateSaveBitmap(Canvas canvas, string filename)
         {
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(

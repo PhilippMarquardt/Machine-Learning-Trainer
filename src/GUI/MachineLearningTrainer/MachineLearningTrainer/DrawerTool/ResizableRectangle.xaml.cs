@@ -25,11 +25,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
             this.DataContext = this;
-            VisibilityChanged = true;
-            Viktor = "Test";
-            txtLabel.SelectAll();
-            txtLabel.Focus();
-
         }
 
         
@@ -177,18 +172,32 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-
-        private void imgCamera_MouseDown1(object sender, MouseButtonEventArgs e)
+        private static DependencyProperty ThumbColorProperty =
+            DependencyProperty.Register("ThumbColor", typeof(Brush), typeof(ResizableRectangle));
+        public Brush ThumbColor
         {
-            //txtLabel.Visibility = Visibility.Hidden;
-
+            get
+            {
+                return (Brush)GetValue(ThumbColorProperty);
+            }
+            set
+            {
+                SetValue(ThumbColorProperty, value);
+            }
         }
 
-        private void imgCamera_MouseRightDown1(object sender, MouseButtonEventArgs e)
+        private static DependencyProperty ThumbSizeProperty =
+            DependencyProperty.Register("ThumbSize", typeof(int), typeof(ResizableRectangle));
+        public int ThumbSize
         {
-            //txtLabel.Visibility = Visibility.Visible;
+            get
+            {
+                return (int)GetValue(ThumbSizeProperty);
+            }
+            set
+            {
+                SetValue(ThumbSizeProperty, value);
+            }
         }
-
     }
 }
