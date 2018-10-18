@@ -355,5 +355,43 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("VisibilityChanged");
             }
         }
+
+        private ICommand _deleteSelectionRectangle;
+        public ICommand DeleteSelectionRectangle
+        {
+            get
+            {
+                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
+            }
+        }
+
+        public void DeleteSelection()
+        {
+            SelectedResizableRectangle = null;
+
+            foreach (var rect in AllRectangles)
+            {
+                rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+                rect.RectangleOpacity = 0.07;
+                rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+                rect.ThumbSize = 3;
+                rect.VisibilityChanged = false;
+            }
+        }
+
+        private ICommand _deleteLastRectangleCommand;
+        public ICommand DeleteLastRectangleCommand
+        {
+            get
+            {
+                return _deleteLastRectangleCommand ?? (_deleteLastRectangleCommand = new CommandHandler(() => DeleteLastRectangle(), _canExecute));
+            }
+        }
+
+        public void DeleteLastRectangle()
+        {
+            if (AllRectangles.Count > 0) 
+                AllRectangles.RemoveAt(AllRectangles.Count - 1);
+        }
     }
 }

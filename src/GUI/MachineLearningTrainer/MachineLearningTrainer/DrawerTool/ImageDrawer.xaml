@@ -63,6 +63,13 @@
         <KeyBinding Key="R"
                     Command="{Binding AddRectangle}"
                     CommandParameter="R"/>
+        <KeyBinding Key="Esc"
+                    Command="{Binding DeleteSelectionRectangle}"
+                    CommandParameter="Esc"/>
+        <KeyBinding Key="Z"
+                    Modifiers="Ctrl"
+                    Command="{Binding DeleteLastRectangleCommand}"
+                    CommandParameter="Z"/>
     </UserControl.InputBindings>
     
     <Grid>
@@ -90,7 +97,7 @@
         <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="3" Background="LightGray" 
                           BorderBrush="Gray" BorderThickness="1">
 
-            <Canvas x:Name="cnvImage" MouseDown="imgCamera_MouseDown" MouseUp="imgCamera_MouseUp" MouseMove="imgCamera_MouseMove" 
+            <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto"/>
                 <ItemsControl ItemsSource="{Binding AllRectangles}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
