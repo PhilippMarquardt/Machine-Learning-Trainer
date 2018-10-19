@@ -27,8 +27,11 @@ namespace MachineLearningTrainer.DrawerTool
             this.DataContext = this;
         }
 
-        
-        public BitmapImage croppedImage = null;
+        private void Rectangle_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("LOL");
+            //(this.DataContext as DrawerViewModel).AllRectangles.Remove();
+        }
 
         public static readonly DependencyProperty RectangleHeightProperty =
         DependencyProperty.Register("RectangleHeight", typeof(double), typeof(ResizableRectangle));

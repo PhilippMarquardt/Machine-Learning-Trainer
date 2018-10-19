@@ -7,22 +7,21 @@
              mc:Ignorable="d" 
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
-        <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
-            <Rectangle Fill="{Binding RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"
-                       Opacity="{Binding RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-            <!--<Rectangle.Style>
+        <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}" >
+            <Rectangle MouseRightButtonDown ="Rectangle_MouseRightButtonUp">
+                <Rectangle.Style>
                     <Style TargetType="Rectangle">
-                        <Setter Property="Fill" Value="Blue"/>
-                        <Setter Property="Opacity" Value="0.1"/>
+                        <Setter Property="Fill" Value="{Binding RectangleFill, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                        <Setter Property="Opacity" Value="{Binding RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
                         <Style.Triggers>
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Fill" Value="ForestGreen"/>
-                                <Setter Property="Opacity" Value="0.6"/>
+                                <Setter Property="Fill" Value="LightSalmon"/>
+                                <Setter Property="Opacity" Value="0.5"/>
                             </Trigger>
                         </Style.Triggers>
                     </Style>
-                </Rectangle.Style>-->
-
+                </Rectangle.Style>
+            </Rectangle>
         </ControlTemplate>
         <BooleanToVisibilityConverter x:Key="boolToVis" />
 

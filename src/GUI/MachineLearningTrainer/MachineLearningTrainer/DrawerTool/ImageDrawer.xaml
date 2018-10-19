@@ -31,7 +31,7 @@
             <Setter Property="Foreground" Value="#FF2196F3" />
             <Setter Property="Margin" Value="10"/>
         </Style>
-
+        
         <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -136,9 +136,9 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
-                        <Image Source="{Binding CroppedImage}" Height="50" Width="50" Margin="0,0,10,0"/>
-                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="16" VerticalAlignment="Center" 
-                                   TextAlignment="Left" HorizontalAlignment="Left"/>
+                        <Image Source="{Binding CroppedImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
+                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
+                                 TextAlignment="Left" HorizontalAlignment="Left" Width="90" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

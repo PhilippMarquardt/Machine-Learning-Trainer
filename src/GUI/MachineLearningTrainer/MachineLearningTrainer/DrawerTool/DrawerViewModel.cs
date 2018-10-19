@@ -353,17 +353,9 @@ namespace MachineLearningTrainer.DrawerTool
                     rect.ThumbSize = 3;
                     rect.VisibilityChanged = false;
                 }
-
                 SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
                 SelectedResizableRectangle.RectangleOpacity = 0.5;
-                SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.DarkBlue;
-                SelectedResizableRectangle.ThumbSize = 5;
                 SelectedResizableRectangle.VisibilityChanged = true;
-                OnPropertyChanged("RectangleFill");
-                OnPropertyChanged("RectangleOpacity");
-                OnPropertyChanged("ThumbColor");
-                OnPropertyChanged("ThumbSize");
-                OnPropertyChanged("VisibilityChanged");
             }
         }
 
@@ -403,6 +395,21 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (AllRectangles.Count > 0) 
                 AllRectangles.RemoveAt(AllRectangles.Count - 1);
+        }
+
+        private BitmapImage _croppedImage;
+
+        public BitmapImage CroppedImage
+        {
+            get
+            {
+                return _croppedImage;
+            }
+            set
+            {
+                _croppedImage = value;
+                OnPropertyChanged("CroppedImage");
+            }
         }
     }
 }
