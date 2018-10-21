@@ -9,6 +9,7 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              d:DesignHeight="1080" d:DesignWidth="1920">
+
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -22,16 +23,15 @@
     </UserControl.Triggers>
 
     <UserControl.Resources>
-       
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
-        
+
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
             <Setter Property="Background" Value="Transparent"/>
             <Setter Property="Foreground" Value="#FF2196F3" />
             <Setter Property="Margin" Value="10"/>
         </Style>
-
+        
         <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -54,53 +54,105 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
-
-
     </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding Key="Delete"
+                    Command="{Binding DeleteCommand}"
+                    CommandParameter="Delete"/>
+        <KeyBinding Key="R"
+                    Modifiers="Alt"
+                    Command="{Binding AddRectangle}"
+                    CommandParameter="R"/>
+        <KeyBinding Key="Esc"
+                    Command="{Binding DeleteSelectionRectangle}"
+                    CommandParameter="Esc"/>
+        <KeyBinding Key="Z"
+                    Modifiers="Ctrl"
+                    Command="{Binding DeleteLastRectangleCommand}"
+                    CommandParameter="Z"/>
+    </UserControl.InputBindings>
+
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="0.1*"/>
-            <ColumnDefinition Width="0.8*"/>
-            <ColumnDefinition Width="0.1*"/>
+            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="170"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="0.9*"/>
-            <RowDefinition Height="0.1*"/>
+            <RowDefinition Height="100"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0">
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Rectangle" x:Name="btnAddRectangle" Click="btnAddRectangle_Click"/>
-            </materialDesign:Card>
-            <materialDesign:Card Margin="10">
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
-            </materialDesign:Card>
+        <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="3" Background="White">
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
         </StackPanel>
-        <local:ZoomBorder Grid.Column="1" Panel.ZIndex="0" Grid.Row="0">
-            <Canvas Background="Black" x:Name="cnvImage" MouseUp="imgCamera_MouseUp">
-                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Stretch="Fill" MouseDown="imgCamera_MouseDown" MouseUp="imgCamera_MouseUp" Grid.Column="1" MouseMove="imgCamera_MouseMove" Width="{Binding Path=ActualWidth, ElementName=cnvImage}" Height="{Binding Path=ActualHeight, ElementName=cnvImage}" />
-                <TextBox x:Name="txtLabel" Foreground="Black" Visibility="Collapsed" TextChanged="txtLabel_TextChanged" Background="White" materialDesign:HintAssist.Hint="Label" FontSize="20" />
+        <StackPanel Grid.Column="2" Grid.Row="2" Panel.ZIndex="1" Background="White">
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
+        </StackPanel>
+
+        <StackPanel Grid.Row="3" Background="White" Panel.ZIndex="1"/>
+
+        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
+                          BorderBrush="Gray" BorderThickness="1">
+
+            <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
+                    Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto"/>
+                <ItemsControl ItemsSource="{Binding AllRectangles}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+                              Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <Canvas/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemContainerStyle>
+                        <Style TargetType="local:ResizableRectangle">
+                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                            <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                        </Style>
+                    </ItemsControl.ItemContainerStyle>
+                </ItemsControl>
+
+
             </Canvas>
         </local:ZoomBorder>
-        <ListBox ItemsSource="{Binding AllRectangles}" Foreground="Black" Grid.Column="2"  FontSize="20" x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="0">
+
+        <StackPanel Grid.Column="2" Grid.Row="0" Background="White" Panel.ZIndex="1">
+            <CheckBox Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
+            <TextBox x:Name="txtDefaultLabel" TextChanged="TextBox_TextChanged" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+                     BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
+        </StackPanel>
+
+        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="2" Background="White"
+                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
-                    <TextBlock Text="{Binding Label}" Foreground="Black" FontSize="30"></TextBlock>
+                    <WrapPanel>
+                        <Image Source="{Binding CroppedImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
+                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
+                                 TextAlignment="Left" HorizontalAlignment="Left" Width="90" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
+                    </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
+            <!--<ListBox.ItemContainerStyle>
+                <Style TargetType="local:ResizableRectangle">
+                    <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                </Style>
+            </ListBox.ItemContainerStyle>-->
         </ListBox>
-
-
-
-        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" 
+                HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3" Grid.RowSpan="2">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
-
-
-
-
-
     </Grid>
 </UserControl>

@@ -1,14 +1,23 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
-using MachineLearningTrainer;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
-using System.Collections.ObjectModel;
-using Microsoft.Win32;
+using System.Drawing;
+using System.Windows.Media.Imaging;
+using System.Windows.Data;
+using System.Globalization;
+using System.Windows.Media;
+using System.IO;
 using System.Windows.Controls;
+using System.Collections.ObjectModel;
+using MachineLearningTrainer.DrawerTool;
+using System.Runtime.CompilerServices;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -33,7 +42,6 @@ namespace MachineLearningTrainer.DrawerTool
 
         private DrawerModel _drawerModel;
         private bool _canExecute = true;
-
         private MainModel _mainModel;
         private Grid _mainGrid;
         private MainViewModel _mainViewModel;
@@ -44,10 +52,11 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainGrid = mainGrid;
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
+            DeleteCommand = new MyICommand(OnDelete, CanDelete);
+            
         }
 
 
-     
         //TODO: Mouse event handler
         //private ICommand _imageMouseDown;
 
@@ -59,26 +68,45 @@ namespace MachineLearningTrainer.DrawerTool
         //    }
         //}
 
-
-
-
-
+        public MyICommand DeleteCommand { get; set; }
         public bool Enabled { get; set; } = true;
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-
+        
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
             get
             {
+               
                 return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
             }
         }
+
         private void ExportToPascal()
         {
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), "file.xml", 1337, 1337, 3);
         }
+        
+        private ICommand _addRectangle;
+        public ICommand AddRectangle
+        {
+            get
+            {
+
+                return _addRectangle ?? (_addRectangle = new CommandHandler(() => AddNewRectangle(), _canExecute));
+            }
+        }
+
+        public void AddNewRectangle()
+        {
+            Enabled = false;
+            if (IsChecked == true && DefaultLabel.Length > 0)
+                _rectangleText = _defaultLabel;
+            else
+                _rectangleText = "";
+        }
+        
 
         private ICommand _loadImageCommand;
         public ICommand LoadImageCommand
@@ -93,6 +121,12 @@ namespace MachineLearningTrainer.DrawerTool
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
                 ImagePath = openFileDialog.FileName;
+            if (ImagePath != null)
+            {
+                this.IsEnabled = true;
+                AllRectangles.Clear();
+            }
+
         }
         private string _imagePath;
         public string ImagePath
@@ -108,6 +142,19 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private bool _isEnabled = false;
+        public bool IsEnabled
+        {
+            get
+            {
+                return this._isEnabled;
+            }
+            set
+            {
+                this._isEnabled = value;
+                OnPropertyChanged("IsEnabled");
+            }
+        }
 
         private ICommand _previousPage;
         public ICommand PreviousPage
@@ -125,10 +172,244 @@ namespace MachineLearningTrainer.DrawerTool
             usc.DataContext = this._mainViewModel;           
             this._mainGrid.Children.Add(usc);
         }
+        
+        private ResizableRectangle _selectedResizableRectangle;
+        public ResizableRectangle SelectedResizableRectangle
+        {
+            get
+            {
+                return _selectedResizableRectangle;
+            }
 
+            set
+            {
+                _selectedResizableRectangle = value;
+                SelectedRectangleFill();
+                DeleteCommand.RaiseCanExecuteChanged();
+            }
+        }
 
+        private void OnDelete()
+        {
+            AllRectangles.Remove(SelectedResizableRectangle);
+        }
 
+        private bool CanDelete()
+        {
+            return SelectedResizableRectangle != null;
+        }
 
+        private ICommand _deleteRectanglesCommand;
+        public ICommand DeleteRectanglesCommand
+        {
+            get
+            {
+                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
+            }
+        }
+        
+        private void DeleteAll()
+        {
+            AllRectangles.Clear();
+        }
 
+        private bool _visibilityChanged = false;
+        public bool VisibilityChanged
+        {
+            get
+            {
+                return _visibilityChanged;
+            }
+            set
+            {
+                _visibilityChanged = value;
+                OnPropertyChanged("VisibilityChanged");
+            }
+        }
+
+        private string _rectangleText = "Label";
+        public string RectangleText
+        {
+            get
+            {
+                return _rectangleText;
+            }
+
+            set
+            {
+                _rectangleText = value;
+                OnPropertyChanged("RectangleText");
+            }
+        }
+
+        private bool _isChecked = false;
+
+        public bool IsChecked
+        {
+            get
+            {
+                return _isChecked;
+            }
+            set
+            {
+                _isChecked = value;
+                OnPropertyChanged("IsChecked");
+            }
+        }
+
+        private string _defaultLabel = "DefaultLabel";
+
+        public string DefaultLabel
+        {
+            get
+            {
+                return _defaultLabel;
+            }
+            set
+            {
+                _defaultLabel = value;
+                RaisePropertyChanged("DefaultLabel");
+            }
+
+        }
+
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
+            }
+        }
+
+        private double _rectangleOpacity = 0.07;
+
+        public double RectangleOpacity
+        {
+            get
+            {
+                return _rectangleOpacity;
+            }
+            set
+            {
+                _rectangleOpacity = value;
+                OnPropertyChanged("RectangleOpacity");
+            }
+        }
+
+        private int _thumbSize = 3;
+
+        public int ThumbSize
+        {
+            get
+            {
+                return _thumbSize;
+            }
+            set
+            {
+                _thumbSize = value;
+                OnPropertyChanged("ThumbSize");
+            }
+        }
+
+        public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
+
+        public System.Windows.Media.Brush RectangleFill
+        {
+            get
+            {
+                return _rectangleFill;
+            }
+            set
+            {
+                _rectangleFill = value;
+                OnPropertyChanged("RectangleFill");
+            }
+        }
+
+        public System.Windows.Media.Brush _thumbColor = System.Windows.Media.Brushes.LawnGreen;
+
+        public System.Windows.Media.Brush ThumbColor
+        {
+            get
+            {
+                return _thumbColor;
+            }
+            set
+            {
+                _thumbColor = value;
+                OnPropertyChanged("RectangleFill");
+            }
+        }
+        
+        public void SelectedRectangleFill()
+        {
+            if (SelectedResizableRectangle != null)
+            {
+                foreach(var rect in AllRectangles)
+                {
+                    rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+                    rect.RectangleOpacity = 0.07;
+                    rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+                    rect.ThumbSize = 3;
+                    rect.VisibilityChanged = false;
+                }
+                SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
+                SelectedResizableRectangle.RectangleOpacity = 0.5;
+                SelectedResizableRectangle.VisibilityChanged = true;
+            }
+        }
+
+        private ICommand _deleteSelectionRectangle;
+        public ICommand DeleteSelectionRectangle
+        {
+            get
+            {
+                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
+            }
+        }
+
+        public void DeleteSelection()
+        {
+            SelectedResizableRectangle = null;
+
+            foreach (var rect in AllRectangles)
+            {
+                rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+                rect.RectangleOpacity = 0.07;
+                rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+                rect.ThumbSize = 3;
+                rect.VisibilityChanged = false;
+            }
+        }
+
+        private ICommand _deleteLastRectangleCommand;
+        public ICommand DeleteLastRectangleCommand
+        {
+            get
+            {
+                return _deleteLastRectangleCommand ?? (_deleteLastRectangleCommand = new CommandHandler(() => DeleteLastRectangle(), _canExecute));
+            }
+        }
+
+        public void DeleteLastRectangle()
+        {
+            if (AllRectangles.Count > 0) 
+                AllRectangles.RemoveAt(AllRectangles.Count - 1);
+        }
+
+        private BitmapImage _croppedImage;
+
+        public BitmapImage CroppedImage
+        {
+            get
+            {
+                return _croppedImage;
+            }
+            set
+            {
+                _croppedImage = value;
+                OnPropertyChanged("CroppedImage");
+            }
+        }
     }
 }

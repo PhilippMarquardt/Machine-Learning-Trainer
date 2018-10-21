@@ -5,16 +5,17 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:MachineLearningTrainer"
         mc:Ignorable="d"
-        MinHeight="1000"
-        MinWidth="1000"
+        MinHeight="600"
+        MinWidth="800"
         Background="{DynamicResource MaterialDesignPaper}"
         FontFamily="{DynamicResource MaterialDesignFont}"
         Foreground="White"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        WindowStyle="None"
-        Title="MainWindow" Height="800" Width="800">
+        WindowStyle="ThreeDBorderWindow"
+        ShowInTaskbar="True"
+        Title="MachineLearningTrainer" Height="800" Width="800" Icon="C:\Users\hsa\Pictures\icon3_32.png">
     <Grid x:Name="MainGrid">
        
         

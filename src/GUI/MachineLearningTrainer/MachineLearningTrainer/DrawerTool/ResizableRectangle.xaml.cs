@@ -21,16 +21,16 @@ namespace MachineLearningTrainer.DrawerTool
     /// </summary>
     public partial class ResizableRectangle : UserControl
     {
-       
         public ResizableRectangle()
         {
             InitializeComponent();
             this.DataContext = this;
         }
 
-        public ResizableRectangle(string label)
+        private void Rectangle_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            this.Label = label;
+            MessageBox.Show("LOL");
+            //(this.DataContext as DrawerViewModel).AllRectangles.Remove();
         }
 
         public static readonly DependencyProperty RectangleHeightProperty =
@@ -59,10 +59,10 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 this.SetValue(RectangleMovableProperty, value);
             }
-        } 
+        }
 
-       public static readonly DependencyProperty RectangleWidthProperty =
-       DependencyProperty.Register("RectangleWidth", typeof(double), typeof(ResizableRectangle));
+        public static readonly DependencyProperty RectangleWidthProperty =
+        DependencyProperty.Register("RectangleWidth", typeof(double), typeof(ResizableRectangle));
         public double RectangleWidth
         {
             get
@@ -105,17 +105,101 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        public static readonly DependencyProperty LabelProperty =
-          DependencyProperty.Register("Label", typeof(string), typeof(ResizableRectangle));
-        public string Label
+        public static readonly DependencyProperty RectangleTextProperty =
+          DependencyProperty.Register("RectangleText", typeof(string), typeof(ResizableRectangle));
+        public string RectangleText
         {
             get
             {
-                return Convert.ToString(this.GetValue(LabelProperty));
+                return Convert.ToString(this.GetValue(RectangleTextProperty));
             }
             set
             {
-                this.SetValue(LabelProperty, value);
+                this.SetValue(RectangleTextProperty, value);
+            }
+        }
+
+        private static DependencyProperty CroppedImageProperty =
+            DependencyProperty.Register("CroppedImage", typeof(BitmapImage), typeof(ResizableRectangle));
+        public BitmapImage CroppedImage
+        {
+            get
+            {
+                return (BitmapImage)GetValue(CroppedImageProperty);
+            }
+            set
+            {
+                SetValue(CroppedImageProperty, value);
+            }
+        }
+
+        private static DependencyProperty VisibilityChangedProperty =
+            DependencyProperty.Register("VisibilityChanged", typeof(bool), typeof(ResizableRectangle));
+        public bool VisibilityChanged
+        {
+            get
+            {
+                return (bool)GetValue(VisibilityChangedProperty);
+            }
+            set
+            {
+                SetValue(VisibilityChangedProperty, value);
+            }
+        }
+
+        private static DependencyProperty RectangleOpacityProperty =
+            DependencyProperty.Register("RectangleOpacity", typeof(double), typeof(ResizableRectangle));
+        public double RectangleOpacity
+        {
+            get
+            {
+                return (double)GetValue(RectangleOpacityProperty);
+            }
+            set
+            {
+                SetValue(RectangleOpacityProperty, value);
+            }
+        }
+
+        private static DependencyProperty RectangleFillProperty =
+            DependencyProperty.Register("RectangleFill", typeof(Brush), typeof(ResizableRectangle));
+        public Brush RectangleFill
+        {
+            get
+            {
+                return (Brush)GetValue(RectangleFillProperty);
+            }
+            set
+            {
+                SetValue(RectangleFillProperty, value);
+            }
+        }
+
+        private static DependencyProperty ThumbColorProperty =
+            DependencyProperty.Register("ThumbColor", typeof(Brush), typeof(ResizableRectangle));
+        public Brush ThumbColor
+        {
+            get
+            {
+                return (Brush)GetValue(ThumbColorProperty);
+            }
+            set
+            {
+                SetValue(ThumbColorProperty, value);
+            }
+        }
+
+        private static DependencyProperty ThumbSizeProperty =
+            DependencyProperty.Register("ThumbSize", typeof(int), typeof(ResizableRectangle));
+        public int ThumbSize
+        {
+            get
+            {
+                return (int)GetValue(ThumbSizeProperty);
+            }
+            set
+            {
+                SetValue(ThumbSizeProperty, value);
             }
         }
     }
