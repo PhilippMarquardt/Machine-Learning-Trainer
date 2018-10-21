@@ -55,7 +55,7 @@
         <materialDesign:Card Grid.Row="0" Grid.Column="0" VerticalAlignment="Center" Grid.ColumnSpan="2" Margin="115,120,115,121">
             <StackPanel>
                 <Button  Margin="30,50,30,50" FontFamily="Bold" Command="{Binding LeftTransition}" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">I have my data in a tabular form (i.e. Excel sheet)</Button>
-                <Button  Margin="30,50,30,50" FontFamily="Bold"  Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">I have Images and Annotations in folders</Button>
+                <Button  Margin="30,50,30,50" FontFamily="Bold"  Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto">I have images and annotations in folders</Button>
             </StackPanel>
         </materialDesign:Card>
         <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
