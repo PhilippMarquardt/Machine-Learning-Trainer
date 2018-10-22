@@ -131,73 +131,73 @@
             <RowDefinition Height="0.9*"/>
             <RowDefinition Height="0.05*"/>
         </Grid.RowDefinitions>
-
-        <StackPanel Grid.Column="0" Grid.Row="0" Margin="10">
-            <materialDesign:Card Padding="10" Margin="10">
-                <StackPanel>
-                    <TextBlock Text="Welcome to the DNN designer" Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
-                    <TextBlock Text="The first two layers are the input and output layer. Feel free to add hidden layers" Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
-                    <TextBlock Text="When you've specified your architecture you can specify the hyperparameters and start the training afterwards." Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
-                    <TextBlock Text="Important note: For now only Sequential models work. Because of that, the architecture at right will be interpreted from top to bottom like the arrows indicate." Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
-                </StackPanel>
-            </materialDesign:Card>
-            <materialDesign:Card Padding="10" Margin="10">
-                <StackPanel>
-                    <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
-                        <materialDesign:PackIcon Kind="AutoFix" Height="Auto" Foreground="Black"/>
-                        <ToggleButton x:Name="AutoFindHyperparameters" HorizontalAlignment="Right" materialDesign:HintAssist.Hint="Auto" Margin="20,0,0,0" Height="Auto" IsChecked="{Binding AutoFindParameter}"/>
+        <ScrollViewer  VerticalScrollBarVisibility="Auto">
+            <WrapPanel Grid.Column="0" Grid.Row="0" Margin="10" Orientation="Vertical">
+                <materialDesign:Card Padding="10" Margin="10">
+                    <StackPanel>
+                        <TextBlock Text="Welcome to the DNN designer" Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
+                        <TextBlock Text="The first two layers are the input and output layer. Feel free to add hidden layers" Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
+                        <TextBlock Text="When you've specified your architecture you can specify the hyperparameters and start the training afterwards." Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
+                        <TextBlock Text="Important note: For now only Sequential models work. Because of that, the architecture at right will be interpreted from top to bottom like the arrows indicate." Width="Auto" Height="Auto" TextWrapping="Wrap" Foreground="Black" HorizontalAlignment="Center" Margin="10"/>
                     </StackPanel>
-                    <StackPanel IsEnabled="{Binding AutoFindParameter, Converter={StaticResource ToggleBoolean}}" HorizontalAlignment="Center">
-                        <TextBox materialDesign:HintAssist.Hint="Model Name" Text="{Binding ModelName}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="8" HorizontalContentAlignment="Center"/>
-                        <TextBox materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding LearningRate}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="10" HorizontalContentAlignment="Center"/>
-                        <TextBox materialDesign:HintAssist.Hint="Epochs" Text="{Binding Epochs}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
-                        <ComboBox Width="Auto" Foreground="Black" Margin="10" SelectedItem="{Binding Optimizer}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Optimizer" HorizontalContentAlignment="Center">
-                            <ComboBoxItem Content="Adam"/>
-                            <ComboBoxItem Content="RMSProp"/>
-                        </ComboBox>
-                        <TextBlock materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding OutputPath}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" />
-                        <TextBlock   Text="Select all feautures you want to use to train your model." TextWrapping="Wrap" Margin="10" Width="Auto" Foreground="Black" />
-                        <ListBox ItemsSource="{Binding CSVHeaders}"  Margin="10" MaxHeight="100">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <ToggleButton Content="{Binding Content}" IsChecked="{Binding IsChecked}" Style="{x:Null}"/>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                </materialDesign:Card>
+                <materialDesign:Card Padding="10" Margin="10">
+                    <StackPanel>
+                        <StackPanel Orientation="Horizontal" Margin="5" HorizontalAlignment="Center">
+                            <materialDesign:PackIcon Kind="AutoFix" Height="Auto" Foreground="Black"/>
+                            <ToggleButton x:Name="AutoFindHyperparameters" HorizontalAlignment="Right" materialDesign:HintAssist.Hint="Auto" Margin="20,0,0,0" Height="Auto" IsChecked="{Binding AutoFindParameter}"/>
+                        </StackPanel>
+                        <StackPanel IsEnabled="{Binding AutoFindParameter, Converter={StaticResource ToggleBoolean}}" HorizontalAlignment="Center">
+                            <TextBox materialDesign:HintAssist.Hint="Model Name" Text="{Binding ModelName}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="8" HorizontalContentAlignment="Center"/>
+                            <TextBox materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding LearningRate}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="10" HorizontalContentAlignment="Center"/>
+                            <TextBox materialDesign:HintAssist.Hint="Epochs" Text="{Binding Epochs}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" MaxLength="4" HorizontalContentAlignment="Center"/>
+                            <ComboBox Width="Auto" Foreground="Black" Margin="10" SelectedItem="{Binding Optimizer}" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Optimizer" HorizontalContentAlignment="Center">
+                                <ComboBoxItem Content="Adam"/>
+                                <ComboBoxItem Content="RMSProp"/>
+                            </ComboBox>
+                            <TextBlock materialDesign:HintAssist.Hint="Learning Rate" Text="{Binding OutputPath}" materialDesign:HintAssist.IsFloating="True" Margin="10" Width="Auto" Foreground="Black" />
+                            <TextBlock   Text="Select all feautures you want to use to train your model." TextWrapping="Wrap" Margin="10" Width="Auto" Foreground="Black" />
+                            <ListBox ItemsSource="{Binding CSVHeaders}"  Margin="10" MaxHeight="100">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <ToggleButton Content="{Binding Content}" IsChecked="{Binding IsChecked}" Style="{x:Null}"/>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                        <TextBlock Text="Select your class that you want the model to learn." TextWrapping="Wrap" Margin="10" Width="Auto" Foreground="Black" />
-                        <ListBox ItemsSource="{Binding CSVTarget}"  MaxHeight="100" Margin="10">
-                            <ListBox.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <WrapPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ListBox.ItemsPanel>
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <RadioButton Content="{Binding Content}" GroupName="Feauture" IsChecked="{Binding IsChecked}"></RadioButton>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                            <TextBlock Text="Select your class that you want the model to learn." TextWrapping="Wrap" Margin="10" Width="Auto" Foreground="Black" />
+                            <ListBox ItemsSource="{Binding CSVTarget}"  MaxHeight="100" Margin="10">
+                                <ListBox.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel Orientation="Horizontal"/>
+                                    </ItemsPanelTemplate>
+                                </ListBox.ItemsPanel>
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <RadioButton Content="{Binding Content}" GroupName="Feauture" IsChecked="{Binding IsChecked}"></RadioButton>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
 
+                        </StackPanel>
                     </StackPanel>
-                </StackPanel>
-            </materialDesign:Card>
-            
-            <materialDesign:Card Padding="10" Margin="10">
-                <Button Command="{Binding OpenInputDirectory}" Style="{StaticResource BasicButtonStyle}" Content="Specify input file"/>
-            </materialDesign:Card>
-            
-            <materialDesign:Card Padding="10" Margin="10">
-                <Button Command="{Binding DeepNNWriteXML}" Style="{StaticResource BasicButtonStyle}" Content="Start the training"/>
-            </materialDesign:Card>
-        </StackPanel>
-       
+                </materialDesign:Card>
+
+                <materialDesign:Card Padding="10" Margin="10">
+                    <Button Command="{Binding OpenInputDirectory}" Style="{StaticResource BasicButtonStyle}" Content="Specify input file"/>
+                </materialDesign:Card>
+
+                <materialDesign:Card Padding="10" Margin="10">
+                    <Button Command="{Binding DeepNNWriteXML}" Style="{StaticResource BasicButtonStyle}" Content="Start the training"/>
+                </materialDesign:Card>
+            </WrapPanel>
+        </ScrollViewer>
         <Grid Grid.Column="1" Grid.Row="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="0.9*"/>
@@ -294,7 +294,7 @@
            
             <Button Style="{StaticResource BasicButtonStyle}"  Grid.Row="1" Height="Auto" Width="Auto" Content="Add new layer" Margin="10" Command="{x:Static materialDesign:DialogHost.OpenDialogCommand}" CommandTarget="{Binding ElementName=AddNewLayerDialogHost}"/>
         </Grid>
-        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="3" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+        <Button  Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" HorizontalAlignment="Left" Grid.Row="3" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
 

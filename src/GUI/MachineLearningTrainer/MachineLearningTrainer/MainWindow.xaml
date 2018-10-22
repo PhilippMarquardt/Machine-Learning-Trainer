@@ -24,13 +24,13 @@
         </Grid.RowDefinitions>
         <Grid x:Name="MainGrid" Grid.Row="1"/>
         <WrapPanel Grid.Row="0" HorizontalAlignment="Right">
-            <Button x:Name="btnMinimize" VerticalAlignment="Center" Background="Transparent" Margin="3" VerticalContentAlignment="Bottom" Click="btnMinimize_Click">
+            <Button x:Name="btnMinimize" VerticalAlignment="Center" Background="Transparent" Margin="1" VerticalContentAlignment="Bottom" Click="btnMinimize_Click">
                 <materialDesign:PackIcon Kind="WindowMinimize" Foreground="Black" VerticalContentAlignment="Bottom"/>
             </Button>
-            <Button x:Name="btnMaximize" VerticalAlignment="Center" Background="Transparent" Margin="3" Click="btnMaximize_Click">
+            <Button x:Name="btnMaximize" VerticalAlignment="Center" Background="Transparent" Margin="1" Click="btnMaximize_Click">
                 <materialDesign:PackIcon Kind="WindowMaximize" Foreground="Black"/>
             </Button>
-            <Button x:Name="btnClose" VerticalAlignment="Center" Background="Transparent" Margin="3" Click="btnClose_Click">
+            <Button x:Name="btnClose" VerticalAlignment="Center" Background="Transparent" Margin="1" Click="btnClose_Click">
                 <materialDesign:PackIcon Kind="WindowClose" Foreground="Black"/>
             </Button>
         </WrapPanel>
