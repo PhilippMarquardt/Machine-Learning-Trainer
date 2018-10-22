@@ -3,6 +3,7 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:MachineLearningTrainer"
         mc:Ignorable="d"
         MinHeight="600"
@@ -12,12 +13,29 @@
         Foreground="White"
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
-        WindowState="Maximized"
-        WindowStyle="ThreeDBorderWindow"
+        WindowState="Normal"
+        WindowStyle="None"
         ShowInTaskbar="True"
-        Title="MachineLearningTrainer" Height="800" Width="800" Icon="C:\Users\hsa\Pictures\icon3_32.png">
-    <Grid x:Name="MainGrid">
-       
-        
+        Title="MachineLearningTrainer" Height="800" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="0.05*"/>
+            <RowDefinition Height="0.95*"/>
+        </Grid.RowDefinitions>
+        <Grid x:Name="MainGrid" Grid.Row="1"/>
+        <WrapPanel Grid.Row="0" HorizontalAlignment="Right">
+            <Button x:Name="btnMinimize" VerticalAlignment="Center" Background="Transparent" Margin="3" VerticalContentAlignment="Bottom" Click="btnMinimize_Click">
+                <materialDesign:PackIcon Kind="WindowMinimize" Foreground="Black" VerticalContentAlignment="Bottom"/>
+            </Button>
+            <Button x:Name="btnMaximize" VerticalAlignment="Center" Background="Transparent" Margin="3" Click="btnMaximize_Click">
+                <materialDesign:PackIcon Kind="WindowMaximize" Foreground="Black"/>
+            </Button>
+            <Button x:Name="btnClose" VerticalAlignment="Center" Background="Transparent" Margin="3" Click="btnClose_Click">
+                <materialDesign:PackIcon Kind="WindowClose" Foreground="Black"/>
+            </Button>
+        </WrapPanel>
+
+
+
     </Grid>
 </Window>

@@ -29,8 +29,22 @@ namespace MachineLearningTrainer
             page.DataContext = viewModel;           
             MainGrid.Children.Add(page);
             //MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, true)); 
-            this.Icon = new BitmapImage(new Uri(@"C:\Users\hsa\Pictures\icon3_32.png"));
+            
         }
-        
+
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
+        private void btnMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = Application.Current.MainWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
+
+        private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
     }
 }
