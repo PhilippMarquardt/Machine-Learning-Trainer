@@ -97,7 +97,7 @@
         <StackPanel Grid.Row="3" Background="White" Panel.ZIndex="1"/>
 
         <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
-                          BorderBrush="Gray" BorderThickness="1">
+                          BorderBrush="Gray" BorderThickness="1" ClipToBounds="True">
 
             <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
