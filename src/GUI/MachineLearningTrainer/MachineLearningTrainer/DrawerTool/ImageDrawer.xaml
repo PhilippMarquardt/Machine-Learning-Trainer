@@ -77,7 +77,8 @@
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="150"/>
             <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="170"/>
+            <ColumnDefinition Width="4"/>
+            <ColumnDefinition Width="250" MinWidth="250"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
             <RowDefinition Height="100"/>
@@ -88,10 +89,12 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Draw Rectangle" Command="{Binding DrawRectangle}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="sfvsdvs" Click="Button_Click"/>
         </StackPanel>
-        <StackPanel Grid.Column="2" Grid.Row="2" Panel.ZIndex="1" Background="White">
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
+        <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
+            <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
+            <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
         </StackPanel>
 
         <StackPanel Grid.Row="3" Background="White" Panel.ZIndex="1"/>
@@ -122,25 +125,25 @@
                         </Style>
                     </ItemsControl.ItemContainerStyle>
                 </ItemsControl>
-
-
             </Canvas>
         </local:ZoomBorder>
 
-        <StackPanel Grid.Column="2" Grid.Row="0" Background="White" Panel.ZIndex="1">
+        <GridSplitter Grid.Column="2" Grid.RowSpan="10" Width="4" HorizontalAlignment="Stretch" />
+
+        <StackPanel Grid.Column="3" Grid.Row="0" Background="White" Panel.ZIndex="1">
             <CheckBox Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
             <TextBox x:Name="txtDefaultLabel" TextChanged="TextBox_TextChanged" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
-                     BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
+                     Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
         </StackPanel>
 
-        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="2" Background="White"
+        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
                  x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" HorizontalAlignment="Left" Width="90" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                 TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

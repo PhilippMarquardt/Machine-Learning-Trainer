@@ -398,7 +398,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private BitmapImage _croppedImage;
-
         public BitmapImage CroppedImage
         {
             get
@@ -410,6 +409,20 @@ namespace MachineLearningTrainer.DrawerTool
                 _croppedImage = value;
                 OnPropertyChanged("CroppedImage");
             }
+        }
+
+        private ICommand _drawRectangle;
+        public ICommand DrawRectangle
+        {
+            get
+            {
+                return _drawRectangle ?? (_drawRectangle = new CommandHandler(() => DrawRectangleMethod(), _canExecute));
+            }
+        }
+
+        public void DrawRectangleMethod()
+        {
+            AllRectangles.Add(new ResizableRectangle { X = 50, Y = 50, RectangleHeight=200, RectangleWidth=300 });
         }
     }
 }

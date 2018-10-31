@@ -107,6 +107,31 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private void cropImageLabel()
+        {
+            BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+            Bitmap src;
+
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                src = new Bitmap(bitmap);
+            }
+
+            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            {
+                Mat mat = SupportCode.ConvertBmp2Mat(src);
+                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                Mat croppedImage = new Mat(mat, rectCrop);
+
+                rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+            }
+        }
+
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -200,5 +225,9 @@ namespace MachineLearningTrainer.DrawerTool
             binding.UpdateSource();
         }
 
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            cropImageLabel();
+        }
     }
 }
