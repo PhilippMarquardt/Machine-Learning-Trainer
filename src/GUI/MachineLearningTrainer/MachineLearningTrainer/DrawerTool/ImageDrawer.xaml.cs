@@ -146,10 +146,7 @@ namespace MachineLearningTrainer.DrawerTool
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
             }
 
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            {
-                UpdateCroppedImage();
-            }
+            //UpdateCroppedImage(); 
         }
 
         private void UpdateCroppedImage()
