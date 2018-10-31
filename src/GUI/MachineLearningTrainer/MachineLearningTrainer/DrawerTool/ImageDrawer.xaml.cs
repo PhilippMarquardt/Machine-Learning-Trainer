@@ -135,7 +135,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                     src = new Bitmap(bitmap);
                 }
-                
+
                 Mat mat = SupportCode.ConvertBmp2Mat(src);
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
