@@ -120,7 +120,7 @@ namespace MachineLearningTrainer
         {
             try
             {
-                XmlWriter writer = XmlWriter.Create(name + ".xml");
+                XmlWriter writer = XmlWriter.Create(name);
                 writer.WriteStartDocument();
                 writer.WriteStartElement("annotation");
 

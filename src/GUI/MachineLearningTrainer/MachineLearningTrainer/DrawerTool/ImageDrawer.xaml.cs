@@ -18,6 +18,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml;
 
 namespace MachineLearningTrainer.DrawerTool
 {
@@ -30,6 +31,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
         }
+        
 
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;

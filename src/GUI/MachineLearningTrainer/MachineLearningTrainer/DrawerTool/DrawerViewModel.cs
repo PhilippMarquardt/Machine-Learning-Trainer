@@ -18,6 +18,7 @@ using System.Windows.Controls;
 using System.Collections.ObjectModel;
 using MachineLearningTrainer.DrawerTool;
 using System.Runtime.CompilerServices;
+using System.Xml;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -423,6 +424,68 @@ namespace MachineLearningTrainer.DrawerTool
         public void DrawRectangleMethod()
         {
             AllRectangles.Add(new ResizableRectangle { X = 50, Y = 50, RectangleHeight=200, RectangleWidth=300 });
+        }
+
+        private ICommand _loadXMLFile;
+        public ICommand LoadXMLFile
+        {
+            get
+            {
+                return _loadXMLFile ?? (_loadXMLFile = new CommandHandler(() => LoadRectangles(), _canExecute));
+            }
+        }
+
+        private double x;
+        public double X
+        {
+            get { return x; }
+            set { x = value; }
+        }
+
+        private double y;
+
+        public double Y
+        {
+            get { return y; }
+            set { y = value; }
+        }
+
+
+        private void LoadRectangles()
+        {
+            XmlDocument doc = new XmlDocument();
+            doc.Load(@"C:\Users\hsa\source\repos\philipp_project\src\GUI\MachineLearningTrainer\MachineLearningTrainer\bin\Debug\file.xml");
+
+
+            foreach (XmlNode node in doc.DocumentElement)
+            {
+                if (node.Name == "object")
+                {
+                    foreach (XmlNode objectChild in node)
+                    {
+
+                        if (objectChild.Name == "bndbox")
+                        {
+                            foreach (XmlNode xmlNode in objectChild)
+                            {
+
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                Console.WriteLine("xmin: " + xmin);
+
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                Console.WriteLine("ymin: " + ymin);
+
+
+                                X = xmin;
+                                Y = ymin;
+
+                                Console.WriteLine("Test x: " + X);
+                            }
+                            //AllRectangles.Add(new ResizableRectangle { X, Y, RectangleHeight = 200, RectangleWidth = 300 });
+                        }
+                    }
+                }
+            }
         }
     }
 }
