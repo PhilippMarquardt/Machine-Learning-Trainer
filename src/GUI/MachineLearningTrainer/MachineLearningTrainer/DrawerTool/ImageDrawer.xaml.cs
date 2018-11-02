@@ -32,7 +32,6 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
         }
         
-
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -55,9 +54,9 @@ namespace MachineLearningTrainer.DrawerTool
         private ResizableRectangle rectSelectArea;
 
         
+        
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
                 startPoint = e.GetPosition(cnvImage);
@@ -174,33 +173,8 @@ namespace MachineLearningTrainer.DrawerTool
                 //txtLabel.SelectAll();
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
             }
-
-            //UpdateCroppedImage(); 
         }
-
-        private void UpdateCroppedImage()
-        {
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            {
-                BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-                Bitmap src;
-
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                    src = new Bitmap(bitmap);
-                }
-                
-                Mat mat = SupportCode.ConvertBmp2Mat(src);
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-                Mat croppedImage = new Mat(mat, rectCrop);
-                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-            }
-        }
+        
         
         //private void CreateSaveBitmap(Canvas canvas, string filename)
         //{
