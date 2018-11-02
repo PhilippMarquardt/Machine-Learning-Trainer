@@ -105,7 +105,6 @@ namespace MachineLearningTrainer.DrawerTool
                 int recStartY = (Convert.ToInt16(y));
                 int recWidth = (Convert.ToInt16(w));
                 int recHeight = (Convert.ToInt16(h));
-
             }
         }
 
@@ -136,6 +135,9 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            if ((this.DataContext as DrawerViewModel).AllRectangles.Count != -1)
+                cropImageLabel();
+
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
                 //txtLabel.Visibility = Visibility.Visible;
@@ -225,11 +227,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
             binding.UpdateSource();
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            cropImageLabel();
         }
     }
 }

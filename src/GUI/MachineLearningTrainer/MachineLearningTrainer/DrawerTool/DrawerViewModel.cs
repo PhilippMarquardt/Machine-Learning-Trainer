@@ -90,6 +90,11 @@ namespace MachineLearningTrainer.DrawerTool
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
         }
         
+        public void SortRectangles()
+        {
+            
+        }
+
         private ICommand _addRectangle;
         public ICommand AddRectangle
         {
@@ -129,6 +134,8 @@ namespace MachineLearningTrainer.DrawerTool
                 this.IsEnabled = true;
                 AllRectangles.Clear();
             }
+
+            LoadRectangles();
 
         }
         private string _imagePath;
@@ -194,6 +201,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
+            for(int i=0; i<30;i++)
             AllRectangles.Remove(SelectedResizableRectangle);
         }
 
@@ -356,9 +364,11 @@ namespace MachineLearningTrainer.DrawerTool
                     rect.ThumbSize = 3;
                     rect.VisibilityChanged = false;
                 }
+                
                 SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
                 SelectedResizableRectangle.RectangleOpacity = 0.5;
                 SelectedResizableRectangle.VisibilityChanged = true;
+                
             }
         }
 
@@ -413,30 +423,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("CroppedImage");
             }
         }
-
-        private ICommand _drawRectangle;
-        public ICommand DrawRectangle
-        {
-            get
-            {
-                return _drawRectangle ?? (_drawRectangle = new CommandHandler(() => DrawRectangleMethod(), _canExecute));
-            }
-        }
-
-        public void DrawRectangleMethod()
-        {
-            AllRectangles.Add(new ResizableRectangle { X = 50, Y = 50, RectangleHeight=200, RectangleWidth=300 });
-        }
-
-        private ICommand _loadXMLFile;
-        public ICommand LoadXMLFile
-        {
-            get
-            {
-                return _loadXMLFile ?? (_loadXMLFile = new CommandHandler(() => LoadRectangles(), _canExecute));
-            }
-        }
-
+        
         private double x;
         public double X
         {
@@ -468,15 +455,15 @@ namespace MachineLearningTrainer.DrawerTool
 
             if (File.Exists(destFileName) == true)
             {
-                MessageBox.Show(destFileName, "Info", MessageBoxButton.OK, MessageBoxImage.Information, 
-                    MessageBoxResult.OK);
+                //MessageBox.Show(destFileName, "Info", MessageBoxButton.OK, MessageBoxImage.Information,
+                //    MessageBoxResult.OK);
 
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
                 foreach (XmlNode node in doc.DocumentElement)
                 {
-                    
+
                     if (node.Name == "object")
                     {
                         foreach (XmlNode objectChild in node)
@@ -497,10 +484,10 @@ namespace MachineLearningTrainer.DrawerTool
                                 Console.WriteLine("Y: " + ymin);
 
                                 int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                Console.WriteLine("RectangleWidth: " + (xmax-xmin));
+                                Console.WriteLine("RectangleWidth: " + (xmax - xmin));
 
                                 int ymax = int.Parse(objectChild["ymax"].InnerText);
-                                Console.WriteLine("RectangleHeight: " + (ymax-ymin));
+                                Console.WriteLine("RectangleHeight: " + (ymax - ymin));
 
                                 AllRectangles.Add(new ResizableRectangle { X = xmin, Y = ymin, RectangleHeight = ymax - ymin, RectangleWidth = xmax - xmin, RectangleText = name });
                             }
@@ -508,9 +495,6 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-
-            else MessageBox.Show("No XML-File existing for: " + destFileName1, "Error", 
-                MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
 
             
         }

@@ -89,9 +89,6 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Draw Rectangle" Command="{Binding DrawRectangle}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Crop Images" Click="Button_Click"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML-File" Command="{Binding LoadXMLFile}"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
@@ -138,7 +135,7 @@
         </StackPanel>
 
         <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
-                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1">
+                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
