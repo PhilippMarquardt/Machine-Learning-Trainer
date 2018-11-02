@@ -451,7 +451,16 @@ namespace MachineLearningTrainer.DrawerTool
             get { return y; }
             set { y = value; }
         }
-        
+
+        private string _name;
+
+        public string name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+
         private void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
@@ -459,41 +468,49 @@ namespace MachineLearningTrainer.DrawerTool
 
             if (File.Exists(destFileName) == true)
             {
-                MessageBox.Show(destFileName, "Info", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+                MessageBox.Show(destFileName, "Info", MessageBoxButton.OK, MessageBoxImage.Information, 
+                    MessageBoxResult.OK);
 
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
                 foreach (XmlNode node in doc.DocumentElement)
                 {
+                    
                     if (node.Name == "object")
                     {
                         foreach (XmlNode objectChild in node)
                         {
+                            if (objectChild.Name == "name")
+                            {
+                                name = objectChild.InnerText;
+                                Console.WriteLine("Name: " + name);
+                                RectangleText = name;
+                            }
 
                             if (objectChild.Name == "bndbox")
                             {
-
                                 int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                Console.WriteLine("xmin: " + xmin);
+                                Console.WriteLine("X: " + xmin);
 
                                 int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                Console.WriteLine("ymin: " + ymin);
+                                Console.WriteLine("Y: " + ymin);
 
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                Console.WriteLine("RectangleWidth: " + (xmax-xmin));
 
-                                X = xmin;
-                                Y = ymin;
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+                                Console.WriteLine("RectangleHeight: " + (ymax-ymin));
 
-                                Console.WriteLine("Test x: " + X);
-
-                                //AllRectangles.Add(new ResizableRectangle { X, Y, RectangleHeight = 200, RectangleWidth = 300 });
+                                AllRectangles.Add(new ResizableRectangle { X = xmin, Y = ymin, RectangleHeight = ymax - ymin, RectangleWidth = xmax - xmin, RectangleText = name });
                             }
                         }
                     }
                 }
             }
 
-            else MessageBox.Show("No XML-File existing for: " + destFileName1, "Error",MessageBoxButton.OK,MessageBoxImage.Error,MessageBoxResult.OK);
+            else MessageBox.Show("No XML-File existing for: " + destFileName1, "Error", 
+                MessageBoxButton.OK, MessageBoxImage.Error, MessageBoxResult.OK);
 
             
         }
