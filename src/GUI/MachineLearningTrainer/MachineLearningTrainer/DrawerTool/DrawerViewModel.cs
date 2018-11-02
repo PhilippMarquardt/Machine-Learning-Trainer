@@ -86,7 +86,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void ExportToPascal()
         {
-            XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), ImagePath + ".xml", 1337, 1337, 3);
+            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+            XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
         }
         
         private ICommand _addRectangle;
@@ -449,11 +450,12 @@ namespace MachineLearningTrainer.DrawerTool
             get { return y; }
             set { y = value; }
         }
-
-
+        
         private void LoadRectangles()
         {
-            MessageBox.Show(ImagePath);
+            string result = Path.ChangeExtension(ImagePath, null);
+            result = Path.GetFileName(result);
+            MessageBox.Show(result);
 
             XmlDocument doc = new XmlDocument();
             doc.Load(ImagePath + ".xml");
