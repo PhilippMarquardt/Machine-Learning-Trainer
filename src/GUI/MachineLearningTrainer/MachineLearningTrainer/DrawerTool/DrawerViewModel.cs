@@ -54,6 +54,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
+            CopyCommand = new MyICommand(OnCopy, CanCopy);
             
         }
 
@@ -70,7 +71,8 @@ namespace MachineLearningTrainer.DrawerTool
         //}
 
         public MyICommand DeleteCommand { get; set; }
-        public bool Enabled { get; set; } = true;
+        public MyICommand CopyCommand   { get; set; }
+        public bool Enabled             { get; set; } = true;
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         
@@ -192,6 +194,7 @@ namespace MachineLearningTrainer.DrawerTool
                 _selectedResizableRectangle = value;
                 SelectedRectangleFill();
                 DeleteCommand.RaiseCanExecuteChanged();
+                CopyCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -199,9 +202,20 @@ namespace MachineLearningTrainer.DrawerTool
         {
             for(int i=0; i<30;i++)
             AllRectangles.Remove(SelectedResizableRectangle);
+            this.IsOpen = false;
         }
 
         private bool CanDelete()
+        {
+            return SelectedResizableRectangle != null;
+        }
+
+        private void OnCopy()
+        {
+            AllRectangles.Add(new ResizableRectangle { X = SelectedResizableRectangle.X + 30, Y = SelectedResizableRectangle.Y + 30, RectangleHeight = SelectedResizableRectangle.RectangleHeight, RectangleWidth = SelectedResizableRectangle.RectangleWidth, RectangleText = SelectedResizableRectangle.RectangleText });
+        }
+
+        private bool CanCopy()
         {
             return SelectedResizableRectangle != null;
         }
@@ -467,23 +481,23 @@ namespace MachineLearningTrainer.DrawerTool
                             if (objectChild.Name == "name")
                             {
                                 name = objectChild.InnerText;
-                                Console.WriteLine("Name: " + name);
+                                //Console.WriteLine("Name: " + name);
                                 RectangleText = name;
                             }
 
                             if (objectChild.Name == "bndbox")
                             {
                                 int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                Console.WriteLine("X: " + xmin);
+                                //Console.WriteLine("X: " + xmin);
 
                                 int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                Console.WriteLine("Y: " + ymin);
+                                //Console.WriteLine("Y: " + ymin);
 
                                 int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                Console.WriteLine("RectangleWidth: " + (xmax - xmin));
+                                //Console.WriteLine("RectangleWidth: " + (xmax - xmin));
 
                                 int ymax = int.Parse(objectChild["ymax"].InnerText);
-                                Console.WriteLine("RectangleHeight: " + (ymax - ymin));
+                                //Console.WriteLine("RectangleHeight: " + (ymax - ymin));
 
                                 AllRectangles.Add(new ResizableRectangle { X = xmin, Y = ymin, RectangleHeight = ymax - ymin, RectangleWidth = xmax - xmin, RectangleText = name });
                             }
@@ -494,5 +508,36 @@ namespace MachineLearningTrainer.DrawerTool
 
             
         }
+
+        private bool _isOpen = false;
+
+        public bool IsOpen
+        {
+            get
+            {
+                return this._isOpen;
+            }
+
+            set
+            {
+                this._isOpen = value;
+                OnPropertyChanged("IsOpen");
+            }
+        }
+
+        private ICommand _sortListCommand;
+        public ICommand SortListCommand
+        {
+            get
+            {
+                return _sortListCommand ?? (_sortListCommand = new CommandHandler(() => SortList(), _canExecute));
+            }
+        }
+        
+        public void SortList()
+        {
+
+        }
+
     }
 }

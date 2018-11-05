@@ -31,7 +31,7 @@
             <Setter Property="Foreground" Value="#FF2196F3" />
             <Setter Property="Margin" Value="10"/>
         </Style>
-        
+
         <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -71,6 +71,10 @@
                     Modifiers="Ctrl"
                     Command="{Binding DeleteLastRectangleCommand}"
                     CommandParameter="Z"/>
+        <KeyBinding Key="C"
+                    Modifiers="Ctrl"
+                    Command="{Binding CopyCommand}"
+                    CommandParameter="C"/>
     </UserControl.InputBindings>
 
     <Grid>
@@ -89,6 +93,7 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Sort List" Command="{Binding SortListCommand}"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
@@ -135,7 +140,7 @@
         </StackPanel>
 
         <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
-                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended">
+                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
@@ -145,11 +150,20 @@
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
-            <!--<ListBox.ItemContainerStyle>
-                <Style TargetType="local:ResizableRectangle">
-                    <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                </Style>
-            </ListBox.ItemContainerStyle>-->
+            <ListBox.ContextMenu>
+                <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                    <MenuItem Header="Copy      Strg + C" Command="{Binding CopyCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Delete    Entf" Command="{Binding DeleteCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
         </ListBox>
         <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" 
                 HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3" Grid.RowSpan="2">

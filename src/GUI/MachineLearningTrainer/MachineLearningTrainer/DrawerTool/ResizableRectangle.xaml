@@ -8,7 +8,7 @@
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}" >
-            <Rectangle MouseRightButtonDown ="Rectangle_MouseRightButtonUp">
+            <Rectangle>
                 <Rectangle.Style>
                     <Style TargetType="Rectangle">
                         <Setter Property="Fill" Value="{Binding RectangleFill, Mode=TwoWay, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
