@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -26,7 +27,7 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             this.DataContext = this;
         }
-        
+
         public static readonly DependencyProperty RectangleHeightProperty =
         DependencyProperty.Register("RectangleHeight", typeof(double), typeof(ResizableRectangle));
         public double RectangleHeight

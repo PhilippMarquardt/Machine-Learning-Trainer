@@ -22,7 +22,7 @@ using System.Xml;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
-    public class DrawerViewModel : INotifyPropertyChanged
+    public class DrawerViewModel : INotifyPropertyChanged, IComparable
     {
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;
@@ -74,6 +74,16 @@ namespace MachineLearningTrainer.DrawerTool
         public MyICommand CopyCommand   { get; set; }
         public bool Enabled             { get; set; } = true;
 
+        public int CompareTo(object obj)
+        {
+            ResizableRectangle resizable = obj as ResizableRectangle;
+            if (resizable == null)
+            {
+                throw new ArgumentException("Object is not Rectangle");
+            }
+            return this.RectangleText.CompareTo(resizable.RectangleText);
+        }
+
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         
         private ICommand _exportPascalVoc;
@@ -124,7 +134,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png";
+            openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png; *.tif";
             if (openFileDialog.ShowDialog() == true)
                 ImagePath = openFileDialog.FileName;
             if (ImagePath != null)
@@ -533,11 +543,25 @@ namespace MachineLearningTrainer.DrawerTool
                 return _sortListCommand ?? (_sortListCommand = new CommandHandler(() => SortList(), _canExecute));
             }
         }
-        
+
         public void SortList()
         {
+            ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.OrderBy(resizable => resizable.RectangleText));
 
+            var firstSorted = sortedRectangles.First();
+            var lastSorted = sortedRectangles.Last();
+            var firstUnsorted = AllRectangles.First();
+            var lastUnsorted = AllRectangles.Last();
+
+            MessageBox.Show("Unsorted: " + firstUnsorted.RectangleText + " - " + lastUnsorted + "\r\n" + "Sorted: " + firstSorted.RectangleText + " - " + lastSorted);
+
+            int i = 3;
+
+            if (i < 4)
+            {
+                AllRectangles = sortedRectangles;
+                OnPropertyChanged("");
+            }
         }
-
     }
 }
