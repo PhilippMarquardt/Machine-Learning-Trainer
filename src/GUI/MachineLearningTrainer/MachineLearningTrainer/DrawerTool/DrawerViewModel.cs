@@ -90,10 +90,6 @@ namespace MachineLearningTrainer.DrawerTool
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
         }
         
-        public void SortRectangles()
-        {
-            
-        }
 
         private ICommand _addRectangle;
         public ICommand AddRectangle
