@@ -1,9 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
-<root>
-  <object name="TEST">
-      <xmin>200</xmin>
-      <ymin>200</ymin>
-      <xmax>600</xmax>
-      <ymax>600</ymax>
-  </object>
-</root>

@@ -210,7 +210,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
-            for(int i=0; i<30;i++)
+            for(int i=0; i<AllRectangles.Count;i++)
             AllRectangles.Remove(SelectedResizableRectangle);
             this.IsOpen = false;
         }
@@ -535,32 +535,16 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private ICommand _sortListCommand;
-        public ICommand SortListCommand
-        {
-            get
-            {
-                return _sortListCommand ?? (_sortListCommand = new CommandHandler(() => SortList(), _canExecute));
-            }
-        }
-
         public void SortList()
         {
             ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.OrderBy(resizable => resizable.RectangleText));
-
-            var firstSorted = sortedRectangles.First();
-            var lastSorted = sortedRectangles.Last();
-            var firstUnsorted = AllRectangles.First();
-            var lastUnsorted = AllRectangles.Last();
-
-            MessageBox.Show("Unsorted: " + firstUnsorted.RectangleText + " - " + lastUnsorted + "\r\n" + "Sorted: " + firstSorted.RectangleText + " - " + lastSorted);
 
             int i = 3;
 
             if (i < 4)
             {
                 AllRectangles = sortedRectangles;
-                OnPropertyChanged("");
+                OnPropertyChanged("AllRectangles");
             }
         }
     }

@@ -343,7 +343,7 @@ namespace MachineLearningTrainer
             _action = action;
             _canExecute = canExecute;
         }
-
+        
         public bool CanExecute(object parameter)
         {
             return _canExecute;

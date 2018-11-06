@@ -109,6 +109,12 @@ namespace MachineLearningTrainer.DrawerTool
                 int recStartY = (Convert.ToInt16(y));
                 int recWidth = (Convert.ToInt16(w));
                 int recHeight = (Convert.ToInt16(h));
+                
+            }
+
+            if ((this.DataContext as DrawerViewModel).Enabled == true)
+            {
+                cropImageLabel();
             }
         }
 
@@ -133,14 +139,18 @@ namespace MachineLearningTrainer.DrawerTool
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Height / 2, croppedImage.Width / 2);
+                Mat dst = new Mat();
+                Cv2.Resize(croppedImage, dst, size);
+                rec.CroppedImage = SupportCode.ConvertMat2BmpImg(dst);
             }
         }
 
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if ((this.DataContext as DrawerViewModel).AllRectangles.Count != -1)
-                cropImageLabel();
+            //if ((this.DataContext as DrawerViewModel).AllRectangles.Count != -1)
+            //    cropImageLabel();
+            (this.DataContext as DrawerViewModel).SortList();
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
@@ -173,7 +183,11 @@ namespace MachineLearningTrainer.DrawerTool
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Height / 2, croppedImage.Width / 2);
+                Mat dst = new Mat();
+                Cv2.Resize(croppedImage, dst, size);
+
+                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(dst);
                 //txtLabel.Text = LastLabel;
                 //txtLabel.SelectAll();
                 //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
@@ -206,6 +220,11 @@ namespace MachineLearningTrainer.DrawerTool
         {
             var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
             binding.UpdateSource();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            cropImageLabel();
         }
     }
 }
