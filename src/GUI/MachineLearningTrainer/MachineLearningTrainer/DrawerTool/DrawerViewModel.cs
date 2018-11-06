@@ -222,7 +222,9 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnCopy()
         {
-            AllRectangles.Add(new ResizableRectangle { X = SelectedResizableRectangle.X + 30, Y = SelectedResizableRectangle.Y + 30, RectangleHeight = SelectedResizableRectangle.RectangleHeight, RectangleWidth = SelectedResizableRectangle.RectangleWidth, RectangleText = SelectedResizableRectangle.RectangleText });
+            AllRectangles.Add(new ResizableRectangle { X = SelectedResizableRectangle.X + 30, Y = SelectedResizableRectangle.Y + 30,
+                RectangleHeight = SelectedResizableRectangle.RectangleHeight, RectangleWidth = SelectedResizableRectangle.RectangleWidth,
+                RectangleText = SelectedResizableRectangle.RectangleText });
         }
 
         private bool CanCopy()
@@ -509,7 +511,8 @@ namespace MachineLearningTrainer.DrawerTool
                                 int ymax = int.Parse(objectChild["ymax"].InnerText);
                                 //Console.WriteLine("RectangleHeight: " + (ymax - ymin));
 
-                                AllRectangles.Add(new ResizableRectangle { X = xmin, Y = ymin, RectangleHeight = ymax - ymin, RectangleWidth = xmax - xmin, RectangleText = name });
+                                AllRectangles.Add(new ResizableRectangle { X = xmin, Y = ymin, RectangleHeight = ymax - ymin, RectangleWidth = xmax - xmin,
+                                    RectangleText = name });
                             }
                         }
                     }
@@ -534,18 +537,15 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("IsOpen");
             }
         }
+        
+
 
         public void SortList()
         {
             ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.OrderBy(resizable => resizable.RectangleText));
 
-            int i = 3;
-
-            if (i < 4)
-            {
-                AllRectangles = sortedRectangles;
-                OnPropertyChanged("AllRectangles");
-            }
+            AllRectangles = list;
+            OnPropertyChanged("AllRectangles");
         }
     }
 }

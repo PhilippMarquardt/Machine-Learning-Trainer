@@ -139,7 +139,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Height / 2, croppedImage.Width / 2);
+                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Width / 2, croppedImage.Height / 2);
                 Mat dst = new Mat();
                 Cv2.Resize(croppedImage, dst, size);
                 rec.CroppedImage = SupportCode.ConvertMat2BmpImg(dst);
@@ -183,7 +183,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Height / 2, croppedImage.Width / 2);
+                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Width / 2, croppedImage.Height / 2);
                 Mat dst = new Mat();
                 Cv2.Resize(croppedImage, dst, size);
 

@@ -27,6 +27,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
         #endregion
 
+
         //public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Green;
 
         //public System.Windows.Media.Brush RectangleFill
@@ -56,8 +57,8 @@ namespace MachineLearningTrainer.DrawerTool
         //        OnPropertyChanged("RectColor");
         //    }
         //}
+
+
     }
-
-
     
 }
