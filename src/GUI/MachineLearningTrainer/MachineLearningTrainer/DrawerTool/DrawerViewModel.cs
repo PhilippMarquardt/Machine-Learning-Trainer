@@ -537,7 +537,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void SortList()
         {
-            ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.OrderBy(resizable => resizable.RectangleText));
+            ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>
+                (AllRectangles.OrderBy(resizable => resizable.RectangleText));
 
             AllRectangles = sortedRectangles;
             OnPropertyChanged("AllRectangles");
@@ -570,11 +571,14 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        
         public void FilterName()
         {
-            string beispiel = "Test1";
-            ObservableCollection<ResizableRectangle> resizableRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == beispiel).ToList());
-            AllRectangles = resizableRectangles;
+            string beispiel = "gelb";
+
+            ObservableCollection<ResizableRectangle> filteredRectangles = new ObservableCollection<ResizableRectangle>
+                (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText != beispiel));
+            AllRectangles = filteredRectangles;
             OnPropertyChanged("AllRectangles");
             
         }
