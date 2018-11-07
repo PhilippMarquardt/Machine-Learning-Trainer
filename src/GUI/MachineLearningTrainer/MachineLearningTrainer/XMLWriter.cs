@@ -179,19 +179,19 @@ namespace MachineLearningTrainer
                     writer.WriteStartElement("bndbox");
 
                     writer.WriteStartElement("xmin");
-                    writer.WriteString(Convert.ToInt32(rec.X).ToString());
+                    writer.WriteString((rec.X).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("ymin");
-                    writer.WriteString(Convert.ToInt32(rec.Y).ToString());
+                    writer.WriteString((rec.Y).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("xmax");
-                    writer.WriteString(Convert.ToInt32(rec.X + rec.RectangleWidth).ToString());
+                    writer.WriteString((rec.X + rec.RectangleWidth).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("ymax");
-                    writer.WriteString(Convert.ToInt32(rec.Y + rec.RectangleHeight).ToString());
+                    writer.WriteString((rec.Y + rec.RectangleHeight).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteEndElement();

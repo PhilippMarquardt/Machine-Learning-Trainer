@@ -114,7 +114,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             if ((this.DataContext as DrawerViewModel).Enabled == true)
             {
-                cropImageLabel();
+                //cropImageLabel();
             }
         }
 
@@ -148,24 +148,14 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            //if ((this.DataContext as DrawerViewModel).AllRectangles.Count != -1)
-            //    cropImageLabel();
             (this.DataContext as DrawerViewModel).SortList();
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
-                //txtLabel.Visibility = Visibility.Visible;
-                //txtLabel.Text = "";
-                //txtLabel.Focus();
-                //Canvas.SetLeft(txtLabel, rectSelectArea.X + rectSelectArea.RectangleWidth + 5);
-                //Canvas.SetTop(txtLabel, rectSelectArea.Y - 35);
                 foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
                     q.RectangleMovable = true;
-                //imgPreview.Source = rectSelectArea.cropedImage;
                 (this.DataContext as DrawerViewModel).Enabled = true;
-                // rectSelectArea = null;
-
-                //Bitmap src = new Bitmap(imgPreview.Source);
+                
                 BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
                 Bitmap src;
 
@@ -188,9 +178,6 @@ namespace MachineLearningTrainer.DrawerTool
                 Cv2.Resize(croppedImage, dst, size);
 
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(dst);
-                //txtLabel.Text = LastLabel;
-                //txtLabel.SelectAll();
-                //CroppedImagePreview.Source = SupportCode.convertMat2BmpImg(croppedImage);
             }
         }
         

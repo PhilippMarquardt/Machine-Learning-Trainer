@@ -55,7 +55,6 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             CopyCommand = new MyICommand(OnCopy, CanCopy);
-            
         }
 
 
@@ -85,6 +84,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+        
         
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
@@ -275,7 +275,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private bool _isChecked = false;
+        private bool _isChecked = true;
 
         public bool IsChecked
         {
@@ -472,13 +472,9 @@ namespace MachineLearningTrainer.DrawerTool
         private void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
-            string destFileName1 = ImagePath.Remove(ImagePath.LastIndexOf('.'));
 
             if (File.Exists(destFileName) == true)
             {
-                //MessageBox.Show(destFileName, "Info", MessageBoxButton.OK, MessageBoxImage.Information,
-                //    MessageBoxResult.OK);
-
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
@@ -492,26 +488,28 @@ namespace MachineLearningTrainer.DrawerTool
                             if (objectChild.Name == "name")
                             {
                                 name = objectChild.InnerText;
-                                //Console.WriteLine("Name: " + name);
                                 RectangleText = name;
                             }
 
                             if (objectChild.Name == "bndbox")
                             {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                //Console.WriteLine("X: " + xmin);
+                                double xmin = double.Parse(objectChild["xmin"].InnerText);
+                                double ymin = double.Parse(objectChild["ymin"].InnerText);
+                                double xmax = double.Parse(objectChild["xmax"].InnerText);
+                                double ymax = double.Parse(objectChild["ymax"].InnerText);
 
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                //Console.WriteLine("Y: " + ymin);
+                                ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                //Console.WriteLine("RectangleWidth: " + (xmax - xmin));
+                                loadedRect.RectangleHeight = ymax - ymin;
+                                loadedRect.RectangleWidth = xmax - xmin;
+                                loadedRect.RectangleText = name;
+                                loadedRect.X = xmin;
+                                loadedRect.Y = ymin;
 
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
-                                //Console.WriteLine("RectangleHeight: " + (ymax - ymin));
+                                Canvas.SetLeft(loadedRect, xmin);
+                                Canvas.SetTop(loadedRect, ymin);
 
-                                AllRectangles.Add(new ResizableRectangle { X = xmin, Y = ymin, RectangleHeight = ymax - ymin, RectangleWidth = xmax - xmin,
-                                    RectangleText = name });
+                                AllRectangles.Add(loadedRect);
                             }
                         }
                     }
