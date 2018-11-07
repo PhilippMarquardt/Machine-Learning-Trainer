@@ -161,7 +161,7 @@
                             <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Rename      Strg + U" Command="{Binding RenameCommand}">
+                    <MenuItem Header="Rename    Strg + U" Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
                         </MenuItem.Icon>
@@ -193,7 +193,7 @@
                             <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
-                    <MenuItem Header="Rename      Strg + U" Command="{Binding RenameCommand}">
+                    <MenuItem Header="Rename    Strg + U" Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
                         </MenuItem.Icon>

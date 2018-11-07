@@ -155,7 +155,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).SortList();
             (this.DataContext as DrawerViewModel).ComboBoxNames();
-            (this.DataContext as DrawerViewModel).FilterName();
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {

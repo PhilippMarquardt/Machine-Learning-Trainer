@@ -55,6 +55,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             CopyCommand = new MyICommand(OnCopy, CanCopy);
+            RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
@@ -74,6 +75,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public MyICommand DeleteCommand { get; set; }
         public MyICommand CopyCommand   { get; set; }
+        public MyICommand RenameCommand { get; set; }
         public bool Enabled             { get; set; } = true;
 
         public int CompareTo(object obj)
@@ -214,6 +216,7 @@ namespace MachineLearningTrainer.DrawerTool
                 SelectedRectangleFill();
                 DeleteCommand.RaiseCanExecuteChanged();
                 CopyCommand.RaiseCanExecuteChanged();
+                RenameCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -237,6 +240,20 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private bool CanCopy()
+        {
+            return SelectedResizableRectangle != null;
+        }
+
+        private void OnRename()
+        {
+            foreach (var rec in AllRectangles)
+            {
+                for (int i = 0; i < AllRectangles.Count; i++)
+                    SelectedResizableRectangle.RectangleText = DefaultLabel;
+            }
+        }
+
+        private bool CanRename()
         {
             return SelectedResizableRectangle != null;
         }
@@ -551,24 +568,6 @@ namespace MachineLearningTrainer.DrawerTool
 
             AllRectangles = sortedRectangles;
             OnPropertyChanged("AllRectangles");
-        }
-
-        private ICommand _renameCommand;
-        public ICommand RenameCommand
-        {
-            get
-            {
-                return _renameCommand ?? (_renameCommand = new CommandHandler(() => Rename(), _canExecute));
-            }
-        }
-
-        public void Rename()
-        {
-            foreach(var rec in AllRectangles)
-            {
-                for(int i = 0; i < AllRectangles.Count; i++) 
-                SelectedResizableRectangle.RectangleText = DefaultLabel;
-            }
         }
         
         public void FilterName()
