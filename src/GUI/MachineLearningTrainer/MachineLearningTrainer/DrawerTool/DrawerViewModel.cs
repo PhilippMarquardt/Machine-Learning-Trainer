@@ -493,10 +493,10 @@ namespace MachineLearningTrainer.DrawerTool
 
                             if (objectChild.Name == "bndbox")
                             {
-                                double xmin = double.Parse(objectChild["xmin"].InnerText);
-                                double ymin = double.Parse(objectChild["ymin"].InnerText);
-                                double xmax = double.Parse(objectChild["xmax"].InnerText);
-                                double ymax = double.Parse(objectChild["ymax"].InnerText);
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
 
                                 ResizableRectangle loadedRect = new ResizableRectangle();
 
