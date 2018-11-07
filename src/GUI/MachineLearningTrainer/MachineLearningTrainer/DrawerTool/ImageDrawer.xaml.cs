@@ -146,6 +146,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private void ComboBox_DropDownClosed(object sender, EventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).FilterName();
+        }
+
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             (this.DataContext as DrawerViewModel).SortList();

@@ -56,7 +56,7 @@ namespace MachineLearningTrainer.DrawerTool
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             CopyCommand = new MyICommand(OnCopy, CanCopy);
             ComboBoxItems.Add("All Labels");
-            AllRectangles1 = AllRectangles;
+            AllRectanglesView = AllRectangles;
         }
 
 
@@ -86,7 +86,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-        public ObservableCollection<ResizableRectangle> AllRectangles1 { get; set; } = new ObservableCollection<ResizableRectangle>();
+        public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
 
@@ -569,15 +569,6 @@ namespace MachineLearningTrainer.DrawerTool
                 SelectedResizableRectangle.RectangleText = DefaultLabel;
             }
         }
-
-        private ICommand _filterCommand;
-        public ICommand FilterCommand
-        {
-            get
-            {
-                return _filterCommand ?? (_filterCommand = new CommandHandler(() => FilterName(), _canExecute));
-            }
-        }
         
         public void FilterName()
         {  
@@ -585,31 +576,28 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 FilterVisibility1 = false;
                 FilterVisibility = true;
-                AllRectangles1 = AllRectangles;
+                AllRectanglesView = AllRectangles;
                 OnPropertyChanged("AllRectangles");
-                OnPropertyChanged("AllRectangles1");
+                OnPropertyChanged("AllRectanglesView");
                 OnPropertyChanged("FilteredRectangles");
                 OnPropertyChanged("FilterVisibility");
                 OnPropertyChanged("FilterVisibility1");
             }
 
-            else
+            else if(SelectedComboBoxItem != "All Labels")
             {
                 FilterVisibility1 = true;
                 FilterVisibility = false;
 
                 ObservableCollection<ResizableRectangle> filteredRectangles = new ObservableCollection<ResizableRectangle>
                     (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
-                AllRectangles1 = filteredRectangles;
+                AllRectanglesView = filteredRectangles;
                 OnPropertyChanged("AllRectangles");
-                OnPropertyChanged("AllRectangles1");
+                OnPropertyChanged("AllRectanglesView");
                 OnPropertyChanged("FilteredRectangles");
                 OnPropertyChanged("FilterVisibility");
                 OnPropertyChanged("FilterVisibility1");
-                //AllRectangles = filteredRectangles;
-                //OnPropertyChanged("AllRectangles");
             }
-
         }
         
         public void ComboBoxNames()
@@ -621,7 +609,6 @@ namespace MachineLearningTrainer.DrawerTool
                     ComboBoxItems.Add(rec.RectangleText);
                     OnPropertyChanged("ComboBoxItems");
                 }
-                
             }
         }
 

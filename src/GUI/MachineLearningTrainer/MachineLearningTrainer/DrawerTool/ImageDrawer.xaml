@@ -98,7 +98,6 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Filter List" Command="{Binding FilterCommand}"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
@@ -113,7 +112,7 @@
             <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto"/>
-                <ItemsControl ItemsSource="{Binding AllRectangles1}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+                <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
                               Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -144,7 +143,7 @@
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
         </StackPanel>
 
-        <ListBox ItemsSource="{Binding AllRectangles1}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
+        <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
                  x:Name="listBoxLabels1" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -212,6 +211,6 @@
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
         <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
-                  Grid.Column="3" Padding="5" Height="auto" Margin="5" SelectedIndex="0"/>
+                  Grid.Column="3" Padding="5" Height="auto" Margin="5" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed"/>
     </Grid>
 </UserControl>
