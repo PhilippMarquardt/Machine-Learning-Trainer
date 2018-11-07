@@ -57,6 +57,7 @@ namespace MachineLearningTrainer.DrawerTool
             CopyCommand = new MyICommand(OnCopy, CanCopy);
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
+            SelectedComboBoxItem = "All Labels";
         }
 
 
