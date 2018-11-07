@@ -75,6 +75,10 @@
                     Modifiers="Ctrl"
                     Command="{Binding CopyCommand}"
                     CommandParameter="C"/>
+        <KeyBinding Key="U"
+                    Modifiers="Ctrl"
+                    Command="{Binding RenameCommand}"
+                    CommandParameter="U"/>
     </UserControl.InputBindings>
 
     <Grid>
@@ -85,7 +89,7 @@
             <ColumnDefinition Width="250" MinWidth="250"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
+            <RowDefinition Height="150"/>
             <RowDefinition Height="*"/>
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
@@ -94,6 +98,7 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Filter List" Command="{Binding FilterCommand}"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
@@ -140,7 +145,7 @@
         </StackPanel>
 
         <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
-                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp">
+                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
@@ -157,6 +162,11 @@
                             <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
+                    <MenuItem Header="Rename      Strg + U" Command="{Binding RenameCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\rename.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
                     <MenuItem Header="Delete    Entf" Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
@@ -169,5 +179,11 @@
                 HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3" Grid.RowSpan="2">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
+        <ComboBox Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
+                  Grid.Column="3" Padding="5" Height="auto" Margin="5">
+            <ComboBoxItem Content="Typ 1" IsSelected="True"/>
+            <ComboBoxItem Content="Typ 2"/>
+            <ComboBoxItem Content="Typ 3"/>
+        </ComboBox>
     </Grid>
 </UserControl>

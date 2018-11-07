@@ -469,7 +469,6 @@ namespace MachineLearningTrainer.DrawerTool
             set { _name = value; }
         }
 
-
         private void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
@@ -537,15 +536,49 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("IsOpen");
             }
         }
-        
-
 
         public void SortList()
         {
             ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.OrderBy(resizable => resizable.RectangleText));
 
-            AllRectangles = list;
+            AllRectangles = sortedRectangles;
             OnPropertyChanged("AllRectangles");
+        }
+
+        private ICommand _renameCommand;
+        public ICommand RenameCommand
+        {
+            get
+            {
+                return _renameCommand ?? (_renameCommand = new CommandHandler(() => Rename(), _canExecute));
+            }
+        }
+
+        public void Rename()
+        {
+            foreach(var rec in AllRectangles)
+            {
+                for(int i = 0; i < AllRectangles.Count; i++) 
+                SelectedResizableRectangle.RectangleText = DefaultLabel;
+            }
+        }
+
+        private ICommand _filterCommand;
+        public ICommand FilterCommand
+        {
+            get
+            {
+                return _filterCommand ?? (_filterCommand = new CommandHandler(() => FilterName(), _canExecute));
+            }
+        }
+
+        public void FilterName()
+        {
+            string beispiel = "Test1";
+            ObservableCollection<ResizableRectangle> resizableRectangles = new ObservableCollection<ResizableRectangle>(AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == beispiel).ToList());
+            AllRectangles = resizableRectangles;
+            OnPropertyChanged("AllRectangles");
+            
         }
     }
 }
