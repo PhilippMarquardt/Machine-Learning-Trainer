@@ -69,12 +69,25 @@ namespace MachineLearningTrainer.DrawerTool
                 //txtLabel.Visibility = Visibility.Collapsed;
 
                 rectSelectArea = new ResizableRectangle();
-                (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
 
+                if((this.DataContext as DrawerViewModel).SelectedComboBoxItem == "All Labels")
+                {
+                    (this.DataContext as DrawerViewModel).AllRectanglesView.Add(rectSelectArea);
+                }
+
+                else
+                {
+                    (this.DataContext as DrawerViewModel).AllRectanglesView.Add(rectSelectArea);
+                    (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
+                }
+                
+                
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 //cnvImage.Children.Add(rectSelectArea);
             }
+
+            Console.WriteLine((this.DataContext as DrawerViewModel).AllRectanglesView.Count + "," + (this.DataContext as DrawerViewModel).AllRectangles.Count);
         }
         
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
@@ -133,7 +146,7 @@ namespace MachineLearningTrainer.DrawerTool
                 src = new Bitmap(bitmap);
             }
 
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
             {
                 Mat mat = SupportCode.ConvertBmp2Mat(src);
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
@@ -158,7 +171,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
-                foreach (var q in (this.DataContext as DrawerViewModel).AllRectangles)
+                foreach (var q in (this.DataContext as DrawerViewModel).AllRectanglesView)
                     q.RectangleMovable = true;
                 (this.DataContext as DrawerViewModel).Enabled = true;
                 

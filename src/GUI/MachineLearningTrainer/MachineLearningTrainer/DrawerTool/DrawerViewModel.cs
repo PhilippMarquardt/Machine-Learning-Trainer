@@ -124,13 +124,29 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void AddNewRectangle()
         {
-            Enabled = false;
-            if (IsChecked == true && DefaultLabel.Length > 0)
-                _rectangleText = _defaultLabel;
+            //AllRectanglesView = AllRectangles;
+            //OnPropertyChanged("AllRectanglesView");
+
+            if(SelectedComboBoxItem != "All Labels")
+            {
+                OnPropertyChanged("AllRectanglesView");
+                Enabled = false;
+                _rectangleText = SelectedComboBoxItem;
+            }
+
             else
-                _rectangleText = "";
+            {
+                AllRectanglesView = AllRectangles;
+                OnPropertyChanged("AllRectanglesView");
+                Enabled = false;
+                if (IsChecked == true && DefaultLabel.Length > 0)
+                    _rectangleText = _defaultLabel;
+                else
+                    _rectangleText = "";
+            }
+
+            
         }
-        
 
         private ICommand _loadImageCommand;
         public ICommand LoadImageCommand
@@ -222,9 +238,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
-            for(int i=0; i<AllRectangles.Count;i++)
-            AllRectangles.Remove(SelectedResizableRectangle);
+            for (int i = 0; i < AllRectangles.Count; i++)
+                AllRectangles.Remove(SelectedResizableRectangle);
             this.IsOpen = false;
+
+            AllRectanglesView = AllRectangles;
+            FilteredRectangles = AllRectangles;
+            OnPropertyChanged("AllRectanglesView");
+            OnPropertyChanged("FilteredRectangles");
+
         }
 
         private bool CanDelete()
@@ -589,9 +611,9 @@ namespace MachineLearningTrainer.DrawerTool
                 FilterVisibility1 = true;
                 FilterVisibility = false;
 
-                ObservableCollection<ResizableRectangle> filteredRectangles = new ObservableCollection<ResizableRectangle>
+                ObservableCollection<ResizableRectangle> FilteredRectangles = new ObservableCollection<ResizableRectangle>
                     (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
-                AllRectanglesView = filteredRectangles;
+                AllRectanglesView = FilteredRectangles;
                 OnPropertyChanged("AllRectangles");
                 OnPropertyChanged("AllRectanglesView");
                 OnPropertyChanged("FilteredRectangles");
