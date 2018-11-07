@@ -55,6 +55,8 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             CopyCommand = new MyICommand(OnCopy, CanCopy);
+            ComboBoxItems.Add("All Labels");
+            AllRectangles1 = AllRectangles;
         }
 
 
@@ -84,8 +86,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-        
-        
+        public ObservableCollection<ResizableRectangle> AllRectangles1 { get; set; } = new ObservableCollection<ResizableRectangle>();
+        public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+        public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
+
+
+
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -144,6 +150,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
             LoadRectangles();
+            ComboBoxNames();
+            SortList();
 
         }
         private string _imagePath;
@@ -570,17 +578,97 @@ namespace MachineLearningTrainer.DrawerTool
                 return _filterCommand ?? (_filterCommand = new CommandHandler(() => FilterName(), _canExecute));
             }
         }
-
         
         public void FilterName()
-        {
-            string beispiel = "gelb";
+        {  
+            if (SelectedComboBoxItem == "All Labels")
+            {
+                FilterVisibility1 = false;
+                FilterVisibility = true;
+                AllRectangles1 = AllRectangles;
+                OnPropertyChanged("AllRectangles");
+                OnPropertyChanged("AllRectangles1");
+                OnPropertyChanged("FilteredRectangles");
+                OnPropertyChanged("FilterVisibility");
+                OnPropertyChanged("FilterVisibility1");
+            }
 
-            ObservableCollection<ResizableRectangle> filteredRectangles = new ObservableCollection<ResizableRectangle>
-                (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText != beispiel));
-            AllRectangles = filteredRectangles;
-            OnPropertyChanged("AllRectangles");
-            
+            else
+            {
+                FilterVisibility1 = true;
+                FilterVisibility = false;
+
+                ObservableCollection<ResizableRectangle> filteredRectangles = new ObservableCollection<ResizableRectangle>
+                    (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
+                AllRectangles1 = filteredRectangles;
+                OnPropertyChanged("AllRectangles");
+                OnPropertyChanged("AllRectangles1");
+                OnPropertyChanged("FilteredRectangles");
+                OnPropertyChanged("FilterVisibility");
+                OnPropertyChanged("FilterVisibility1");
+                //AllRectangles = filteredRectangles;
+                //OnPropertyChanged("AllRectangles");
+            }
+
         }
+        
+        public void ComboBoxNames()
+        {
+            foreach(var rec in AllRectangles)
+            {
+                if (!ComboBoxItems.Contains(rec.RectangleText))
+                {
+                    ComboBoxItems.Add(rec.RectangleText);
+                    OnPropertyChanged("ComboBoxItems");
+                }
+                
+            }
+        }
+
+        private string _selectedComboBoxItem;
+
+        public string SelectedComboBoxItem
+        {
+            get
+            {
+                return _selectedComboBoxItem;
+            }
+            set
+            {
+                _selectedComboBoxItem = value;
+                OnPropertyChanged("SelectedComboBoxItem");
+            }
+        }
+
+        private bool _filterVisibility1 = false;
+
+        public bool FilterVisibility1
+        {
+            get
+            {
+                return _filterVisibility1;
+            }
+            set
+            {
+                _filterVisibility1 = value;
+                OnPropertyChanged("FilterVisibility1");
+            }
+        }
+
+        private bool _filterVisibility = true;
+
+        public bool FilterVisibility
+        {
+            get
+            {
+                return _filterVisibility;
+            }
+            set
+            {
+                _filterVisibility = value;
+                OnPropertyChanged("FilterVisibility");
+            }
+        }
+
     }
 }

@@ -149,6 +149,8 @@ namespace MachineLearningTrainer.DrawerTool
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             (this.DataContext as DrawerViewModel).SortList();
+            (this.DataContext as DrawerViewModel).ComboBoxNames();
+            (this.DataContext as DrawerViewModel).FilterName();
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {

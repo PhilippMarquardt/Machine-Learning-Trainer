@@ -113,7 +113,7 @@
             <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto"/>
-                <ItemsControl ItemsSource="{Binding AllRectangles}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+                <ItemsControl ItemsSource="{Binding AllRectangles1}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
                               Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
@@ -144,12 +144,12 @@
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
         </StackPanel>
 
-        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
-                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+        <ListBox ItemsSource="{Binding AllRectangles1}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
+                 x:Name="listBoxLabels1" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
-                        <Image Source="{Binding CroppedImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
+                        <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
                                  TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </WrapPanel>
@@ -164,7 +164,39 @@
                     </MenuItem>
                     <MenuItem Header="Rename      Strg + U" Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\rename.png"/>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Delete    Entf" Command="{Binding DeleteCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                </ContextMenu>
+            </ListBox.ContextMenu>
+        </ListBox>
+
+        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="3" Background="White"
+                 x:Name="listBoxLabels" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <WrapPanel>
+                        <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
+                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
+                                 TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
+                    </WrapPanel>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+            <ListBox.ContextMenu>
+                <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                    <MenuItem Header="Copy      Strg + C" Command="{Binding CopyCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
+                        </MenuItem.Icon>
+                    </MenuItem>
+                    <MenuItem Header="Rename      Strg + U" Command="{Binding RenameCommand}">
+                        <MenuItem.Icon>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
                         </MenuItem.Icon>
                     </MenuItem>
                     <MenuItem Header="Delete    Entf" Command="{Binding DeleteCommand}">
@@ -179,11 +211,7 @@
                 HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3" Grid.RowSpan="2">
             <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
         </Button>
-        <ComboBox Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
-                  Grid.Column="3" Padding="5" Height="auto" Margin="5">
-            <ComboBoxItem Content="Typ 1" IsSelected="True"/>
-            <ComboBoxItem Content="Typ 2"/>
-            <ComboBoxItem Content="Typ 3"/>
-        </ComboBox>
+        <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
+                  Grid.Column="3" Padding="5" Height="auto" Margin="5" SelectedIndex="0"/>
     </Grid>
 </UserControl>
