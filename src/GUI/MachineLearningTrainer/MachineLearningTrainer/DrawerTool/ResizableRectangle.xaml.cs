@@ -27,6 +27,21 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             this.DataContext = this;
         }
+        
+
+        public static readonly DependencyProperty SelectedResizableRectangleProperty =
+        DependencyProperty.Register("SelectedResizableRectangle", typeof(ResizableRectangle), typeof(ResizableRectangle));
+        public ResizableRectangle SelectedResizableRectangle
+        {
+            get
+            {
+                return (ResizableRectangle)GetValue(SelectedResizableRectangleProperty);
+            }
+            set
+            {
+                SetValue(SelectedResizableRectangleProperty, value);
+            }
+        }
 
         public static readonly DependencyProperty RectangleHeightProperty =
         DependencyProperty.Register("RectangleHeight", typeof(double), typeof(ResizableRectangle));

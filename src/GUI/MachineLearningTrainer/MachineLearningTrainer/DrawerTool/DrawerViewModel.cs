@@ -92,7 +92,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-
+        public ObservableCollection<ResizableRectangle> SelectedResizableRectangle1 { get; set; } = new ObservableCollection<ResizableRectangle>();
 
 
         private ICommand _exportPascalVoc;
@@ -268,10 +268,9 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnRename()
         {
-            foreach (var rec in AllRectangles)
+            foreach(var rec in AllRectangles)
             {
-                for (int i = 0; i < AllRectangles.Count; i++)
-                    SelectedResizableRectangle.RectangleText = DefaultLabel;
+                rec.RectangleText = DefaultLabel;
             }
         }
 
@@ -438,7 +437,6 @@ namespace MachineLearningTrainer.DrawerTool
                 SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
                 SelectedResizableRectangle.RectangleOpacity = 0.5;
                 SelectedResizableRectangle.VisibilityChanged = true;
-                
             }
         }
 

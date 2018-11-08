@@ -150,7 +150,7 @@
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -180,9 +180,9 @@
             <ListBox.ItemTemplate>
                 <DataTemplate>
                     <WrapPanel>
-                        <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
+                        <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="5,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
+                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

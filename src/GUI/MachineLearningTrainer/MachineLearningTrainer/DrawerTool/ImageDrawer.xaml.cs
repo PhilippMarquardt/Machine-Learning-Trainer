@@ -227,6 +227,10 @@ namespace MachineLearningTrainer.DrawerTool
             var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
             binding.UpdateSource();
         }
+        public void ListBoxTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).ComboBoxNames();
+        }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
