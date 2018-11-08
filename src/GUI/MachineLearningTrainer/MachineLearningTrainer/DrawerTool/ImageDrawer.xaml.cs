@@ -1,9 +1,11 @@
-﻿using OpenCvSharp;
+﻿using Microsoft.Win32;
+using OpenCvSharp;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Drawing;
+using System.Drawing.Imaging;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -30,6 +32,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ImageDrawer()
         {
             InitializeComponent();
+
         }
         
         #region Property changed area
@@ -52,7 +55,6 @@ namespace MachineLearningTrainer.DrawerTool
         public ResizableRectangle SelectedResizableRectangle { get; }
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
-
 
         public void ListBox_RightButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -150,10 +152,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Width / 2, croppedImage.Height / 2);
-                Mat dst = new Mat();
-                Cv2.Resize(croppedImage, dst, size);
-                rec.CroppedImage = SupportCode.ConvertMat2BmpImg(dst);
+                rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
         }
 
@@ -190,35 +189,9 @@ namespace MachineLearningTrainer.DrawerTool
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
                 Mat croppedImage = new Mat(mat, rectCrop);
 
-                OpenCvSharp.Size size = new OpenCvSharp.Size(croppedImage.Width / 2, croppedImage.Height / 2);
-                Mat dst = new Mat();
-                Cv2.Resize(croppedImage, dst, size);
-
-                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(dst);
+                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
         }
-        
-        
-        //private void CreateSaveBitmap(Canvas canvas, string filename)
-        //{
-        //    RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
-        //     (int)canvas.Width, (int)canvas.Height,
-        //     96d, 96d, PixelFormats.Pbgra32);
-        //    // needed otherwise the image output is black
-        //    canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
-        //    canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
-
-        //    renderBitmap.Render(canvas);
-
-        //    //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-        //    PngBitmapEncoder encoder = new PngBitmapEncoder();
-        //    encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-
-        //    using (FileStream file = File.Create(filename))
-        //    {
-        //        encoder.Save(file);
-        //    }
-        //}
 
         public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
@@ -233,6 +206,26 @@ namespace MachineLearningTrainer.DrawerTool
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             cropImageLabel();
+
+            //string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
+
+            //string path1 = destFileName + @"\CroppedImages\";
+
+            //if (!Directory.Exists(path1))
+            //{
+            //    Directory.CreateDirectory(path1);
+            //}
+
+            //foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            //{
+            //    BitmapEncoder encoder = new PngBitmapEncoder();
+            //    encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
+            //    string filename = path1 + (this.DataContext as DrawerViewModel).AllRectangles.IndexOf(rec) + ".png";
+            //    using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
+            //    {
+            //        encoder.Save(fileStream);
+            //    }
+            //}
         }
     }
 }
