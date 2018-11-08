@@ -92,8 +92,6 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-        public ObservableCollection<ResizableRectangle> SelectedResizableRectangle1 { get; set; } = new ObservableCollection<ResizableRectangle>();
-
 
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc

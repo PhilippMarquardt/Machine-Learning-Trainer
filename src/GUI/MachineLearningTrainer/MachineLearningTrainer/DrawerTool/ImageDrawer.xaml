@@ -156,20 +156,41 @@
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                    <MenuItem Header="Copy      Strg + C" Command="{Binding CopyCommand}">
+                    <MenuItem Command="{Binding CopyCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Label Content="Copy"/>
+                                <Label Content="Rename AllDelete" Foreground="Transparent"/>
+                                <Label Content="Strg + C"/>
+                            </WrapPanel>
+                        </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Header="Rename    Strg + U" Command="{Binding RenameCommand}">
+                    <MenuItem Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Label Content="Rename All"/>
+                                <Label Content="CopyDelete" Foreground="Transparent"/>
+                                <Label Content="Strg + U"/>
+                            </WrapPanel>
+                        </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Header="Delete    Entf" Command="{Binding DeleteCommand}">
+                    <MenuItem Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Label Content="Delete"/>
+                                <Label Content="RenameAll Copy" Foreground="Transparent"/>
+                                <Label Content="Entf"/>
+                            </WrapPanel>
+                        </MenuItem.Header>
                     </MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>
@@ -188,20 +209,41 @@
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                    <MenuItem Header="Copy      Strg + C" Command="{Binding CopyCommand}">
+                    <MenuItem Command="{Binding CopyCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Label Content="Copy"/>
+                                <Label Content="Rename AllDelete" Foreground="Transparent"/>
+                                <Label Content="Strg + C"/>
+                            </WrapPanel>
+                        </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Header="Rename    Strg + U" Command="{Binding RenameCommand}">
+                    <MenuItem Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Label Content="Rename All"/>
+                                <Label Content="CopyDelete" Foreground="Transparent"/>
+                                <Label Content="Strg + U"/>
+                            </WrapPanel>
+                        </MenuItem.Header>
                     </MenuItem>
-                    <MenuItem Header="Delete    Entf" Command="{Binding DeleteCommand}">
+                    <MenuItem Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
                             <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
                         </MenuItem.Icon>
+                        <MenuItem.Header>
+                            <WrapPanel>
+                                <Label Content="Delete"/>
+                                <Label Content="RenameAll Copy" Foreground="Transparent"/>
+                                <Label Content="Entf"/>
+                            </WrapPanel>
+                        </MenuItem.Header>
                     </MenuItem>
                 </ContextMenu>
             </ListBox.ContextMenu>

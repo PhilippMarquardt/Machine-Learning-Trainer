@@ -58,8 +58,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).IsOpen = true;
         }
-        
-
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
