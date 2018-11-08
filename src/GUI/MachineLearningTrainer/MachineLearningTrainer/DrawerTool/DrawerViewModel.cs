@@ -236,7 +236,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
-            for (int i = 0; i < AllRectangles.Count; i++)
+            for (int i = 0; i < AllRectangles.Count+1; i++)
                 AllRectangles.Remove(SelectedResizableRectangle);
             this.IsOpen = false;
 
@@ -277,7 +277,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnRename()
         {
-            foreach(var rec in AllRectangles)
+            foreach(var rec in AllRectanglesView)
             {
                 rec.RectangleText = DefaultLabel;
             }
@@ -628,7 +628,11 @@ namespace MachineLearningTrainer.DrawerTool
         
         public void ComboBoxNames()
         {
-            foreach(var rec in AllRectangles)
+            ComboBoxItems.Clear();
+            ComboBoxItems.Add("All Labels");
+            SelectedComboBoxItem = "All Labels";
+
+            foreach (var rec in AllRectangles)
             {
                 if (!ComboBoxItems.Contains(rec.RectangleText))
                 {
