@@ -32,7 +32,6 @@ namespace MachineLearningTrainer.DrawerTool
         public ImageDrawer()
         {
             InitializeComponent();
-
         }
         
         #region Property changed area
@@ -207,25 +206,25 @@ namespace MachineLearningTrainer.DrawerTool
         {
             cropImageLabel();
 
-            //string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
+            string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
 
-            //string path1 = destFileName + @"\CroppedImages\";
+            string path1 = destFileName + @"_Cropped_Images\";
 
-            //if (!Directory.Exists(path1))
-            //{
-            //    Directory.CreateDirectory(path1);
-            //}
+            if (!Directory.Exists(path1))
+            {
+                Directory.CreateDirectory(path1);
+            }
 
-            //foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            //{
-            //    BitmapEncoder encoder = new PngBitmapEncoder();
-            //    encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
-            //    string filename = path1 + (this.DataContext as DrawerViewModel).AllRectangles.IndexOf(rec) + ".png";
-            //    using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
-            //    {
-            //        encoder.Save(fileStream);
-            //    }
-            //}
+            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            {
+                BitmapEncoder encoder = new PngBitmapEncoder();
+                encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
+                string filename = path1 + (this.DataContext as DrawerViewModel).AllRectangles.IndexOf(rec) + ".png";
+                using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
+                {
+                    encoder.Save(fileStream);
+                }
+            }
         }
     }
 }

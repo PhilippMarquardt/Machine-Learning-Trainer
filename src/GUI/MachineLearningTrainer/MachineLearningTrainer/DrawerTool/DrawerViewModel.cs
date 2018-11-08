@@ -254,9 +254,20 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnCopy()
         {
-            AllRectangles.Add(new ResizableRectangle { X = SelectedResizableRectangle.X + 30, Y = SelectedResizableRectangle.Y + 30,
-                RectangleHeight = SelectedResizableRectangle.RectangleHeight, RectangleWidth = SelectedResizableRectangle.RectangleWidth,
-                RectangleText = SelectedResizableRectangle.RectangleText });
+            ResizableRectangle copyRect = new ResizableRectangle();
+
+            copyRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
+            copyRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
+            copyRect.RectangleText = SelectedResizableRectangle.RectangleText;
+            copyRect.X = SelectedResizableRectangle.X + 30;
+            copyRect.Y = SelectedResizableRectangle.Y + 30;
+
+            Canvas.SetLeft(copyRect, SelectedResizableRectangle.X + 30);
+            Canvas.SetTop(copyRect, SelectedResizableRectangle.Y + 30);
+            
+            AllRectanglesView.Add(copyRect);
+            AllRectangles.Add(copyRect);
+            
         }
 
         private bool CanCopy()
@@ -512,7 +523,6 @@ namespace MachineLearningTrainer.DrawerTool
             get { return _name; }
             set { _name = value; }
         }
-
         private void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
@@ -559,8 +569,6 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-
-            
         }
 
         private bool _isOpen = false;
