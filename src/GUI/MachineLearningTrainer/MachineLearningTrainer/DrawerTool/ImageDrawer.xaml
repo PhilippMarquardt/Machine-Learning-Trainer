@@ -74,10 +74,10 @@
                     Modifiers="Ctrl"
                     Command="{Binding DeleteLastRectangleCommand}"
                     CommandParameter="Z"/>
-        <KeyBinding Key="C"
+        <KeyBinding Key="D"
                     Modifiers="Ctrl"
-                    Command="{Binding CopyCommand}"
-                    CommandParameter="C"/>
+                    Command="{Binding DuplicateCommand}"
+                    CommandParameter="D"/>
         <KeyBinding Key="U"
                     Modifiers="Ctrl"
                     Command="{Binding RenameCommand}"
@@ -159,13 +159,13 @@
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                    <MenuItem Command="{Binding CopyCommand}">
+                    <MenuItem Command="{Binding DuplicateCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\Duplicate.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
-                                <Label Content="Copy"/>
+                                <Label Content="Duplicate"/>
                                 <Label Content="Rename AllDelete" Foreground="Transparent"/>
                                 <Label Content="Strg + C"/>
                             </WrapPanel>
@@ -178,7 +178,7 @@
                         <MenuItem.Header>
                             <WrapPanel>
                                 <Label Content="Rename All"/>
-                                <Label Content="CopyDelete" Foreground="Transparent"/>
+                                <Label Content="DuplicateDelete" Foreground="Transparent"/>
                                 <Label Content="Strg + U"/>
                             </WrapPanel>
                         </MenuItem.Header>
@@ -190,7 +190,7 @@
                         <MenuItem.Header>
                             <WrapPanel>
                                 <Label Content="Delete"/>
-                                <Label Content="RenameAll Copy" Foreground="Transparent"/>
+                                <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
                                 <Label Content="Entf"/>
                             </WrapPanel>
                         </MenuItem.Header>
@@ -212,13 +212,13 @@
             </ListBox.ItemTemplate>
             <ListBox.ContextMenu>
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                    <MenuItem Command="{Binding CopyCommand}">
+                    <MenuItem Command="{Binding DuplicateCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\copy.png"/>
+                            <Image Source="C:\Users\hsa\Pictures\Icons\Duplicate.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
-                                <Label Content="Copy"/>
+                                <Label Content="Duplicate"/>
                                 <Label Content="Rename AllDelete" Foreground="Transparent"/>
                                 <Label Content="Strg + C"/>
                             </WrapPanel>
@@ -231,7 +231,7 @@
                         <MenuItem.Header>
                             <WrapPanel>
                                 <Label Content="Rename All"/>
-                                <Label Content="CopyDelete" Foreground="Transparent"/>
+                                <Label Content="DuplicateDelete" Foreground="Transparent"/>
                                 <Label Content="Strg + U"/>
                             </WrapPanel>
                         </MenuItem.Header>
@@ -243,7 +243,7 @@
                         <MenuItem.Header>
                             <WrapPanel>
                                 <Label Content="Delete"/>
-                                <Label Content="RenameAll Copy" Foreground="Transparent"/>
+                                <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
                                 <Label Content="Entf"/>
                             </WrapPanel>
                         </MenuItem.Header>

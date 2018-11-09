@@ -54,7 +54,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
-            CopyCommand = new MyICommand(OnCopy, CanCopy);
+            DuplicateCommand = new MyICommand(OnDuplicate, CanDuplicate);
             RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
@@ -74,7 +74,7 @@ namespace MachineLearningTrainer.DrawerTool
         //}
 
         public MyICommand DeleteCommand { get; set; }
-        public MyICommand CopyCommand   { get; set; }
+        public MyICommand DuplicateCommand   { get; set; }
         public MyICommand RenameCommand { get; set; }
         public bool Enabled             { get; set; } = true;
 
@@ -228,7 +228,7 @@ namespace MachineLearningTrainer.DrawerTool
                 _selectedResizableRectangle = value;
                 SelectedRectangleFill();
                 DeleteCommand.RaiseCanExecuteChanged();
-                CopyCommand.RaiseCanExecuteChanged();
+                DuplicateCommand.RaiseCanExecuteChanged();
                 RenameCommand.RaiseCanExecuteChanged();
             }
         }
@@ -260,26 +260,26 @@ namespace MachineLearningTrainer.DrawerTool
             return SelectedResizableRectangle != null;
         }
 
-        private void OnCopy()
+        private void OnDuplicate()
         {
-            ResizableRectangle copyRect = new ResizableRectangle();
+            ResizableRectangle DuplicateRect = new ResizableRectangle();
 
-            copyRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
-            copyRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
-            copyRect.RectangleText = SelectedResizableRectangle.RectangleText;
-            copyRect.X = SelectedResizableRectangle.X + 30;
-            copyRect.Y = SelectedResizableRectangle.Y + 30;
+            DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
+            DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
+            DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
+            DuplicateRect.X = SelectedResizableRectangle.X + 30;
+            DuplicateRect.Y = SelectedResizableRectangle.Y + 30;
 
-            Canvas.SetLeft(copyRect, SelectedResizableRectangle.X + 30);
-            Canvas.SetTop(copyRect, SelectedResizableRectangle.Y + 30);
+            Canvas.SetLeft(DuplicateRect, SelectedResizableRectangle.X + 30);
+            Canvas.SetTop(DuplicateRect, SelectedResizableRectangle.Y + 30);
             
-            AllRectanglesView.Add(copyRect);
-            AllRectangles.Add(copyRect);
+            AllRectanglesView.Add(DuplicateRect);
+            AllRectangles.Add(DuplicateRect);
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("AllRectangles");
         }
 
-        private bool CanCopy()
+        private bool CanDuplicate()
         {
             return SelectedResizableRectangle != null;
         }
