@@ -126,7 +126,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             if ((this.DataContext as DrawerViewModel).Enabled == true)
             {
-                //cropImageLabel();
+                cropImageLabel();
             }
         }
 
@@ -190,6 +190,15 @@ namespace MachineLearningTrainer.DrawerTool
 
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
+
+            foreach(var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            {
+                if(rec.CroppedImage == null)
+                {
+                    cropImageLabel();
+                }
+            }
+            
             
         }
 

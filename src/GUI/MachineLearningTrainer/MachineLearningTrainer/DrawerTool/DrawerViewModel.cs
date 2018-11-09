@@ -728,7 +728,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private string _selectedComboBoxItem;
-
+        
         public string SelectedComboBoxItem
         {
             get
