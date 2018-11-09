@@ -467,6 +467,15 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private ICommand _enterCommand;
+        public ICommand EnterCommand
+        {
+            get
+            {
+                return _enterCommand ?? (_enterCommand = new CommandHandler(() => FilterName(), _canExecute));
+            }
+        }
+
         public void DeleteSelection()
         {
             SelectedResizableRectangle = null;
