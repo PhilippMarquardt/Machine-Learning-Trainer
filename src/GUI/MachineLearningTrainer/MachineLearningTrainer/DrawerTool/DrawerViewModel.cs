@@ -242,15 +242,18 @@ namespace MachineLearningTrainer.DrawerTool
             }
                 
             this.IsOpen = false;
+            temp = SelectedComboBoxItem;
             ComboBoxNames();
             AllRectanglesView = AllRectangles;
             FilteredRectangles = AllRectangles;
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("FilteredRectangles");
             OnPropertyChanged("ComboBoxNames");
-
-
+            SelectedComboBoxItem = temp;
+            FilterName();
         }
+
+        public string temp { get; set; }
 
         private bool CanDelete()
         {
@@ -700,7 +703,7 @@ namespace MachineLearningTrainer.DrawerTool
         
         public void ComboBoxNames()
         {
-            string temp = SelectedComboBoxItem;
+            temp = SelectedComboBoxItem;
             ComboBoxItems.Clear();
             ComboBoxItems.Add("All Labels");
             SelectedComboBoxItem = temp;
