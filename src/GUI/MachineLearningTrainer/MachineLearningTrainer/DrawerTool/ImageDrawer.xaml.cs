@@ -123,11 +123,7 @@ namespace MachineLearningTrainer.DrawerTool
                 int recHeight = (Convert.ToInt16(h));
                 
             }
-
-            if ((this.DataContext as DrawerViewModel).Enabled == true)
-            {
-                cropImageLabel();
-            }
+            
         }
 
         private void cropImageLabel()
