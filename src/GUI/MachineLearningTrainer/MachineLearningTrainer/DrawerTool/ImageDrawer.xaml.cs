@@ -32,6 +32,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ImageDrawer()
         {
             InitializeComponent();
+            cnvImage.Cursor = Cursors.Cross;
         }
         
         #region Property changed area
@@ -85,8 +86,7 @@ namespace MachineLearningTrainer.DrawerTool
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 //cnvImage.Children.Add(rectSelectArea);
             }
-
-            Console.WriteLine((this.DataContext as DrawerViewModel).AllRectanglesView.Count + "," + (this.DataContext as DrawerViewModel).AllRectangles.Count);
+            
         }
         
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
@@ -190,6 +190,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
+            
         }
 
         public void TextBox_TextChanged(object sender, TextChangedEventArgs e)

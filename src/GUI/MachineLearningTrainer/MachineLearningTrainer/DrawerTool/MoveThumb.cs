@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
 
@@ -31,9 +32,12 @@ namespace MachineLearningTrainer.DrawerTool
                     rec.X = rec.X + e.HorizontalChange;
                     rec.Y = rec.Y + e.VerticalChange;
                     //(this.DataContext as DrawerViewModel).MoveRectangle(rec);
+                    
                 }
-
+                
             }
+            
         }
+
     }
 }

@@ -771,6 +771,5 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("FilterVisibility");
             }
         }
-
     }
 }

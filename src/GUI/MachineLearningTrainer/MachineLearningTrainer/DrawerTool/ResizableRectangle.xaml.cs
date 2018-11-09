@@ -212,5 +212,6 @@ namespace MachineLearningTrainer.DrawerTool
                 SetValue(ThumbSizeProperty, value);
             }
         }
+        
     }
 }
