@@ -98,7 +98,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-               
                 return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
             }
         }
@@ -115,7 +114,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-
                 return _addRectangle ?? (_addRectangle = new CommandHandler(() => AddNewRectangle(), _canExecute));
             }
         }
@@ -125,7 +123,7 @@ namespace MachineLearningTrainer.DrawerTool
             //AllRectanglesView = AllRectangles;
             //OnPropertyChanged("AllRectanglesView");
 
-            if(SelectedComboBoxItem != "All Labels")
+            if (SelectedComboBoxItem != "All Labels")
             {
                 OnPropertyChanged("AllRectanglesView");
                 Enabled = false;
@@ -142,8 +140,6 @@ namespace MachineLearningTrainer.DrawerTool
                 else
                     _rectangleText = "";
             }
-
-            
         }
 
         private ICommand _loadImageCommand;
@@ -164,11 +160,14 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 this.IsEnabled = true;
                 AllRectangles.Clear();
+
+                LoadRectangles();
+                ComboBoxNames();
+                SortList();
             }
 
-            LoadRectangles();
-            ComboBoxNames();
-            SortList();
+
+            
 
         }
         private string _imagePath;
@@ -237,13 +236,19 @@ namespace MachineLearningTrainer.DrawerTool
         private void OnDelete()
         {
             for (int i = 0; i < AllRectangles.Count+1; i++)
+            {
                 AllRectangles.Remove(SelectedResizableRectangle);
+                AllRectanglesView.Remove(SelectedResizableRectangle);
+            }
+                
             this.IsOpen = false;
-
+            ComboBoxNames();
             AllRectanglesView = AllRectangles;
             FilteredRectangles = AllRectangles;
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("FilteredRectangles");
+            OnPropertyChanged("ComboBoxNames");
+
 
         }
 
@@ -267,7 +272,8 @@ namespace MachineLearningTrainer.DrawerTool
             
             AllRectanglesView.Add(copyRect);
             AllRectangles.Add(copyRect);
-            
+            OnPropertyChanged("AllRectanglesView");
+            OnPropertyChanged("AllRectangles");
         }
 
         private bool CanCopy()
@@ -523,6 +529,13 @@ namespace MachineLearningTrainer.DrawerTool
             get { return _name; }
             set { _name = value; }
         }
+
+        private string _dst;
+        public string dst
+        {
+            get { return _dst; }
+            set { _dst = value; }
+        }
         private void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
@@ -564,6 +577,63 @@ namespace MachineLearningTrainer.DrawerTool
                                 Canvas.SetTop(loadedRect, ymin);
 
                                 AllRectangles.Add(loadedRect);
+                            }
+                        }
+                    }
+                }
+            }
+
+            else
+            {
+                MessageBoxResult result = MessageBox.Show("No XML File found!" + "\n" + "Do you want to browse a XML File?", "Information", MessageBoxButton.YesNo,MessageBoxImage.Information,MessageBoxResult.OK);
+
+                if (result == MessageBoxResult.Yes)
+                {
+                    OpenFileDialog openFileDialog = new OpenFileDialog();
+                    openFileDialog.Filter = "XML Files | *.xml";
+
+                    if (openFileDialog.ShowDialog() == true)
+                        dst = openFileDialog.FileName;
+
+                    if (dst != null)
+                    {
+                        XmlDocument doc = new XmlDocument();
+                        doc.Load(dst);
+
+                        foreach (XmlNode node in doc.DocumentElement)
+                        {
+
+                            if (node.Name == "object")
+                            {
+                                foreach (XmlNode objectChild in node)
+                                {
+                                    if (objectChild.Name == "name")
+                                    {
+                                        name = objectChild.InnerText;
+                                        RectangleText = name;
+                                    }
+
+                                    if (objectChild.Name == "bndbox")
+                                    {
+                                        int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                        int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                        int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                        int ymax = int.Parse(objectChild["ymax"].InnerText);
+
+                                        ResizableRectangle loadedRect = new ResizableRectangle();
+
+                                        loadedRect.RectangleHeight = ymax - ymin;
+                                        loadedRect.RectangleWidth = xmax - xmin;
+                                        loadedRect.RectangleText = name;
+                                        loadedRect.X = xmin;
+                                        loadedRect.Y = ymin;
+
+                                        Canvas.SetLeft(loadedRect, xmin);
+                                        Canvas.SetTop(loadedRect, ymin);
+
+                                        AllRectangles.Add(loadedRect);
+                                    }
+                                }
                             }
                         }
                     }
@@ -612,6 +682,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             else if(SelectedComboBoxItem != "All Labels")
             {
+                DefaultLabel = SelectedComboBoxItem;
                 FilterVisibility1 = true;
                 FilterVisibility = false;
 
@@ -623,14 +694,20 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("FilteredRectangles");
                 OnPropertyChanged("FilterVisibility");
                 OnPropertyChanged("FilterVisibility1");
+                OnPropertyChanged("DefaultLabel");
             }
         }
         
         public void ComboBoxNames()
         {
+            string temp = SelectedComboBoxItem;
             ComboBoxItems.Clear();
             ComboBoxItems.Add("All Labels");
-            SelectedComboBoxItem = "All Labels";
+            SelectedComboBoxItem = temp;
+            if (!ComboBoxItems.Contains(temp))
+            {
+                SelectedComboBoxItem = "All Labels";
+            }
 
             foreach (var rec in AllRectangles)
             {
