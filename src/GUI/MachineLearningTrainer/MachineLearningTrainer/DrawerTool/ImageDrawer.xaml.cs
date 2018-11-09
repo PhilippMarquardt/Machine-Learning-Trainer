@@ -149,8 +149,8 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 Mat mat = SupportCode.ConvertBmp2Mat(src);
                 OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-                Mat croppedImage = new Mat(mat, rectCrop);
 
+                Mat croppedImage = new Mat(mat, rectCrop);
                 rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
         }
@@ -206,25 +206,25 @@ namespace MachineLearningTrainer.DrawerTool
         {
             cropImageLabel();
 
-            string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
+            //string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
 
-            string path1 = destFileName + @"_Cropped_Images\";
+            //string path1 = destFileName + @"_Cropped_Images\";
 
-            if (!Directory.Exists(path1))
-            {
-                Directory.CreateDirectory(path1);
-            }
+            //if (!Directory.Exists(path1))
+            //{
+            //    Directory.CreateDirectory(path1);
+            //}
 
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            {
-                BitmapEncoder encoder = new PngBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
-                string filename = path1 + (this.DataContext as DrawerViewModel).AllRectangles.IndexOf(rec) + ".png";
-                using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
-                {
-                    encoder.Save(fileStream);
-                }
-            }
+            //foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            //{
+            //    BitmapEncoder encoder = new PngBitmapEncoder();
+            //    encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
+            //    string filename = path1 + (this.DataContext as DrawerViewModel).AllRectangles.IndexOf(rec) + ".png";
+            //    using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
+            //    {
+            //        encoder.Save(fileStream);
+            //    }
+            //}
         }
     }
 }

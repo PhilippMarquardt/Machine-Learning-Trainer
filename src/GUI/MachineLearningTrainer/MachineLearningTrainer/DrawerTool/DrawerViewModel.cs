@@ -707,10 +707,6 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxItems.Clear();
             ComboBoxItems.Add("All Labels");
             SelectedComboBoxItem = temp;
-            if (!ComboBoxItems.Contains(temp))
-            {
-                SelectedComboBoxItem = "All Labels";
-            }
 
             foreach (var rec in AllRectangles)
             {
