@@ -27,7 +27,15 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             this.DataContext = this;
         }
-        
+
+        private void Rectangle_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.OriginalSource is Rectangle)
+            {
+                Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
+                this.CroppedImage = null;
+            }
+        }
 
         public static readonly DependencyProperty SelectedResizableRectangleProperty =
         DependencyProperty.Register("SelectedResizableRectangle", typeof(ResizableRectangle), typeof(ResizableRectangle));
