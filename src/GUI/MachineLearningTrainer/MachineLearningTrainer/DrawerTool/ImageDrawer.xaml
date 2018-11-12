@@ -102,7 +102,7 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Click="Button_Click" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML" Command="{Binding LoadXMLCommand}"/>
-            <!--<Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>-->
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click1"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>

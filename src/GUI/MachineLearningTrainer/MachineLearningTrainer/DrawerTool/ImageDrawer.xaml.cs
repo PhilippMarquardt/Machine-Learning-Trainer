@@ -91,14 +91,14 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void UserControl_MouseMove(object sender, MouseEventArgs e)
         {
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            {
-                while (rec.CroppedImage == null && (this.DataContext as DrawerViewModel).AllRectangles.Count > 0
-                    && (this.DataContext as DrawerViewModel).Enabled == true) 
-                { 
-                    cropImageLabel();
-                }
-            }
+            //foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            //{
+            //    while (rec.CroppedImage == null && (this.DataContext as DrawerViewModel).AllRectangles.Count > 0
+            //        && (this.DataContext as DrawerViewModel).Enabled == true) 
+            //    { 
+            //        cropImageLabel();
+            //    }
+            //}
         }
 
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
@@ -244,6 +244,11 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
+        }
+
+        private void Button_Click1(object sender, RoutedEventArgs e)
+        {
+            cropImageLabel();
         }
     }
 }
