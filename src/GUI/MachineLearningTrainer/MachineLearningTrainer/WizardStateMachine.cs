@@ -14,7 +14,10 @@ namespace MachineLearningTrainer
         TabularDataDecision,
         CNNDataDecision,
         DNN,
-        Drawer
+        Drawer,
+        ObjectDetectorSelection,
+        ObjectDetectorDataSelection
+
        
     }
 
@@ -70,9 +73,18 @@ namespace MachineLearningTrainer
                 { new StateTransition(ProcessState.TabularDataDecision, Command.Previous), ProcessState.DataDecision },
                 { new StateTransition(ProcessState.TabularDataDecision, Command.Right), ProcessState.DNN },
 
+                
                 { new StateTransition(ProcessState.DNN, Command.Previous), ProcessState.TabularDataDecision },
 
                 { new StateTransition(ProcessState.Drawer, Command.Previous), ProcessState.WelcomePage },
+
+                { new StateTransition(ProcessState.CNNDataDecision, Command.Previous), ProcessState.DataDecision },
+                { new StateTransition(ProcessState.CNNDataDecision, Command.Right), ProcessState.ObjectDetectorSelection },
+
+                { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Right), ProcessState.ObjectDetectorDataSelection },
+                { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Left), ProcessState.ObjectDetectorDataSelection },
+
+                 { new StateTransition(ProcessState.ObjectDetectorDataSelection, Command.Previous), ProcessState.ObjectDetectorSelection },
 
             };
         }

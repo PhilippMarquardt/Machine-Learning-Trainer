@@ -222,11 +222,19 @@ namespace MachineLearningTrainer
             }
         }
 
-        private void SpecifyInputDirectory()
+        private void setInputPathDNN()
+        {
+            InputPath = SpecifyInputDirectory();
+        }
+
+        
+
+        private string SpecifyInputDirectory()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             if (openFileDialog.ShowDialog() == true)
-                InputPath = openFileDialog.FileName;
+                return openFileDialog.FileName;
+            return "";
         }
     
 
@@ -331,8 +339,91 @@ namespace MachineLearningTrainer
                 DeepNeuralNetworkHiddenLayers.Insert(DeepNeuralNetworkHiddenLayers.Count-1,newLayer);
         }
         #endregion
+
+
+        #region ObjectDetector
+
+        private string SpecifyInputFolder()
+        {
+            using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    return fbd.SelectedPath;
+                }
+            }
+            return "";
+        }
+
+        private ICommand _onSelectImageFolderClick;
+
+        public ICommand OnSelectImageFolderClick
+        {
+            get
+            {
+                return _onSelectImageFolderClick ?? (_onSelectImageFolderClick = new CommandHandler(() => SelectImageFolderPath(), _canExecute));
+            }
+        }
+
+        private ICommand _onSelectAnnoFolderClick;
+
+        public ICommand OnSelectAnnoFolderClick
+        {
+            get
+            {
+                return _onSelectAnnoFolderClick ?? (_onSelectAnnoFolderClick = new CommandHandler(() => SelectAnnoFolderPath(), _canExecute));
+            }
+        }
+
+
+        private void SelectImageFolderPath()
+        {
+            ImageFolderPath = SpecifyInputFolder();
+        }
+
+        private void SelectAnnoFolderPath()
+        {
+            AnnoFolderPath = SpecifyInputFolder();
+        }
+
+
+        private string _imageFolderPath;
+
+        public string ImageFolderPath
+        {
+            get
+            {
+                return this._imageFolderPath;
+            }
+            set
+            {
+                this._imageFolderPath = value;
+                OnPropertyChanged("ImageFolderPath");
+            }
+        }
+
+
+        private string _annoFolderPath;
+
+        public string AnnoFolderPath
+        {
+            get
+            {
+                return this._annoFolderPath;
+            }
+            set
+            {
+                this._annoFolderPath = value;
+                OnPropertyChanged("AnnoFolderPath");
+            }
+        }
+
+        #endregion
+
     }
-  
+
 
     public class CommandHandler : ICommand
     {

@@ -101,8 +101,8 @@
 
             <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
-                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto"/>
-                <ItemsControl ItemsSource="{Binding AllRectangles}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" Stretch="Uniform"/>
+                <ItemsControl ItemsSource="{Binding AllRectangles}" Background="Transparent"  x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
                               Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
