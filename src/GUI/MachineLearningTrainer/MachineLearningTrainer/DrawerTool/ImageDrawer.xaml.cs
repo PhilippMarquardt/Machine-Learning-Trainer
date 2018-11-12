@@ -93,8 +93,9 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
             {
-                while (rec.CroppedImage == null)
-                {
+                while (rec.CroppedImage == null && (this.DataContext as DrawerViewModel).AllRectangles.Count > 0
+                    && (this.DataContext as DrawerViewModel).Enabled == true) 
+                { 
                     cropImageLabel();
                 }
             }

@@ -74,9 +74,9 @@ namespace MachineLearningTrainer.DrawerTool
         //}
 
         public MyICommand DeleteCommand { get; set; }
-        public MyICommand DuplicateCommand   { get; set; }
+        public MyICommand DuplicateCommand { get; set; }
         public MyICommand RenameCommand { get; set; }
-        public bool Enabled             { get; set; } = true;
+        public bool Enabled { get; set; } = true;
 
         public int CompareTo(object obj)
         {
@@ -107,7 +107,7 @@ namespace MachineLearningTrainer.DrawerTool
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
         }
-        
+
 
         private ICommand _addRectangle;
         public ICommand AddRectangle
@@ -162,7 +162,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 this.IsEnabled = true;
                 AllRectangles.Clear();
-                
+
                 LoadRectangles();
                 ComboBoxNames();
                 SortList();
@@ -209,11 +209,11 @@ namespace MachineLearningTrainer.DrawerTool
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
-            this._mainGrid.Children.Clear();        
-            usc.DataContext = this._mainViewModel;           
+            this._mainGrid.Children.Clear();
+            usc.DataContext = this._mainViewModel;
             this._mainGrid.Children.Add(usc);
         }
-        
+
         private ResizableRectangle _selectedResizableRectangle;
         public ResizableRectangle SelectedResizableRectangle
         {
@@ -234,12 +234,12 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
-            for (int i = 0; i < AllRectangles.Count+1; i++)
+            for (int i = 0; i < AllRectangles.Count + 1; i++)
             {
                 AllRectangles.Remove(SelectedResizableRectangle);
                 AllRectanglesView.Remove(SelectedResizableRectangle);
             }
-                
+
             this.IsOpen = false;
             temp = SelectedComboBoxItem;
             ComboBoxNames();
@@ -271,7 +271,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             Canvas.SetLeft(DuplicateRect, SelectedResizableRectangle.X + 30);
             Canvas.SetTop(DuplicateRect, SelectedResizableRectangle.Y + 30);
-            
+
             AllRectanglesView.Add(DuplicateRect);
             AllRectangles.Add(DuplicateRect);
             OnPropertyChanged("AllRectanglesView");
@@ -285,7 +285,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnRename()
         {
-            foreach(var rec in AllRectanglesView)
+            foreach (var rec in AllRectanglesView)
             {
                 rec.RectangleText = DefaultLabel;
             }
@@ -304,7 +304,7 @@ namespace MachineLearningTrainer.DrawerTool
                 return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
             }
         }
-        
+
         private void DeleteAll()
         {
             AllRectangles.Clear();
@@ -437,12 +437,12 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("RectangleFill");
             }
         }
-        
+
         public void SelectedRectangleFill()
         {
             if (SelectedResizableRectangle != null)
             {
-                foreach(var rect in AllRectangles)
+                foreach (var rect in AllRectangles)
                 {
                     rect.RectangleFill = System.Windows.Media.Brushes.Blue;
                     rect.RectangleOpacity = 0.07;
@@ -450,7 +450,7 @@ namespace MachineLearningTrainer.DrawerTool
                     rect.ThumbSize = 3;
                     rect.VisibilityChanged = false;
                 }
-                
+
                 SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
                 SelectedResizableRectangle.RectangleOpacity = 0.5;
                 SelectedResizableRectangle.VisibilityChanged = true;
@@ -500,7 +500,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DeleteLastRectangle()
         {
-            if (AllRectangles.Count > 0) 
+            if (AllRectangles.Count > 0)
                 AllRectangles.RemoveAt(AllRectangles.Count - 1);
         }
 
@@ -517,7 +517,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("CroppedImage");
             }
         }
-        
+
         private double x;
         public double X
         {
@@ -593,63 +593,6 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-
-            //else
-            //{
-            //    MessageBoxResult result = MessageBox.Show("No XML File found!" + "\n" + "Do you want to browse a XML File?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.OK);
-
-            //    if (result == MessageBoxResult.Yes)
-            //    {
-            //        OpenFileDialog openFileDialog = new OpenFileDialog();
-            //        openFileDialog.Filter = "XML Files | *.xml";
-
-            //        if (openFileDialog.ShowDialog() == true)
-            //            dst = openFileDialog.FileName;
-
-            //        if (dst != null)
-            //        {
-            //            XmlDocument doc = new XmlDocument();
-            //            doc.Load(dst);
-
-            //            foreach (XmlNode node in doc.DocumentElement)
-            //            {
-
-            //                if (node.Name == "object")
-            //                {
-            //                    foreach (XmlNode objectChild in node)
-            //                    {
-            //                        if (objectChild.Name == "name")
-            //                        {
-            //                            name = objectChild.InnerText;
-            //                            RectangleText = name;
-            //                        }
-
-            //                        if (objectChild.Name == "bndbox")
-            //                        {
-            //                            int xmin = int.Parse(objectChild["xmin"].InnerText);
-            //                            int ymin = int.Parse(objectChild["ymin"].InnerText);
-            //                            int xmax = int.Parse(objectChild["xmax"].InnerText);
-            //                            int ymax = int.Parse(objectChild["ymax"].InnerText);
-
-            //                            ResizableRectangle loadedRect = new ResizableRectangle();
-
-            //                            loadedRect.RectangleHeight = ymax - ymin;
-            //                            loadedRect.RectangleWidth = xmax - xmin;
-            //                            loadedRect.RectangleText = name;
-            //                            loadedRect.X = xmin;
-            //                            loadedRect.Y = ymin;
-
-            //                            Canvas.SetLeft(loadedRect, xmin);
-            //                            Canvas.SetTop(loadedRect, ymin);
-
-            //                            AllRectangles.Add(loadedRect);
-            //                        }
-            //                    }
-            //                }
-            //            }
-            //        }
-            //    }
-            //}
         }
 
         private bool _isOpen = false;
@@ -676,9 +619,9 @@ namespace MachineLearningTrainer.DrawerTool
             AllRectangles = sortedRectangles;
             OnPropertyChanged("AllRectangles");
         }
-        
+
         public void FilterName()
-        {  
+        {
             if (SelectedComboBoxItem == "All Labels")
             {
                 FilterVisibility1 = false;
@@ -691,7 +634,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("FilterVisibility1");
             }
 
-            else if(SelectedComboBoxItem != "All Labels")
+            else if (SelectedComboBoxItem != "All Labels")
             {
                 DefaultLabel = SelectedComboBoxItem;
                 FilterVisibility1 = true;
@@ -708,7 +651,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("DefaultLabel");
             }
         }
-        
+
         public void ComboBoxNames()
         {
             temp = SelectedComboBoxItem;
@@ -727,7 +670,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private string _selectedComboBoxItem;
-        
+
         public string SelectedComboBoxItem
         {
             get
@@ -769,6 +712,72 @@ namespace MachineLearningTrainer.DrawerTool
                 _filterVisibility = value;
                 OnPropertyChanged("FilterVisibility");
             }
+        }
+
+        private ICommand _loadXMLCommand;
+        public ICommand LoadXMLCommand
+        {
+            get
+            {
+                return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
+            }
+        }
+
+        public void LoadXML()
+        {
+            this.IsEnabled = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML Files | *.xml";
+
+            if (openFileDialog.ShowDialog() == true)
+                dst = openFileDialog.FileName;
+
+            if (dst != null)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(dst);
+
+                foreach (XmlNode node in doc.DocumentElement)
+                {
+
+                    if (node.Name == "object")
+                    {
+                        foreach (XmlNode objectChild in node)
+                        {
+                            if (objectChild.Name == "name")
+                            {
+                                name = objectChild.InnerText;
+                                RectangleText = name;
+                            }
+
+                            if (objectChild.Name == "bndbox")
+                            {
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+
+                                ResizableRectangle loadedRect = new ResizableRectangle();
+
+                                loadedRect.RectangleHeight = ymax - ymin;
+                                loadedRect.RectangleWidth = xmax - xmin;
+                                loadedRect.RectangleText = name;
+                                loadedRect.X = xmin;
+                                loadedRect.Y = ymin;
+
+                                Canvas.SetLeft(loadedRect, xmin);
+                                Canvas.SetTop(loadedRect, ymin);
+
+                                AllRectangles.Add(loadedRect);
+                                AllRectanglesView = AllRectangles;
+                                OnPropertyChanged("");
+                            }
+                        }
+                    }
+                }
+            }
+            ComboBoxNames();
+            SortList();
         }
     }
 }
