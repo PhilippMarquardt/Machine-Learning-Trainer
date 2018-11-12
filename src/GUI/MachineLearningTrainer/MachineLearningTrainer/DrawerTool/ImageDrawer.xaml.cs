@@ -120,6 +120,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
             var position = e.GetPosition(cnvImage);
             txtBox.Content = "X: " + (int)position.X + "; Y: " + (int)position.Y;
+            txtBox1.Content = (this.DataContext as DrawerViewModel).ImagePath;
         }
 
         private void cropImageLabel()

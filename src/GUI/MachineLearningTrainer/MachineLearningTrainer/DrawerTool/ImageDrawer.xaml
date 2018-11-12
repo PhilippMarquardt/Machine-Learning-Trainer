@@ -109,6 +109,8 @@
         </StackPanel>
         <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10" VerticalAlignment="Bottom"
                  Grid.Column="1" HorizontalAlignment="Right" Grid.Row="2" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+        <Label Name="txtBox1" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10" VerticalAlignment="Bottom"
+                 Grid.Column="1" HorizontalAlignment="Left" Grid.Row="2" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
 
         <StackPanel Grid.Row="3" Background="White" Panel.ZIndex="1"/>
 
@@ -156,7 +158,7 @@
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
+                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -164,7 +166,7 @@
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                     <MenuItem Command="{Binding DuplicateCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\Duplicate.png"/>
+                            <Image Source="duplicate.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -176,7 +178,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
+                            <Image Source="rename.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -188,7 +190,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
+                            <Image Source="delete.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -209,7 +211,7 @@
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="5,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="100" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
+                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>
@@ -217,7 +219,7 @@
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                     <MenuItem Command="{Binding DuplicateCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\Duplicate.png"/>
+                            <Image Source="duplicate.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -229,7 +231,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\new.png"/>
+                            <Image Source="rename.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -241,7 +243,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
-                            <Image Source="C:\Users\hsa\Pictures\Icons\exit.png"/>
+                            <Image Source="delete.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
