@@ -128,7 +128,6 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void cropImageLabel()
         {
-            Cursor = Cursors.Wait;
             BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
             Bitmap src;
 
@@ -144,7 +143,8 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
             {
-                if (rec.X > 0 && rec.X+rec.RectangleWidth < cnvImage.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < cnvImage.ActualHeight)
+
+                if (rec.X > 0 && rec.X + rec.RectangleWidth < cnvImage.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < cnvImage.ActualHeight)
                 {
                     Mat mat = SupportCode.ConvertBmp2Mat(src);
                     OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
@@ -153,7 +153,35 @@ namespace MachineLearningTrainer.DrawerTool
                     rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
                 }
             }
-            Cursor = Cursors.Arrow;
+        }
+
+        private void cropImageLabelBegin()
+        {
+            BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+            Bitmap src;
+
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                src = new Bitmap(bitmap);
+            }
+            
+            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
+            {
+
+                if (rec.X > 0 && rec.X + rec.RectangleWidth < cnvImage.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < cnvImage.ActualHeight && rec.CroppedImage == null)
+                {
+                    Mat mat = SupportCode.ConvertBmp2Mat(src);
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+
+                    Mat croppedImage = new Mat(mat, rectCrop);
+                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                }
+            }
         }
 
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
@@ -192,15 +220,10 @@ namespace MachineLearningTrainer.DrawerTool
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
 
-            //foreach(var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            //{
-            //    if(rec.CroppedImage == null)
-            //    {
-            //        cropImageLabel();
-            //    }
-            //}
-            
-            
+            else
+            {
+                cropImageLabelBegin();
+            }
         }
 
         public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
@@ -239,7 +262,6 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-            
         }
 
         private void Button_Click1(object sender, RoutedEventArgs e)

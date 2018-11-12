@@ -1,7 +1,10 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -26,15 +29,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
             this.DataContext = this;
-        }
-
-        private void Rectangle_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if (e.OriginalSource is Rectangle)
-            {
-                Rectangle ClickedRectangle = (Rectangle)e.OriginalSource;
-                this.CroppedImage = null;
-            }
         }
 
         public static readonly DependencyProperty SelectedResizableRectangleProperty =
@@ -180,12 +174,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private static DependencyProperty RectangleFillProperty =
-            DependencyProperty.Register("RectangleFill", typeof(Brush), typeof(ResizableRectangle));
-        public Brush RectangleFill
+            DependencyProperty.Register("RectangleFill", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
+        public System.Windows.Media.Brush RectangleFill
         {
             get
             {
-                return (Brush)GetValue(RectangleFillProperty);
+                return (System.Windows.Media.Brush)GetValue(RectangleFillProperty);
             }
             set
             {
@@ -194,12 +188,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private static DependencyProperty ThumbColorProperty =
-            DependencyProperty.Register("ThumbColor", typeof(Brush), typeof(ResizableRectangle));
-        public Brush ThumbColor
+            DependencyProperty.Register("ThumbColor", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
+        public System.Windows.Media.Brush ThumbColor
         {
             get
             {
-                return (Brush)GetValue(ThumbColorProperty);
+                return (System.Windows.Media.Brush)GetValue(ThumbColorProperty);
             }
             set
             {
