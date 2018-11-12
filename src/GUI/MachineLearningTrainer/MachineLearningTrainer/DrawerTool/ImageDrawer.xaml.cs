@@ -144,11 +144,14 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
             {
-                Mat mat = SupportCode.ConvertBmp2Mat(src);
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                if (rec.X > 0 && rec.X+rec.RectangleWidth < cnvImage.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < cnvImage.ActualHeight)
+                {
+                    Mat mat = SupportCode.ConvertBmp2Mat(src);
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
 
-                Mat croppedImage = new Mat(mat, rectCrop);
-                rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                    Mat croppedImage = new Mat(mat, rectCrop);
+                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                }
             }
             Cursor = Cursors.Arrow;
         }
