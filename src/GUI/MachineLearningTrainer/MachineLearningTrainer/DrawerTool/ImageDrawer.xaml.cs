@@ -88,10 +88,20 @@ namespace MachineLearningTrainer.DrawerTool
             }
             
         }
-        
+
+        private void UserControl_MouseMove(object sender, MouseEventArgs e)
+        {
+            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            {
+                while (rec.CroppedImage == null)
+                {
+                    cropImageLabel();
+                }
+            }
+        }
+
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
-
             if ((this.DataContext as DrawerViewModel).Enabled == false)
 
             {
@@ -209,7 +219,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            //cropImageLabel();
+            cropImageLabel();
 
             string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
 

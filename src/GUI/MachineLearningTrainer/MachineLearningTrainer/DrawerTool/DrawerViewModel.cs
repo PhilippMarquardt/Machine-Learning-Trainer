@@ -154,22 +154,21 @@ namespace MachineLearningTrainer.DrawerTool
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png; *.tif";
+
             if (openFileDialog.ShowDialog() == true)
                 ImagePath = openFileDialog.FileName;
+
             if (ImagePath != null)
             {
                 this.IsEnabled = true;
                 AllRectangles.Clear();
-
+                
                 LoadRectangles();
                 ComboBoxNames();
                 SortList();
             }
-
-
-            
-
         }
+
         private string _imagePath;
         public string ImagePath
         {
@@ -595,62 +594,62 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
 
-            else
-            {
-                MessageBoxResult result = MessageBox.Show("No XML File found!" + "\n" + "Do you want to browse a XML File?", "Information", MessageBoxButton.YesNo,MessageBoxImage.Information,MessageBoxResult.OK);
+            //else
+            //{
+            //    MessageBoxResult result = MessageBox.Show("No XML File found!" + "\n" + "Do you want to browse a XML File?", "Information", MessageBoxButton.YesNo, MessageBoxImage.Information, MessageBoxResult.OK);
 
-                if (result == MessageBoxResult.Yes)
-                {
-                    OpenFileDialog openFileDialog = new OpenFileDialog();
-                    openFileDialog.Filter = "XML Files | *.xml";
+            //    if (result == MessageBoxResult.Yes)
+            //    {
+            //        OpenFileDialog openFileDialog = new OpenFileDialog();
+            //        openFileDialog.Filter = "XML Files | *.xml";
 
-                    if (openFileDialog.ShowDialog() == true)
-                        dst = openFileDialog.FileName;
+            //        if (openFileDialog.ShowDialog() == true)
+            //            dst = openFileDialog.FileName;
 
-                    if (dst != null)
-                    {
-                        XmlDocument doc = new XmlDocument();
-                        doc.Load(dst);
+            //        if (dst != null)
+            //        {
+            //            XmlDocument doc = new XmlDocument();
+            //            doc.Load(dst);
 
-                        foreach (XmlNode node in doc.DocumentElement)
-                        {
+            //            foreach (XmlNode node in doc.DocumentElement)
+            //            {
 
-                            if (node.Name == "object")
-                            {
-                                foreach (XmlNode objectChild in node)
-                                {
-                                    if (objectChild.Name == "name")
-                                    {
-                                        name = objectChild.InnerText;
-                                        RectangleText = name;
-                                    }
+            //                if (node.Name == "object")
+            //                {
+            //                    foreach (XmlNode objectChild in node)
+            //                    {
+            //                        if (objectChild.Name == "name")
+            //                        {
+            //                            name = objectChild.InnerText;
+            //                            RectangleText = name;
+            //                        }
 
-                                    if (objectChild.Name == "bndbox")
-                                    {
-                                        int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                        int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                        int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                        int ymax = int.Parse(objectChild["ymax"].InnerText);
+            //                        if (objectChild.Name == "bndbox")
+            //                        {
+            //                            int xmin = int.Parse(objectChild["xmin"].InnerText);
+            //                            int ymin = int.Parse(objectChild["ymin"].InnerText);
+            //                            int xmax = int.Parse(objectChild["xmax"].InnerText);
+            //                            int ymax = int.Parse(objectChild["ymax"].InnerText);
 
-                                        ResizableRectangle loadedRect = new ResizableRectangle();
+            //                            ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                        loadedRect.RectangleHeight = ymax - ymin;
-                                        loadedRect.RectangleWidth = xmax - xmin;
-                                        loadedRect.RectangleText = name;
-                                        loadedRect.X = xmin;
-                                        loadedRect.Y = ymin;
+            //                            loadedRect.RectangleHeight = ymax - ymin;
+            //                            loadedRect.RectangleWidth = xmax - xmin;
+            //                            loadedRect.RectangleText = name;
+            //                            loadedRect.X = xmin;
+            //                            loadedRect.Y = ymin;
 
-                                        Canvas.SetLeft(loadedRect, xmin);
-                                        Canvas.SetTop(loadedRect, ymin);
+            //                            Canvas.SetLeft(loadedRect, xmin);
+            //                            Canvas.SetTop(loadedRect, ymin);
 
-                                        AllRectangles.Add(loadedRect);
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            //                            AllRectangles.Add(loadedRect);
+            //                        }
+            //                    }
+            //                }
+            //            }
+            //        }
+            //    }
+            //}
         }
 
         private bool _isOpen = false;

@@ -8,7 +8,8 @@
              mc:Ignorable="d" 
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1080" d:DesignWidth="1920">
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             MouseMove="UserControl_MouseMove">
 
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -99,8 +100,8 @@
         <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="3" Background="White">
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Click="Button_Click" Command="{Binding ExportPascalVoc}"/>
+            <!--<Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>-->
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
