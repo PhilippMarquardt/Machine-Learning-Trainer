@@ -13,6 +13,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Controls.Primitives;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
@@ -65,9 +66,6 @@ namespace MachineLearningTrainer.DrawerTool
             if ((this.DataContext as DrawerViewModel).Enabled == false)
             {
                 startPoint = e.GetPosition(cnvImage);
-
-                //txtLabel.Visibility = Visibility.Collapsed;
-
                 rectSelectArea = new ResizableRectangle();
 
                 if((this.DataContext as DrawerViewModel).SelectedComboBoxItem == "All Labels")
@@ -81,12 +79,10 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
                 }
                 
-                
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 //cnvImage.Children.Add(rectSelectArea);
             }
-            
         }
 
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
@@ -130,7 +126,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
             Bitmap src;
-
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();

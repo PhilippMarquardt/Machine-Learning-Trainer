@@ -60,8 +60,7 @@ namespace MachineLearningTrainer.DrawerTool
             AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
         }
-
-
+        
         //TODO: Mouse event handler
         //private ICommand _imageMouseDown;
 
@@ -166,6 +165,7 @@ namespace MachineLearningTrainer.DrawerTool
                 LoadRectangles();
                 ComboBoxNames();
                 SortList();
+                FilterName();
             }
         }
 

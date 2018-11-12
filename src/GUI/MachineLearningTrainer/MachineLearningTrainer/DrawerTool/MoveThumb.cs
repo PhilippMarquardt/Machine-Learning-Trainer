@@ -1,11 +1,15 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Media.Imaging;
 
 namespace MachineLearningTrainer.DrawerTool
 {
@@ -32,12 +36,10 @@ namespace MachineLearningTrainer.DrawerTool
                     rec.X = rec.X + e.HorizontalChange;
                     rec.Y = rec.Y + e.VerticalChange;
                     //(this.DataContext as DrawerViewModel).MoveRectangle(rec);
-                    
                 }
-                
             }
-            
         }
-
     }
 }
+    
+
