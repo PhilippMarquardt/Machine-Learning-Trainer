@@ -126,10 +126,8 @@
                     <materialDesign:PackIcon Kind="Folder" />
                 </Button>
             </Grid>
-
-
-
         </materialDesign:Card>
+        
         <Button
             Grid.Row="1"
             Grid.Column="0"

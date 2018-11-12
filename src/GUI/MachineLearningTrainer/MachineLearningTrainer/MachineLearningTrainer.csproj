@@ -85,6 +85,9 @@
     <Compile Include="ConvolutionalNeuralNetwork\DataSelection.xaml.cs">
       <DependentUpon>DataSelection.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ConvolutionalNeuralNetwork\ObjectDetection\Retinanet.xaml.cs">
+      <DependentUpon>Retinanet.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DecisionPages\ClassificationDecision.xaml.cs">
       <DependentUpon>ClassificationDecision.xaml</DependentUpon>
     </Compile>
@@ -136,6 +139,10 @@
     <Compile Include="WizardStateMachine.cs" />
     <Compile Include="XMLWriter.cs" />
     <Page Include="ConvolutionalNeuralNetwork\DataSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConvolutionalNeuralNetwork\ObjectDetection\Retinanet.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -219,7 +226,6 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="ConvolutionalNeuralNetwork\ObjectClassification\" />
-    <Folder Include="ConvolutionalNeuralNetwork\ObjectiDetection\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
