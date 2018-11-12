@@ -8,8 +8,7 @@
              mc:Ignorable="d" 
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
-             d:DesignHeight="1080" d:DesignWidth="1920"
-             MouseMove="UserControl_MouseMove">
+             d:DesignHeight="1080" d:DesignWidth="1920">
 
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
@@ -102,12 +101,14 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Click="Button_Click" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML" Command="{Binding LoadXMLCommand}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click1"/>
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
         </StackPanel>
+        <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10" VerticalAlignment="Bottom"
+                 Grid.Column="1" HorizontalAlignment="Right" Grid.Row="2" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
 
         <StackPanel Grid.Row="3" Background="White" Panel.ZIndex="1"/>
 

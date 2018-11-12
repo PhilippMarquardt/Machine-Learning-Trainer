@@ -89,18 +89,6 @@ namespace MachineLearningTrainer.DrawerTool
             
         }
 
-        private void UserControl_MouseMove(object sender, MouseEventArgs e)
-        {
-            //foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            //{
-            //    while (rec.CroppedImage == null && (this.DataContext as DrawerViewModel).AllRectangles.Count > 0
-            //        && (this.DataContext as DrawerViewModel).Enabled == true) 
-            //    { 
-            //        cropImageLabel();
-            //    }
-            //}
-        }
-
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -134,10 +122,13 @@ namespace MachineLearningTrainer.DrawerTool
                 int recHeight = (Convert.ToInt16(h));
                 
             }
+            var position = e.GetPosition(cnvImage);
+            txtBox.Content = "X: " + (int)position.X + "; Y: " + (int)position.Y;
         }
 
         private void cropImageLabel()
         {
+            Cursor = Cursors.Wait;
             BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
             Bitmap src;
 
@@ -159,6 +150,7 @@ namespace MachineLearningTrainer.DrawerTool
                 Mat croppedImage = new Mat(mat, rectCrop);
                 rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
+            Cursor = Cursors.Arrow;
         }
 
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
@@ -197,13 +189,13 @@ namespace MachineLearningTrainer.DrawerTool
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
 
-            foreach(var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            {
-                if(rec.CroppedImage == null)
-                {
-                    cropImageLabel();
-                }
-            }
+            //foreach(var rec in (this.DataContext as DrawerViewModel).AllRectangles)
+            //{
+            //    if(rec.CroppedImage == null)
+            //    {
+            //        cropImageLabel();
+            //    }
+            //}
             
             
         }
@@ -224,15 +216,15 @@ namespace MachineLearningTrainer.DrawerTool
 
             string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
 
-            string path1 = destFileName + @"_Cropped_Images\";
-
-            if (!Directory.Exists(path1))
-            {
-                Directory.CreateDirectory(path1);
-            }
-
             foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
             {
+                string path1 = destFileName + @"_Cropped_Images\" + rec.RectangleText + @"\";
+
+                if (!Directory.Exists(path1))
+                {
+                    Directory.CreateDirectory(path1);
+                }
+
                 if (rec.CroppedImage != null)
                 {
                     BitmapEncoder encoder = new PngBitmapEncoder();
@@ -244,6 +236,7 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
+            
         }
 
         private void Button_Click1(object sender, RoutedEventArgs e)
