@@ -16,7 +16,8 @@ namespace MachineLearningTrainer
         DNN,
         Drawer,
         ObjectDetectorSelection,
-        ObjectDetectorDataSelection
+        ObjectDetectorDataSelection,
+        ObjectDetectionRetinanet
 
        
     }
@@ -85,6 +86,7 @@ namespace MachineLearningTrainer
                 { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Left), ProcessState.ObjectDetectorDataSelection },
 
                  { new StateTransition(ProcessState.ObjectDetectorDataSelection, Command.Previous), ProcessState.ObjectDetectorSelection },
+                {new StateTransition(ProcessState.ObjectDetectorDataSelection, Command.Next), ProcessState.ObjectDetectionRetinanet }
 
             };
         }

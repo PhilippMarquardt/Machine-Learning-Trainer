@@ -44,7 +44,9 @@ namespace MachineLearningTrainer
                 case ProcessState.ObjectDetectorSelection:
                     return new DecisionPages.ObjectDetectorSelection();
                 case ProcessState.ObjectDetectorDataSelection:
-                    return new ConvolutionalNeuralNetwork.DataSelection();               
+                    return new ConvolutionalNeuralNetwork.DataSelection();
+                case ProcessState.ObjectDetectionRetinanet:
+                    return new ConvolutionalNeuralNetwork.ObjectDetection.Retinanet();            
                 default:
                     return new WelcomePage();
             }
