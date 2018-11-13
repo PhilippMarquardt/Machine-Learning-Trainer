@@ -183,6 +183,15 @@ namespace MachineLearningTrainer.DrawerTool
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
         {
             (this.DataContext as DrawerViewModel).FilterName();
+
+            if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
+            {
+                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectanglesView.Count.ToString();
+            }
+            else
+            {
+                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
+            }
         }
 
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
@@ -214,11 +223,21 @@ namespace MachineLearningTrainer.DrawerTool
                 Mat croppedImage = new Mat(mat, rectCrop);
 
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                
             }
 
             else
             {
                 cropImageLabelBegin();
+            }
+
+            if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
+            {
+                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectanglesView.Count.ToString();
+            }
+            else
+            {
+                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
             }
         }
 

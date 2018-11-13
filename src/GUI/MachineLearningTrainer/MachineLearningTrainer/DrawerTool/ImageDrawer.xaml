@@ -262,5 +262,6 @@
         </Button>
         <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
                   Grid.Column="3" Padding="5" Height="auto" Margin="5" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed"/>
+        <TextBlock Grid.Column="3" Panel.ZIndex="2" HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray" Margin="0,0,20,10"/>
     </Grid>
 </UserControl>

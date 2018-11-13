@@ -308,6 +308,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void DeleteAll()
         {
             AllRectangles.Clear();
+            FilterName();
         }
 
         private bool _visibilityChanged = false;
@@ -627,11 +628,13 @@ namespace MachineLearningTrainer.DrawerTool
                 FilterVisibility1 = false;
                 FilterVisibility = true;
                 AllRectanglesView = AllRectangles;
+                RectangleCount = "#" + AllRectangles.Count.ToString();
                 OnPropertyChanged("AllRectangles");
                 OnPropertyChanged("AllRectanglesView");
                 OnPropertyChanged("FilteredRectangles");
                 OnPropertyChanged("FilterVisibility");
                 OnPropertyChanged("FilterVisibility1");
+                OnPropertyChanged("RectangleCount");
             }
 
             else if (SelectedComboBoxItem != "All Labels")
@@ -639,6 +642,7 @@ namespace MachineLearningTrainer.DrawerTool
                 DefaultLabel = SelectedComboBoxItem;
                 FilterVisibility1 = true;
                 FilterVisibility = false;
+                RectangleCount = "#" + AllRectanglesView.Count.ToString();
 
                 ObservableCollection<ResizableRectangle> FilteredRectangles = new ObservableCollection<ResizableRectangle>
                     (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
@@ -649,6 +653,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("FilterVisibility");
                 OnPropertyChanged("FilterVisibility1");
                 OnPropertyChanged("DefaultLabel");
+                OnPropertyChanged("RectangleCount");
             }
         }
 
@@ -779,5 +784,20 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxNames();
             SortList();
         }
+
+        private string _rectangleCount;
+        public string RectangleCount
+        {
+            get
+            {
+                return _rectangleCount;
+            }
+            set
+            {
+                _rectangleCount = value;
+                OnPropertyChanged("RectangleCount");
+            }
+        }
+
     }
 }
