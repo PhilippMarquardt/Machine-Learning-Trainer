@@ -8,6 +8,7 @@
              mc:Ignorable="d" 
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
+             Loaded="UserControl_Loaded"
              d:DesignHeight="1080" d:DesignWidth="1920">
 
     <UserControl.Triggers>
@@ -86,7 +87,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
+            <ColumnDefinition Width="200"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="250" MinWidth="250"/>
@@ -102,6 +103,7 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Click="Button_Click" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML" Command="{Binding LoadXMLCommand}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>
+            <!--<TreeView Name="treeView" TreeViewItem.Expanded="TreeViewItem_Expanded" Height="500" Width="300" Margin="5" Background="White"/>-->
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>

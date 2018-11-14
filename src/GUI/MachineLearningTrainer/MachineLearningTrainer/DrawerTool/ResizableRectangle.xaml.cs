@@ -214,6 +214,15 @@ namespace MachineLearningTrainer.DrawerTool
                 SetValue(ThumbSizeProperty, value);
             }
         }
-        
+
+        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Test");
+        }
+
+        private void ContentControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            MessageBox.Show("Test");
+        }
     }
 }

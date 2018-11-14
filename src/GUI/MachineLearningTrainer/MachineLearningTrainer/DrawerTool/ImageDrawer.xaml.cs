@@ -34,8 +34,11 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
             cnvImage.Cursor = Cursors.Cross;
+            DriveInfo[] drives = DriveInfo.GetDrives();
+            //foreach (DriveInfo driveInfo in drives)
+            //    treeView.Items.Add(CreateTreeItem(driveInfo));
         }
-        
+
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -52,7 +55,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
         #endregion
-        
+
         public ResizableRectangle SelectedResizableRectangle { get; }
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
@@ -68,7 +71,7 @@ namespace MachineLearningTrainer.DrawerTool
                 startPoint = e.GetPosition(cnvImage);
                 rectSelectArea = new ResizableRectangle();
 
-                if((this.DataContext as DrawerViewModel).SelectedComboBoxItem == "All Labels")
+                if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem == "All Labels")
                 {
                     (this.DataContext as DrawerViewModel).AllRectanglesView.Add(rectSelectArea);
                 }
@@ -78,7 +81,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).AllRectanglesView.Add(rectSelectArea);
                     (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
                 }
-                
+
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 //cnvImage.Children.Add(rectSelectArea);
@@ -116,7 +119,7 @@ namespace MachineLearningTrainer.DrawerTool
                 int recStartY = (Convert.ToInt16(y));
                 int recWidth = (Convert.ToInt16(w));
                 int recHeight = (Convert.ToInt16(h));
-                
+
             }
             var position = e.GetPosition(cnvImage);
             txtBox.Content = "X: " + (int)position.X + "; Y: " + (int)position.Y;
@@ -165,7 +168,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 src = new Bitmap(bitmap);
             }
-            
+
             foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
             {
 
@@ -204,7 +207,7 @@ namespace MachineLearningTrainer.DrawerTool
                 foreach (var q in (this.DataContext as DrawerViewModel).AllRectanglesView)
                     q.RectangleMovable = true;
                 (this.DataContext as DrawerViewModel).Enabled = true;
-                
+
                 BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
                 Bitmap src;
 
@@ -223,7 +226,7 @@ namespace MachineLearningTrainer.DrawerTool
                 Mat croppedImage = new Mat(mat, rectCrop);
 
                 rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-                
+
             }
 
             else
@@ -283,6 +286,40 @@ namespace MachineLearningTrainer.DrawerTool
         {
             cropImageLabel();
         }
+        public void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
+        {
+            TreeViewItem item = e.Source as TreeViewItem;
+            if ((item.Items.Count == 1) && (item.Items[0] is string))
+            {
+                item.Items.Clear();
+
+                DirectoryInfo expandedDir = null;
+                if (item.Tag is DriveInfo)
+                    expandedDir = (item.Tag as DriveInfo).RootDirectory;
+                if (item.Tag is DirectoryInfo)
+                    expandedDir = (item.Tag as DirectoryInfo);
+                try
+                {
+                    foreach (DirectoryInfo subDir in expandedDir.GetDirectories())
+                        item.Items.Add(CreateTreeItem(subDir));
+                }
+                catch { }
+            }
+        }
+
+        private TreeViewItem CreateTreeItem(object o)
+        {
+            TreeViewItem item = new TreeViewItem();
+            item.Header = o.ToString();
+            item.Tag = o;
+            item.Items.Add("Loading...");
+            return item;
+        }
+
+        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
+            (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
+        }
     }
 }
-

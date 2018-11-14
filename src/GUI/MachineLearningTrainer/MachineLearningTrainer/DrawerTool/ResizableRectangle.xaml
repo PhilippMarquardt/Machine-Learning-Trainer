@@ -62,13 +62,13 @@
             </Grid>     
         </ControlTemplate>
     </UserControl.Resources>
-    <Canvas>
+    <Canvas MouseRightButtonUp="Canvas_MouseUp">
         <ContentControl 
                     Width="{Binding RectangleWidth}"                   
                     Height="{Binding RectangleHeight}"                   
                     Canvas.Top="0"
                     Canvas.Left="0"
-                    Template="{StaticResource DesignerItemTemplate}">
+                    Template="{StaticResource DesignerItemTemplate}" MouseRightButtonDown="ContentControl_MouseRightButtonDown">
          
         </ContentControl>
         <!--<TextBox x:Name="txtLabel" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged, RelativeSource={RelativeSource Mode=FindAncestor,AncestorType={x:Type UserControl}}}" Canvas.Left="{Binding RectangleWidth}" Canvas.Top="0" Width="auto" Height="auto" 

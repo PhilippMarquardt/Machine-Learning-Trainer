@@ -19,6 +19,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             Control designerItem = this.DataContext as Control;
             var rec = ControlOperations.GetParentOfType<UserControl>(designerItem) as ResizableRectangle;
+            var drawerviewmodel = (ControlOperations.GetParentOfType<ItemsControl>(designerItem) as ItemsControl).DataContext as DrawerViewModel;
             if (designerItem != null)
             {
                 double deltaVertical, deltaHorizontal;
@@ -56,6 +57,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     rec.RectangleWidth = designerItem.Width;
                     rec.RectangleHeight = designerItem.Height;
+                    drawerviewmodel.UpdateCropedImage(rec);
                 }
             }
 

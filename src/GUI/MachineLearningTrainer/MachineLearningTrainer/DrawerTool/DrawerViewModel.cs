@@ -60,7 +60,7 @@ namespace MachineLearningTrainer.DrawerTool
             AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
         }
-        
+
         //TODO: Mouse event handler
         //private ICommand _imageMouseDown;
 
@@ -68,7 +68,7 @@ namespace MachineLearningTrainer.DrawerTool
         //{
         //    get
         //    {
-        //        return _imageMouseDown ?? (_imageMouseDown = new CommandHandler(() => WriteDNNXML(), _canExecute));
+        //        return _imageMouseDown ?? (_imageMouseDown = new CommandHandler(() => UpdateCropedImage(), _canExecute));
         //    }
         //}
 
@@ -798,6 +798,49 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("RectangleCount");
             }
         }
+
+        private Canvas _myCanvas;
+
+        public Canvas MyCanvas
+        {
+            get { return _myCanvas; }
+            set { _myCanvas = value; }
+        }
+
+        private System.Windows.Controls.Image _myPreview;
+
+        public System.Windows.Controls.Image MyPreview
+        {
+            get { return _myPreview; }
+            set { _myPreview = value; }
+        }
+
+
+        public void UpdateCropedImage(ResizableRectangle resizable)
+        {
+            BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            Bitmap src;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                src = new Bitmap(bitmap);
+            }
+
+            if (resizable.X > 0 && resizable.X + resizable.RectangleWidth < MyCanvas.ActualWidth && resizable.Y > 0 && resizable.Y + resizable.RectangleHeight < MyCanvas.ActualHeight)
+            {
+                Mat mat = SupportCode.ConvertBmp2Mat(src);
+                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
+
+                Mat croppedImage = new Mat(mat, rectCrop);
+                resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+            }
+            
+        }
+
 
     }
 }
