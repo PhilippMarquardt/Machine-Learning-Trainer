@@ -88,8 +88,8 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-       public static readonly DependencyProperty XProperty =
-       DependencyProperty.Register("X", typeof(double), typeof(ResizableRectangle));
+        public static readonly DependencyProperty XProperty =
+        DependencyProperty.Register("X", typeof(double), typeof(ResizableRectangle));
         public double X
         {
             get
@@ -215,14 +215,18 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void Canvas_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            MessageBox.Show("Test");
-        }
-
-        private void ContentControl_MouseRightButtonDown(object sender, MouseButtonEventArgs e)
-        {
-            MessageBox.Show("Test");
+            Control designerItem = this.DataContext as Control;
+            var rec = ControlOperations.GetParentOfType<UserControl>(designerItem) as ResizableRectangle;
+            var drawerviewmodel = (ControlOperations.GetParentOfType<ItemsControl>(designerItem) as ItemsControl).DataContext as DrawerViewModel;
+            if (designerItem != null)
+            {
+                if (rec != null)
+                {
+                    drawerviewmodel.SelectClickedRectangle(rec);
+                }
+            }
         }
     }
 }

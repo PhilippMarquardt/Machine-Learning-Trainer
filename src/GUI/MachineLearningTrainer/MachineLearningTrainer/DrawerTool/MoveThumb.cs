@@ -37,8 +37,8 @@ namespace MachineLearningTrainer.DrawerTool
                     rec.X = rec.X + e.HorizontalChange;
                     rec.Y = rec.Y + e.VerticalChange;
                     //(this.DataContext as DrawerViewModel).MoveRectangle(rec);
-
-                    drawerviewmodel.UpdateCropedImage(rec);
+                    
+                    drawerviewmodel.SelectClickedRectangle(rec);
                 }
             }
         }

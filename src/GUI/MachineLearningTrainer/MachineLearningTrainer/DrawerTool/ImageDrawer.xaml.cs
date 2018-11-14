@@ -154,35 +154,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void cropImageLabelBegin()
-        {
-            BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-            Bitmap src;
-
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                src = new Bitmap(bitmap);
-            }
-
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
-            {
-
-                if (rec.X > 0 && rec.X + rec.RectangleWidth < cnvImage.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < cnvImage.ActualHeight && rec.CroppedImage == null)
-                {
-                    Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-                }
-            }
-        }
-
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
         {
             (this.DataContext as DrawerViewModel).FilterName();
@@ -231,7 +202,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             else
             {
-                cropImageLabelBegin();
+                (this.DataContext as DrawerViewModel).cropImageLabelBegin();
             }
 
             if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")

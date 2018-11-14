@@ -75,9 +75,7 @@
                     var st = GetScaleTransform(child);
                     st.ScaleX = 1.0;
                     st.ScaleY = 1.0;
-                 
-                        
-                
+
                     // reset pan
                     var tt = GetTranslateTransform(child);
                     tt.X = 0.0;

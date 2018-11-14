@@ -168,7 +168,7 @@
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                     <MenuItem Command="{Binding DuplicateCommand}">
                         <MenuItem.Icon>
-                            <Image Source="duplicate.png"/>
+                            <Image Source="/Icons/duplicate.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -180,7 +180,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
-                            <Image Source="rename.png"/>
+                            <Image Source="/Icons/rename.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -192,7 +192,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
-                            <Image Source="delete.png"/>
+                            <Image Source="/Icons/delete.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -221,7 +221,7 @@
                 <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                     <MenuItem Command="{Binding DuplicateCommand}">
                         <MenuItem.Icon>
-                            <Image Source="duplicate.png"/>
+                            <Image Source="/Icons/duplicate.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -233,7 +233,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding RenameCommand}">
                         <MenuItem.Icon>
-                            <Image Source="rename.png"/>
+                            <Image Source="/Icons/rename.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
@@ -245,7 +245,7 @@
                     </MenuItem>
                     <MenuItem Command="{Binding DeleteCommand}">
                         <MenuItem.Icon>
-                            <Image Source="delete.png"/>
+                            <Image Source="/Icons/delete.png"/>
                         </MenuItem.Icon>
                         <MenuItem.Header>
                             <WrapPanel>
