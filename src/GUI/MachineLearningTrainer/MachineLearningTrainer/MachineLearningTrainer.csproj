@@ -109,6 +109,7 @@
     <Compile Include="DrawerTool\DesignerItemDecorator.cs" />
     <Compile Include="DrawerTool\DrawerModel.cs" />
     <Compile Include="DrawerTool\DrawerViewModel.cs" />
+    <Compile Include="DrawerTool\HeaderToImageConverter.cs" />
     <Compile Include="DrawerTool\ImageDrawer.xaml.cs">
       <DependentUpon>ImageDrawer.xaml</DependentUpon>
     </Compile>
@@ -214,6 +215,12 @@
     <Resource Include="Icons\delete.png" />
     <Resource Include="Icons\duplicate.png" />
     <Resource Include="Icons\rename.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\drive.png" />
+    <Resource Include="Images\file.png" />
+    <Resource Include="Images\folder-closed.png" />
+    <Resource Include="Images\folder-open.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">

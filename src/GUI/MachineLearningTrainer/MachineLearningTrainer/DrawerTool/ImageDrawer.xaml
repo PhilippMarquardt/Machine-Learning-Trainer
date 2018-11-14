@@ -87,7 +87,7 @@
 
     <Grid>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="200"/>
+            <ColumnDefinition Width="auto" MinWidth="170" MaxWidth="400"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="250" MinWidth="250"/>
@@ -102,8 +102,26 @@
             <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Click="Button_Click" Command="{Binding ExportPascalVoc}"/>
             <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML" Command="{Binding LoadXMLCommand}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Click="Button_Click"/>
-            <!--<TreeView Name="treeView" TreeViewItem.Expanded="TreeViewItem_Expanded" Height="500" Width="300" Margin="5" Background="White"/>-->
+            <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Command="{Binding UpdatePreviewsCommand}"/>
+            
+            <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="140" HorizontalAlignment="Center" Width="auto" MaxWidth="400">
+                <TreeView.Resources>
+                    <Style TargetType="{x:Type TreeViewItem}">
+                        <Setter Property="HeaderTemplate">
+                            <Setter.Value>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
+                                                Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
+                                        <TextBlock VerticalAlignment="Center" Text="{Binding}" />
+                                    </StackPanel>
+                                </DataTemplate>
+                            </Setter.Value>
+                        </Setter>
+                    </Style>
+                </TreeView.Resources>
+            </TreeView>
+        
         </StackPanel>
         <StackPanel Grid.Column="3" Grid.Row="2" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
@@ -149,7 +167,7 @@
 
         <StackPanel Grid.Column="3" Grid.Row="0" Background="White" Panel.ZIndex="1">
             <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
-            <TextBox x:Name="txtDefaultLabel" TextChanged="TextBox_TextChanged" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+            <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
         </StackPanel>
 
@@ -160,7 +178,7 @@
                     <WrapPanel>
                         <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
                         <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
+                                 TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                     </WrapPanel>
                 </DataTemplate>
             </ListBox.ItemTemplate>

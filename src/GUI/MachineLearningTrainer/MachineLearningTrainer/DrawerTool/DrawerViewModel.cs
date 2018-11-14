@@ -879,6 +879,58 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
 
+        private ICommand _updatePreviewsCommand;
+        public ICommand UpdatePreviewsCommand
+        {
+            get
+            {
+                return _updatePreviewsCommand ?? (_updatePreviewsCommand = new CommandHandler(() => UpdatePreviews(), _canExecute));
+            }
+        }
+
+        public void UpdatePreviews()
+        {
+            BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            Bitmap src;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                src = new Bitmap(bitmap);
+            }
+
+            foreach (var rec in AllRectanglesView)
+            {
+
+                if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight)
+                {
+                    Mat mat = SupportCode.ConvertBmp2Mat(src);
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+
+                    Mat croppedImage = new Mat(mat, rectCrop);
+                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                }
+            }
+        }
+
+        //TO DO
+        //private ICommand _imageMouseUpCommand;
+
+        //public ICommand ImageMouseUpCommand
+        //{
+        //    get
+        //    {
+        //        return _imageMouseUpCommand ?? (_imageMouseUpCommand = new CommandHandler(() => ImageMouseUp((MouseButtonEventArgs)_imageMouseUpCommand), _canExecute));
+        //    }
+        //}
+
+        //public void ImageMouseUp(MouseButtonEventArgs e)
+        //{
+            
+        //}
 
     }
 }

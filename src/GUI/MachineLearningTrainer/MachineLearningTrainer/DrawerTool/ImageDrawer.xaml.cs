@@ -126,34 +126,6 @@ namespace MachineLearningTrainer.DrawerTool
             txtBox1.Content = (this.DataContext as DrawerViewModel).ImagePath;
         }
 
-        private void cropImageLabel()
-        {
-            BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-            Bitmap src;
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-                src = new Bitmap(bitmap);
-            }
-
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectanglesView)
-            {
-
-                if (rec.X > 0 && rec.X + rec.RectangleWidth < cnvImage.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < cnvImage.ActualHeight)
-                {
-                    Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-                }
-            }
-        }
-
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
         {
             (this.DataContext as DrawerViewModel).FilterName();
@@ -215,11 +187,12 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-            binding.UpdateSource();
-        }
+        //public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
+        //{
+        //    var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
+        //    binding.UpdateSource();
+        //}
+
         public void ListBoxTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).ComboBoxNames();
@@ -227,7 +200,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            cropImageLabel();
+            (this.DataContext as DrawerViewModel).UpdatePreviews();
 
             string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
 
@@ -253,44 +226,193 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void Button_Click1(object sender, RoutedEventArgs e)
-        {
-            cropImageLabel();
-        }
-        public void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
-        {
-            TreeViewItem item = e.Source as TreeViewItem;
-            if ((item.Items.Count == 1) && (item.Items[0] is string))
-            {
-                item.Items.Clear();
+        //        public void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
+        //        {
+        //            TreeViewItem item = e.Source as TreeViewItem;
+        //            if ((item.Items.Count == 1) && (item.Items[0] is string))
+        //            {
+        //                item.Items.Clear();
 
-                DirectoryInfo expandedDir = null;
-                if (item.Tag is DriveInfo)
-                    expandedDir = (item.Tag as DriveInfo).RootDirectory;
-                if (item.Tag is DirectoryInfo)
-                    expandedDir = (item.Tag as DirectoryInfo);
-                try
-                {
-                    foreach (DirectoryInfo subDir in expandedDir.GetDirectories())
-                        item.Items.Add(CreateTreeItem(subDir));
-                }
-                catch { }
-            }
-        }
+        //                DirectoryInfo expandedDir = null;
+        //                if (item.Tag is DriveInfo)
+        //                    expandedDir = (item.Tag as DriveInfo).RootDirectory;
+        //                if (item.Tag is DirectoryInfo)
+        //                    expandedDir = (item.Tag as DirectoryInfo);
+        //                try
+        //                {
+        //                    foreach (DirectoryInfo subDir in expandedDir.GetDirectories())
+        //                        item.Items.Add(CreateTreeItem(subDir));
+        //                }
+        //                catch { }
+        //            }
+        //        }
 
-        private TreeViewItem CreateTreeItem(object o)
-        {
-            TreeViewItem item = new TreeViewItem();
-            item.Header = o.ToString();
-            item.Tag = o;
-            item.Items.Add("Loading...");
-            return item;
-        }
+        //        private TreeViewItem CreateTreeItem(object o)
+        //        {
+        //            TreeViewItem item = new TreeViewItem();
+        //            item.Header = o.ToString();
+        //            item.Tag = o;
+        //            item.Items.Add("Loading...");
+        //            return item;
+        //        }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
+
+            foreach (var drive in Directory.GetLogicalDrives())
+            {
+                // Create a new item for it
+                var item = new TreeViewItem()
+                {
+                    // Set the header
+                    Header = drive,
+                    // And the full path
+                    Tag = drive
+                };
+
+                // Add a dummy item
+                item.Items.Add(null);
+
+                // Listen out for item being expanded
+                item.Expanded += Folder_Expanded;
+
+                // Add it to the main tree-view
+                FolderView.Items.Add(item);
+            }
         }
+
+
+        #region Folder Expanded
+
+        /// <summary>
+        /// When a folder is expanded, find the sub folders/files
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Folder_Expanded(object sender, RoutedEventArgs e)
+        {
+            #region Initial Checks
+
+            var item = (TreeViewItem)sender;
+
+            // If the item only contains the dummy data
+            if (item.Items.Count != 1 || item.Items[0] != null)
+                return;
+
+            // Clear dummy data
+            item.Items.Clear();
+
+            // Get full path
+            var fullPath = (string)item.Tag;
+
+            #endregion
+
+            #region Get Folders
+
+            // Create a blank list for directories
+            var directories = new List<string>();
+
+            // Try and get directories from the folder
+            // ignoring any issues doing so
+            try
+            {
+                var dirs = Directory.GetDirectories(fullPath);
+
+                if (dirs.Length > 0)
+                    directories.AddRange(dirs);
+            }
+            catch { }
+
+            // For each directory...
+            directories.ForEach(directoryPath =>
+            {
+                // Create directory item
+                var subItem = new TreeViewItem()
+                {
+                    // Set header as folder name
+                    Header = GetFileFolderName(directoryPath),
+                    // And tag as full path
+                    Tag = directoryPath
+                };
+
+                // Add dummy item so we can expand folder
+                subItem.Items.Add(null);
+
+                // Handle expanding
+                subItem.Expanded += Folder_Expanded;
+
+                // Add this item to the parent
+                item.Items.Add(subItem);
+            });
+
+            #endregion
+
+            #region Get Files
+
+            // Create a blank list for files
+            var files = new List<string>();
+
+            // Try and get files from the folder
+            // ignoring any issues doing so
+            try
+            {
+                var fs = Directory.GetFiles(fullPath);
+
+                if (fs.Length > 0)
+                    files.AddRange(fs);
+            }
+            catch { }
+
+            // For each file...
+            files.ForEach(filePath =>
+            {
+                // Create file item
+                var subItem = new TreeViewItem()
+                {
+                    // Set header as file name
+                    Header = GetFileFolderName(filePath),
+                    // And tag as full path
+                    Tag = filePath
+                };
+
+                // Add this item to the parent
+                item.Items.Add(subItem);
+            });
+
+            #endregion
+        }
+
+        #endregion
+
+        #region Helpers
+
+        /// <summary>
+        /// Find the file or folder name from a full path
+        /// </summary>
+        /// <param name="path">The full path</param>
+        /// <returns></returns>
+        public static string GetFileFolderName(string path)
+        {
+            // If we have no path, return empty
+            if (string.IsNullOrEmpty(path))
+                return string.Empty;
+
+            // Make all slashes back slashes
+            var normalizedPath = path.Replace('/', '\\');
+
+            // Find the last backslash in the path
+            var lastIndex = normalizedPath.LastIndexOf('\\');
+
+            // If we don't find a backslash, return the path itself
+            if (lastIndex <= 0)
+                return path;
+
+            // Return the name after the last back slash
+            return path.Substring(lastIndex + 1);
+        }
+
+        #endregion
     }
 }
