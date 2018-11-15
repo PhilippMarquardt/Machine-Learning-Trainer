@@ -359,7 +359,7 @@ namespace MachineLearningTrainer.DrawerTool
             try
             {
                 var fs = Directory.GetFiles(fullPath);
-
+                MessageBox.Show(fullPath);
                 if (fs.Length > 0)
                     files.AddRange(fs);
             }
@@ -414,5 +414,22 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         #endregion
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            ContextMenu.Visibility = Visibility.Visible;
+            FolderView.Visibility = Visibility.Collapsed;
+        }
+
+        private void Button_Click_2(object sender, RoutedEventArgs e)
+        {
+            ContextMenu.Visibility = Visibility.Collapsed;
+            FolderView.Visibility = Visibility.Visible;
+        }
+
+        private void Button_Click_3(object sender, RoutedEventArgs e)
+        {
+
+        }
     }
 }

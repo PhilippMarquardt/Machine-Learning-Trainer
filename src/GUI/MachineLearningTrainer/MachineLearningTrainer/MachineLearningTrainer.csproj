@@ -218,9 +218,12 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\drive.png" />
-    <Resource Include="Images\file.png" />
+  </ItemGroup>
+  <ItemGroup>
     <Resource Include="Images\folder-closed.png" />
-    <Resource Include="Images\folder-open.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\file.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
