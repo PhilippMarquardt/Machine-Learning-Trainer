@@ -549,7 +549,7 @@ namespace MachineLearningTrainer.DrawerTool
             get { return _dst; }
             set { _dst = value; }
         }
-        private void LoadRectangles()
+        public void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
 

@@ -120,6 +120,7 @@
     </Compile>
     <Compile Include="DrawerTool\ResizeThumb.cs" />
     <Compile Include="DrawerTool\SupportCode.cs" />
+    <Compile Include="DrawerTool\VisibilityAnimation.cs" />
     <Compile Include="DrawerTool\ZoomBorder.cs" />
     <Compile Include="Layer\Dense.cs" />
     <Compile Include="Layer\Dimension.cs" />

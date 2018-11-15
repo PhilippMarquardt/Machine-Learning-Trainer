@@ -359,9 +359,9 @@ namespace MachineLearningTrainer.DrawerTool
             try
             {
                 var fs = Directory.GetFiles(fullPath);
-                MessageBox.Show(fullPath);
                 if (fs.Length > 0)
                     files.AddRange(fs);
+                filenameTreeView = fullPath;
             }
             catch { }
 
@@ -417,19 +417,62 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            ContextMenu.Visibility = Visibility.Visible;
-            FolderView.Visibility = Visibility.Collapsed;
+            if(ContextMenu_Panel.Visibility == Visibility.Visible)
+            {
+                ContextMenu_Panel.Visibility = Visibility.Collapsed;
+            }
+
+            else
+            {
+                FolderView_Panel.Visibility = Visibility.Collapsed;
+                ContextMenu_Panel.Visibility = Visibility.Visible;
+            }
         }
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
-            ContextMenu.Visibility = Visibility.Collapsed;
-            FolderView.Visibility = Visibility.Visible;
+            if (FolderView_Panel.Visibility == Visibility.Visible)
+            {
+                FolderView_Panel.Visibility = Visibility.Collapsed;
+            }
+
+            else
+            {
+                ContextMenu_Panel.Visibility = Visibility.Collapsed;
+                FolderView_Panel.Visibility = Visibility.Visible;
+                
+            }
         }
+
+        public string filenameTreeView { get; set; }
 
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
+            int found = 0;
+            string s = FolderView.SelectedItem.ToString();
+            found = s.IndexOf("Header:");
+            string filename = s.Substring(found + 7);
+            int index = filename.IndexOf("Items");
+            if (index > 0)
+                filename = filename.Substring(0, index - 1);
+            //MessageBox.Show(filenameTreeView + FolderView.SelectedItem.ToString());
+            //MessageBox.Show(filename);
+            string fullFileName = filenameTreeView + @"\" + filename;
+            
+            if(fullFileName.Contains(".jpg") || fullFileName.Contains(".png") || fullFileName.Contains(".tiff"))
+            {
+                FolderView_Panel.Visibility = Visibility.Collapsed;
+                (this.DataContext as DrawerViewModel).ImagePath = fullFileName;
+                (this.DataContext as DrawerViewModel).IsEnabled = true;
+                (this.DataContext as DrawerViewModel).AllRectangles.Clear();
 
+                (this.DataContext as DrawerViewModel).LoadRectangles();
+                (this.DataContext as DrawerViewModel).ComboBoxNames();
+                (this.DataContext as DrawerViewModel).SortList();
+                (this.DataContext as DrawerViewModel).FilterName();
+                (this.DataContext as DrawerViewModel).cropImageLabelBegin();
+            }
         }
+        
     }
 }
