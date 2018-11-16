@@ -119,12 +119,7 @@
                         <RotateTransform Angle="-90" />
                     </Button.LayoutTransform>
                 </Button>
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Open File" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_3" BorderBrush="White" BorderThickness="0">
-                    <Button.LayoutTransform>
-                        <RotateTransform Angle="-90" />
-                    </Button.LayoutTransform>
-                </Button>
-            
+
             </StackPanel>
             
             <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
@@ -155,6 +150,7 @@
                 <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
                     <TreeView.Resources>
                         <Style TargetType="{x:Type TreeViewItem}">
+                            <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"/>
                             <Setter Property="HeaderTemplate">
                                 <Setter.Value>
                                     <DataTemplate>

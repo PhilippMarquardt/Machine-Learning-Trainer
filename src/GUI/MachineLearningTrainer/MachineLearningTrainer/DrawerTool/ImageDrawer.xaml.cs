@@ -396,7 +396,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void Button_Click_3(object sender, RoutedEventArgs e)
+        private void TreeViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (FolderView.SelectedItem != null)
             {

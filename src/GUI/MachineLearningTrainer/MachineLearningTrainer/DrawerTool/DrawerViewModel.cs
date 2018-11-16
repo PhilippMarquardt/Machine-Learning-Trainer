@@ -260,10 +260,13 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnDelete()
         {
-            for (int i = 0; i < AllRectangles.Count + 1; i++)
+            for(int i = 0; i < AllRectangles.Count + 1; i++)
             {
-                AllRectangles.Remove(SelectedResizableRectangle);
-                AllRectanglesView.Remove(SelectedResizableRectangle);
+                while(SelectedResizableRectangle != null)
+                {
+                    AllRectangles.Remove(SelectedResizableRectangle);
+                    AllRectanglesView.Remove(SelectedResizableRectangle);
+                }
             }
 
             this.IsOpen = false;
