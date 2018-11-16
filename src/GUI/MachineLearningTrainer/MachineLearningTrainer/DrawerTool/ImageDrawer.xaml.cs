@@ -226,36 +226,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        //        public void TreeViewItem_Expanded(object sender, RoutedEventArgs e)
-        //        {
-        //            TreeViewItem item = e.Source as TreeViewItem;
-        //            if ((item.Items.Count == 1) && (item.Items[0] is string))
-        //            {
-        //                item.Items.Clear();
-
-        //                DirectoryInfo expandedDir = null;
-        //                if (item.Tag is DriveInfo)
-        //                    expandedDir = (item.Tag as DriveInfo).RootDirectory;
-        //                if (item.Tag is DirectoryInfo)
-        //                    expandedDir = (item.Tag as DirectoryInfo);
-        //                try
-        //                {
-        //                    foreach (DirectoryInfo subDir in expandedDir.GetDirectories())
-        //                        item.Items.Add(CreateTreeItem(subDir));
-        //                }
-        //                catch { }
-        //            }
-        //        }
-
-        //        private TreeViewItem CreateTreeItem(object o)
-        //        {
-        //            TreeViewItem item = new TreeViewItem();
-        //            item.Header = o.ToString();
-        //            item.Tag = o;
-        //            item.Items.Add("Loading...");
-        //            return item;
-        //        }
-
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
@@ -377,8 +347,14 @@ namespace MachineLearningTrainer.DrawerTool
                     Tag = filePath
                 };
 
+                var checkExtension = subItem.ToString();
+
                 // Add this item to the parent
-                item.Items.Add(subItem);
+                if(checkExtension.Contains(".png")|| checkExtension.Contains(".jpg")|| checkExtension.Contains(".tiff"))
+                {
+                    item.Items.Add(subItem);
+                }
+                
             });
 
             #endregion
@@ -462,17 +438,18 @@ namespace MachineLearningTrainer.DrawerTool
             if(fullFileName.Contains(".jpg") || fullFileName.Contains(".png") || fullFileName.Contains(".tiff"))
             {
                 FolderView_Panel.Visibility = Visibility.Collapsed;
-                (this.DataContext as DrawerViewModel).ImagePath = fullFileName;
-                (this.DataContext as DrawerViewModel).IsEnabled = true;
-                (this.DataContext as DrawerViewModel).AllRectangles.Clear();
+                var drawerViewModel = (this.DataContext as DrawerViewModel);
+                drawerViewModel.ImagePath = fullFileName;
+                drawerViewModel.IsEnabled = true;
+                drawerViewModel.AllRectangles.Clear();
 
-                (this.DataContext as DrawerViewModel).LoadRectangles();
-                (this.DataContext as DrawerViewModel).ComboBoxNames();
-                (this.DataContext as DrawerViewModel).SortList();
-                (this.DataContext as DrawerViewModel).FilterName();
-                (this.DataContext as DrawerViewModel).cropImageLabelBegin();
+                drawerViewModel.LoadRectangles();
+                drawerViewModel.ComboBoxNames();
+                drawerViewModel.SortList();
+                drawerViewModel.FilterName();
+                drawerViewModel.cropImageLabelBegin();
+                OnPropertyChanged("ImagePath");
             }
         }
-        
     }
 }

@@ -916,21 +916,5 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        //TO DO
-        //private ICommand _imageMouseUpCommand;
-
-        //public ICommand ImageMouseUpCommand
-        //{
-        //    get
-        //    {
-        //        return _imageMouseUpCommand ?? (_imageMouseUpCommand = new CommandHandler(() => ImageMouseUp((MouseButtonEventArgs)_imageMouseUpCommand), _canExecute));
-        //    }
-        //}
-
-        //public void ImageMouseUp(MouseButtonEventArgs e)
-        //{
-            
-        //}
-
     }
 }
