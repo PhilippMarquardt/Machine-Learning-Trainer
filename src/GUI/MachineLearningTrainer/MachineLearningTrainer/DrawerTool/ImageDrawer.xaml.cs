@@ -59,6 +59,8 @@ namespace MachineLearningTrainer.DrawerTool
         public ResizableRectangle SelectedResizableRectangle { get; }
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
+        public string filenameTreeView { get; set; }
+        public System.Windows.Point mousePosition { get; set; }
 
         public void ListBox_RightButtonUp(object sender, MouseButtonEventArgs e)
         {
@@ -121,8 +123,9 @@ namespace MachineLearningTrainer.DrawerTool
                 int recHeight = (Convert.ToInt16(h));
 
             }
-            var position = e.GetPosition(cnvImage);
-            txtBox.Content = "X: " + (int)position.X + "; Y: " + (int)position.Y;
+            mousePosition = e.GetPosition(cnvImage);
+            (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
+            txtBox.Content = "X: " + (int)mousePosition.X + "; Y: " + (int)mousePosition.Y;
             txtBox1.Content = (this.DataContext as DrawerViewModel).ImagePath;
         }
 
@@ -198,38 +201,11 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).ComboBoxNames();
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).UpdatePreviews();
-
-            string destFileName = (this.DataContext as DrawerViewModel).ImagePath.Remove((this.DataContext as DrawerViewModel).ImagePath.LastIndexOf('.'));
-
-            foreach (var rec in (this.DataContext as DrawerViewModel).AllRectangles)
-            {
-                string path1 = destFileName + @"_Cropped_Images\" + rec.RectangleText + @"\";
-
-                if (!Directory.Exists(path1))
-                {
-                    Directory.CreateDirectory(path1);
-                }
-
-                if (rec.CroppedImage != null)
-                {
-                    BitmapEncoder encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
-                    string filename = path1 + (this.DataContext as DrawerViewModel).AllRectangles.IndexOf(rec) + ".png";
-                    using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
-                    {
-                        encoder.Save(fileStream);
-                    }
-                }
-            }
-        }
-
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
+            (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
 
             foreach (var drive in Directory.GetLogicalDrives())
             {
@@ -420,35 +396,34 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        public string filenameTreeView { get; set; }
-
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            int found = 0;
-            string s = FolderView.SelectedItem.ToString();
-            found = s.IndexOf("Header:");
-            string filename = s.Substring(found + 7);
-            int index = filename.IndexOf("Items");
-            if (index > 0)
-                filename = filename.Substring(0, index - 1);
-            //MessageBox.Show(filenameTreeView + FolderView.SelectedItem.ToString());
-            //MessageBox.Show(filename);
-            string fullFileName = filenameTreeView + @"\" + filename;
-            
-            if(fullFileName.Contains(".jpg") || fullFileName.Contains(".png") || fullFileName.Contains(".tiff"))
+            if (FolderView.SelectedItem != null)
             {
-                FolderView_Panel.Visibility = Visibility.Collapsed;
-                var drawerViewModel = (this.DataContext as DrawerViewModel);
-                drawerViewModel.ImagePath = fullFileName;
-                drawerViewModel.IsEnabled = true;
-                drawerViewModel.AllRectangles.Clear();
+                int found = 0;
+                string s = FolderView.SelectedItem.ToString();
+                found = s.IndexOf("Header:");
+                string filename = s.Substring(found + 7);
+                int index = filename.IndexOf("Items");
+                if (index > 0)
+                    filename = filename.Substring(0, index - 1);
+                string fullFileName = filenameTreeView + @"\" + filename;
 
-                drawerViewModel.LoadRectangles();
-                drawerViewModel.ComboBoxNames();
-                drawerViewModel.SortList();
-                drawerViewModel.FilterName();
-                drawerViewModel.cropImageLabelBegin();
-                OnPropertyChanged("ImagePath");
+                if (fullFileName.Contains(".jpg") || fullFileName.Contains(".png") || fullFileName.Contains(".tiff"))
+                {
+                    FolderView_Panel.Visibility = Visibility.Collapsed;
+                    var drawerViewModel = (this.DataContext as DrawerViewModel);
+                    drawerViewModel.ImagePath = fullFileName;
+                    drawerViewModel.IsEnabled = true;
+                    drawerViewModel.AllRectangles.Clear();
+
+                    drawerViewModel.LoadRectangles();
+                    drawerViewModel.ComboBoxNames();
+                    drawerViewModel.SortList();
+                    drawerViewModel.FilterName();
+                    drawerViewModel.cropImageLabelBegin();
+                    OnPropertyChanged("ImagePath");
+                }
             }
         }
     }

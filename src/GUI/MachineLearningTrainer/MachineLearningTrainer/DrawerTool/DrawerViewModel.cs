@@ -106,6 +106,31 @@ namespace MachineLearningTrainer.DrawerTool
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
+
+            UpdatePreviews();
+
+            string destFileName1 = ImagePath.Remove(ImagePath.LastIndexOf('.'));
+
+            foreach (var rec in AllRectangles)
+            {
+                string path1 = destFileName1 + @"_Cropped_Images\" + rec.RectangleText + @"\";
+
+                if (!Directory.Exists(path1))
+                {
+                    Directory.CreateDirectory(path1);
+                }
+
+                if (rec.CroppedImage != null)
+                {
+                    BitmapEncoder encoder = new PngBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
+                    string filename = path1 + AllRectangles.IndexOf(rec) + ".png";
+                    using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
+                    {
+                        encoder.Save(fileStream);
+                    }
+                }
+            }
         }
 
 
@@ -260,18 +285,27 @@ namespace MachineLearningTrainer.DrawerTool
             return SelectedResizableRectangle != null;
         }
 
+        private System.Windows.Point _vmMousePoint;
+
+        public System.Windows.Point vmMousePoint
+        {
+            get { return _vmMousePoint; }
+            set { _vmMousePoint = value; }
+        }
+
+
         private void OnDuplicate()
         {
             ResizableRectangle DuplicateRect = new ResizableRectangle();
-
+            
             DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
             DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
             DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
-            DuplicateRect.X = SelectedResizableRectangle.X + 30;
-            DuplicateRect.Y = SelectedResizableRectangle.Y + 30;
+            DuplicateRect.X = vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2;
+            DuplicateRect.Y = vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2;
 
-            Canvas.SetLeft(DuplicateRect, SelectedResizableRectangle.X + 30);
-            Canvas.SetTop(DuplicateRect, SelectedResizableRectangle.Y + 30);
+            Canvas.SetLeft(DuplicateRect, vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2);
+            Canvas.SetTop(DuplicateRect, vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2);
 
             AllRectanglesView.Add(DuplicateRect);
             AllRectangles.Add(DuplicateRect);
@@ -851,29 +885,32 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void cropImageLabelBegin()
         {
-            BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-            Bitmap src;
-
-            using (MemoryStream outStream = new MemoryStream())
+            if (MyPreview.Source != null)
             {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+                BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+                Bitmap src;
 
-                src = new Bitmap(bitmap);
-            }
-
-            foreach (var rec in AllRectanglesView)
-            {
-
-                if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
+                using (MemoryStream outStream = new MemoryStream())
                 {
-                    Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                    BitmapEncoder enc = new BmpBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bImage));
+                    enc.Save(outStream);
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                    src = new Bitmap(bitmap);
+                }
+
+                foreach (var rec in AllRectanglesView)
+                {
+
+                    if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
+                    {
+                        Mat mat = SupportCode.ConvertBmp2Mat(src);
+                        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+
+                        Mat croppedImage = new Mat(mat, rectCrop);
+                        rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                    }
                 }
             }
 

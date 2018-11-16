@@ -83,12 +83,17 @@
                     Modifiers="Ctrl"
                     Command="{Binding RenameCommand}"
                     CommandParameter="U"/>
+        <KeyBinding Key="S"
+                    Modifiers="Ctrl"
+                    Command="{Binding ExportPascalVoc}"
+                    CommandParameter="S"/>
     </UserControl.InputBindings>
 
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto" MaxWidth="400"/>
+            <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
+            <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="*"/>
             <ColumnDefinition Width="4"/>
             <ColumnDefinition Width="250" MinWidth="250"/>
@@ -100,84 +105,88 @@
             <RowDefinition Height="100"/>
         </Grid.RowDefinitions>
 
-        <StackPanel Grid.Column="1" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4" Background="White" Orientation="Horizontal">
-            <Canvas Width="30">
-                <StackPanel>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="Context Menu" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_1" BorderBrush="White" BorderThickness="0">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="-90" />
-                        </Button.LayoutTransform>
-                    </Button>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="-90" />
-                        </Button.LayoutTransform>
-                    </Button>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="Open File" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_3" BorderBrush="White" BorderThickness="0">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="-90" />
-                        </Button.LayoutTransform>
-                    </Button>
-                </StackPanel>
-                <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
-                    <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+        
+        <Canvas Width="30" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
+            
+            <StackPanel>
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Context Menu" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_1" BorderBrush="White" BorderThickness="0">
+                    <Button.LayoutTransform>
+                        <RotateTransform Angle="-90" />
+                    </Button.LayoutTransform>
                 </Button>
+                <Button Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0">
+                    <Button.LayoutTransform>
+                        <RotateTransform Angle="-90" />
+                    </Button.LayoutTransform>
+                </Button>
+                <Button Style="{StaticResource BasicButtonStyle}" Content="Open File" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_3" BorderBrush="White" BorderThickness="0">
+                    <Button.LayoutTransform>
+                        <RotateTransform Angle="-90" />
+                    </Button.LayoutTransform>
+                </Button>
+            
+            </StackPanel>
+            
+            <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+            </Button>
+            
+        </Canvas>
 
-            </Canvas>
+        <Grid x:Name="gridcolumn1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Width="auto">
 
-            <Grid>
-
-                <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="ContextMenu_Panel" Visibility="Collapsed" Width="180">
-                    <Grid Background="#FF2196F3" Margin="10" Width="160">
-                        <TextBlock Text="Context Menu" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Left"/>
-                    </Grid>
-                    <StackPanel>
-                        <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
-                        <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
-                        <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Click="Button_Click" Command="{Binding ExportPascalVoc}"/>
-                        <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML" Command="{Binding LoadXMLCommand}"/>
-                        <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Command="{Binding UpdatePreviewsCommand}"/>
-                    </StackPanel>
+            <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="ContextMenu_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
+                <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
+                    <TextBlock Text="Context Menu" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                </Grid>
+                <StackPanel HorizontalAlignment="Left">
+                    <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"      Command="{Binding LoadImageCommand}"/>
+                    <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle"   Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
+                    <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML"   Command="{Binding ExportPascalVoc}"/>
+                    <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML"        Command="{Binding LoadXMLCommand}"/>
+                    <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Command="{Binding UpdatePreviewsCommand}"/>
                 </StackPanel>
+            </StackPanel>
 
-                <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="FolderView_Panel" Visibility="Collapsed">
-                    <Grid Background="#FF2196F3" Margin="10">
-                        <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center"/>
-                    </Grid>
-                    <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Center" Width="auto" MaxWidth="300">
-                        <TreeView.Resources>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="HeaderTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
-                                                    Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </TreeView.Resources>
-                    </TreeView>
-                </StackPanel>
+            <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
+                <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
+                    <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                </Grid>
+                <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
+                    <TreeView.Resources>
+                        <Style TargetType="{x:Type TreeViewItem}">
+                            <Setter Property="HeaderTemplate">
+                                <Setter.Value>
+                                    <DataTemplate>
+                                        <StackPanel Orientation="Horizontal">
+                                            <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
+                                                Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
+                                            <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
+                                        </StackPanel>
+                                    </DataTemplate>
+                                </Setter.Value>
+                            </Setter>
+                        </Style>
+                    </TreeView.Resources>
+                </TreeView>
+            </StackPanel>
 
-            </Grid>
+        </Grid>
+            
 
-        </StackPanel>
+        <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
 
-        <StackPanel Grid.Column="4" Grid.Row="3" Panel.ZIndex="1" Background="White">
+        <StackPanel Grid.Column="5" Grid.Row="3" Panel.ZIndex="1" Background="White">
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
             <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
         </StackPanel>
 
         <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
-                 Grid.Column="2" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+                 Grid.Column="3" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
         <Label Name="txtBox1" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
-                 Grid.Column="2" HorizontalAlignment="Left" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+                 Grid.Column="3" HorizontalAlignment="Left" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
 
-        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="2" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
+        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
                           BorderBrush="Gray" BorderThickness="1" ClipToBounds="True">
 
             <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
@@ -206,15 +215,15 @@
             </Canvas>
         </local:ZoomBorder>
 
-        <GridSplitter Grid.Column="3" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
+        <GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
 
-        <StackPanel Grid.Column="4" Grid.Row="0" Background="White" Panel.ZIndex="1">
+        <StackPanel Grid.Column="5" Grid.Row="0" Background="White" Panel.ZIndex="1">
             <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
             <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
         </StackPanel>
 
-        <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="4" Background="White"
+        <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="5" Background="White"
                  x:Name="listBoxLabels1" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -267,7 +276,7 @@
             </ListBox.ContextMenu>
         </ListBox>
 
-        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="4" Background="White"
+        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="5" Background="White"
                  x:Name="listBoxLabels" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
             <ListBox.ItemTemplate>
                 <DataTemplate>
@@ -320,7 +329,7 @@
             </ListBox.ContextMenu>
         </ListBox>
         <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
-                  Grid.Column="4" Padding="5" Height="auto" Margin="0,0,0,5" DropDownClosed="ComboBox_DropDownClosed"/>
-        <TextBlock Grid.Column="4" Panel.ZIndex="2" HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray" Margin="0,0,20,9"/>
+                  Grid.Column="5" Padding="5" Height="auto" Margin="0,0,0,5" DropDownClosed="ComboBox_DropDownClosed"/>
+        <TextBlock Grid.Column="5" Panel.ZIndex="2" HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray" Margin="0,0,20,9"/>
     </Grid>
 </UserControl>
