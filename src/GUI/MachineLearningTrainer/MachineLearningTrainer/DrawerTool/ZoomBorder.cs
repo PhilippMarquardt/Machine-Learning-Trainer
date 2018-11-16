@@ -10,7 +10,7 @@
     public class ZoomBorder : Border
     {
         private UIElement child = null;
-        private Point origin;
+        public Point origin;
         private Point start;
 
         private TranslateTransform GetTranslateTransform(UIElement element)
@@ -144,7 +144,6 @@
             {
                 child.ReleaseMouseCapture();
                 this.Cursor = Cursors.Arrow;
-              
             }
         }
 

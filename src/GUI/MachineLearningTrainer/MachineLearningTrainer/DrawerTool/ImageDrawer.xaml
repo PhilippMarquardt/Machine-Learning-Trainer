@@ -87,6 +87,14 @@
                     Modifiers="Ctrl"
                     Command="{Binding ExportPascalVoc}"
                     CommandParameter="S"/>
+        <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
     </UserControl.InputBindings>
 
     <Grid>
@@ -185,7 +193,7 @@
         <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
                           BorderBrush="Gray" BorderThickness="1" ClipToBounds="True">
 
-            <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
+            <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove"
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
                 <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"

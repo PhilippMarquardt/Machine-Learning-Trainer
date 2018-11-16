@@ -323,7 +323,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnRename()
         {
-            foreach (var rec in AllRectanglesView)
+            foreach(var rec in AllRectangles)
             {
                 rec.RectangleText = DefaultLabel;
             }
@@ -526,6 +526,7 @@ namespace MachineLearningTrainer.DrawerTool
                 rect.ThumbSize = 3;
                 rect.VisibilityChanged = false;
             }
+            Enabled = true;
         }
 
         private ICommand _deleteLastRectangleCommand;
@@ -956,5 +957,134 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #region KeyArrowCommands
+
+        private ICommand _rightButtonCommand;
+        public ICommand RightButtonCommand
+        {
+            get
+            {
+                return _rightButtonCommand ?? (_rightButtonCommand = new CommandHandler(() => RightButton(), _canExecute));
+            }
+        }
+
+        public void RightButton()
+        {
+            SelectedResizableRectangle.X = SelectedResizableRectangle.X + 1;
+            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 1;
+            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+            OnPropertyChanged("SelectedResizableRectangle");
+        }
+
+        private ICommand _leftButtonCommand;
+        public ICommand LeftButtonCommand
+        {
+            get
+            {
+                return _leftButtonCommand ?? (_leftButtonCommand = new CommandHandler(() => LeftButton(), _canExecute));
+            }
+        }
+
+        public void LeftButton()
+        {
+            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 1;
+        }
+
+        private ICommand _upButtonCommand;
+        public ICommand UpButtonCommand
+        {
+            get
+            {
+                return _upButtonCommand ?? (_upButtonCommand = new CommandHandler(() => UpButton(), _canExecute));
+            }
+        }
+        public void UpButton()
+        {
+            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 1;
+        }
+
+        private ICommand _downButtonCommand;
+        public ICommand DownButtonCommand
+        {
+            get
+            {
+                return _downButtonCommand ?? (_downButtonCommand = new CommandHandler(() => DownButton(), _canExecute));
+            }
+        }
+
+        public void DownButton()
+        {
+            SelectedResizableRectangle.Y = SelectedResizableRectangle.Y + 1;
+            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 1;
+            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+            OnPropertyChanged("SelectedResizableRectangle");
+        }
+
+        private ICommand _rightButtonCommand1;
+        public ICommand RightButtonCommand1
+        {
+            get
+            {
+                return _rightButtonCommand1 ?? (_rightButtonCommand1 = new CommandHandler(() => RightButton1(), _canExecute));
+            }
+        }
+
+        public void RightButton1()
+        {
+            SelectedResizableRectangle.X = SelectedResizableRectangle.X - 1;
+            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 1;
+            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+            OnPropertyChanged("SelectedResizableRectangle");
+        }
+
+        private ICommand _leftButtonCommand1;
+        public ICommand LeftButtonCommand1
+        {
+            get
+            {
+                return _leftButtonCommand1 ?? (_leftButtonCommand1 = new CommandHandler(() => LeftButton1(), _canExecute));
+            }
+        }
+
+        public void LeftButton1()
+        {
+            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 1;
+        }
+
+        private ICommand _upButtonCommand1;
+        public ICommand UpButtonCommand1
+        {
+            get
+            {
+                return _upButtonCommand1 ?? (_upButtonCommand1 = new CommandHandler(() => UpButton1(), _canExecute));
+            }
+        }
+        public void UpButton1()
+        {
+            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 1;
+        }
+
+        private ICommand _downButtonCommand1;
+        public ICommand DownButtonCommand1
+        {
+            get
+            {
+                return _downButtonCommand1 ?? (_downButtonCommand1 = new CommandHandler(() => DownButton1(), _canExecute));
+            }
+        }
+
+        public void DownButton1()
+        {
+            SelectedResizableRectangle.Y = SelectedResizableRectangle.Y - 1;
+            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 1;
+            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+            OnPropertyChanged("SelectedResizableRectangle");
+        }
+
+        #endregion
     }
 }

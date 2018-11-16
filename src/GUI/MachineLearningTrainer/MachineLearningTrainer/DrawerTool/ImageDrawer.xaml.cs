@@ -412,19 +412,19 @@ namespace MachineLearningTrainer.DrawerTool
                 if (fullFileName.Contains(".jpg") || fullFileName.Contains(".png") || fullFileName.Contains(".tiff"))
                 {
                     FolderView_Panel.Visibility = Visibility.Collapsed;
-                    var drawerViewModel = (this.DataContext as DrawerViewModel);
-                    drawerViewModel.ImagePath = fullFileName;
-                    drawerViewModel.IsEnabled = true;
-                    drawerViewModel.AllRectangles.Clear();
+                    
+                    (this.DataContext as DrawerViewModel).ImagePath = fullFileName;
 
-                    drawerViewModel.LoadRectangles();
-                    drawerViewModel.ComboBoxNames();
-                    drawerViewModel.SortList();
-                    drawerViewModel.FilterName();
-                    drawerViewModel.cropImageLabelBegin();
-                    OnPropertyChanged("ImagePath");
+                    (this.DataContext as DrawerViewModel).IsEnabled = true;
+                    (this.DataContext as DrawerViewModel).AllRectangles.Clear();
+
+                    (this.DataContext as DrawerViewModel).LoadRectangles();
+                    (this.DataContext as DrawerViewModel).ComboBoxNames();
+                    (this.DataContext as DrawerViewModel).SortList();
+                    (this.DataContext as DrawerViewModel).FilterName();
                 }
             }
         }
+        
     }
 }
