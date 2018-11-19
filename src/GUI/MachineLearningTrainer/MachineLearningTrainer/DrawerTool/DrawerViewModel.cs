@@ -145,8 +145,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void AddNewRectangle()
         {
-            //AllRectanglesView = AllRectangles;
-            //OnPropertyChanged("AllRectanglesView");
+            MyCanvas.Cursor = Cursors.Cross;
 
             if (SelectedComboBoxItem != "All Labels")
             {
@@ -300,7 +299,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void OnDuplicate()
         {
             ResizableRectangle DuplicateRect = new ResizableRectangle();
-            
+
             DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
             DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
             DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
@@ -314,6 +313,17 @@ namespace MachineLearningTrainer.DrawerTool
             AllRectangles.Add(DuplicateRect);
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("AllRectangles");
+            cropImageLabelBegin();
+
+            if (SelectedComboBoxItem == "All Labels")
+            {
+                RectangleCount = "#" + AllRectangles.Count.ToString();
+            }
+
+            else if (SelectedComboBoxItem != "All Labels")
+            {
+                RectangleCount = "#" + AllRectanglesView.Count.ToString();
+            }
         }
 
         private bool CanDuplicate()

@@ -33,7 +33,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ImageDrawer()
         {
             InitializeComponent();
-            cnvImage.Cursor = Cursors.Cross;
+            cnvImage.Cursor = Cursors.Arrow;
             DriveInfo[] drives = DriveInfo.GetDrives();
             //foreach (DriveInfo driveInfo in drives)
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
@@ -95,6 +95,7 @@ namespace MachineLearningTrainer.DrawerTool
             if ((this.DataContext as DrawerViewModel).Enabled == false)
 
             {
+                cnvImage.Cursor = Cursors.Cross;
                 if (e.LeftButton == MouseButtonState.Released || rectSelectArea == null)
                     return;
 
@@ -123,6 +124,12 @@ namespace MachineLearningTrainer.DrawerTool
                 int recHeight = (Convert.ToInt16(h));
 
             }
+
+            else
+            {
+                cnvImage.Cursor = Cursors.Arrow;
+            }
+
             mousePosition = e.GetPosition(cnvImage);
             (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
             txtBox.Content = "X: " + (int)mousePosition.X + "; Y: " + (int)mousePosition.Y;
@@ -412,7 +419,6 @@ namespace MachineLearningTrainer.DrawerTool
                 if (fullFileName.Contains(".jpg") || fullFileName.Contains(".png") || fullFileName.Contains(".tiff"))
                 {
                     FolderView_Panel.Visibility = Visibility.Collapsed;
-                    
                     (this.DataContext as DrawerViewModel).ImagePath = fullFileName;
 
                     (this.DataContext as DrawerViewModel).IsEnabled = true;
@@ -422,6 +428,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
+                    
                 }
             }
         }

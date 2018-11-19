@@ -31,8 +31,8 @@ namespace MachineLearningTrainer
 
             //Uncomment, if you want to use the whole program
 
-            if (viewModel.RightTransition.CanExecute(null))
-                viewModel.RightTransition.Execute(null);
+            //if (viewModel.RightTransition.CanExecute(null))
+            //    viewModel.RightTransition.Execute(null);
 
 
             //MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, true)); 

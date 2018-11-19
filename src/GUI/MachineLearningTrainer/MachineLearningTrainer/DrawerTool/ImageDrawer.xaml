@@ -87,14 +87,14 @@
                     Modifiers="Ctrl"
                     Command="{Binding ExportPascalVoc}"
                     CommandParameter="S"/>
-        <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
-        <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
-        <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
-        <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="A" Command="{Binding LeftButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="D" Command="{Binding RightButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="W" Command="{Binding UpButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="S" Command="{Binding DownButtonCommand}" Modifiers="Alt"/>
+        <KeyBinding Key="A" Command="{Binding RightButtonCommand1}" Modifiers="Shift"/>
+        <KeyBinding Key="D" Command="{Binding LeftButtonCommand1}" Modifiers="Shift"/>
+        <KeyBinding Key="W" Command="{Binding DownButtonCommand1}" Modifiers="Shift"/>
+        <KeyBinding Key="S" Command="{Binding UpButtonCommand1}" Modifiers="Shift"/>
     </UserControl.InputBindings>
 
     <Grid>
@@ -156,7 +156,7 @@
                     <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 </Grid>
                 <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
-                    <TreeView.Resources>
+                   <TreeView.Resources>
                         <Style TargetType="{x:Type TreeViewItem}">
                             <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"/>
                             <Setter Property="HeaderTemplate">
@@ -176,8 +176,13 @@
             </StackPanel>
 
         </Grid>
-            
-
+        <Grid x:Name="prGrid" Height="auto" Width="auto" Background="White" Grid.Column="3" Panel.ZIndex="2" Grid.RowSpan="4" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
+            <StackPanel>
+                <Label Content="Image is being prepared ..." Margin="10,10,10,5" FontSize="12" Foreground="Black" Background="White" HorizontalAlignment="Center"/>
+                <ProgressBar Minimum="0" Maximum="100" IsIndeterminate="True" Height="20"  Width="300" Background="White" Foreground="LawnGreen"
+                             BorderBrush="Gray" BorderThickness="1" Margin="10,5,10,10"/>
+            </StackPanel>
+        </Grid>
         <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
 
         <StackPanel Grid.Column="5" Grid.Row="3" Panel.ZIndex="1" Background="White">
@@ -192,7 +197,6 @@
 
         <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
                           BorderBrush="Gray" BorderThickness="1" ClipToBounds="True">
-
             <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove"
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                 <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
@@ -225,6 +229,7 @@
             <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
             <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
+            
         </StackPanel>
 
         <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="5" Background="White"
