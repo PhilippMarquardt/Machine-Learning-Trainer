@@ -6,7 +6,9 @@
     using System.Windows.Input;
     using System.Windows.Media;
 
-  
+    /// <summary>
+    /// this class contains all methods for zooming the image
+    /// </summary>
     public class ZoomBorder : Border
     {
         private UIElement child = null;

@@ -9,6 +9,9 @@ using System.Windows.Media.Animation;
 
 namespace MachineLearningTrainer.DrawerTool
 {
+    /// <summary>
+    /// this method contains all methods for visibility anamation 
+    /// </summary>
     public class VisibilityAnimation
     {
         public enum AnimationType

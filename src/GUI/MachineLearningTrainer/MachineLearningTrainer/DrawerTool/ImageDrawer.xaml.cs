@@ -432,6 +432,5 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
         }
-        
     }
 }
