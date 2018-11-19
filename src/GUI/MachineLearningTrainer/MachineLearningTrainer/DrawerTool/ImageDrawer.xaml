@@ -98,16 +98,16 @@
     </UserControl.InputBindings>
 
     <DockPanel>
-        <Menu DockPanel.Dock="Top" BorderBrush="Gray" BorderThickness="0.5">
+        <Menu DockPanel.Dock="Top">
             <MenuItem Margin="5" Header="File" Height="25">
                 <MenuItem Header="Load Image" Command="{Binding LoadImageCommand}"/>
                 <Separator />
                 <MenuItem Header="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
                 <Separator />
-                <MenuItem Header="Export To XML" Command="{Binding ExportPascalVoc}"/>
-                <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}"/>
+                <MenuItem Header="Export To XML" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}" IsEnabled="{Binding IsEnabled}"/>
                 <Separator />
-                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}"/>
+                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}" IsEnabled="{Binding IsEnabled}"/>
             </MenuItem>
         </Menu>
 
@@ -117,8 +117,8 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
                 <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="143*"/>
-                <ColumnDefinition Width="1489*"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="250" MinWidth="250"/>
             </Grid.ColumnDefinitions>

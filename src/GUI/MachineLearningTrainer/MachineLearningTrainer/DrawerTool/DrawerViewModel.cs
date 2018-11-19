@@ -537,6 +537,7 @@ namespace MachineLearningTrainer.DrawerTool
                 rect.VisibilityChanged = false;
             }
             Enabled = true;
+            MyCanvas.Cursor = Cursors.Arrow;
         }
 
         private ICommand _deleteLastRectangleCommand;
