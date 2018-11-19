@@ -374,19 +374,19 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
-        private void Button_Click_1(object sender, RoutedEventArgs e)
-        {
-            if(ContextMenu_Panel.Visibility == Visibility.Visible)
-            {
-                ContextMenu_Panel.Visibility = Visibility.Collapsed;
-            }
+        //private void Button_Click_1(object sender, RoutedEventArgs e)
+        //{
+        //    if (ContextMenu_Panel.Visibility == Visibility.Visible)
+        //    {
+        //        ContextMenu_Panel.Visibility = Visibility.Collapsed;
+        //    }
 
-            else
-            {
-                FolderView_Panel.Visibility = Visibility.Collapsed;
-                ContextMenu_Panel.Visibility = Visibility.Visible;
-            }
-        }
+        //    else
+        //    {
+        //        FolderView_Panel.Visibility = Visibility.Collapsed;
+        //        ContextMenu_Panel.Visibility = Visibility.Visible;
+        //    }
+        //}
 
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
@@ -397,7 +397,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             else
             {
-                ContextMenu_Panel.Visibility = Visibility.Collapsed;
+                //ContextMenu_Panel.Visibility = Visibility.Collapsed;
                 FolderView_Panel.Visibility = Visibility.Visible;
                 
             }

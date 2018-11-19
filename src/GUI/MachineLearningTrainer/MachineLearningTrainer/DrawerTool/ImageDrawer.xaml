@@ -97,48 +97,64 @@
         <KeyBinding Key="S" Command="{Binding UpButtonCommand1}" Modifiers="Shift"/>
     </UserControl.InputBindings>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="auto"/>
-            <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
-            <ColumnDefinition Width="4"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="4"/>
-            <ColumnDefinition Width="250" MinWidth="250"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="150"/>
-            <RowDefinition Height="48*"/>
-            <RowDefinition Height="35*"/>
-            <RowDefinition Height="100"/>
-        </Grid.RowDefinitions>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top" BorderBrush="Gray" BorderThickness="0.5">
+            <MenuItem Margin="5" Header="File" Height="25">
+                <MenuItem Header="Load Image" Command="{Binding LoadImageCommand}"/>
+                <Separator />
+                <MenuItem Header="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
+                <Separator />
+                <MenuItem Header="Export To XML" Command="{Binding ExportPascalVoc}"/>
+                <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}"/>
+                <Separator />
+                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}"/>
+            </MenuItem>
+        </Menu>
 
-        
-        <Canvas Width="30" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
-            
-            <StackPanel>
-                <Button Style="{StaticResource BasicButtonStyle}" Content="Context Menu" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_1" BorderBrush="White" BorderThickness="0">
+
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="143*"/>
+                <ColumnDefinition Width="1489*"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="250" MinWidth="250"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="150"/>
+                <RowDefinition Height="48*"/>
+                <RowDefinition Height="35*"/>
+                <RowDefinition Height="100"/>
+            </Grid.RowDefinitions>
+
+
+            <Canvas Width="30" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
+
+                <StackPanel>
+                    <!--<Button Style="{StaticResource BasicButtonStyle}" Content="Context Menu" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_1" BorderBrush="White" BorderThickness="0">
                     <Button.LayoutTransform>
                         <RotateTransform Angle="-90" />
                     </Button.LayoutTransform>
+                </Button>-->
+                    <Button Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0">
+                        <Button.LayoutTransform>
+                            <RotateTransform Angle="-90" />
+                        </Button.LayoutTransform>
+                    </Button>
+
+                </StackPanel>
+
+                <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                    <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
                 </Button>
-                <Button Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Left" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0">
-                    <Button.LayoutTransform>
-                        <RotateTransform Angle="-90" />
-                    </Button.LayoutTransform>
-                </Button>
 
-            </StackPanel>
-            
-            <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
-                <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
-            </Button>
-            
-        </Canvas>
+            </Canvas>
 
-        <Grid x:Name="gridcolumn1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Width="auto">
+            <Grid x:Name="gridcolumn1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Width="auto" Grid.ColumnSpan="2" Margin="0,0,4,0">
 
-            <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="ContextMenu_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
+                <!--<StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="ContextMenu_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
                 <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
                     <TextBlock Text="Context Menu" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                 </Grid>
@@ -149,196 +165,197 @@
                     <Button Style="{StaticResource BasicButtonStyle}" Content="Load XML"        Command="{Binding LoadXMLCommand}"/>
                     <Button Style="{StaticResource BasicButtonStyle}" Content="Update Previews" Command="{Binding UpdatePreviewsCommand}"/>
                 </StackPanel>
-            </StackPanel>
+            </StackPanel>-->
 
-            <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
-                <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
-                    <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-                </Grid>
-                <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
-                   <TreeView.Resources>
-                        <Style TargetType="{x:Type TreeViewItem}">
-                            <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"/>
-                            <Setter Property="HeaderTemplate">
-                                <Setter.Value>
-                                    <DataTemplate>
-                                        <StackPanel Orientation="Horizontal">
-                                            <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
+                <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
+                    <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
+                        <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
+                        <TreeView.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"/>
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
                                                 Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
-                                            <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
-                                        </StackPanel>
-                                    </DataTemplate>
-                                </Setter.Value>
-                            </Setter>
-                        </Style>
-                    </TreeView.Resources>
-                </TreeView>
-            </StackPanel>
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TreeView.Resources>
+                    </TreeView>
+                </StackPanel>
 
-        </Grid>
-        <Grid x:Name="prGrid" Height="auto" Width="auto" Background="White" Grid.Column="3" Panel.ZIndex="2" Grid.RowSpan="4" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center">
-            <StackPanel>
-                <Label Content="Image is being prepared ..." Margin="10,10,10,5" FontSize="12" Foreground="Black" Background="White" HorizontalAlignment="Center"/>
-                <ProgressBar Minimum="0" Maximum="100" IsIndeterminate="True" Height="20"  Width="300" Background="White" Foreground="LawnGreen"
+            </Grid>
+            <Grid x:Name="prGrid" Height="auto" Width="auto" Background="White" Grid.Column="4" Panel.ZIndex="2" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center" Margin="673,378,816,88" Grid.Row="1">
+                <StackPanel>
+                    <Label Content="Image is being prepared ..." Margin="10,10,10,5" FontSize="12" Foreground="Black" Background="White" HorizontalAlignment="Center"/>
+                    <ProgressBar Minimum="0" Maximum="100" IsIndeterminate="True" Height="20"  Width="300" Background="White" Foreground="LawnGreen"
                              BorderBrush="Gray" BorderThickness="1" Margin="10,5,10,10"/>
+                </StackPanel>
+            </Grid>
+            <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
+
+            <StackPanel Grid.Column="6" Grid.Row="3" Panel.ZIndex="1" Background="White">
+                <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
+                <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
             </StackPanel>
-        </Grid>
-        <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
 
-        <StackPanel Grid.Column="5" Grid.Row="3" Panel.ZIndex="1" Background="White">
-            <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
-            <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
-        </StackPanel>
-
-        <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
-                 Grid.Column="3" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
-        <Label Name="txtBox1" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
+            <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
+                 Grid.Column="4" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+            <Label Name="txtBox1" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
                  Grid.Column="3" HorizontalAlignment="Left" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
 
-        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
-                          BorderBrush="Gray" BorderThickness="1" ClipToBounds="True">
-            <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove"
+            <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
+                          BorderBrush="Gray" BorderThickness="1" ClipToBounds="True" Grid.ColumnSpan="2">
+                <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove"
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
-                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
-                <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+                    <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
+                    <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
                               Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="local:ResizableRectangle">
-                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                            <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                </ItemsControl>
-            </Canvas>
-        </local:ZoomBorder>
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="local:ResizableRectangle">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                </Canvas>
+            </local:ZoomBorder>
 
-        <GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
+            <GridSplitter Grid.Column="5" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
 
-        <StackPanel Grid.Column="5" Grid.Row="0" Background="White" Panel.ZIndex="1">
-            <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
-            <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+            <StackPanel Grid.Column="6" Grid.Row="0" Background="White" Panel.ZIndex="1">
+                <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
+                <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
-            
-        </StackPanel>
 
-        <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="5" Background="White"
+            </StackPanel>
+
+            <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White"
                  x:Name="listBoxLabels1" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <WrapPanel>
-                        <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
-                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
+                            <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
                                  TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
-                    </WrapPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ContextMenu>
-                <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                    <MenuItem Command="{Binding DuplicateCommand}">
-                        <MenuItem.Icon>
-                            <Image Source="/Icons/duplicate.png"/>
-                        </MenuItem.Icon>
-                        <MenuItem.Header>
-                            <WrapPanel>
-                                <Label Content="Duplicate"/>
-                                <Label Content="Rename AllDelete" Foreground="Transparent"/>
-                                <Label Content="Strg + C"/>
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Command="{Binding RenameCommand}">
-                        <MenuItem.Icon>
-                            <Image Source="/Icons/rename.png"/>
-                        </MenuItem.Icon>
-                        <MenuItem.Header>
-                            <WrapPanel>
-                                <Label Content="Rename All"/>
-                                <Label Content="DuplicateDelete" Foreground="Transparent"/>
-                                <Label Content="Strg + U"/>
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Command="{Binding DeleteCommand}">
-                        <MenuItem.Icon>
-                            <Image Source="/Icons/delete.png"/>
-                        </MenuItem.Icon>
-                        <MenuItem.Header>
-                            <WrapPanel>
-                                <Label Content="Delete"/>
-                                <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
-                                <Label Content="Entf"/>
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Command="{Binding DuplicateCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Duplicate"/>
+                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + C"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Rename All"/>
+                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + U"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Delete"/>
+                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
+                                    <Label Content="Entf"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
 
-        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="5" Background="White"
+            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White"
                  x:Name="listBoxLabels" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <WrapPanel>
-                        <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="5,0,10,0"/>
-                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="5,0,10,0"/>
+                            <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
                                  TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
-                    </WrapPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <ListBox.ContextMenu>
-                <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                    <MenuItem Command="{Binding DuplicateCommand}">
-                        <MenuItem.Icon>
-                            <Image Source="/Icons/duplicate.png"/>
-                        </MenuItem.Icon>
-                        <MenuItem.Header>
-                            <WrapPanel>
-                                <Label Content="Duplicate"/>
-                                <Label Content="Rename AllDelete" Foreground="Transparent"/>
-                                <Label Content="Strg + C"/>
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Command="{Binding RenameCommand}">
-                        <MenuItem.Icon>
-                            <Image Source="/Icons/rename.png"/>
-                        </MenuItem.Icon>
-                        <MenuItem.Header>
-                            <WrapPanel>
-                                <Label Content="Rename All"/>
-                                <Label Content="DuplicateDelete" Foreground="Transparent"/>
-                                <Label Content="Strg + U"/>
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                    <MenuItem Command="{Binding DeleteCommand}">
-                        <MenuItem.Icon>
-                            <Image Source="/Icons/delete.png"/>
-                        </MenuItem.Icon>
-                        <MenuItem.Header>
-                            <WrapPanel>
-                                <Label Content="Delete"/>
-                                <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
-                                <Label Content="Entf"/>
-                            </WrapPanel>
-                        </MenuItem.Header>
-                    </MenuItem>
-                </ContextMenu>
-            </ListBox.ContextMenu>
-        </ListBox>
-        <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
-                  Grid.Column="5" Padding="5" Height="auto" Margin="0,0,0,5" DropDownClosed="ComboBox_DropDownClosed"/>
-        <TextBlock Grid.Column="5" Panel.ZIndex="2" HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray" Margin="0,0,20,9"/>
-    </Grid>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Command="{Binding DuplicateCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Duplicate"/>
+                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + C"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Rename All"/>
+                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + U"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Delete"/>
+                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
+                                    <Label Content="Entf"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+            <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="Black" Background="White" 
+                  Grid.Column="6" Padding="5" Height="auto" Margin="112,0,112,5" DropDownClosed="ComboBox_DropDownClosed"/>
+            <TextBlock Grid.Column="6" Panel.ZIndex="2" HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray" Margin="0,0,20,8"/>
+        </Grid>
+    </DockPanel>
 </UserControl>
