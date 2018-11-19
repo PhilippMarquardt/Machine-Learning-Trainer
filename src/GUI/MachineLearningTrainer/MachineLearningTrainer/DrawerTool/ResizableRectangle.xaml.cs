@@ -144,20 +144,7 @@ namespace MachineLearningTrainer.DrawerTool
                 SetValue(CroppedImageProperty, value);
             }
         }
-
-        private static DependencyProperty VisibilityChangedProperty =
-            DependencyProperty.Register("VisibilityChanged", typeof(bool), typeof(ResizableRectangle));
-        public bool VisibilityChanged
-        {
-            get
-            {
-                return (bool)GetValue(VisibilityChangedProperty);
-            }
-            set
-            {
-                SetValue(VisibilityChangedProperty, value);
-            }
-        }
+        
 
         private static DependencyProperty RectangleOpacityProperty =
             DependencyProperty.Register("RectangleOpacity", typeof(double), typeof(ResizableRectangle));

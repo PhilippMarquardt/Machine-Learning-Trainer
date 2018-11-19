@@ -25,7 +25,7 @@ namespace MachineLearningTrainer.DrawerTool
 {
     public class DrawerViewModel : INotifyPropertyChanged, IComparable
     {
-        #region Property changed area
+        #region PropertyChangedArea
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
         {
@@ -39,6 +39,16 @@ namespace MachineLearningTrainer.DrawerTool
 
             }
 
+        }
+        #endregion
+
+        #region RaisePropertChanged Area
+        private void RaisePropertyChanged([CallerMemberName] string caller = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(caller));
+            }
         }
         #endregion
 
@@ -62,22 +72,16 @@ namespace MachineLearningTrainer.DrawerTool
             SelectedComboBoxItem = "All Labels";
         }
 
-        //TODO: Mouse event handler
-        //private ICommand _imageMouseDown;
 
-        //public ICommand ImageMouseDown
-        //{
-        //    get
-        //    {
-        //        return _imageMouseDown ?? (_imageMouseDown = new CommandHandler(() => UpdateCropedImage(), _canExecute));
-        //    }
-        //}
 
         public MyICommand DeleteCommand { get; set; }
         public MyICommand DuplicateCommand { get; set; }
         public MyICommand RenameCommand { get; set; }
         public bool Enabled { get; set; } = true;
 
+        /// <summary>
+        /// compare rectangle text to each other
+        /// </summary>
         public int CompareTo(object obj)
         {
             ResizableRectangle resizable = obj as ResizableRectangle;
@@ -93,6 +97,8 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
 
+
+
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -102,6 +108,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// export rectangles to xml file
+        /// </summary>
         private void ExportToPascal()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
@@ -143,6 +152,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        /// <summary>
+        /// this method let us draw a rectangle 
+        /// </summary>
         public void AddNewRectangle()
         {
             MyCanvas.Cursor = Cursors.Cross;
@@ -174,6 +187,10 @@ namespace MachineLearningTrainer.DrawerTool
                 return _loadImageCommand ?? (_loadImageCommand = new CommandHandler(() => LoadImage(), _canExecute));
             }
         }
+
+        /// <summary>
+        /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
+        /// </summary>
         private void LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -194,6 +211,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// declares a string that stores the file path
+        /// </summary>
         private string _imagePath;
         public string ImagePath
         {
@@ -208,6 +228,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// declares a boolean variable that says if you can execute the command "Add Rectangle", "Update Preview",
+        /// "Load XML" and "Export to XML"
+        /// </summary>
         private bool _isEnabled = false;
         public bool IsEnabled
         {
@@ -231,6 +255,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// browse to the previous page
+        /// </summary>
+        /// <param name="command"></param>
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
@@ -257,6 +285,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        /// <summary>
+        /// this method deletes the selection of rectangles
+        /// </summary>
         private void OnDelete()
         {
             for(int i = 0; i < AllRectangles.Count + 1; i++)
@@ -282,20 +314,25 @@ namespace MachineLearningTrainer.DrawerTool
 
         public string temp { get; set; }
 
+        /// <summary>
+        /// says if you can execute the "On Delete" method
+        /// </summary>
+        /// <returns></returns>
         private bool CanDelete()
         {
             return SelectedResizableRectangle != null;
         }
 
         private System.Windows.Point _vmMousePoint;
-
         public System.Windows.Point vmMousePoint
         {
             get { return _vmMousePoint; }
             set { _vmMousePoint = value; }
         }
 
-
+        /// <summary>
+        /// this method, let you duplicate the selected rectangle with its text, height, ...
+        /// </summary>
         private void OnDuplicate()
         {
             ResizableRectangle DuplicateRect = new ResizableRectangle();
@@ -326,11 +363,17 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// says if you can execute the "On Duplicate" method
+        /// </summary>
         private bool CanDuplicate()
         {
             return SelectedResizableRectangle != null;
         }
 
+        /// <summary>
+        /// this method rename all files in the listox
+        /// </summary>
         private void OnRename()
         {
             foreach(var rec in AllRectangles)
@@ -339,6 +382,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// says if you can execute "Can Rename" method
+        /// </summary>
         private bool CanRename()
         {
             return SelectedResizableRectangle != null;
@@ -353,27 +399,19 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// this method deletes the complete list with all its rectangles
+        /// </summary>
         private void DeleteAll()
         {
             AllRectangles.Clear();
             FilterName();
         }
 
-        private bool _visibilityChanged = false;
-        public bool VisibilityChanged
-        {
-            get
-            {
-                return _visibilityChanged;
-            }
-            set
-            {
-                _visibilityChanged = value;
-                OnPropertyChanged("VisibilityChanged");
-            }
-        }
-
-        private string _rectangleText = "Label";
+        /// <summary>
+        /// string variabel, which contains the name of rectangle
+        /// </summary>
+        private string _rectangleText;
         public string RectangleText
         {
             get
@@ -388,6 +426,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// boolean, which tells if checkbox from default label is checked
+        /// </summary>
         private bool _isChecked = true;
 
         public bool IsChecked
@@ -403,6 +444,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// this is the default label. if you add multiple rectangles and do not want to manually enter 
+        /// the name each time, the name is stored in default label
+        /// </summary>
         private string _defaultLabel = "DefaultLabel";
 
         public string DefaultLabel
@@ -419,14 +464,9 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
 
-        private void RaisePropertyChanged([CallerMemberName] string caller = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(caller));
-            }
-        }
-
+        /// <summary>
+        /// variable, which includes the opacity of the rectangle
+        /// </summary>
         private double _rectangleOpacity = 0.07;
 
         public double RectangleOpacity
@@ -442,6 +482,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// variable, which includes the thum size of the rectangle
+        /// </summary>
         private int _thumbSize = 3;
 
         public int ThumbSize
@@ -457,6 +500,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// variable, which contains the color of unselected rectangles
+        /// </summary>
         public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
 
         public System.Windows.Media.Brush RectangleFill
@@ -472,6 +518,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// variable, which contains the color of the rectangle thumbs
+        /// </summary>
         public System.Windows.Media.Brush _thumbColor = System.Windows.Media.Brushes.LawnGreen;
 
         public System.Windows.Media.Brush ThumbColor
@@ -487,6 +536,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// this method colors the selected rectangle and increases the opacity
+        /// </summary>
         public void SelectedRectangleFill()
         {
             if (SelectedResizableRectangle != null)
@@ -497,12 +549,10 @@ namespace MachineLearningTrainer.DrawerTool
                     rect.RectangleOpacity = 0.07;
                     rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
                     rect.ThumbSize = 3;
-                    rect.VisibilityChanged = false;
                 }
 
                 SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
                 SelectedResizableRectangle.RectangleOpacity = 0.5;
-                SelectedResizableRectangle.VisibilityChanged = true;
             }
         }
 
@@ -515,15 +565,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private ICommand _enterCommand;
-        public ICommand EnterCommand
-        {
-            get
-            {
-                return _enterCommand ?? (_enterCommand = new CommandHandler(() => FilterName(), _canExecute));
-            }
-        }
-
+        /// <summary>
+        /// this method unselect the selected rectangle
+        /// </summary>
         public void DeleteSelection()
         {
             SelectedResizableRectangle = null;
@@ -534,27 +578,20 @@ namespace MachineLearningTrainer.DrawerTool
                 rect.RectangleOpacity = 0.07;
                 rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
                 rect.ThumbSize = 3;
-                rect.VisibilityChanged = false;
             }
             Enabled = true;
             MyCanvas.Cursor = Cursors.Arrow;
         }
 
-        private ICommand _deleteLastRectangleCommand;
-        public ICommand DeleteLastRectangleCommand
+        private ICommand _enterCommand;
+        public ICommand EnterCommand
         {
             get
             {
-                return _deleteLastRectangleCommand ?? (_deleteLastRectangleCommand = new CommandHandler(() => DeleteLastRectangle(), _canExecute));
+                return _enterCommand ?? (_enterCommand = new CommandHandler(() => FilterName(), _canExecute));
             }
         }
-
-        public void DeleteLastRectangle()
-        {
-            if (AllRectangles.Count > 0)
-                AllRectangles.RemoveAt(AllRectangles.Count - 1);
-        }
-
+        
         private BitmapImage _croppedImage;
         public BitmapImage CroppedImage
         {
@@ -598,6 +635,10 @@ namespace MachineLearningTrainer.DrawerTool
             get { return _dst; }
             set { _dst = value; }
         }
+
+        /// <summary>
+        /// this method loads all rectangles from an xml file and draws them on the canvas
+        /// </summary>
         public void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
@@ -662,6 +703,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// sorts the list of rectangles in ascending order of their name
+        /// </summary>
         public void SortList()
         {
             ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>
@@ -671,6 +715,9 @@ namespace MachineLearningTrainer.DrawerTool
             OnPropertyChanged("AllRectangles");
         }
 
+        /// <summary>
+        /// this method filters the list, depending on which label is selected in the combobox
+        /// </summary>
         public void FilterName()
         {
             if (SelectedComboBoxItem == "All Labels")
@@ -707,6 +754,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// this method adds all different labels to the combobox
+        /// </summary>
         public void ComboBoxNames()
         {
             temp = SelectedComboBoxItem;
@@ -778,6 +828,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// with this method, you can open an xml file from a different location as the loaded image.
+        /// </summary>
         public void LoadXML()
         {
             this.IsEnabled = true;
@@ -866,7 +919,10 @@ namespace MachineLearningTrainer.DrawerTool
             set { _myPreview = value; }
         }
 
-
+        /// <summary>
+        /// update only the cropped image of the selected rectangle
+        /// </summary>
+        /// <param name="resizable"></param>
         public void UpdateCropedImage(ResizableRectangle resizable)
         {
             BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
@@ -897,7 +953,9 @@ namespace MachineLearningTrainer.DrawerTool
             OnPropertyChanged("SelectedResizableRectangle");
         }
         
-
+        /// <summary>
+        /// this method only cropes images when there is an item without a cropped image in the list
+        /// </summary>
         public void cropImageLabelBegin()
         {
             if (MyPreview.Source != null)
@@ -940,6 +998,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// this method updates all cropped images in the list
+        /// </summary>
         public void UpdatePreviews()
         {
             BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
@@ -956,7 +1017,6 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var rec in AllRectanglesView)
             {
-
                 if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight)
                 {
                     Mat mat = SupportCode.ConvertBmp2Mat(src);
