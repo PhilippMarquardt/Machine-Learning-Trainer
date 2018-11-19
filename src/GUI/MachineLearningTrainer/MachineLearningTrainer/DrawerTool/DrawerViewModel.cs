@@ -158,6 +158,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void AddNewRectangle()
         {
+            SortList();
             MyCanvas.Cursor = Cursors.Cross;
 
             if (SelectedComboBoxItem != "All Labels")
@@ -335,6 +336,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void OnDuplicate()
         {
+            SortList();
             ResizableRectangle DuplicateRect = new ResizableRectangle();
 
             DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
@@ -346,8 +348,8 @@ namespace MachineLearningTrainer.DrawerTool
             Canvas.SetLeft(DuplicateRect, vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2);
             Canvas.SetTop(DuplicateRect, vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2);
 
-            AllRectanglesView.Add(DuplicateRect);
-            AllRectangles.Add(DuplicateRect);
+            AllRectanglesView.Insert(0, DuplicateRect);
+            AllRectangles.Insert(0, DuplicateRect);
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("AllRectangles");
             cropImageLabelBegin();
@@ -588,8 +590,14 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _enterCommand ?? (_enterCommand = new CommandHandler(() => FilterName(), _canExecute));
+                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
             }
+        }
+
+        public void Enter()
+        {
+            FilterName();
+            SortList();
         }
         
         private BitmapImage _croppedImage;

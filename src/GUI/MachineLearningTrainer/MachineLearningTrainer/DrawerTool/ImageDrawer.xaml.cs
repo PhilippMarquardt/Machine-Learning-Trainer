@@ -75,13 +75,13 @@ namespace MachineLearningTrainer.DrawerTool
 
                 if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem == "All Labels")
                 {
-                    (this.DataContext as DrawerViewModel).AllRectanglesView.Add(rectSelectArea);
+                    (this.DataContext as DrawerViewModel).AllRectanglesView.Insert(0, rectSelectArea);
                 }
 
                 else
                 {
-                    (this.DataContext as DrawerViewModel).AllRectanglesView.Add(rectSelectArea);
-                    (this.DataContext as DrawerViewModel).AllRectangles.Add(rectSelectArea);
+                    (this.DataContext as DrawerViewModel).AllRectanglesView.Insert(0, rectSelectArea);
+                    (this.DataContext as DrawerViewModel).AllRectangles.Insert(0, rectSelectArea);
                 }
 
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
@@ -152,7 +152,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            (this.DataContext as DrawerViewModel).SortList();
+            //(this.DataContext as DrawerViewModel).SortList();
             (this.DataContext as DrawerViewModel).ComboBoxNames();
 
             if ((this.DataContext as DrawerViewModel).Enabled == false)

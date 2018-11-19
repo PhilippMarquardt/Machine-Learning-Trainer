@@ -117,7 +117,6 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
                 <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="250" MinWidth="250"/>
@@ -201,7 +200,7 @@
             </Grid>
             <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
 
-            <StackPanel Grid.Column="6" Grid.Row="3" Panel.ZIndex="1" Background="White">
+            <StackPanel Grid.Column="6" Grid.Row="3" Panel.ZIndex="1">
                 <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
                 <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
             </StackPanel>
@@ -239,14 +238,14 @@
                 </Canvas>
             </local:ZoomBorder>
 
-            <GridSplitter Grid.Column="5" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
+            <GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
 
             <StackPanel Grid.Column="6" Grid.Row="0">
                 <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
                 <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
-                <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" Foreground="Black" Background="White" 
-                  Height="auto" MinWidth="70" Margin="15" Width="auto" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed" />
+                <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" Foreground="Black"
+                  Height="30" Margin="15" Width="auto" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed" Padding="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
             </StackPanel>
 
             <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White"
@@ -302,7 +301,7 @@
                 </ListBox.ContextMenu>
             </ListBox>
 
-            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White"
+            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6"
                  x:Name="listBoxLabels" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
                 <ListBox.ItemTemplate>
                     <DataTemplate>

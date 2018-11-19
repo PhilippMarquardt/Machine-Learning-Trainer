@@ -39,19 +39,19 @@ namespace MachineLearningTrainer
 
         }
 
-        private void btnClose_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.Shutdown();
-        }
+        //private void btnClose_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Application.Current.Shutdown();
+        //}
 
-        private void btnMaximize_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.MainWindow.WindowState = Application.Current.MainWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        }
+        //private void btnMaximize_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Application.Current.MainWindow.WindowState = Application.Current.MainWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        //}
 
-        private void btnMinimize_Click(object sender, RoutedEventArgs e)
-        {
-            Application.Current.MainWindow.WindowState = WindowState.Minimized;
-        }
+        //private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        //{
+        //    Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        //}
     }
 }
