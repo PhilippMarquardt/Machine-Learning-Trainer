@@ -66,7 +66,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             DuplicateCommand = new MyICommand(OnDuplicate, CanDuplicate);
-            DuplicateMenuCommand = new MyICommand(OnDuplicateMenu, CanDuplicate);
+            DuplicateMenuCommand = new MyICommand(OnDuplicateMenu, CanDuplicateMenu);
             RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
@@ -405,6 +405,11 @@ namespace MachineLearningTrainer.DrawerTool
         /// says if you can execute the "On Duplicate" method
         /// </summary>
         private bool CanDuplicate()
+        {
+            return SelectedResizableRectangle != null;
+        }
+
+        private bool CanDuplicateMenu()
         {
             return SelectedResizableRectangle != null;
         }
