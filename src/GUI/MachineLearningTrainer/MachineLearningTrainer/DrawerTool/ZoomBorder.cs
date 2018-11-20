@@ -85,6 +85,22 @@
             }
         }
 
+        public void ResetImage(object sender, RoutedEventArgs e)
+        {
+            if (child != null)
+            {
+                // reset zoom
+                var st = GetScaleTransform(child);
+                st.ScaleX = 1.0;
+                st.ScaleY = 1.0;
+
+                // reset pan
+                var tt = GetTranslateTransform(child);
+                tt.X = 0.0;
+                tt.Y = 0.0;
+            }
+        }
+
         public void ResetPan()
         {
             if(child != null)
@@ -148,6 +164,7 @@
                 this.Cursor = Cursors.Arrow;
             }
         }
+        
 
         void Child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {

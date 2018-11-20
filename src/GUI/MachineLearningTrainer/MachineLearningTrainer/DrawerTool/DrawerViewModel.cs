@@ -66,6 +66,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             DuplicateCommand = new MyICommand(OnDuplicate, CanDuplicate);
+            DuplicateMenuCommand = new MyICommand(OnDuplicateMenu, CanDuplicate);
             RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
@@ -77,6 +78,7 @@ namespace MachineLearningTrainer.DrawerTool
         public MyICommand DeleteCommand { get; set; }
         public MyICommand DuplicateCommand { get; set; }
         public MyICommand RenameCommand { get; set; }
+        public MyICommand DuplicateMenuCommand { get; set; }
         public bool Enabled { get; set; } = true;
 
         /// <summary>
@@ -116,30 +118,30 @@ namespace MachineLearningTrainer.DrawerTool
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
 
-            UpdatePreviews();
+            //UpdatePreviews();
 
-            string destFileName1 = ImagePath.Remove(ImagePath.LastIndexOf('.'));
+            //string destFileName1 = ImagePath.Remove(ImagePath.LastIndexOf('.'));
 
-            foreach (var rec in AllRectangles)
-            {
-                string path1 = destFileName1 + @"_Cropped_Images\" + rec.RectangleText + @"\";
+            //foreach (var rec in AllRectangles)
+            //{
+            //    string path1 = destFileName1 + @"_Cropped_Images\" + rec.RectangleText + @"\";
 
-                if (!Directory.Exists(path1))
-                {
-                    Directory.CreateDirectory(path1);
-                }
+            //    if (!Directory.Exists(path1))
+            //    {
+            //        Directory.CreateDirectory(path1);
+            //    }
 
-                if (rec.CroppedImage != null)
-                {
-                    BitmapEncoder encoder = new PngBitmapEncoder();
-                    encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
-                    string filename = path1 + AllRectangles.IndexOf(rec) + ".png";
-                    using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
-                    {
-                        encoder.Save(fileStream);
-                    }
-                }
-            }
+            //    if (rec.CroppedImage != null)
+            //    {
+            //        BitmapEncoder encoder = new PngBitmapEncoder();
+            //        encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
+            //        string filename = path1 + AllRectangles.IndexOf(rec) + ".png";
+            //        using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
+            //        {
+            //            encoder.Save(fileStream);
+            //        }
+            //    }
+            //}
         }
 
 
@@ -332,7 +334,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         /// <summary>
-        /// this method, let you duplicate the selected rectangle with its text, height, ...
+        /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
         /// </summary>
         private void OnDuplicate()
         {
@@ -347,6 +349,40 @@ namespace MachineLearningTrainer.DrawerTool
 
             Canvas.SetLeft(DuplicateRect, vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2);
             Canvas.SetTop(DuplicateRect, vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2);
+
+            AllRectanglesView.Insert(0, DuplicateRect);
+            AllRectangles.Insert(0, DuplicateRect);
+            OnPropertyChanged("AllRectanglesView");
+            OnPropertyChanged("AllRectangles");
+            cropImageLabelBegin();
+
+            if (SelectedComboBoxItem == "All Labels")
+            {
+                RectangleCount = "#" + AllRectangles.Count.ToString();
+            }
+
+            else if (SelectedComboBoxItem != "All Labels")
+            {
+                RectangleCount = "#" + AllRectanglesView.Count.ToString();
+            }
+        }
+
+        /// <summary>
+        /// this method, let you duplicate the selected rectangle with its text, height, ...
+        /// </summary>
+        public void OnDuplicateMenu()
+        {
+            SortList();
+            ResizableRectangle DuplicateRect = new ResizableRectangle();
+
+            DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
+            DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
+            DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
+            DuplicateRect.X = SelectedResizableRectangle.X + 30;
+            DuplicateRect.Y = SelectedResizableRectangle.Y + 30;
+
+            Canvas.SetLeft(DuplicateRect, SelectedResizableRectangle.X + 30);
+            Canvas.SetTop(DuplicateRect, SelectedResizableRectangle.Y + 30);
 
             AllRectanglesView.Insert(0, DuplicateRect);
             AllRectangles.Insert(0, DuplicateRect);
@@ -1165,5 +1201,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         #endregion
+        
     }
 }

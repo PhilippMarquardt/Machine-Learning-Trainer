@@ -31,27 +31,27 @@ namespace MachineLearningTrainer
 
             //Uncomment, if you want to use the whole program
 
-            //if (viewModel.RightTransition.CanExecute(null))
-            //    viewModel.RightTransition.Execute(null);
+            if (viewModel.RightTransition.CanExecute(null))
+                viewModel.RightTransition.Execute(null);
 
 
-            //MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, true)); 
+            //MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, true));
 
         }
 
-        //private void btnClose_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Application.Current.Shutdown();
-        //}
+        private void btnClose_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
 
-        //private void btnMaximize_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Application.Current.MainWindow.WindowState = Application.Current.MainWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
-        //}
+        private void btnMaximize_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = Application.Current.MainWindow.WindowState == WindowState.Maximized ? WindowState.Normal : WindowState.Maximized;
+        }
 
-        //private void btnMinimize_Click(object sender, RoutedEventArgs e)
-        //{
-        //    Application.Current.MainWindow.WindowState = WindowState.Minimized;
-        //}
+        private void btnMinimize_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.MainWindow.WindowState = WindowState.Minimized;
+        }
     }
 }

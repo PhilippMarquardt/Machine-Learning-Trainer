@@ -106,6 +106,7 @@
       <DependentUpon>CustomThumb.xaml</DependentUpon>
     </Compile>
     <Compile Include="DrawerTool\DesignerItemDecorator.cs" />
+    <Compile Include="DrawerTool\DispatchService.cs" />
     <Compile Include="DrawerTool\DrawerModel.cs" />
     <Compile Include="DrawerTool\DrawerViewModel.cs" />
     <Compile Include="DrawerTool\HeaderToImageConverter.cs" />

@@ -428,9 +428,14 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
-                    
+
                 }
             }
+        }
+
+        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }
