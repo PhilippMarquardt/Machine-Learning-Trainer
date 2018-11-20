@@ -114,9 +114,10 @@
                 <MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
             </MenuItem>
             <MenuItem Margin="5" Header="View" Height="25">
-                <MenuItem Header="Zoom  +"/>
-                <MenuItem Header="Zoom  -"/>
-                <MenuItem Header="Fit to Window" Click="MenuItem_Click"/>
+                <MenuItem Header="Zoom  +" Click="MenuItem_ZoomIn"/>
+                <MenuItem Header="Zoom  -" Click="MenuItem_ZoomOut" />
+                <Separator/>
+                <MenuItem Header="Fit to Window" Click="MenuItem_Reset"/>
             </MenuItem>
         </Menu>
 

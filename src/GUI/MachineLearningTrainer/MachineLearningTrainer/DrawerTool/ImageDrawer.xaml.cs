@@ -433,9 +433,20 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void MenuItem_Click(object sender, RoutedEventArgs e)
+        private void MenuItem_Reset(object sender, RoutedEventArgs e)
         {
+            if((this.DataContext as DrawerViewModel).ImagePath != null) 
+                zoomBorder.Reset();
+        }
 
+        private void MenuItem_ZoomOut(object sender, RoutedEventArgs e)
+        {
+            zoomBorder.ZoomOut();
+        }
+
+        private void MenuItem_ZoomIn(object sender, RoutedEventArgs e)
+        {
+            zoomBorder.ZoomIn();
         }
     }
 }
