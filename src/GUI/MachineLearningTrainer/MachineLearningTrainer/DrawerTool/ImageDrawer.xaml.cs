@@ -338,11 +338,11 @@ namespace MachineLearningTrainer.DrawerTool
                 var checkExtension = subItem.ToString();
 
                 // Add this item to the parent
-                if(checkExtension.Contains(".png")|| checkExtension.Contains(".jpg")|| checkExtension.Contains(".tiff"))
+                if (checkExtension.Contains(".png") || checkExtension.Contains(".jpg") || checkExtension.Contains(".tiff"))
                 {
                     item.Items.Add(subItem);
                 }
-                
+
             });
 
             #endregion
@@ -379,20 +379,6 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
-        //private void Button_Click_1(object sender, RoutedEventArgs e)
-        //{
-        //    if (ContextMenu_Panel.Visibility == Visibility.Visible)
-        //    {
-        //        ContextMenu_Panel.Visibility = Visibility.Collapsed;
-        //    }
-
-        //    else
-        //    {
-        //        FolderView_Panel.Visibility = Visibility.Collapsed;
-        //        ContextMenu_Panel.Visibility = Visibility.Visible;
-        //    }
-        //}
-
         private void Button_Click_2(object sender, RoutedEventArgs e)
         {
             if (FolderView_Panel.Visibility == Visibility.Visible)
@@ -404,7 +390,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 //ContextMenu_Panel.Visibility = Visibility.Collapsed;
                 FolderView_Panel.Visibility = Visibility.Visible;
-                
+
             }
         }
 
@@ -435,6 +421,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).FilterName();
 
                 }
+
             }
         }
 
@@ -442,7 +429,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void MenuItem_Reset(object sender, RoutedEventArgs e)
         {
-            if((this.DataContext as DrawerViewModel).ImagePath != null) 
+            if ((this.DataContext as DrawerViewModel).ImagePath != null)
                 zoomBorder.Reset();
         }
 
@@ -455,7 +442,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             zoomBorder.ZoomIn();
         }
-        
+
         private void listBoxLabels_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             zoomBorder.ZoomToRectangle();
@@ -473,6 +460,15 @@ namespace MachineLearningTrainer.DrawerTool
         {
             Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.Gray;
             Button_FileExplorer.Foreground = System.Windows.Media.Brushes.Black;
+        }
+
+        private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            var newSelectedItem = (this.DataContext as DrawerViewModel).SelectedResizableRectangle;
+            if (newSelectedItem != null)
+            {
+                (sender as ListBox).ScrollIntoView(newSelectedItem);
+            }
         }
     }
 }
