@@ -101,7 +101,7 @@
 
                 var viewmodel = this.DataContext as DrawerViewModel;
                 tt.X = viewmodel.ZoomBorderWidth / 2 - viewmodel.SelectedResizableRectangle.X - viewmodel.SelectedResizableRectangle.RectangleWidth / 2;
-                tt.Y = viewmodel.ZoomBorderHeight / 2 - viewmodel.SelectedResizableRectangle.Y - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
+                tt.Y = viewmodel.ZoomBorderHeight / 3 - viewmodel.SelectedResizableRectangle.Y - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
             }
         }
 

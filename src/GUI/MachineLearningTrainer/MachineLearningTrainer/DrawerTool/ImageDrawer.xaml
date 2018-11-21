@@ -135,6 +135,7 @@
                 <RowDefinition Height="150" x:Name="gridY0"/>
                 <RowDefinition Height="*" x:Name="gridY1"/>
                 <RowDefinition Height="100" x:Name="gridY2"/>
+                <RowDefinition Height="1"/>
             </Grid.RowDefinitions>
 
 
