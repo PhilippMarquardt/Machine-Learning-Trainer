@@ -9,6 +9,7 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              Loaded="UserControl_Loaded"
+             Focusable="True"
              d:DesignHeight="1080" d:DesignWidth="1920">
 
     <UserControl.Triggers>
@@ -95,6 +96,8 @@
         <KeyBinding Key="D" Command="{Binding LeftButtonCommand1}" Modifiers="Shift"/>
         <KeyBinding Key="W" Command="{Binding DownButtonCommand1}" Modifiers="Shift"/>
         <KeyBinding Key="S" Command="{Binding UpButtonCommand1}" Modifiers="Shift"/>
+
+        <KeyBinding Command="{Binding NewFileCommand}" Key="{Binding NewFileCommand.Key}" Modifiers="{Binding NewFileCommand.Modifiers}"  />
     </UserControl.InputBindings>
 
     <DockPanel>

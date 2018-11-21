@@ -210,6 +210,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+            this.Focus();
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
             (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
