@@ -114,10 +114,10 @@
                 <MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
             </MenuItem>
             <MenuItem Margin="5" Header="View" Height="25">
-                <MenuItem Header="Zoom  +" Click="MenuItem_ZoomIn"/>
-                <MenuItem Header="Zoom  -" Click="MenuItem_ZoomOut" />
+                <MenuItem Header="Zoom  +" Click="MenuItem_ZoomIn" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Header="Zoom  -" Click="MenuItem_ZoomOut" IsEnabled="{Binding IsEnabled}"/>
                 <Separator/>
-                <MenuItem Header="Fit to Window" Click="MenuItem_Reset"/>
+                <MenuItem Header="Fit to Window" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}"/>
             </MenuItem>
         </Menu>
 
@@ -127,15 +127,14 @@
                 <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
                 <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*" x:Name="gridX"/>
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="250" MinWidth="250"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="150"/>
-                <RowDefinition Height="48*"/>
-                <RowDefinition Height="35*"/>
-                <RowDefinition Height="100"/>
+                <RowDefinition Height="150" x:Name="gridY0"/>
+                <RowDefinition Height="*" x:Name="gridY1"/>
+                <RowDefinition Height="100" x:Name="gridY2"/>
             </Grid.RowDefinitions>
 
 
@@ -210,7 +209,7 @@
             </Grid>
             <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
 
-            <StackPanel Grid.Column="6" Grid.Row="3" Panel.ZIndex="1">
+            <StackPanel Grid.Column="6" Grid.Row="2" Panel.ZIndex="2">
                 <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
                 <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
             </StackPanel>
@@ -259,7 +258,7 @@
             </StackPanel>
 
             <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White"
-                 x:Name="listBoxLabels1" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
+                 x:Name="listBoxLabels1" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -312,7 +311,7 @@
             </ListBox>
 
             <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6"
-                 x:Name="listBoxLabels" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5" Grid.RowSpan="2">
+                 x:Name="listBoxLabels" SelectionChanged="listBoxLabels_SelectionChanged" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>

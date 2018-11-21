@@ -968,6 +968,23 @@ namespace MachineLearningTrainer.DrawerTool
             set { _myPreview = value; }
         }
 
+        private double _zoomBorderWidth;
+
+        public double ZoomBorderWidth
+        {
+            get { return _zoomBorderWidth; }
+            set { _zoomBorderWidth = value; }
+        }
+
+        private double _zoomBorderHeight;
+
+        public double ZoomBorderHeight
+        {
+            get { return _zoomBorderWidth; }
+            set { _zoomBorderWidth = value; }
+        }
+
+
         /// <summary>
         /// update only the cropped image of the selected rectangle
         /// </summary>

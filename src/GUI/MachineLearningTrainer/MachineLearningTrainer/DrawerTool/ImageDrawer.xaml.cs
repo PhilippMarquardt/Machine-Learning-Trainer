@@ -214,6 +214,10 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
             (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
 
+            var gridHeight = gridY0.ActualHeight + gridY1.ActualHeight + gridY2.ActualHeight;
+            (this.DataContext as DrawerViewModel).ZoomBorderHeight = gridHeight; ;
+            (this.DataContext as DrawerViewModel).ZoomBorderWidth = gridX.ActualWidth;
+
             foreach (var drive in Directory.GetLogicalDrives())
             {
                 // Create a new item for it
@@ -447,6 +451,11 @@ namespace MachineLearningTrainer.DrawerTool
         private void MenuItem_ZoomIn(object sender, RoutedEventArgs e)
         {
             zoomBorder.ZoomIn();
+        }
+
+        private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            zoomBorder.ZoomToRectangle();
         }
     }
 }

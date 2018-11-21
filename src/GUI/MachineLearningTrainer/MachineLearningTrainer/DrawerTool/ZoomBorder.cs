@@ -85,6 +85,26 @@
             }
         }
 
+        public void ZoomToRectangle()
+        {
+            if (child != null)
+            {
+                // reset zoom
+                var st = GetScaleTransform(child);
+                st.ScaleX = 1.0;
+                st.ScaleY = 1.0;
+
+                // reset pan
+                var tt = GetTranslateTransform(child);
+                tt.X = 0.0;
+                tt.Y = 0.0;
+
+                var viewmodel = this.DataContext as DrawerViewModel;
+                tt.X = viewmodel.ZoomBorderWidth / 2 - viewmodel.SelectedResizableRectangle.X - viewmodel.SelectedResizableRectangle.RectangleWidth / 2;
+                tt.Y = viewmodel.ZoomBorderHeight / 2 - viewmodel.SelectedResizableRectangle.Y - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
+            }
+        }
+
         public void ResetPan()
         {
             if(child != null)
