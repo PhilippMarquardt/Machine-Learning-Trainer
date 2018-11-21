@@ -445,7 +445,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void listBoxLabels_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            zoomBorder.ZoomToRectangle();
+            if ((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
+            {
+                zoomBorder.ZoomToRectangle();
+            }
         }
 
         #endregion
