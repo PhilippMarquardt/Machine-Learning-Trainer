@@ -378,6 +378,49 @@ namespace MachineLearningTrainer
         }
 
 
+        private ICommand _onRunRetinanetClick;
+
+        public ICommand OnRunRetinanetClick
+        {
+            get
+            {
+                return _onRunRetinanetClick ?? (_onRunRetinanetClick = new CommandHandler(() => RunRetinanetThreaded(), _canExecute));
+            }
+        }
+
+        private ICommand _onRunDebugClick;
+
+        public ICommand OnRunDebugClick
+        {
+            get
+            {
+                return _onRunDebugClick ?? (_onRunDebugClick = new CommandHandler(() => RunDebugThreaded(), _canExecute));
+            }
+        }
+
+        private void RunDebugThreaded()
+        {
+            System.Threading.ThreadStart childref = new System.Threading.ThreadStart(RunDebug);
+            new System.Threading.Thread(childref).Start();
+        }
+
+        private void RunDebug()
+        {
+            PythonRunner.RunScriptSynchronous("keras-retinanet/keras_retinanet/bin/debug.py", true, new string[] {"--annotations", "pascal", "keras-retinanet/newdata" }, false);
+        }
+
+        private void RunRetinanetThreaded()
+        {
+            System.Threading.ThreadStart childref = new System.Threading.ThreadStart(RunRetinanet);
+            new System.Threading.Thread(childref).Start();
+        }
+
+        private void RunRetinanet()
+        {
+            PythonRunner.RunScriptSynchronous("keras-retinanet/keras_retinanet/bin/train.py", true, new string[] { "--batch-size=1", "--steps=150", "--image-min-side=1332", "--image-max-side=1640", "--backbone=resnet50", "pascal", "keras-retinanet/newdata" }, false);
+        }
+
+
         private void SelectImageFolderPath()
         {
             ImageFolderPath = SpecifyInputFolder();

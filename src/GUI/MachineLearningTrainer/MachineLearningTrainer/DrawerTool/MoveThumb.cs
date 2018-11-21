@@ -19,6 +19,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             Control designerItem = this.DataContext as Control;
             var rec = ControlOperations.GetParentOfType<UserControl>(designerItem) as ResizableRectangle;
+            var re = (ControlOperations.GetParentOfType<ItemsControl>(designerItem) as ItemsControl).DataContext as DrawerViewModel ;
             if (designerItem != null)
             {
                 double left = Canvas.GetLeft(designerItem);
@@ -31,6 +32,7 @@ namespace MachineLearningTrainer.DrawerTool
                     rec.X = rec.X + e.HorizontalChange;
                     rec.Y = rec.Y + e.VerticalChange;
                     //(this.DataContext as DrawerViewModel).MoveRectangle(rec);
+                   
                 }
 
             }

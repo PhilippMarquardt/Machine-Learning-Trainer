@@ -53,7 +53,7 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
-            
+
         }
 
 
@@ -72,13 +72,13 @@ namespace MachineLearningTrainer.DrawerTool
         public bool Enabled { get; set; } = true;
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-        
+
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
             get
             {
-               
+
                 return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
             }
         }
@@ -87,7 +87,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), "file.xml", 1337, 1337, 3);
         }
-        
+
         private ICommand _addRectangle;
         public ICommand AddRectangle
         {
@@ -106,7 +106,7 @@ namespace MachineLearningTrainer.DrawerTool
             else
                 _rectangleText = "";
         }
-        
+
 
         private ICommand _loadImageCommand;
         public ICommand LoadImageCommand
@@ -168,11 +168,11 @@ namespace MachineLearningTrainer.DrawerTool
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
-            this._mainGrid.Children.Clear();        
-            usc.DataContext = this._mainViewModel;           
+            this._mainGrid.Children.Clear();
+            usc.DataContext = this._mainViewModel;
             this._mainGrid.Children.Add(usc);
         }
-        
+
         private ResizableRectangle _selectedResizableRectangle;
         public ResizableRectangle SelectedResizableRectangle
         {
@@ -207,7 +207,7 @@ namespace MachineLearningTrainer.DrawerTool
                 return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
             }
         }
-        
+
         private void DeleteAll()
         {
             AllRectangles.Clear();
@@ -340,12 +340,12 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("RectangleFill");
             }
         }
-        
+
         public void SelectedRectangleFill()
         {
             if (SelectedResizableRectangle != null)
             {
-                foreach(var rect in AllRectangles)
+                foreach (var rect in AllRectangles)
                 {
                     rect.RectangleFill = System.Windows.Media.Brushes.Blue;
                     rect.RectangleOpacity = 0.07;
@@ -393,7 +393,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DeleteLastRectangle()
         {
-            if (AllRectangles.Count > 0) 
+            if (AllRectangles.Count > 0)
                 AllRectangles.RemoveAt(AllRectangles.Count - 1);
         }
 
@@ -411,5 +411,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("CroppedImage");
             }
         }
+
+
     }
 }

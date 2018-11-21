@@ -94,7 +94,7 @@ namespace MachineLearningTrainer
                 start.Arguments = string.Format("{0} {1}", path, string.Join(" ", args));
                 start.CreateNoWindow = showOutputWindow ? false : true;
                 start.UseShellExecute = false;
-                start.RedirectStandardOutput = true;
+                start.RedirectStandardOutput = redirectStdOut;
                 using (Process process = Process.Start(start))
                 {
 

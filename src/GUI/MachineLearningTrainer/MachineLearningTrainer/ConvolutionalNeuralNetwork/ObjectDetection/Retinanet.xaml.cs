@@ -24,5 +24,9 @@ namespace MachineLearningTrainer.ConvolutionalNeuralNetwork.ObjectDetection
         {
             InitializeComponent();
         }
+
+      
+
+        
     }
 }
