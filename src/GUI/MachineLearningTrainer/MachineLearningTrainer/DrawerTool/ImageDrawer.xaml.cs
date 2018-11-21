@@ -437,6 +437,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #region Zoom
+
         private void MenuItem_Reset(object sender, RoutedEventArgs e)
         {
             if((this.DataContext as DrawerViewModel).ImagePath != null) 
@@ -452,10 +454,13 @@ namespace MachineLearningTrainer.DrawerTool
         {
             zoomBorder.ZoomIn();
         }
-
-        private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        
+        private void listBoxLabels_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             zoomBorder.ZoomToRectangle();
         }
+
+        #endregion
+
     }
 }
