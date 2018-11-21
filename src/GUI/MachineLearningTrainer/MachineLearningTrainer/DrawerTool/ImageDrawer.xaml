@@ -135,19 +135,20 @@
                 <RowDefinition Height="150" x:Name="gridY0"/>
                 <RowDefinition Height="*" x:Name="gridY1"/>
                 <RowDefinition Height="100" x:Name="gridY2"/>
-                <RowDefinition Height="1"/>
             </Grid.RowDefinitions>
 
 
-            <Canvas Width="{Binding ActualHeight, ElementName=FileExplorer_Button}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
+            <Canvas Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
 
                 <StackPanel>
-                    <Button x:Name="FileExplorer_Button" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" FontStyle="Oblique" Background="Transparent">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="-90" />
-                        </Button.LayoutTransform>
-                    </Button>
-
+                    <WrapPanel x:Name="WrapPanel_FileExplorer" Width="auto" MouseEnter="WrapPanel_FileExplorer_MouseEnter" MouseLeave="WrapPanel_FileExplorer_MouseLeave">
+                        <Rectangle x:Name="Rectangle_FileExplorer" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
+                        <Button x:Name="Button_FileExplorer" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent">
+                            <Button.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </Button.LayoutTransform>
+                        </Button>
+                    </WrapPanel>
                 </StackPanel>
 
                 <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">

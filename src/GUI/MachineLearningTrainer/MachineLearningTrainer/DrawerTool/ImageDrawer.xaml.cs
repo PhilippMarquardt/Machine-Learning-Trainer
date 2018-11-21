@@ -462,5 +462,16 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
+        private void WrapPanel_FileExplorer_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.DodgerBlue;
+            Button_FileExplorer.Foreground = System.Windows.Media.Brushes.DodgerBlue;
+        }
+
+        private void WrapPanel_FileExplorer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.Gray;
+            Button_FileExplorer.Foreground = System.Windows.Media.Brushes.Black;
+        }
     }
 }
