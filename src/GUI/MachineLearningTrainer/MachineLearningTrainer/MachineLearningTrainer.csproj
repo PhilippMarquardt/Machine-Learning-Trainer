@@ -218,10 +218,10 @@
     <Resource Include="Icons\rename.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\folder-closed.png" />
+    <Resource Include="Images\file.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Images\file.png" />
+    <Resource Include="Images\folder-closed.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Images\drive.png" />
