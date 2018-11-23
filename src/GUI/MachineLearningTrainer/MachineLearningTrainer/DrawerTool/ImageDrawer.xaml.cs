@@ -409,7 +409,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void TreeViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private async void TreeViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (FolderView.SelectedItem != null)
             {
@@ -430,7 +430,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).IsEnabled = true;
                     (this.DataContext as DrawerViewModel).AllRectangles.Clear();
 
-                    (this.DataContext as DrawerViewModel).LoadRectangles();
+                    await (this.DataContext as DrawerViewModel).LoadRectangles();
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();

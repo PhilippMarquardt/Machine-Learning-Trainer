@@ -44,7 +44,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
     }
 }
     

@@ -207,7 +207,7 @@ namespace MachineLearningTrainer.DrawerTool
                 this.IsEnabled = true;
                 AllRectangles.Clear();
 
-                await Task.Run(()=>LoadRectangles());
+                await Task.Run(() => LoadRectangles());
                 ComboBoxNames();
                 SortList();
                 FilterName();
@@ -370,7 +370,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method, let you duplicate the selected rectangle with its text, height, ...
         /// </summary>
-        public void OnDuplicateMenu()
+        public async void OnDuplicateMenu()
         {
             SortList();
             ResizableRectangle DuplicateRect = new ResizableRectangle();
@@ -388,7 +388,7 @@ namespace MachineLearningTrainer.DrawerTool
             AllRectangles.Insert(0, DuplicateRect);
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("AllRectangles");
-            cropImageLabelBegin();
+            await cropImageLabelBegin();
 
             if (SelectedComboBoxItem == "All Labels")
             {
@@ -690,7 +690,6 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public async Task LoadRectangles()
         {
-            
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
 
             if (File.Exists(destFileName) == true)
@@ -887,10 +886,8 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// with this method, you can open an xml file from a different location as the loaded image.
         /// </summary>
-        public async Task LoadXML()
+        private async void LoadXML()
         {
-            await Task.Run(() =>
-            {
                 this.IsEnabled = true;
                 OpenFileDialog openFileDialog = new OpenFileDialog();
                 openFileDialog.Filter = "XML Files | *.xml";
@@ -944,8 +941,8 @@ namespace MachineLearningTrainer.DrawerTool
                 }
                 ComboBoxNames();
                 SortList();
-                Task.Run(()=>cropImageLabelBegin());
-            });
+                await cropImageLabelBegin();
+          
             
         }
 
