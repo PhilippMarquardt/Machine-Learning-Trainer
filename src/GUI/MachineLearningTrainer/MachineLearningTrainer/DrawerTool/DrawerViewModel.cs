@@ -194,7 +194,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
         /// </summary>
-        private void LoadImage()
+        private async Task LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png; *.tif";
@@ -207,7 +207,7 @@ namespace MachineLearningTrainer.DrawerTool
                 this.IsEnabled = true;
                 AllRectangles.Clear();
 
-                LoadRectangles();
+                await Task.Run(()=>LoadRectangles());
                 ComboBoxNames();
                 SortList();
                 FilterName();
@@ -688,8 +688,9 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method loads all rectangles from an xml file and draws them on the canvas
         /// </summary>
-        public void LoadRectangles()
+        public async Task LoadRectangles()
         {
+            
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
 
             if (File.Exists(destFileName) == true)
@@ -697,42 +698,48 @@ namespace MachineLearningTrainer.DrawerTool
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
-                foreach (XmlNode node in doc.DocumentElement)
+                await Task.Run(() =>
                 {
-
-                    if (node.Name == "object")
+                    foreach (XmlNode node in doc.DocumentElement)
                     {
-                        foreach (XmlNode objectChild in node)
+
+                        if (node.Name == "object")
                         {
-                            if (objectChild.Name == "name")
+                            foreach (XmlNode objectChild in node)
                             {
-                                name = objectChild.InnerText;
-                                RectangleText = name;
-                            }
+                                if (objectChild.Name == "name")
+                                {
+                                    name = objectChild.InnerText;
+                                    RectangleText = name;
+                                }
 
-                            if (objectChild.Name == "bndbox")
-                            {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+                                if (objectChild.Name == "bndbox")
+                                {
+                                    int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                    int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                    int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                    int ymax = int.Parse(objectChild["ymax"].InnerText);
 
-                                ResizableRectangle loadedRect = new ResizableRectangle();
+                                    DispatchService.Invoke(() =>
+                                    {
+                                        ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                loadedRect.RectangleHeight = ymax - ymin;
-                                loadedRect.RectangleWidth = xmax - xmin;
-                                loadedRect.RectangleText = name;
-                                loadedRect.X = xmin;
-                                loadedRect.Y = ymin;
+                                        loadedRect.RectangleHeight = ymax - ymin;
+                                        loadedRect.RectangleWidth = xmax - xmin;
+                                        loadedRect.RectangleText = name;
+                                        loadedRect.X = xmin;
+                                        loadedRect.Y = ymin;
 
-                                Canvas.SetLeft(loadedRect, xmin);
-                                Canvas.SetTop(loadedRect, ymin);
+                                        Canvas.SetLeft(loadedRect, xmin);
+                                        Canvas.SetTop(loadedRect, ymin);
 
-                                AllRectangles.Add(loadedRect);
+                                        AllRectangles.Add(loadedRect);
+                                    });
+                                }
                             }
                         }
                     }
-                }
+                });
             }
         }
 
@@ -880,62 +887,66 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// with this method, you can open an xml file from a different location as the loaded image.
         /// </summary>
-        public void LoadXML()
+        public async Task LoadXML()
         {
-            this.IsEnabled = true;
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "XML Files | *.xml";
-
-            if (openFileDialog.ShowDialog() == true)
-                dst = openFileDialog.FileName;
-
-            if (dst != null)
+            await Task.Run(() =>
             {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(dst);
+                this.IsEnabled = true;
+                OpenFileDialog openFileDialog = new OpenFileDialog();
+                openFileDialog.Filter = "XML Files | *.xml";
 
-                foreach (XmlNode node in doc.DocumentElement)
+                if (openFileDialog.ShowDialog() == true)
+                    dst = openFileDialog.FileName;
+
+                if (dst != null)
                 {
+                    XmlDocument doc = new XmlDocument();
+                    doc.Load(dst);
 
-                    if (node.Name == "object")
+                    foreach (XmlNode node in doc.DocumentElement)
                     {
-                        foreach (XmlNode objectChild in node)
+
+                        if (node.Name == "object")
                         {
-                            if (objectChild.Name == "name")
+                            foreach (XmlNode objectChild in node)
                             {
-                                name = objectChild.InnerText;
-                                RectangleText = name;
-                            }
+                                if (objectChild.Name == "name")
+                                {
+                                    name = objectChild.InnerText;
+                                    RectangleText = name;
+                                }
 
-                            if (objectChild.Name == "bndbox")
-                            {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+                                if (objectChild.Name == "bndbox")
+                                {
+                                    int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                    int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                    int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                    int ymax = int.Parse(objectChild["ymax"].InnerText);
 
-                                ResizableRectangle loadedRect = new ResizableRectangle();
+                                    ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                loadedRect.RectangleHeight = ymax - ymin;
-                                loadedRect.RectangleWidth = xmax - xmin;
-                                loadedRect.RectangleText = name;
-                                loadedRect.X = xmin;
-                                loadedRect.Y = ymin;
+                                    loadedRect.RectangleHeight = ymax - ymin;
+                                    loadedRect.RectangleWidth = xmax - xmin;
+                                    loadedRect.RectangleText = name;
+                                    loadedRect.X = xmin;
+                                    loadedRect.Y = ymin;
 
-                                Canvas.SetLeft(loadedRect, xmin);
-                                Canvas.SetTop(loadedRect, ymin);
+                                    Canvas.SetLeft(loadedRect, xmin);
+                                    Canvas.SetTop(loadedRect, ymin);
 
-                                AllRectangles.Add(loadedRect);
-                                AllRectanglesView = AllRectangles;
-                                OnPropertyChanged("");
+                                    AllRectangles.Add(loadedRect);
+                                    AllRectanglesView = AllRectangles;
+                                    OnPropertyChanged("");
+                                }
                             }
                         }
                     }
                 }
-            }
-            ComboBoxNames();
-            SortList();
-            cropImageLabelBegin();
+                ComboBoxNames();
+                SortList();
+                Task.Run(()=>cropImageLabelBegin());
+            });
+            
         }
 
         private string _rectangleCount;
@@ -1018,15 +1029,27 @@ namespace MachineLearningTrainer.DrawerTool
             SelectedResizableRectangle = resizableRectangle;
             OnPropertyChanged("SelectedResizableRectangle");
         }
-        
+
+        private BitmapImage _recI;
+
+        public BitmapImage RECI
+        {
+            get { return _recI; }
+            set { _recI = value;
+                OnPropertyChanged("RECI");
+            }
+        }
+
         /// <summary>
         /// this method only cropes images when there is an item without a cropped image in the list
         /// </summary>
-        public void cropImageLabelBegin()
+        public async Task cropImageLabelBegin()
         {
             if (MyPreview.Source != null)
             {
                 BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+
+                
                 Bitmap src;
 
                 using (MemoryStream outStream = new MemoryStream())
@@ -1044,15 +1067,27 @@ namespace MachineLearningTrainer.DrawerTool
 
                     if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
                     {
-                        Mat mat = SupportCode.ConvertBmp2Mat(src);
-                        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                        double RECX = rec.X;
+                        double RECY = rec.Y;
+                        double RECH = rec.RectangleHeight;
+                        double RECW = rec.RectangleWidth;
+                        RECI = rec.CroppedImage;
 
-                        Mat croppedImage = new Mat(mat, rectCrop);
-                        rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                        await Task.Run(() =>
+                        {
+                            
+                            Mat mat = SupportCode.ConvertBmp2Mat(src);
+                            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+
+                            Mat croppedImage = new Mat(mat, rectCrop);
+                            RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
+                        });
+
+                        rec.CroppedImage = RECI;
+                        OnPropertyChanged("CroppedImage");
                     }
                 }
             }
-
         }
 
         private ICommand _updatePreviewsCommand;

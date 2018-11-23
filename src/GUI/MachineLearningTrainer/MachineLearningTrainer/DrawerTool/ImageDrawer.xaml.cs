@@ -388,8 +388,23 @@ namespace MachineLearningTrainer.DrawerTool
 
             else
             {
-                //ContextMenu_Panel.Visibility = Visibility.Collapsed;
+                Folder_Panel.Visibility = Visibility.Collapsed;
                 FolderView_Panel.Visibility = Visibility.Visible;
+
+            }
+        }
+
+        private void Button_Folder_Click(object sender, RoutedEventArgs e)
+        {
+            if (Folder_Panel.Visibility == Visibility.Visible)
+            {
+                Folder_Panel.Visibility = Visibility.Collapsed;
+            }
+
+            else
+            {
+                FolderView_Panel.Visibility = Visibility.Collapsed;
+                Folder_Panel.Visibility = Visibility.Visible;
 
             }
         }
@@ -459,10 +474,22 @@ namespace MachineLearningTrainer.DrawerTool
             Button_FileExplorer.Foreground = System.Windows.Media.Brushes.DodgerBlue;
         }
 
+        private void WrapPanel_Folder_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Rectangle_Folder.Fill = System.Windows.Media.Brushes.DodgerBlue;
+            Button_Folder.Foreground = System.Windows.Media.Brushes.DodgerBlue;
+        }
+
         private void WrapPanel_FileExplorer_MouseLeave(object sender, MouseEventArgs e)
         {
             Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.Gray;
             Button_FileExplorer.Foreground = System.Windows.Media.Brushes.Black;
+        }
+
+        private void WrapPanel_Folder_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Rectangle_Folder.Fill = System.Windows.Media.Brushes.Gray;
+            Button_Folder.Foreground = System.Windows.Media.Brushes.Black;
         }
 
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -473,5 +500,7 @@ namespace MachineLearningTrainer.DrawerTool
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
         }
+
+        
     }
 }
