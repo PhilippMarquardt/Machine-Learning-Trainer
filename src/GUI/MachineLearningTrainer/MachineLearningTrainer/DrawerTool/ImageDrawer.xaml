@@ -117,7 +117,7 @@
         <Menu DockPanel.Dock="Top">
             <MenuItem Margin="5" Header="File" Height="25">
                 <MenuItem Header="Load Image" Command="{Binding LoadImageCommand}"/>
-                <MenuItem Header="Load Folder"/>
+                <!--<MenuItem Header="Load Folder"/>-->
                 <Separator />
                 <MenuItem Header="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
                 <Separator />
@@ -146,12 +146,12 @@
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="*" x:Name="gridX"/>
                 <ColumnDefinition Width="4"/>
-                <ColumnDefinition Width="250" MinWidth="250"/>
+                <ColumnDefinition Width="auto" MinWidth="250"/>
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
-                <RowDefinition Height="150" x:Name="gridY0"/>
+                <RowDefinition Height="auto" x:Name="gridY0"/>
                 <RowDefinition Height="*" x:Name="gridY1"/>
-                <RowDefinition Height="100" x:Name="gridY2"/>
+                <RowDefinition Height="auto" x:Name="gridY2"/>
             </Grid.RowDefinitions>
 
 
@@ -166,14 +166,14 @@
                             </Button.LayoutTransform>
                         </Button>
                     </WrapPanel>
-                    <WrapPanel x:Name="WrapPanel_Folder" Width="auto" MouseEnter="WrapPanel_Folder_MouseEnter" MouseLeave="WrapPanel_Folder_MouseLeave">
+                    <!--<WrapPanel x:Name="WrapPanel_Folder" Width="auto" MouseEnter="WrapPanel_Folder_MouseEnter" MouseLeave="WrapPanel_Folder_MouseLeave">
                         <Rectangle x:Name="Rectangle_Folder" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
                         <Button x:Name="Button_Folder" Style="{StaticResource BasicButtonStyle}" Content="Folder" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" Click="Button_Folder_Click">
                             <Button.LayoutTransform>
                                 <RotateTransform Angle="90"/>
                             </Button.LayoutTransform>
                         </Button>
-                    </WrapPanel>
+                    </WrapPanel>-->
                 </StackPanel>
 
                 <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
@@ -184,34 +184,12 @@
 
             <Grid x:Name="gridcolumn1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Width="auto" Grid.ColumnSpan="2" Margin="0,0,4,0">
 
-                <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="Folder_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
+                <!--<StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="Folder_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
                     <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
                         <TextBlock Text="Files" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                     </Grid>
-                    <ListBox HorizontalAlignment="Center" Width="150" ScrollViewer.HorizontalScrollBarVisibility="Auto">
-                        <ListBoxItem Content="(1)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(2)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(3)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(4)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(5)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(6)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(7)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(8)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(9)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(10)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(11)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(12)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(13)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(14)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(15)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(16)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(17)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(18)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(19)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(20)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                        <ListBoxItem Content="(21)   C:\Users\Timo\Google Drive\Computonics Annotation\Annotationen Blumen und Knospen\0acc0efbf859_2018-07-15_11_00_c0.png"/>
-                    </ListBox>
-                </StackPanel>
+                    <ListBox HorizontalAlignment="Center" Width="150" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                </StackPanel>-->
 
                 <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
                     <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
@@ -291,8 +269,15 @@
                 <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
                 <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
-                <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" Panel.ZIndex="2" FontSize="14" HorizontalAlignment="Center" Foreground="Black"
-                  Height="30" Margin="15" Width="auto" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed" Padding="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                <Grid Margin="15">
+                    <Grid.Resources>
+                        <ImageBrush x:Key="AddButtonImageBrush" ImageSource="{Binding ListViewImage}"/>
+                    </Grid.Resources>
+                    <Button Command="{Binding ListViewCommand}" HorizontalAlignment="Left" Width="26" Height="26" Background="{StaticResource AddButtonImageBrush}" Margin="5" BorderBrush="Transparent" materialDesign:ShadowAssist.ShadowDepth="Depth0"/>
+                    <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" FontSize="14" HorizontalAlignment="Center" Foreground="Black"
+                      Height="30" Margin="5" Width="auto" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed" Padding="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" FontStyle="Italic" Foreground="Gray" Margin="5"/>
+                </Grid>
             </StackPanel>
 
             <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
@@ -300,7 +285,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
-                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="10"/>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="80" Width="80" Margin="10"/>
                             <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
                                  TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                         </WrapPanel>
@@ -353,7 +338,7 @@
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
-                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="10"/>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="80" Width="80" Margin="10"/>
                             <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center" 
                                  TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                         </WrapPanel>
@@ -400,7 +385,6 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            <TextBlock Grid.Column="6" Panel.ZIndex="2" HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Bottom" FontStyle="Italic" Foreground="Gray" Margin="0,0,20,8"/>
         </Grid>
     </DockPanel>
 </UserControl>

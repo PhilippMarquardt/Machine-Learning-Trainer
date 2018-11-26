@@ -194,7 +194,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
         /// </summary>
-        private async Task LoadImage()
+        private void LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png; *.tif";
@@ -207,7 +207,7 @@ namespace MachineLearningTrainer.DrawerTool
                 this.IsEnabled = true;
                 AllRectangles.Clear();
 
-                await Task.Run(() => LoadRectangles());
+                LoadRectangles();
                 ComboBoxNames();
                 SortList();
                 FilterName();
@@ -688,7 +688,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method loads all rectangles from an xml file and draws them on the canvas
         /// </summary>
-        public async Task LoadRectangles()
+        public void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
 
@@ -697,48 +697,42 @@ namespace MachineLearningTrainer.DrawerTool
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
-                await Task.Run(() =>
+                foreach (XmlNode node in doc.DocumentElement)
                 {
-                    foreach (XmlNode node in doc.DocumentElement)
+
+                    if (node.Name == "object")
                     {
-
-                        if (node.Name == "object")
+                        foreach (XmlNode objectChild in node)
                         {
-                            foreach (XmlNode objectChild in node)
+                            if (objectChild.Name == "name")
                             {
-                                if (objectChild.Name == "name")
-                                {
-                                    name = objectChild.InnerText;
-                                    RectangleText = name;
-                                }
+                                name = objectChild.InnerText;
+                                RectangleText = name;
+                            }
 
-                                if (objectChild.Name == "bndbox")
-                                {
-                                    int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                    int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                    int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                    int ymax = int.Parse(objectChild["ymax"].InnerText);
+                            if (objectChild.Name == "bndbox")
+                            {
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+                                
+                                    ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                    DispatchService.Invoke(() =>
-                                    {
-                                        ResizableRectangle loadedRect = new ResizableRectangle();
+                                    loadedRect.RectangleHeight = ymax - ymin;
+                                    loadedRect.RectangleWidth = xmax - xmin;
+                                    loadedRect.RectangleText = name;
+                                    loadedRect.X = xmin;
+                                    loadedRect.Y = ymin;
 
-                                        loadedRect.RectangleHeight = ymax - ymin;
-                                        loadedRect.RectangleWidth = xmax - xmin;
-                                        loadedRect.RectangleText = name;
-                                        loadedRect.X = xmin;
-                                        loadedRect.Y = ymin;
+                                    Canvas.SetLeft(loadedRect, xmin);
+                                    Canvas.SetTop(loadedRect, ymin);
 
-                                        Canvas.SetLeft(loadedRect, xmin);
-                                        Canvas.SetTop(loadedRect, ymin);
-
-                                        AllRectangles.Add(loadedRect);
-                                    });
-                                }
+                                    AllRectangles.Add(loadedRect);
                             }
                         }
                     }
-                });
+                }
             }
         }
 
@@ -1045,8 +1039,6 @@ namespace MachineLearningTrainer.DrawerTool
             if (MyPreview.Source != null)
             {
                 BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-
-                
                 Bitmap src;
 
                 using (MemoryStream outStream = new MemoryStream())
@@ -1099,10 +1091,11 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method updates all cropped images in the list
         /// </summary>
-        public void UpdatePreviews()
+        public async Task UpdatePreviews()
         {
             BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
             Bitmap src;
+
             using (MemoryStream outStream = new MemoryStream())
             {
                 BitmapEncoder enc = new BmpBitmapEncoder();
@@ -1115,13 +1108,27 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var rec in AllRectanglesView)
             {
-                if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight)
+                if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
                 {
-                    Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                    rec.CroppedImage = null;
+                    double RECX = rec.X;
+                    double RECY = rec.Y;
+                    double RECH = rec.RectangleHeight;
+                    double RECW = rec.RectangleWidth;
+                    RECI = rec.CroppedImage;
 
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                    await Task.Run(() =>
+                    {
+
+                        Mat mat = SupportCode.ConvertBmp2Mat(src);
+                        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+
+                        Mat croppedImage = new Mat(mat, rectCrop);
+                        RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
+                    });
+
+                    rec.CroppedImage = RECI;
+                    OnPropertyChanged("CroppedImage");
                 }
             }
         }
@@ -1144,6 +1151,7 @@ namespace MachineLearningTrainer.DrawerTool
             Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
             Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
             OnPropertyChanged("SelectedResizableRectangle");
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _leftButtonCommand;
@@ -1158,6 +1166,7 @@ namespace MachineLearningTrainer.DrawerTool
         public void LeftButton()
         {
             SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 1;
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _upButtonCommand;
@@ -1171,6 +1180,7 @@ namespace MachineLearningTrainer.DrawerTool
         public void UpButton()
         {
             SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 1;
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _downButtonCommand;
@@ -1189,6 +1199,7 @@ namespace MachineLearningTrainer.DrawerTool
             Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
             Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
             OnPropertyChanged("SelectedResizableRectangle");
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _rightButtonCommand1;
@@ -1197,6 +1208,7 @@ namespace MachineLearningTrainer.DrawerTool
             get
             {
                 return _rightButtonCommand1 ?? (_rightButtonCommand1 = new CommandHandler(() => RightButton1(), _canExecute));
+                UpdateCropedImage(SelectedResizableRectangle);
             }
         }
 
@@ -1207,6 +1219,7 @@ namespace MachineLearningTrainer.DrawerTool
             Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
             Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
             OnPropertyChanged("SelectedResizableRectangle");
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _leftButtonCommand1;
@@ -1221,6 +1234,7 @@ namespace MachineLearningTrainer.DrawerTool
         public void LeftButton1()
         {
             SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 1;
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _upButtonCommand1;
@@ -1234,6 +1248,7 @@ namespace MachineLearningTrainer.DrawerTool
         public void UpButton1()
         {
             SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 1;
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         private ICommand _downButtonCommand1;
@@ -1252,9 +1267,84 @@ namespace MachineLearningTrainer.DrawerTool
             Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
             Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
             OnPropertyChanged("SelectedResizableRectangle");
+            UpdateCropedImage(SelectedResizableRectangle);
         }
 
         #endregion
-        
+
+        private ICommand _listViewCommand;
+        public ICommand ListViewCommand
+        {
+            get
+            {
+                return _listViewCommand ?? (_listViewCommand = new CommandHandler(() => ListView(), _canExecute));
+            }
+        }
+
+        private string _listViewImage = @"/Icons/grid_view.png";
+
+        public string ListViewImage
+        {
+            get
+            {
+                return _listViewImage;
+            }
+            set
+            {
+                _listViewImage = value;
+                OnPropertyChanged("ListViewImage");
+            }
+        }
+
+        private bool _wrap1;
+
+        public bool Wrap1
+        {
+            get
+            {
+                return _wrap1;
+            }
+            set
+            {
+                _wrap1 = value;
+                OnPropertyChanged("Wrap1");
+            }
+        }
+        private bool _wrap2;
+
+        public bool Wrap2
+        {
+            get
+            {
+                return _wrap2;
+            }
+            set
+            {
+                _wrap1 = value;
+                OnPropertyChanged("Wrap2");
+            }
+        }
+
+
+        private void ListView()
+        {
+            if (ListViewImage.Contains("grid"))
+            {
+                ListViewImage = @"/Icons/list_view.png";
+                Wrap1 = false;
+                Wrap2 = true;
+                OnPropertyChanged("ListViewTextVisibility");
+            }
+
+            else if (ListViewImage.Contains("list"))
+            {
+                ListViewImage = @"/Icons/grid_view.png";
+                Wrap1 = true;
+                Wrap2 = false;
+                OnPropertyChanged("ListViewTextVisibility");
+            }
+            
+        }
     }
+
 }

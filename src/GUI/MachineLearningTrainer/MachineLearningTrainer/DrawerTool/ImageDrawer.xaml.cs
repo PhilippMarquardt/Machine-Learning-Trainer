@@ -388,28 +388,28 @@ namespace MachineLearningTrainer.DrawerTool
 
             else
             {
-                Folder_Panel.Visibility = Visibility.Collapsed;
+                //Folder_Panel.Visibility = Visibility.Collapsed;
                 FolderView_Panel.Visibility = Visibility.Visible;
 
             }
         }
 
-        private void Button_Folder_Click(object sender, RoutedEventArgs e)
-        {
-            if (Folder_Panel.Visibility == Visibility.Visible)
-            {
-                Folder_Panel.Visibility = Visibility.Collapsed;
-            }
+        //private void Button_Folder_Click(object sender, RoutedEventArgs e)
+        //{
+        //    if (Folder_Panel.Visibility == Visibility.Visible)
+        //    {
+        //        Folder_Panel.Visibility = Visibility.Collapsed;
+        //    }
 
-            else
-            {
-                FolderView_Panel.Visibility = Visibility.Collapsed;
-                Folder_Panel.Visibility = Visibility.Visible;
+        //    else
+        //    {
+        //        FolderView_Panel.Visibility = Visibility.Collapsed;
+        //        Folder_Panel.Visibility = Visibility.Visible;
 
-            }
-        }
+        //    }
+        //}
 
-        private async void TreeViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        private void TreeViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (FolderView.SelectedItem != null)
             {
@@ -430,7 +430,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).IsEnabled = true;
                     (this.DataContext as DrawerViewModel).AllRectangles.Clear();
 
-                    await (this.DataContext as DrawerViewModel).LoadRectangles();
+                    (this.DataContext as DrawerViewModel).LoadRectangles();
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
@@ -474,11 +474,11 @@ namespace MachineLearningTrainer.DrawerTool
             Button_FileExplorer.Foreground = System.Windows.Media.Brushes.DodgerBlue;
         }
 
-        private void WrapPanel_Folder_MouseEnter(object sender, MouseEventArgs e)
-        {
-            Rectangle_Folder.Fill = System.Windows.Media.Brushes.DodgerBlue;
-            Button_Folder.Foreground = System.Windows.Media.Brushes.DodgerBlue;
-        }
+        //private void WrapPanel_Folder_MouseEnter(object sender, MouseEventArgs e)
+        //{
+        //    Rectangle_Folder.Fill = System.Windows.Media.Brushes.DodgerBlue;
+        //    Button_Folder.Foreground = System.Windows.Media.Brushes.DodgerBlue;
+        //}
 
         private void WrapPanel_FileExplorer_MouseLeave(object sender, MouseEventArgs e)
         {
@@ -486,11 +486,11 @@ namespace MachineLearningTrainer.DrawerTool
             Button_FileExplorer.Foreground = System.Windows.Media.Brushes.Black;
         }
 
-        private void WrapPanel_Folder_MouseLeave(object sender, MouseEventArgs e)
-        {
-            Rectangle_Folder.Fill = System.Windows.Media.Brushes.Gray;
-            Button_Folder.Foreground = System.Windows.Media.Brushes.Black;
-        }
+        //private void WrapPanel_Folder_MouseLeave(object sender, MouseEventArgs e)
+        //{
+        //    Rectangle_Folder.Fill = System.Windows.Media.Brushes.Gray;
+        //    Button_Folder.Foreground = System.Windows.Media.Brushes.Black;
+        //}
 
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -500,7 +500,5 @@ namespace MachineLearningTrainer.DrawerTool
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
         }
-
-        
     }
 }
