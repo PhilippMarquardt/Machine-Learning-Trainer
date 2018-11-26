@@ -142,7 +142,7 @@
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto"/>
-                <ColumnDefinition Width="auto" local:VisibilityAnimation.AnimationType="Fade"/>
+                <ColumnDefinition Width="auto"/>
                 <ColumnDefinition Width="4"/>
                 <ColumnDefinition Width="*" x:Name="gridX"/>
                 <ColumnDefinition Width="4"/>
@@ -191,7 +191,7 @@
                     <ListBox HorizontalAlignment="Center" Width="150" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
                 </StackPanel>-->
 
-                <StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
+                <StackPanel x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
                     <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
                         <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
                     </Grid>
@@ -231,7 +231,7 @@
             </StackPanel>
 
             <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
-                 Grid.Column="4" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+                 Grid.Column="3" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
             <Label Name="txtBox1" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
                  Grid.Column="3" HorizontalAlignment="Left" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
 
