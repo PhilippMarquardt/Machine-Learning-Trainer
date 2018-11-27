@@ -150,7 +150,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        private async void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             //(this.DataContext as DrawerViewModel).SortList();
             (this.DataContext as DrawerViewModel).ComboBoxNames();
@@ -184,7 +184,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             else
             {
-                (this.DataContext as DrawerViewModel).cropImageLabelBegin();
+                await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
             }
 
             if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")

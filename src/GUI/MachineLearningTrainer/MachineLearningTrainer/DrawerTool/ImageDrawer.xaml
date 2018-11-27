@@ -153,7 +153,7 @@
                 <RowDefinition Height="*" x:Name="gridY1"/>
                 <RowDefinition Height="auto" x:Name="gridY2"/>
             </Grid.RowDefinitions>
-
+            
 
             <Canvas Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
 
@@ -280,12 +280,13 @@
                 </Grid>
             </StackPanel>
 
+            <!--ListBox with SelectedLabels and Text-->
             <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
-                 x:Name="listBoxLabels1" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibility1, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                 x:Name="listBoxLabels1" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelected, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
-                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="80" Width="80" Margin="10"/>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="10"/>
                             <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
                                  TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                         </WrapPanel>
@@ -332,18 +333,133 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-
-            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
-                 x:Name="listBoxLabels" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibility, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+            
+            <!--ListBox with SelectedLabels, gallery format-->
+            <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelectedGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
-                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="80" Width="80" Margin="10"/>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="60" Width="60" Margin="10"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Command="{Binding DuplicateCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Duplicate"/>
+                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + C"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Rename All"/>
+                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + U"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Delete"/>
+                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
+                                    <Label Content="Entf"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+
+            <!--ListBox with All Labels and Text-->
+            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 x:Name="listBoxLabels" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="10"/>
                             <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center" 
                                  TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
                         </WrapPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Command="{Binding DuplicateCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Duplicate"/>
+                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + C"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Rename All"/>
+                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
+                                    <Label Content="Strg + U"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                        <MenuItem Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                            <MenuItem.Header>
+                                <WrapPanel>
+                                    <Label Content="Delete"/>
+                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
+                                    <Label Content="Entf"/>
+                                </WrapPanel>
+                            </MenuItem.Header>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+
+            <!--ListBox with All Labels, gallery format-->
+            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilityAllLabelsGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="60" Width="60" Margin="10"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
                 <ListBox.ContextMenu>
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                         <MenuItem Command="{Binding DuplicateCommand}">

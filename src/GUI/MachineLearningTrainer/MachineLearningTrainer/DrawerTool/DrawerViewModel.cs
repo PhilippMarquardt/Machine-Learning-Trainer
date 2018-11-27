@@ -98,9 +98,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-
-
-
+        
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -771,23 +769,54 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (SelectedComboBoxItem == "All Labels")
             {
-                FilterVisibility1 = false;
-                FilterVisibility = true;
+                if (ListViewImage.Contains("grid"))
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = true;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = false;
+                }
+
+                else if (ListViewImage.Contains("list"))
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = true;
+                    FilterVisibilitySelected = false;
+                }
+                
                 AllRectanglesView = AllRectangles;
                 RectangleCount = "#" + AllRectangles.Count.ToString();
                 OnPropertyChanged("AllRectangles");
                 OnPropertyChanged("AllRectanglesView");
                 OnPropertyChanged("FilteredRectangles");
-                OnPropertyChanged("FilterVisibility");
-                OnPropertyChanged("FilterVisibility1");
                 OnPropertyChanged("RectangleCount");
+                OnPropertyChanged("FilterVisibilitySelected");
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+                OnPropertyChanged("FilterVisibilityAllLabels");
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+                
             }
 
             else if (SelectedComboBoxItem != "All Labels")
             {
+                if (ListViewImage.Contains("grid"))
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = true;
+                }
+
+                else if (ListViewImage.Contains("list"))
+                {
+                    FilterVisibilitySelectedGallery = true;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = false;
+                }
+
                 DefaultLabel = SelectedComboBoxItem;
-                FilterVisibility1 = true;
-                FilterVisibility = false;
                 RectangleCount = "#" + AllRectanglesView.Count.ToString();
 
                 ObservableCollection<ResizableRectangle> FilteredRectangles = new ObservableCollection<ResizableRectangle>
@@ -796,10 +825,12 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("AllRectangles");
                 OnPropertyChanged("AllRectanglesView");
                 OnPropertyChanged("FilteredRectangles");
-                OnPropertyChanged("FilterVisibility");
-                OnPropertyChanged("FilterVisibility1");
                 OnPropertyChanged("DefaultLabel");
                 OnPropertyChanged("RectangleCount");
+                OnPropertyChanged("FilterVisibilitySelected");
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+                OnPropertyChanged("FilterVisibilityAllLabels");
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
             }
         }
 
@@ -838,36 +869,66 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private bool _filterVisibility1 = false;
+        private bool _filterVisibilitySelected = false;
 
-        public bool FilterVisibility1
+        public bool FilterVisibilitySelected
         {
             get
             {
-                return _filterVisibility1;
+                return _filterVisibilitySelected;
             }
             set
             {
-                _filterVisibility1 = value;
+                _filterVisibilitySelected = value;
                 OnPropertyChanged("FilterVisibility1");
             }
         }
 
-        private bool _filterVisibility = true;
+        private bool _filterVisibilityAllLabels = true;
 
-        public bool FilterVisibility
+        public bool FilterVisibilityAllLabels
         {
             get
             {
-                return _filterVisibility;
+                return _filterVisibilityAllLabels;
             }
             set
             {
-                _filterVisibility = value;
+                _filterVisibilityAllLabels = value;
                 OnPropertyChanged("FilterVisibility");
             }
         }
 
+        private bool _filterVisibilitySelectedGallery = false;
+
+        public bool FilterVisibilitySelectedGallery
+        {
+            get
+            {
+                return _filterVisibilitySelectedGallery;
+            }
+            set
+            {
+                _filterVisibilitySelectedGallery = value;
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+            }
+        }
+
+        private bool _filterVisibilityAllLabelsGallery = false;
+
+        public bool FilterVisibilityAllLabelsGallery
+        {
+            get
+            {
+                return _filterVisibilityAllLabelsGallery;
+            }
+            set
+            {
+                _filterVisibilityAllLabelsGallery = value;
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+            }
+        }
+        
         private ICommand _loadXMLCommand;
         public ICommand LoadXMLCommand
         {
@@ -1301,14 +1362,52 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 ListViewImage = @"/Icons/list_view.png";
                 OnPropertyChanged("ListViewTextVisibility");
+
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = true;
+                    FilterVisibilitySelected = false;
+
+                }
+
+                else
+                {
+                    FilterVisibilitySelectedGallery = true;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = false;
+                }
             }
 
             else if (ListViewImage.Contains("list"))
             {
                 ListViewImage = @"/Icons/grid_view.png";
                 OnPropertyChanged("ListViewTextVisibility");
+
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = true;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = false;
+                }
+
+                else
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = true;
+                }
             }
-            
+
+            OnPropertyChanged("FilterVisibilitySelected");
+            OnPropertyChanged("FilterVisibilitySelectedGallery");
+            OnPropertyChanged("FilterVisibilityAllLabels");
+            OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+
         }
     }
 
