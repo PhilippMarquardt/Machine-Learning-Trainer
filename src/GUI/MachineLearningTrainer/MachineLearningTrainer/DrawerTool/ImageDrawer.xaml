@@ -101,14 +101,14 @@
                     Modifiers="Ctrl"
                     Command="{Binding ExportPascalVoc}"
                     CommandParameter="S"/>
-        <KeyBinding Key="A" Command="{Binding LeftButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="D" Command="{Binding RightButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="W" Command="{Binding UpButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="S" Command="{Binding DownButtonCommand}" Modifiers="Alt"/>
-        <KeyBinding Key="A" Command="{Binding RightButtonCommand1}" Modifiers="Shift"/>
-        <KeyBinding Key="D" Command="{Binding LeftButtonCommand1}" Modifiers="Shift"/>
-        <KeyBinding Key="W" Command="{Binding DownButtonCommand1}" Modifiers="Shift"/>
-        <KeyBinding Key="S" Command="{Binding UpButtonCommand1}" Modifiers="Shift"/>
+        <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
 
         <KeyBinding Command="{Binding NewFileCommand}" Key="{Binding NewFileCommand.Key}" Modifiers="{Binding NewFileCommand.Modifiers}"  />
     </UserControl.InputBindings>
@@ -283,6 +283,16 @@
             <!--ListBox with SelectedLabels and Text-->
             <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
                  x:Name="listBoxLabels1" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelected, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -337,6 +347,16 @@
             <!--ListBox with SelectedLabels, gallery format-->
             <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
                  MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelectedGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -394,6 +414,16 @@
             <!--ListBox with All Labels and Text-->
             <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
                  x:Name="listBoxLabels" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
@@ -448,6 +478,16 @@
             <!--ListBox with All Labels, gallery format-->
             <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
                  MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilityAllLabelsGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
                         <WrapPanel>
