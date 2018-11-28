@@ -230,6 +230,20 @@
     <Resource Include="Icons\grid_view.png" />
     <Resource Include="Icons\list_view.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\save.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\loadimg.png" />
+    <Resource Include="Icons\loadxml.png" />
+    <Resource Include="Icons\new.png" />
+    <Resource Include="Icons\update.png" />
+    <Resource Include="Icons\zoom_in.png" />
+    <Resource Include="Icons\zoom_out.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\fit.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

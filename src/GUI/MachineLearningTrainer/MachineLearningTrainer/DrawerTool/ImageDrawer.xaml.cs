@@ -208,9 +208,36 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).ComboBoxNames();
         }
 
+        void Zoom_In(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.OemPlus && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                zoomBorder.ZoomIn();
+            }
+        }
+
+        void Zoom_Out(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.OemMinus && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                zoomBorder.ZoomOut();
+            }
+        }
+        void Zoom_Reset(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.D0 && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                zoomBorder.Reset();
+            }
+        }
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             this.Focus();
+            this.KeyDown += new KeyEventHandler(Zoom_In);
+            this.KeyDown += new KeyEventHandler(Zoom_Out);
+            this.KeyDown += new KeyEventHandler(Zoom_Reset);
+
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
             (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;

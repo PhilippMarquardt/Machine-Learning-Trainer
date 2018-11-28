@@ -26,7 +26,7 @@
 
     <UserControl.Resources>
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
-        
+
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
             <Setter Property="Background" Value="Transparent"/>
@@ -85,10 +85,10 @@
         <KeyBinding Key="Return"
                     Command="{Binding EnterCommand}"
                     CommandParameter="Return"/>
-        <KeyBinding Key="Z"
+        <KeyBinding Key="O"
                     Modifiers="Ctrl"
-                    Command="{Binding DeleteLastRectangleCommand}"
-                    CommandParameter="Z"/>
+                    Command="{Binding LoadImageCommand}"
+                    CommandParameter="O"/>
         <KeyBinding Key="D"
                     Modifiers="Ctrl"
                     Command="{Binding DuplicateCommand}"
@@ -116,25 +116,65 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Margin="5" Header="File" Height="25">
-                <MenuItem Header="Load Image" Command="{Binding LoadImageCommand}"/>
+                <MenuItem Width="300" Header="Load Image" InputGestureText="Ctrl + O" Command="{Binding LoadImageCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadimg.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <!--<MenuItem Header="Load Folder"/>-->
                 <Separator />
-                <MenuItem Header="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Header="New Rectangle" InputGestureText="Alt + R" HeaderStringFormat="dsad" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/new.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="Export To XML" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}"/>
-                <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Header="Export To XML" InputGestureText="Ctrl + S" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/save.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadxml.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
-                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}" IsEnabled="{Binding OnDelete}"/>
+                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}" IsEnabled="{Binding OnDelete}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/update.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Margin="5" Header="Edit" Height="25">
-                <MenuItem Header="Duplicate" Command="{Binding DuplicateMenuCommand}" IsEnabled="{Binding IsEnabled}"/>
-                <MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
+                <MenuItem Width="250" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/duplicate.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/delete.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
             <MenuItem Margin="5" Header="View" Height="25">
-                <MenuItem Header="Zoom  +" Click="MenuItem_ZoomIn" IsEnabled="{Binding IsEnabled}"/>
-                <MenuItem Header="Zoom  -" Click="MenuItem_ZoomOut" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Width="300" Header="Zoom  in" InputGestureText="Ctrl + +" Click="MenuItem_ZoomIn" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_in.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Zoom  out" InputGestureText="Ctrl + -" Click="MenuItem_ZoomOut" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_out.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator/>
-                <MenuItem Header="Fit to Window" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Header="Fit to Window" InputGestureText="Ctrl + 0" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/fit.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
             </MenuItem>
         </Menu>
 
@@ -160,7 +200,7 @@
                 <StackPanel>
                     <WrapPanel x:Name="WrapPanel_FileExplorer" Width="auto" MouseEnter="WrapPanel_FileExplorer_MouseEnter" MouseLeave="WrapPanel_FileExplorer_MouseLeave">
                         <Rectangle x:Name="Rectangle_FileExplorer" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
-                        <Button x:Name="Button_FileExplorer" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent">
+                        <Button x:Name="Button_FileExplorer" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
                             <Button.LayoutTransform>
                                 <RotateTransform Angle="90"/>
                             </Button.LayoutTransform>
@@ -304,41 +344,20 @@
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem Command="{Binding DuplicateMenuCommand}">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/duplicate.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Duplicate"/>
-                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + C"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding RenameCommand}">
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/rename.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Rename All"/>
-                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + U"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding DeleteCommand}">
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/delete.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Delete"/>
-                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
-                                    <Label Content="Entf"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>
@@ -371,41 +390,20 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ContextMenu>
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem Command="{Binding DuplicateCommand}">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/duplicate.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Duplicate"/>
-                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + C"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding RenameCommand}">
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/rename.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Rename All"/>
-                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + U"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding DuplicateMenuCommand}">
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/delete.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Delete"/>
-                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
-                                    <Label Content="Entf"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>
@@ -435,41 +433,20 @@
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem Command="{Binding DuplicateMenuCommand}">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/duplicate.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Duplicate"/>
-                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + C"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding RenameCommand}">
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/rename.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Rename All"/>
-                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + U"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding DeleteCommand}">
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/delete.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Delete"/>
-                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
-                                    <Label Content="Entf"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>
@@ -502,41 +479,20 @@
                 </ListBox.ItemsPanel>
                 <ListBox.ContextMenu>
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem Command="{Binding DuplicateMenuCommand}">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/duplicate.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Duplicate"/>
-                                    <Label Content="Rename AllDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + C"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding RenameCommand}">
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/rename.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Rename All"/>
-                                    <Label Content="DuplicateDelete" Foreground="Transparent"/>
-                                    <Label Content="Strg + U"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
-                        <MenuItem Command="{Binding DeleteCommand}">
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
                             <MenuItem.Icon>
                                 <Image Source="/Icons/delete.png"/>
                             </MenuItem.Icon>
-                            <MenuItem.Header>
-                                <WrapPanel>
-                                    <Label Content="Delete"/>
-                                    <Label Content="RenameAll Duplicate" Foreground="Transparent"/>
-                                    <Label Content="Entf"/>
-                                </WrapPanel>
-                            </MenuItem.Header>
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>

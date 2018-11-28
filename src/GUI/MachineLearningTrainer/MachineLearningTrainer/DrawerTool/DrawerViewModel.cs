@@ -1429,6 +1429,7 @@ namespace MachineLearningTrainer.DrawerTool
             OnPropertyChanged("FilterVisibilityAllLabelsGallery");
 
         }
+        
     }
 
 }
