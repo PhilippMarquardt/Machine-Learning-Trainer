@@ -500,5 +500,15 @@ namespace MachineLearningTrainer.DrawerTool
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
         }
+
+        private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).DuplicateVar = 1;
+        }
+
+        private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).DuplicateVar = 0;
+        }
     }
 }

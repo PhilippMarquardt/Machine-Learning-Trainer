@@ -337,34 +337,53 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private async void OnDuplicate()
         {
-            SortList();
-            ResizableRectangle DuplicateRect = new ResizableRectangle();
-
-            DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
-            DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
-            DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
-            DuplicateRect.X = vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2;
-            DuplicateRect.Y = vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2;
-
-            Canvas.SetLeft(DuplicateRect, vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2);
-            Canvas.SetTop(DuplicateRect, vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2);
-
-            AllRectanglesView.Insert(0, DuplicateRect);
-            AllRectangles.Insert(0, DuplicateRect);
-            OnPropertyChanged("AllRectanglesView");
-            OnPropertyChanged("AllRectangles");
-            await cropImageLabelBegin();
-
-            if (SelectedComboBoxItem == "All Labels")
+            if (DuplicateVar == 1) 
             {
-                RectangleCount = "#" + AllRectangles.Count.ToString();
+                SortList();
+                ResizableRectangle DuplicateRect = new ResizableRectangle();
+
+                DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
+                DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
+                DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
+                DuplicateRect.X = vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2;
+                DuplicateRect.Y = vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2;
+
+                Canvas.SetLeft(DuplicateRect, vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2);
+                Canvas.SetTop(DuplicateRect, vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2);
+
+                AllRectanglesView.Insert(0, DuplicateRect);
+                AllRectangles.Insert(0, DuplicateRect);
+                OnPropertyChanged("AllRectanglesView");
+                OnPropertyChanged("AllRectangles");
+                await cropImageLabelBegin();
+
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    RectangleCount = "#" + AllRectangles.Count.ToString();
+                }
+
+                else if (SelectedComboBoxItem != "All Labels")
+                {
+                    RectangleCount = "#" + AllRectanglesView.Count.ToString();
+                }
             }
 
-            else if (SelectedComboBoxItem != "All Labels")
+            else if (DuplicateVar == 0)
             {
-                RectangleCount = "#" + AllRectanglesView.Count.ToString();
+                OnDuplicateMenu();
             }
         }
+
+        private int _duplicateVar;
+
+        public int DuplicateVar
+        {
+            get { return _duplicateVar; }
+            set { _duplicateVar = value;
+                OnPropertyChanged("DuplicateVar");
+            }
+        }
+
 
         /// <summary>
         /// this method, let you duplicate the selected rectangle with its text, height, ...
