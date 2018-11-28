@@ -282,6 +282,7 @@ namespace MachineLearningTrainer.DrawerTool
                 SelectedRectangleFill();
                 DeleteCommand.RaiseCanExecuteChanged();
                 DuplicateCommand.RaiseCanExecuteChanged();
+                DuplicateMenuCommand.RaiseCanExecuteChanged();
                 RenameCommand.RaiseCanExecuteChanged();
             }
         }
@@ -334,7 +335,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
         /// </summary>
-        private void OnDuplicate()
+        private async void OnDuplicate()
         {
             SortList();
             ResizableRectangle DuplicateRect = new ResizableRectangle();
@@ -352,7 +353,7 @@ namespace MachineLearningTrainer.DrawerTool
             AllRectangles.Insert(0, DuplicateRect);
             OnPropertyChanged("AllRectanglesView");
             OnPropertyChanged("AllRectangles");
-            cropImageLabelBegin();
+            await cropImageLabelBegin();
 
             if (SelectedComboBoxItem == "All Labels")
             {

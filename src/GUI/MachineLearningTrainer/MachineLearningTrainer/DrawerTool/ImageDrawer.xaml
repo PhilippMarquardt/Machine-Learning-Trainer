@@ -124,10 +124,10 @@
                 <MenuItem Header="Export To XML" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}"/>
                 <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}" IsEnabled="{Binding IsEnabled}"/>
                 <Separator />
-                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}" IsEnabled="{Binding IsEnabled}"/>
+                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}" IsEnabled="{Binding OnDelete}"/>
             </MenuItem>
             <MenuItem Margin="5" Header="Edit" Height="25">
-                <MenuItem Header="Duplicate" Command="{Binding DuplicateMenuCommand}"/>
+                <MenuItem Header="Duplicate" Command="{Binding DuplicateMenuCommand}" IsEnabled="{Binding IsEnabled}"/>
                 <MenuItem Header="Delete" Command="{Binding DeleteCommand}"/>
             </MenuItem>
             <MenuItem Margin="5" Header="View" Height="25">
@@ -230,9 +230,9 @@
                 <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
             </StackPanel>
 
-            <Label Name="txtBox" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
+            <Label Name="txtBox" Background="White" Width="auto" Height="auto" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
                  Grid.Column="3" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
-            <Label Name="txtBox1" Background="White" Width="auto" Height="20" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
+            <Label Name="txtBox1" Background="White" Width="auto" Height="auto" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
                  Grid.Column="3" HorizontalAlignment="Left" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
 
             <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
