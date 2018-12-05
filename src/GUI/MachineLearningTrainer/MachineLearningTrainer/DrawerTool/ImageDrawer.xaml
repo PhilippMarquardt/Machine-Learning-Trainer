@@ -279,8 +279,10 @@
                           BorderBrush="Gray" BorderThickness="1" ClipToBounds="True" Grid.ColumnSpan="2">
                 <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" MouseEnter="cnvImage_MouseEnter" MouseLeave="cnvImage_MouseLeave"
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+
                     <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
                     <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+
                               Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>

@@ -95,10 +95,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+
         public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
         
+
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -374,6 +376,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
         private int _duplicateVar;
 
         public int DuplicateVar
@@ -596,6 +599,7 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("RectangleFill");
             }
         }
+
 
         /// <summary>
         /// this method colors the selected rectangle and increases the opacity
@@ -1430,6 +1434,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
         
+
     }
 
 }
