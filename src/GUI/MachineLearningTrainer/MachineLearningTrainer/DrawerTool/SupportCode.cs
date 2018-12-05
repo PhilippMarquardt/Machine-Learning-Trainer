@@ -11,13 +11,22 @@ using System.Windows.Media.Imaging;
 
 namespace MachineLearningTrainer.DrawerTool
 {
+    /// <summary>
+    /// this class contains all methods for converting images in different formats.
+    /// </summary>
     public class SupportCode
     {
+        /// <summary>
+        /// this method converts bitmap to mat 
+        /// </summary>
         public static Mat ConvertBmp2Mat(Bitmap bitmap)
         {
             return OpenCvSharp.Extensions.BitmapConverter.ToMat(bitmap);
         }
 
+        /// <summary>
+        /// this method converts mat to bitmap
+        /// </summary>
         public static BitmapImage ConvertMat2BmpImg(Mat mat)
         {
 

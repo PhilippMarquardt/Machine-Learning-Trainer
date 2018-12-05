@@ -1,6 +1,10 @@
-﻿using System;
+﻿using OpenCvSharp;
+using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Drawing;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -27,10 +31,18 @@ namespace MachineLearningTrainer.DrawerTool
             this.DataContext = this;
         }
 
-        private void Rectangle_MouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        public static readonly DependencyProperty SelectedResizableRectangleProperty =
+        DependencyProperty.Register("SelectedResizableRectangle", typeof(ResizableRectangle), typeof(ResizableRectangle));
+        public ResizableRectangle SelectedResizableRectangle
         {
-            MessageBox.Show("LOL");
-            //(this.DataContext as DrawerViewModel).AllRectangles.Remove();
+            get
+            {
+                return (ResizableRectangle)GetValue(SelectedResizableRectangleProperty);
+            }
+            set
+            {
+                SetValue(SelectedResizableRectangleProperty, value);
+            }
         }
 
         public static readonly DependencyProperty RectangleHeightProperty =
@@ -76,8 +88,8 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-       public static readonly DependencyProperty XProperty =
-       DependencyProperty.Register("X", typeof(double), typeof(ResizableRectangle));
+        public static readonly DependencyProperty XProperty =
+        DependencyProperty.Register("X", typeof(double), typeof(ResizableRectangle));
         public double X
         {
             get
@@ -162,12 +174,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private static DependencyProperty RectangleFillProperty =
-            DependencyProperty.Register("RectangleFill", typeof(Brush), typeof(ResizableRectangle));
-        public Brush RectangleFill
+            DependencyProperty.Register("RectangleFill", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
+        public System.Windows.Media.Brush RectangleFill
         {
             get
             {
-                return (Brush)GetValue(RectangleFillProperty);
+                return (System.Windows.Media.Brush)GetValue(RectangleFillProperty);
             }
             set
             {
@@ -176,12 +188,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private static DependencyProperty ThumbColorProperty =
-            DependencyProperty.Register("ThumbColor", typeof(Brush), typeof(ResizableRectangle));
-        public Brush ThumbColor
+            DependencyProperty.Register("ThumbColor", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
+        public System.Windows.Media.Brush ThumbColor
         {
             get
             {
-                return (Brush)GetValue(ThumbColorProperty);
+                return (System.Windows.Media.Brush)GetValue(ThumbColorProperty);
             }
             set
             {
@@ -200,6 +212,20 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 SetValue(ThumbSizeProperty, value);
+            }
+        }
+
+        private void Rectangle_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            Control designerItem = this.DataContext as Control;
+            var rec = ControlOperations.GetParentOfType<UserControl>(designerItem) as ResizableRectangle;
+            var drawerviewmodel = (ControlOperations.GetParentOfType<ItemsControl>(designerItem) as ItemsControl).DataContext as DrawerViewModel;
+            if (designerItem != null)
+            {
+                if (rec != null)
+                {
+                    drawerviewmodel.SelectClickedRectangle(rec);
+                }
             }
         }
     }

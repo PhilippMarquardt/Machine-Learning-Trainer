@@ -477,7 +477,7 @@ namespace MachineLearningTrainer
             _action = action;
             _canExecute = canExecute;
         }
-
+        
         public bool CanExecute(object parameter)
         {
             return _canExecute;
@@ -495,10 +495,19 @@ namespace MachineLearningTrainer
     {
         private Action<object> _action;
         private bool _canExecute;
+        private Action<object> execute;
+        private Predicate<object> canExecute;
+
         public RelayCommand(Action<object> action, bool canExecute)
         {
             _action = action;
             _canExecute = canExecute;
+        }
+
+        public RelayCommand(Action<object> execute, Predicate<object> canExecute)
+        {
+            this.execute = execute;
+            this.canExecute = canExecute;
         }
 
         public bool CanExecute(object parameter)

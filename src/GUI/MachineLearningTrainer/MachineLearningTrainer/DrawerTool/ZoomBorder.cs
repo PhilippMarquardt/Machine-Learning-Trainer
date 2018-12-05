@@ -6,11 +6,13 @@
     using System.Windows.Input;
     using System.Windows.Media;
 
-  
+    /// <summary>
+    /// this class contains all methods for zooming the image
+    /// </summary>
     public class ZoomBorder : Border
     {
         private UIElement child = null;
-        private Point origin;
+        public Point origin;
         private Point start;
 
         private TranslateTransform GetTranslateTransform(UIElement element)
@@ -75,13 +77,31 @@
                     var st = GetScaleTransform(child);
                     st.ScaleX = 1.0;
                     st.ScaleY = 1.0;
-                 
-                        
-                
+
                     // reset pan
                     var tt = GetTranslateTransform(child);
                     tt.X = 0.0;
                     tt.Y = 0.0;                
+            }
+        }
+
+        public void ZoomToRectangle()
+        {
+            if (child != null)
+            {
+                // reset zoom
+                var st = GetScaleTransform(child);
+                st.ScaleX = 1.0;
+                st.ScaleY = 1.0;
+
+                // reset pan
+                var tt = GetTranslateTransform(child);
+                tt.X = 0.0;
+                tt.Y = 0.0;
+
+                var viewmodel = this.DataContext as DrawerViewModel;
+                tt.X = viewmodel.ZoomBorderWidth / 2 - viewmodel.SelectedResizableRectangle.X - viewmodel.SelectedResizableRectangle.RectangleWidth / 2;
+                tt.Y = viewmodel.ZoomBorderHeight / 3 - viewmodel.SelectedResizableRectangle.Y - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
             }
         }
 
@@ -126,6 +146,56 @@
             }
         }
 
+        public void ZoomOut()
+        {
+            if (child != null)
+            {
+                var st = GetScaleTransform(child);
+                var tt = GetTranslateTransform(child);
+
+                double zoom = -.2;
+                if ((st.ScaleX < .4 || st.ScaleY < .4))
+                    return;
+
+                double abosuluteX;
+                double abosuluteY;
+
+                abosuluteX = ((this.DataContext as DrawerViewModel).MyCanvas.ActualWidth) / 2 * st.ScaleX + tt.X;
+                abosuluteY = ((this.DataContext as DrawerViewModel).MyCanvas.ActualHeight) / 2 * st.ScaleY + tt.Y;
+
+                st.ScaleX += zoom;
+                st.ScaleY += zoom;
+
+                tt.X = abosuluteX - ((this.DataContext as DrawerViewModel).MyCanvas.ActualWidth) / 2 * st.ScaleX;
+                tt.Y = abosuluteY - ((this.DataContext as DrawerViewModel).MyCanvas.ActualHeight) / 2 * st.ScaleY;
+            }
+        }
+
+        public void ZoomIn()
+        {
+            if (child != null)
+            {
+                var st = GetScaleTransform(child);
+                var tt = GetTranslateTransform(child);
+
+                double zoom = .2;
+                if ((st.ScaleX < .4 || st.ScaleY < .4))
+                    return;
+
+                double abosuluteX;
+                double abosuluteY;
+
+                abosuluteX = ((this.DataContext as DrawerViewModel).MyCanvas.ActualWidth) / 2 * st.ScaleX + tt.X;
+                abosuluteY = ((this.DataContext as DrawerViewModel).MyCanvas.ActualHeight) / 2 * st.ScaleY + tt.Y;
+
+                st.ScaleX += zoom;
+                st.ScaleY += zoom;
+
+                tt.X = abosuluteX - ((this.DataContext as DrawerViewModel).MyCanvas.ActualWidth) / 2 * st.ScaleX;
+                tt.Y = abosuluteY - ((this.DataContext as DrawerViewModel).MyCanvas.ActualHeight) / 2 * st.ScaleY;
+            }
+        }
+
         private void Child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
@@ -146,7 +216,6 @@
             {
                 child.ReleaseMouseCapture();
                 this.Cursor = Cursors.Arrow;
-              
             }
         }
 

@@ -8,6 +8,8 @@
              mc:Ignorable="d" 
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
+             Loaded="UserControl_Loaded"
+             Focusable="True"
              d:DesignHeight="1080" d:DesignWidth="1920">
 
     <UserControl.Triggers>
@@ -31,7 +33,7 @@
             <Setter Property="Foreground" Value="#FF2196F3" />
             <Setter Property="Margin" Value="10"/>
         </Style>
-        
+
         <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Style.Triggers>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
@@ -54,6 +56,19 @@
                 </EventTrigger>
             </Style.Triggers>
         </Style>
+
+        <Style x:Key="myLBStyle" TargetType="{x:Type ListBoxItem}">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue" Opacity="0.8"/>
+            </Style.Resources>
+        </Style>
+        
+        <Style x:Key="MyListBoxStyle" TargetType="{x:Type ListBox}">
+            <Style.Resources>
+                <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue" Opacity="0.8"/>
+            </Style.Resources>
+        </Style>
+        
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -67,92 +82,423 @@
         <KeyBinding Key="Esc"
                     Command="{Binding DeleteSelectionRectangle}"
                     CommandParameter="Esc"/>
-        <KeyBinding Key="Z"
+        <KeyBinding Key="Return"
+                    Command="{Binding EnterCommand}"
+                    CommandParameter="Return"/>
+        <KeyBinding Key="O"
                     Modifiers="Ctrl"
-                    Command="{Binding DeleteLastRectangleCommand}"
-                    CommandParameter="Z"/>
+                    Command="{Binding LoadImageCommand}"
+                    CommandParameter="O"/>
+        <KeyBinding Key="D"
+                    Modifiers="Ctrl"
+                    Command="{Binding DuplicateCommand}"
+                    CommandParameter="D"/>
+        <KeyBinding Key="U"
+                    Modifiers="Ctrl"
+                    Command="{Binding RenameCommand}"
+                    CommandParameter="U"/>
+        <KeyBinding Key="S"
+                    Modifiers="Ctrl"
+                    Command="{Binding ExportPascalVoc}"
+                    CommandParameter="S"/>
+        <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+        <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+        <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+
+        <KeyBinding Command="{Binding NewFileCommand}" Key="{Binding NewFileCommand.Key}" Modifiers="{Binding NewFileCommand.Modifiers}"  />
     </UserControl.InputBindings>
 
-    <Grid>
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="150"/>
-            <ColumnDefinition Width="*"/>
-            <ColumnDefinition Width="170"/>
-        </Grid.ColumnDefinitions>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="100"/>
-            <RowDefinition Height="*"/>
-            <RowDefinition Height="100"/>
-        </Grid.RowDefinitions>
-        <StackPanel Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="3" Background="White">
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Load image"  Command="{Binding LoadImageCommand}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="New Rectangle" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Export To XML" Command="{Binding ExportPascalVoc}"/>
-        </StackPanel>
-        <StackPanel Grid.Column="2" Grid.Row="2" Panel.ZIndex="1" Background="White">
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
-            <Button Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
-        </StackPanel>
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Margin="5" Header="File" Height="25">
+                <MenuItem Width="300" Header="Load Image" InputGestureText="Ctrl + O" Command="{Binding LoadImageCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadimg.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <!--<MenuItem Header="Load Folder"/>-->
+                <Separator />
+                <MenuItem Header="New Rectangle" InputGestureText="Alt + R" HeaderStringFormat="dsad" Command="{Binding AddRectangle}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/new.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Export To XML" InputGestureText="Ctrl + S" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/save.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Load XML" Command="{Binding LoadXMLCommand}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadxml.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Update Previews" Command="{Binding UpdatePreviewsCommand}" IsEnabled="{Binding OnDelete}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/update.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Margin="5" Header="Edit" Height="25">
+                <MenuItem Width="250" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/duplicate.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/delete.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Margin="5" Header="View" Height="25">
+                <MenuItem Width="300" Header="Zoom  in" InputGestureText="Ctrl + +" Click="MenuItem_ZoomIn" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_in.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Header="Zoom  out" InputGestureText="Ctrl + -" Click="MenuItem_ZoomOut" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_out.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
+                <MenuItem Header="Fit to Window" InputGestureText="Ctrl + 0" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/fit.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
 
-        <StackPanel Grid.Row="3" Background="White" Panel.ZIndex="1"/>
 
-        <local:ZoomBorder x:Name="zoomBorder" Grid.Column="1" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
-                          BorderBrush="Gray" BorderThickness="1">
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*" x:Name="gridX"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="auto" MinWidth="250"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" x:Name="gridY0"/>
+                <RowDefinition Height="*" x:Name="gridY1"/>
+                <RowDefinition Height="auto" x:Name="gridY2"/>
+            </Grid.RowDefinitions>
+            
 
-            <Canvas x:Name="cnvImage" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" 
-                    Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
-                <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" Stretch="Uniform"/>
-                <ItemsControl ItemsSource="{Binding AllRectangles}" Background="Transparent"  x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
-                              Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <Canvas/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemContainerStyle>
-                        <Style TargetType="local:ResizableRectangle">
-                            <Setter Property="Canvas.Left" Value="{Binding X}"/>
-                            <Setter Property="Canvas.Top" Value="{Binding Y}"/>
-                            <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                            <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                        </Style>
-                    </ItemsControl.ItemContainerStyle>
-                </ItemsControl>
+            <Canvas Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
 
+                <StackPanel>
+                    <WrapPanel x:Name="WrapPanel_FileExplorer" Width="auto" MouseEnter="WrapPanel_FileExplorer_MouseEnter" MouseLeave="WrapPanel_FileExplorer_MouseLeave">
+                        <Rectangle x:Name="Rectangle_FileExplorer" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
+                        <Button x:Name="Button_FileExplorer" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
+                            <Button.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </Button.LayoutTransform>
+                        </Button>
+                    </WrapPanel>
+                    <!--<WrapPanel x:Name="WrapPanel_Folder" Width="auto" MouseEnter="WrapPanel_Folder_MouseEnter" MouseLeave="WrapPanel_Folder_MouseLeave">
+                        <Rectangle x:Name="Rectangle_Folder" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
+                        <Button x:Name="Button_Folder" Style="{StaticResource BasicButtonStyle}" Content="Folder" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" Click="Button_Folder_Click">
+                            <Button.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </Button.LayoutTransform>
+                        </Button>
+                    </WrapPanel>-->
+                </StackPanel>
+
+                <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                    <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+                </Button>
 
             </Canvas>
-        </local:ZoomBorder>
 
-        <StackPanel Grid.Column="2" Grid.Row="0" Background="White" Panel.ZIndex="1">
-            <CheckBox Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
-            <TextBox x:Name="txtDefaultLabel" TextChanged="TextBox_TextChanged" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
-                     BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
-        </StackPanel>
+            <Grid x:Name="gridcolumn1" Grid.Column="1" Grid.Row="0" Grid.RowSpan="4" Width="auto" Grid.ColumnSpan="2" Margin="0,0,4,0">
 
-        <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="2" Background="White"
-                 x:Name="listBoxLabels" Panel.ZIndex="1" Grid.Row="1">
-            <ListBox.ItemTemplate>
-                <DataTemplate>
-                    <WrapPanel>
-                        <Image Source="{Binding CroppedImage, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="0,0,10,0"/>
-                        <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
-                                 TextAlignment="Left" HorizontalAlignment="Left" Width="90" Padding="3,0,0,0" AcceptsReturn="True" TextWrapping="Wrap"/>
-                    </WrapPanel>
-                </DataTemplate>
-            </ListBox.ItemTemplate>
-            <!--<ListBox.ItemContainerStyle>
-                <Style TargetType="local:ResizableRectangle">
-                    <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
-                </Style>
-            </ListBox.ItemContainerStyle>-->
-        </ListBox>
-        <Button Background="Transparent" Command="{Binding PreviousPage}" Foreground="#FF2196F3" Height="Auto" 
-                HorizontalAlignment="Left" Grid.Row="1" Grid.Column="0" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3" Grid.RowSpan="2">
-            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
-        </Button>
-    </Grid>
+                <!--<StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="Folder_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
+                    <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
+                        <TextBlock Text="Files" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    <ListBox HorizontalAlignment="Center" Width="150" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
+                </StackPanel>-->
+
+                <StackPanel x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
+                    <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
+                        <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
+                        <TreeView.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick"/>
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
+                                                Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TreeView.Resources>
+                    </TreeView>
+                </StackPanel>
+
+            </Grid>
+            <Grid x:Name="prGrid" Height="auto" Width="auto" Background="White" Grid.Column="3" Panel.ZIndex="1" Visibility="Collapsed" VerticalAlignment="Center" HorizontalAlignment="Center" Grid.Row="1" Grid.RowSpan="3">
+                <StackPanel>
+                    <Label Content="Image is being prepared ..." Margin="10,10,10,5" FontSize="12" Foreground="Black" Background="White" HorizontalAlignment="Center"/>
+                    <ProgressBar Minimum="0" Maximum="100" IsIndeterminate="True" Height="20"  Width="300" Background="White" Foreground="LawnGreen"
+                             BorderBrush="Gray" BorderThickness="1" Margin="10,5,10,10"/>
+                </StackPanel>
+            </Grid>
+            <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
+
+            <StackPanel Grid.Column="6" Grid.Row="2" Panel.ZIndex="2">
+                <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Delete Rectangle" Command="{Binding DeleteCommand}"/>
+                <Button Width="200" Style="{StaticResource BasicButtonStyle}" Content="Clear Rectangles" Command="{Binding DeleteRectanglesCommand}"/>
+            </StackPanel>
+
+            <Label Name="txtBox" Background="White" Width="auto" Height="auto" Padding="3" FontWeight="Bold" Margin="0,0,10,10" VerticalAlignment="Bottom"
+                 Grid.Column="3" HorizontalAlignment="Right" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+            <Label Name="txtBox1" Background="White" Width="auto" Height="auto" Padding="3" FontWeight="Bold" Margin="10,0,0,10" VerticalAlignment="Bottom"
+                 Grid.Column="3" HorizontalAlignment="Left" Grid.Row="3" Panel.ZIndex="3" BorderBrush="Black" BorderThickness="1"/>
+
+            <local:ZoomBorder x:Name="zoomBorder" Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Background="LightGray" 
+                          BorderBrush="Gray" BorderThickness="1" ClipToBounds="True" Grid.ColumnSpan="2">
+                <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" MouseEnter="cnvImage_MouseEnter" MouseLeave="cnvImage_MouseLeave"
+                    Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+
+                    <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
+                    <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+
+                              Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <Canvas/>
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemContainerStyle>
+                            <Style TargetType="local:ResizableRectangle">
+                                <Setter Property="Canvas.Left" Value="{Binding X}"/>
+                                <Setter Property="Canvas.Top" Value="{Binding Y}"/>
+                                <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                                <!--<Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>-->
+                                <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>
+                            </Style>
+                        </ItemsControl.ItemContainerStyle>
+                    </ItemsControl>
+                </Canvas>
+            </local:ZoomBorder>
+
+            <GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
+
+            <StackPanel Grid.Column="6" Grid.Row="0">
+                <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
+                <TextBox x:Name="txtDefaultLabel" Foreground="Black" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+                     Width="200" HorizontalAlignment="Left" BorderBrush="Gray" BorderThickness="1" FontSize="14" IsEnabled="{Binding IsChecked}"/>
+                <Grid Margin="15">
+                    <Grid.Resources>
+                        <ImageBrush x:Key="AddButtonImageBrush" ImageSource="{Binding ListViewImage}"/>
+                    </Grid.Resources>
+                    <Button Command="{Binding ListViewCommand}" HorizontalAlignment="Left" Width="26" Height="26" Background="{StaticResource AddButtonImageBrush}" Margin="5" BorderBrush="Transparent" materialDesign:ShadowAssist.ShadowDepth="Depth0"/>
+                    <ComboBox MouseUp="ImgCamera_MouseUp" ItemsSource="{Binding ComboBoxItems}" SelectedItem="{Binding SelectedComboBoxItem}" FontSize="14" HorizontalAlignment="Center" Foreground="Black"
+                      Height="30" Margin="5" Width="auto" SelectedIndex="0" DropDownClosed="ComboBox_DropDownClosed" Padding="3" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+                    <TextBlock HorizontalAlignment="Right" Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" VerticalAlignment="Center" FontStyle="Italic" Foreground="Gray" Margin="5"/>
+                </Grid>
+            </StackPanel>
+
+            <!--ListBox with SelectedLabels and Text-->
+            <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 x:Name="listBoxLabels1" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelected, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="10"/>
+                            <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center"
+                                 TextAlignment="Left" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+            
+            <!--ListBox with SelectedLabels, gallery format-->
+            <ListBox ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelectedGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="60" Width="60" Margin="10"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+
+            <!--ListBox with All Labels and Text-->
+            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 x:Name="listBoxLabels" MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="50" Width="50" Margin="10"/>
+                            <TextBox x:Name="lblTextBox" Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Foreground="Black" FontSize="12" VerticalAlignment="Center" 
+                                 TextAlignment="Left" TextChanged="ListBoxTextBox_TextChanged" HorizontalAlignment="Left" Width="auto" MinWidth="70" Padding="3,0,0,0" AcceptsReturn="False" TextWrapping="Wrap"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+
+            <!--ListBox with All Labels, gallery format-->
+            <ListBox ItemsSource="{Binding AllRectangles}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
+                 MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilityAllLabelsGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
+                <ListBox.InputBindings>
+                    <KeyBinding Key="Left" Command="{Binding LeftButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Right" Command="{Binding RightButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Up" Command="{Binding UpButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Down" Command="{Binding DownButtonCommand}" Modifiers="Ctrl+Shift"/>
+                    <KeyBinding Key="Left" Command="{Binding RightButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Right" Command="{Binding LeftButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Up" Command="{Binding DownButtonCommand1}" Modifiers="Ctrl"/>
+                    <KeyBinding Key="Down" Command="{Binding UpButtonCommand1}" Modifiers="Ctrl"/>
+                </ListBox.InputBindings>
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <WrapPanel>
+                            <Image Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" Height="60" Width="60" Margin="10"/>
+                        </WrapPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <UniformGrid Columns="3" Height="auto" VerticalAlignment="Top" HorizontalAlignment="Left"/>
+                    </ItemsPanelTemplate>
+                </ListBox.ItemsPanel>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem Width="300" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Rename All" InputGestureText="Ctrl + U" Command="{Binding RenameCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/rename.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem Header="Delete" InputGestureText="Del" Command="{Binding DeleteCommand}">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png"/>
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
+        </Grid>
+    </DockPanel>
 </UserControl>
