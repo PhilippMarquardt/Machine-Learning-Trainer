@@ -97,6 +97,14 @@
                     Modifiers="Ctrl"
                     Command="{Binding RenameCommand}"
                     CommandParameter="U"/>
+        <KeyBinding Key="Z"
+                    Modifiers="Ctrl"
+                    Command="{Binding UndoCommand}"
+                    CommandParameter="Z"/>
+        <KeyBinding Key="Y"
+                    Modifiers="Ctrl"
+                    Command="{Binding RedoCommand}"
+                    CommandParameter="Y"/>
         <KeyBinding Key="S"
                     Modifiers="Ctrl"
                     Command="{Binding ExportPascalVoc}"
@@ -147,6 +155,17 @@
                 </MenuItem>
             </MenuItem>
             <MenuItem Margin="5" Header="Edit" Height="25">
+                <MenuItem Width="250" Header="Undo" InputGestureText="Ctrl + Z" Command="{Binding UndoCommand}" IsEnabled="{Binding UndoEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/undo.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem Width="250" Header="Redo" InputGestureText="Ctrl + Y" Command="{Binding RedoCommand}" IsEnabled="{Binding UndoEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/redo.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator/>
                 <MenuItem Width="250" Header="Duplicate" InputGestureText="Ctrl + D" Command="{Binding DuplicateMenuCommand}" IsEnabled="{Binding IsEnabled}">
                     <MenuItem.Icon>
                         <Image Source="/Icons/duplicate.png"/>
@@ -303,7 +322,7 @@
                 </Canvas>
             </local:ZoomBorder>
 
-            <GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />
+            <!--<GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />-->
 
             <StackPanel Grid.Column="6" Grid.Row="0">
                 <CheckBox  Content="Use default label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>

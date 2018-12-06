@@ -71,6 +71,10 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
+            undoRectangles.Push(new ResizableRectangle());
+            undoInformation.Push("Dummy");
+            redoRectangles.Push(new ResizableRectangle());
+            redoInformation.Push("Dummy");
         }
 
 
@@ -98,7 +102,105 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-        
+        public Stack<ResizableRectangle> undoRectangles { get; set; } = new Stack<ResizableRectangle>();
+        public Stack<string> undoInformation { get; set; } = new Stack<string>();
+        public Stack<ResizableRectangle> redoRectangles { get; set; } = new Stack<ResizableRectangle>();
+        public Stack<string> redoInformation { get; set; } = new Stack<string>();
+
+        private ICommand _undoStackCommand;
+        public ICommand UndoCommand
+        {
+            get
+            {
+                return _undoStackCommand ?? (_undoStackCommand = new CommandHandler(() => Undo(), _canExecute));
+            }
+        }
+
+        private void Undo()
+        {
+            if (undoRectangles.Count() > 1 && undoInformation.Count() > 1)
+            {
+                if (undoInformation.Peek() == "Add")
+                {
+                    var top = undoRectangles.Pop();
+                    var info = undoInformation.Pop();
+
+                    redoRectangles.Push(top);
+                    redoInformation.Push(info);
+
+                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
+                    top.RectangleOpacity = 0.07;
+                    AllRectangles.Remove(top);
+                    AllRectanglesView = AllRectangles;
+                    UpdateCropedImage(top);
+                }
+
+                if (undoInformation.Peek() == "Delete")
+                {
+                    var top = undoRectangles.Pop();
+                    var info = undoInformation.Pop();
+
+                    redoRectangles.Push(top);
+                    redoInformation.Push(info);
+
+                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
+                    top.RectangleOpacity = 0.07;
+                    AllRectangles.Add(top);
+                    AllRectanglesView = AllRectangles;
+                    UpdateCropedImage(top);
+                }
+            }
+            OnPropertyChanged("");
+        }
+
+        private ICommand _redoStackCommand;
+        public ICommand RedoCommand
+        {
+            get
+            {
+                return _redoStackCommand ?? (_redoStackCommand = new CommandHandler(() => Redo(), _canExecute));
+            }
+        }
+
+        private void Redo()
+        {
+
+            if (redoRectangles.Count() > 1 && redoInformation.Count() > 1)
+            {
+                if (redoInformation.Peek() == "Add")
+                {
+                    var top = redoRectangles.Pop();
+                    var info = redoInformation.Pop();
+
+                    undoRectangles.Push(top);
+                    undoInformation.Push(info);
+
+                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
+                    top.RectangleOpacity = 0.07;
+
+                    AllRectangles.Add(top);
+                    AllRectanglesView = AllRectangles;
+                    UpdateCropedImage(top);
+                }
+
+                if (redoInformation.Peek() == "Delete")
+                {
+                    var top = redoRectangles.Pop();
+                    var info = redoInformation.Pop();
+
+                    undoRectangles.Push(top);
+                    undoInformation.Push(info);
+
+                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
+                    top.RectangleOpacity = 0.07;
+                    AllRectangles.Remove(top);
+                    AllRectanglesView = AllRectangles;
+                    UpdateCropedImage(top);
+                }
+            }
+            OnPropertyChanged("");
+        }
+
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
         {
@@ -291,12 +393,14 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method deletes the selection of rectangles
         /// </summary>
-        private void OnDelete()
+        private void OnDelete() 
         {
             for(int i = 0; i < AllRectangles.Count + 1; i++)
             {
                 while(SelectedResizableRectangle != null)
                 {
+                    undoRectangles.Push(SelectedResizableRectangle);
+                    undoInformation.Push("Delete");
                     AllRectangles.Remove(SelectedResizableRectangle);
                     AllRectanglesView.Remove(SelectedResizableRectangle);
                 }
@@ -351,6 +455,9 @@ namespace MachineLearningTrainer.DrawerTool
                 Canvas.SetLeft(DuplicateRect, vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2);
                 Canvas.SetTop(DuplicateRect, vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2);
 
+                undoRectangles.Push(DuplicateRect);
+                undoInformation.Push("Add");
+
                 AllRectanglesView.Insert(0, DuplicateRect);
                 AllRectangles.Insert(0, DuplicateRect);
                 OnPropertyChanged("AllRectanglesView");
@@ -401,6 +508,9 @@ namespace MachineLearningTrainer.DrawerTool
 
             Canvas.SetLeft(DuplicateRect, SelectedResizableRectangle.X + 30);
             Canvas.SetTop(DuplicateRect, SelectedResizableRectangle.Y + 30);
+
+            undoRectangles.Push(DuplicateRect);
+            undoInformation.Push("Add");
 
             AllRectanglesView.Insert(0, DuplicateRect);
             AllRectangles.Insert(0, DuplicateRect);
@@ -1429,7 +1539,25 @@ namespace MachineLearningTrainer.DrawerTool
             OnPropertyChanged("FilterVisibilityAllLabelsGallery");
 
         }
-        
+
+        private bool _undoEnabled = false;
+
+        public bool UndoEnabled
+        {
+            get
+            {
+                return _undoEnabled;
+            }
+
+            set
+            {
+                _undoEnabled = value;
+                OnPropertyChanged("UndoEnabled");
+            }
+        }
+
+
+
     }
 
 }
