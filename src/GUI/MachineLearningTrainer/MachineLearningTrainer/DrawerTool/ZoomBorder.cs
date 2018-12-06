@@ -89,19 +89,16 @@
         {
             if (child != null)
             {
-                // reset zoom
                 var st = GetScaleTransform(child);
-                st.ScaleX = 1.0;
-                st.ScaleY = 1.0;
-
-                // reset pan
                 var tt = GetTranslateTransform(child);
-                tt.X = 0.0;
-                tt.Y = 0.0;
-
                 var viewmodel = this.DataContext as DrawerViewModel;
-                tt.X = viewmodel.ZoomBorderWidth / 2 - viewmodel.SelectedResizableRectangle.X - viewmodel.SelectedResizableRectangle.RectangleWidth / 2;
-                tt.Y = viewmodel.ZoomBorderHeight / 3 - viewmodel.SelectedResizableRectangle.Y - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
+                tt.X = (viewmodel.MyPreview.ActualWidth / 2) - viewmodel.SelectedResizableRectangle.X*st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth*st.ScaleX / 2;
+                tt.Y = (viewmodel.MyPreview.ActualHeight / 2) - viewmodel.SelectedResizableRectangle.Y*st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight*st.ScaleY / 2;
+                System.Console.WriteLine((viewmodel.MyPreview.ActualWidth) / 2);
+                System.Console.WriteLine(tt.X + ", " + tt.Y);
+                double zeroX = (viewmodel.ZoomBorderWidth - viewmodel.MyPreview.ActualWidth) / 2;
+                System.Console.WriteLine(zeroX);
+               
             }
         }
 

@@ -1555,9 +1555,6 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("UndoEnabled");
             }
         }
-
-
-
     }
 
 }
