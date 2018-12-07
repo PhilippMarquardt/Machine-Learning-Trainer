@@ -68,11 +68,33 @@
             }
         }
 
+
+
         public void Reset()
         {
            
             if (child != null)
-            {               
+            {
+                var viewmodel = this.DataContext as DrawerViewModel;
+
+                if(viewmodel.MyPreview.ActualWidth > viewmodel.ZoomBorderWidth)
+                {
+                    // calculate relation between zoomborder and image
+                    var relX = viewmodel.ZoomBorderWidth / viewmodel.MyPreview.ActualWidth;
+
+                    // reset zoom
+                    var st = GetScaleTransform(child);
+                    st.ScaleX = relX;
+                    st.ScaleY = relX;
+
+                    // reset pan
+                    var tt = GetTranslateTransform(child);
+                    tt.X = 0.0;
+                    tt.Y = 0.0;
+                }
+
+                else
+                {
                     // reset zoom
                     var st = GetScaleTransform(child);
                     st.ScaleX = 1.0;
@@ -81,7 +103,9 @@
                     // reset pan
                     var tt = GetTranslateTransform(child);
                     tt.X = 0.0;
-                    tt.Y = 0.0;                
+                    tt.Y = 0.0;
+                }
+              
             }
         }
 
@@ -91,7 +115,7 @@
             {
                 if ((this.DataContext as DrawerViewModel).MyPreview == null)
                 {
-                    Reset();
+                    this.Reset();
                 }
 
                 else
@@ -131,7 +155,7 @@
                 var st = GetScaleTransform(child);
                 var tt = GetTranslateTransform(child);
 
-                double zoom = e.Delta > 0 ? .2 : -.2;
+                double zoom = e.Delta > 0 ? st.ScaleX * (this.DataContext as DrawerViewModel).MyPreview.ActualWidth * 0.08 / 1000 : -st.ScaleX * (this.DataContext as DrawerViewModel).MyPreview.ActualWidth * 0.08 / 1000;
                 if (!(e.Delta > 0) && (st.ScaleX < .4 || st.ScaleY < .4))
                     return;
 

@@ -470,6 +470,8 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
+                    (this.DataContext as DrawerViewModel).clearUndoRedoStack();
+                    zoomBorder.Reset();
 
                 }
 
@@ -550,6 +552,12 @@ namespace MachineLearningTrainer.DrawerTool
         private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 0;
+        }
+
+        private void MenuItem_OpenClick(object sender, RoutedEventArgs e)
+        {
+            if (imgPreview != null) 
+                zoomBorder.Reset();
         }
     }
 }

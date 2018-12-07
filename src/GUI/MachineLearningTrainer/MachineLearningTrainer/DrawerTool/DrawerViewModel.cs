@@ -321,7 +321,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void clearUndoRedoStack()
+        public void clearUndoRedoStack()
         {
             // Clear Undo and Redo Stack
             undoRectangles.Clear();

@@ -62,13 +62,13 @@
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue" Opacity="0.8"/>
             </Style.Resources>
         </Style>
-        
+
         <Style x:Key="MyListBoxStyle" TargetType="{x:Type ListBox}">
             <Style.Resources>
                 <SolidColorBrush x:Key="{x:Static SystemColors.HighlightBrushKey}" Color="DodgerBlue" Opacity="0.8"/>
             </Style.Resources>
         </Style>
-        
+
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -124,7 +124,7 @@
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Margin="5" Header="File" Height="25">
-                <MenuItem Width="300" Header="Load Image" InputGestureText="Ctrl + O" Command="{Binding LoadImageCommand}">
+                <MenuItem Width="300" Header="Load Image" InputGestureText="Ctrl + O" Command="{Binding LoadImageCommand}" Click="MenuItem_OpenClick">
                     <MenuItem.Icon>
                         <Image Source="/Icons/loadimg.png"/>
                     </MenuItem.Icon>
@@ -137,7 +137,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem Header="Export To XML" InputGestureText="Ctrl + S" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}">
+                <MenuItem Header="Export to XML" InputGestureText="Ctrl + S" Command="{Binding ExportPascalVoc}" IsEnabled="{Binding IsEnabled}">
                     <MenuItem.Icon>
                         <Image Source="/Icons/save.png"/>
                     </MenuItem.Icon>
@@ -189,7 +189,7 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator/>
-                <MenuItem Header="Fit to Window" InputGestureText="Ctrl + 0" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}">
+                <MenuItem Header="Fit to width" InputGestureText="Ctrl + 0" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}">
                     <MenuItem.Icon>
                         <Image Source="/Icons/fit.png"/>
                     </MenuItem.Icon>
@@ -271,7 +271,7 @@
                         </ControlTemplate>
                     </Button.Template>
                     <Button.ToolTip>
-                        <TextBlock Text="Zoom In"/>
+                        <TextBlock Text="Zoom in"/>
                     </Button.ToolTip>
                 </Button>
                 <Button Height="22" Width="22" Margin="5,10,5,10" BorderBrush="Transparent" Click="MenuItem_ZoomOut" IsEnabled="{Binding IsEnabled}">
@@ -281,7 +281,7 @@
                         </ControlTemplate>
                     </Button.Template>
                     <Button.ToolTip>
-                        <TextBlock Text="Zoom Out"/>
+                        <TextBlock Text="Zoom out"/>
                     </Button.ToolTip>
                 </Button>
                 <Button Height="22" Width="22" Margin="5,10,5,10" BorderBrush="Transparent" Click="MenuItem_Reset" IsEnabled="{Binding IsEnabled}">
@@ -291,7 +291,7 @@
                         </ControlTemplate>
                     </Button.Template>
                     <Button.ToolTip>
-                        <TextBlock Text="Fit"/>
+                        <TextBlock Text="Fit to width"/>
                     </Button.ToolTip>
                 </Button>
             </StackPanel>
@@ -466,7 +466,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            
+
             <!--ListBox with SelectedLabels, gallery format-->
             <ListBox Margin="2" ItemsSource="{Binding AllRectanglesView}" SelectedItem="{Binding SelectedResizableRectangle}" Foreground="Black" Grid.Column="6" Background="White" SelectionChanged="listBoxLabels_SelectionChanged" ItemContainerStyle="{StaticResource myLBStyle}" Style="{StaticResource MyListBoxStyle}"
                  MouseDoubleClick="listBoxLabels_MouseDoubleClick" Visibility="{Binding FilterVisibilitySelectedGallery, Converter={StaticResource booleanToVisibiliy}}" Panel.ZIndex="1" Grid.Row="1" SelectionMode="Extended" MouseRightButtonUp="ListBox_RightButtonUp" BorderBrush="Gray" BorderThickness="0.5">
