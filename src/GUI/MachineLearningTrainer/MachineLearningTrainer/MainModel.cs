@@ -38,7 +38,15 @@ namespace MachineLearningTrainer
                 case ProcessState.DNN:
                     return new DeepNeuralNetwork();
                 case ProcessState.Drawer:
-                    return new DrawerTool.ImageDrawer();                   
+                    return new DrawerTool.ImageDrawer();
+                case ProcessState.CNNDataDecision:
+                    return new DecisionPages.ClassificationDecision();
+                case ProcessState.ObjectDetectorSelection:
+                    return new DecisionPages.ObjectDetectorSelection();
+                case ProcessState.ObjectDetectorDataSelection:
+                    return new ConvolutionalNeuralNetwork.DataSelection();
+                case ProcessState.ObjectDetectionRetinanet:
+                    return new ConvolutionalNeuralNetwork.ObjectDetection.Retinanet();            
                 default:
                     return new WelcomePage();
             }
