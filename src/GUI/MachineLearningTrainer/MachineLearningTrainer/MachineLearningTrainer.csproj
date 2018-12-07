@@ -275,6 +275,10 @@
     <Resource Include="Icons\fit.png" />
     <Folder Include="ConvolutionalNeuralNetwork\ObjectClassification\" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\redo.png" />
+    <Resource Include="Icons\undo.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>

@@ -87,6 +87,8 @@ namespace MachineLearningTrainer.DrawerTool
                 Canvas.SetLeft(rectSelectArea, startPoint.X);
                 Canvas.SetTop(rectSelectArea, startPoint.Y);
                 //cnvImage.Children.Add(rectSelectArea);
+                (this.DataContext as DrawerViewModel).undoRectangles.Push(rectSelectArea);
+                (this.DataContext as DrawerViewModel).undoInformation.Push("Add");
             }
         }
 
@@ -194,6 +196,11 @@ namespace MachineLearningTrainer.DrawerTool
             else
             {
                 (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
+            }
+
+            if((this.DataContext as DrawerViewModel).undoRectangles.Count != 0)
+            {
+                (this.DataContext as DrawerViewModel).UndoEnabled = true;
             }
         }
 
