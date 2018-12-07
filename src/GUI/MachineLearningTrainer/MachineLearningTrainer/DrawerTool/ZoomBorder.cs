@@ -89,16 +89,23 @@
         {
             if (child != null)
             {
-                var st = GetScaleTransform(child);
-                var tt = GetTranslateTransform(child);
-                var viewmodel = this.DataContext as DrawerViewModel;
-                tt.X = (viewmodel.MyPreview.ActualWidth / 2) - viewmodel.SelectedResizableRectangle.X*st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth*st.ScaleX / 2;
-                tt.Y = (viewmodel.MyPreview.ActualHeight / 2) - viewmodel.SelectedResizableRectangle.Y*st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight*st.ScaleY / 2;
-                System.Console.WriteLine((viewmodel.MyPreview.ActualWidth) / 2);
-                System.Console.WriteLine(tt.X + ", " + tt.Y);
-                double zeroX = (viewmodel.ZoomBorderWidth - viewmodel.MyPreview.ActualWidth) / 2;
-                System.Console.WriteLine(zeroX);
-               
+                if ((this.DataContext as DrawerViewModel).MyPreview == null)
+                {
+                    Reset();
+                }
+
+                else
+                {
+                    var st = GetScaleTransform(child);
+                    var tt = GetTranslateTransform(child);
+                    var viewmodel = this.DataContext as DrawerViewModel;
+                    tt.X = (viewmodel.MyPreview.ActualWidth / 2) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
+                    tt.Y = (viewmodel.MyPreview.ActualHeight / 2) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
+                    System.Console.WriteLine((viewmodel.MyPreview.ActualWidth) / 2);
+                    System.Console.WriteLine(tt.X + ", " + tt.Y);
+                    double zeroX = (viewmodel.ZoomBorderWidth - viewmodel.MyPreview.ActualWidth) / 2;
+                    System.Console.WriteLine(zeroX);
+                }
             }
         }
 

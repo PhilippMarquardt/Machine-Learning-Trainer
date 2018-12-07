@@ -116,10 +116,14 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// this method undo a rectangle on canvas. 
+        /// </summary>
         private void Undo()
         {
             if (undoRectangles.Count() > 1 && undoInformation.Count() > 1)
             {
+                // when you have added a rectangle, the undo command will delete the rectangle.
                 if (undoInformation.Peek() == "Add")
                 {
                     var top = undoRectangles.Pop();
@@ -135,6 +139,7 @@ namespace MachineLearningTrainer.DrawerTool
                     UpdateCropedImage(top);
                 }
 
+                // when you have deleted a rectangle, the undo command will add the rectangle.
                 if (undoInformation.Peek() == "Delete")
                 {
                     var top = undoRectangles.Pop();
@@ -164,9 +169,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Redo()
         {
-
+            // Undo the undo command :D
             if (redoRectangles.Count() > 1 && redoInformation.Count() > 1)
             {
+                // see undo command documentation above.
                 if (redoInformation.Peek() == "Add")
                 {
                     var top = redoRectangles.Pop();
@@ -183,6 +189,7 @@ namespace MachineLearningTrainer.DrawerTool
                     UpdateCropedImage(top);
                 }
 
+                // see undo documentation above.
                 if (redoInformation.Peek() == "Delete")
                 {
                     var top = redoRectangles.Pop();
@@ -306,12 +313,28 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 this.IsEnabled = true;
                 AllRectangles.Clear();
-
+                clearUndoRedoStack();
                 LoadRectangles();
                 ComboBoxNames();
                 SortList();
                 FilterName();
             }
+        }
+
+        private void clearUndoRedoStack()
+        {
+            // Clear Undo and Redo Stack
+            undoRectangles.Clear();
+            undoInformation.Clear();
+            redoRectangles.Clear();
+            redoInformation.Clear();
+
+            // Add one Dummy item to each Stack
+            undoRectangles.Push(new ResizableRectangle());
+            undoInformation.Push("Dummy");
+            redoRectangles.Push(new ResizableRectangle());
+            redoInformation.Push("Dummy");
+
         }
 
         /// <summary>
