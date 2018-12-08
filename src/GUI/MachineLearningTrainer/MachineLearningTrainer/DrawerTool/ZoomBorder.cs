@@ -68,11 +68,33 @@
             }
         }
 
+
+
         public void Reset()
         {
            
             if (child != null)
-            {               
+            {
+                var viewmodel = this.DataContext as DrawerViewModel;
+
+                if(viewmodel.MyPreview.ActualWidth > viewmodel.ZoomBorderWidth)
+                {
+                    // calculate relation between zoomborder and image
+                    var relX = viewmodel.ZoomBorderWidth / viewmodel.MyPreview.ActualWidth;
+
+                    // reset zoom
+                    var st = GetScaleTransform(child);
+                    st.ScaleX = relX;
+                    st.ScaleY = relX;
+
+                    // reset pan
+                    var tt = GetTranslateTransform(child);
+                    tt.X = 0.0;
+                    tt.Y = 0.0;
+                }
+
+                else
+                {
                     // reset zoom
                     var st = GetScaleTransform(child);
                     st.ScaleX = 1.0;
@@ -81,7 +103,9 @@
                     // reset pan
                     var tt = GetTranslateTransform(child);
                     tt.X = 0.0;
-                    tt.Y = 0.0;                
+                    tt.Y = 0.0;
+                }
+              
             }
         }
 
@@ -89,19 +113,20 @@
         {
             if (child != null)
             {
-                // reset zoom
-                var st = GetScaleTransform(child);
-                st.ScaleX = 1.0;
-                st.ScaleY = 1.0;
+                if ((this.DataContext as DrawerViewModel).MyPreview == null)
+                {
+                    this.Reset();
+                }
 
-                // reset pan
-                var tt = GetTranslateTransform(child);
-                tt.X = 0.0;
-                tt.Y = 0.0;
-
-                var viewmodel = this.DataContext as DrawerViewModel;
-                tt.X = viewmodel.ZoomBorderWidth / 2 - viewmodel.SelectedResizableRectangle.X - viewmodel.SelectedResizableRectangle.RectangleWidth / 2;
-                tt.Y = viewmodel.ZoomBorderHeight / 3 - viewmodel.SelectedResizableRectangle.Y - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
+                if((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
+                {
+                    var st = GetScaleTransform(child);
+                    var tt = GetTranslateTransform(child);
+                    var viewmodel = this.DataContext as DrawerViewModel;
+                    tt.X = (viewmodel.MyPreview.ActualWidth / 2) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
+                    tt.Y = (viewmodel.MyPreview.ActualHeight / 2) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
+                    double zeroX = (viewmodel.ZoomBorderWidth - viewmodel.MyPreview.ActualWidth) / 2;
+                }
             }
         }
 
@@ -127,7 +152,7 @@
                 var st = GetScaleTransform(child);
                 var tt = GetTranslateTransform(child);
 
-                double zoom = e.Delta > 0 ? .2 : -.2;
+                double zoom = e.Delta > 0 ? st.ScaleX * (this.DataContext as DrawerViewModel).MyPreview.ActualWidth * 0.08 / 1000 : -st.ScaleX * (this.DataContext as DrawerViewModel).MyPreview.ActualWidth * 0.08 / 1000;
                 if (!(e.Delta > 0) && (st.ScaleX < .4 || st.ScaleY < .4))
                     return;
 

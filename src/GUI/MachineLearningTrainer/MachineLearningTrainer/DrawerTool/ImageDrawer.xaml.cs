@@ -230,6 +230,7 @@ namespace MachineLearningTrainer.DrawerTool
                 zoomBorder.ZoomOut();
             }
         }
+
         void Zoom_Reset(object sender, KeyEventArgs e)
         {
             if (e.Key == Key.D0 && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
@@ -237,6 +238,7 @@ namespace MachineLearningTrainer.DrawerTool
                 zoomBorder.Reset();
             }
         }
+
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
@@ -468,6 +470,8 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
+                    (this.DataContext as DrawerViewModel).clearUndoRedoStack();
+                    zoomBorder.Reset();
 
                 }
 
@@ -533,6 +537,11 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
+            if((this.DataContext as DrawerViewModel).DuplicateVar == 0)
+            {
+                zoomBorder.ZoomToRectangle();
+            }
+            
         }
 
         private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
@@ -543,6 +552,12 @@ namespace MachineLearningTrainer.DrawerTool
         private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 0;
+        }
+
+        private void MenuItem_OpenClick(object sender, RoutedEventArgs e)
+        {
+            if (imgPreview != null) 
+                zoomBorder.Reset();
         }
     }
 }
