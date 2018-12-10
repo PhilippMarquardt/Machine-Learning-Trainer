@@ -646,7 +646,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// this is the default label. if you add multiple rectangles and do not want to manually enter 
         /// the name each time, the name is stored in default label
         /// </summary>
-        private string _defaultLabel;
+        private string _defaultLabel = "";
 
         public string DefaultLabel
         {

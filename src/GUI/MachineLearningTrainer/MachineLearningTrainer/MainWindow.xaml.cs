@@ -23,19 +23,26 @@ namespace MachineLearningTrainer
     {
         public MainWindow()
         {
-            InitializeComponent();
-            WelcomePage page = new WelcomePage();            
-            MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
-            page.DataContext = viewModel;           
-            MainGrid.Children.Add(page);
+            if (!LicensingWindow.LicenseChecker.IsLicenseActivated())
+            {
+                LicensingWindow.MainWindow licensingWindow = new LicensingWindow.MainWindow();
+                licensingWindow.ShowDialog();
+                Application.Current.Shutdown();
+            }
+            else
+            {
 
-            //Uncomment, if you want to use the whole program
+                InitializeComponent();
+                WelcomePage page = new WelcomePage();
+                MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
+                page.DataContext = viewModel;
+                MainGrid.Children.Add(page);
 
-            if (viewModel.RightTransition.CanExecute(null))
-                viewModel.RightTransition.Execute(null);
+                //Uncomment, if you want to use the whole program
 
-
-            //MessageBox.Show(PythonRunner.RunScriptAsynchronous("prepro.py", true, new string[] { "" }, true));
+                // if (viewModel.RightTransition.CanExecute(null))
+                //    viewModel.RightTransition.Execute(null);
+            }
 
         }
 

@@ -413,7 +413,7 @@
 
             <StackPanel Grid.Column="6" Grid.Row="0">
                 <CheckBox  Content="Use Default Label" Foreground="Black" FontSize="14" IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Margin="10,15,10,10"/>
-                <TextBox x:Name="txtDefaultLabel" Foreground="Black" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Default Label" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+                <TextBox x:Name="txtDefaultLabel" Foreground="Black" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Default Label" Text="{Binding DefaultLabel, UpdateSourceTrigger=PropertyChanged}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Left" FontSize="14" IsEnabled="{Binding IsChecked}"/>
                 <Grid Margin="15">
                     <Grid.Resources>

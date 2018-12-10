@@ -146,6 +146,7 @@
 
         private void Child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
+           
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
             if (child != null)
             {
@@ -153,7 +154,7 @@
                 var tt = GetTranslateTransform(child);
 
                 double zoom = e.Delta > 0 ? st.ScaleX * (this.DataContext as DrawerViewModel).MyPreview.ActualWidth * 0.08 / 1000 : -st.ScaleX * (this.DataContext as DrawerViewModel).MyPreview.ActualWidth * 0.08 / 1000;
-                if (!(e.Delta > 0) && (st.ScaleX < .4 || st.ScaleY < .4))
+                if (!(e.Delta > 0) && (st.ScaleX < .1 || st.ScaleY < .1))
                     return;
 
                 Point relative = e.GetPosition(child);
@@ -179,7 +180,7 @@
                 var tt = GetTranslateTransform(child);
 
                 double zoom = -.2;
-                if ((st.ScaleX < .4 || st.ScaleY < .4))
+                if ((st.ScaleX < .1 || st.ScaleY < .1))
                     return;
 
                 double abosuluteX;
@@ -204,7 +205,7 @@
                 var tt = GetTranslateTransform(child);
 
                 double zoom = .2;
-                if ((st.ScaleX < .4 || st.ScaleY < .4))
+                if ((st.ScaleX < .1 || st.ScaleY < .1))
                     return;
 
                 double abosuluteX;

@@ -53,7 +53,8 @@
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
 
-            <Button x:Name="btnNextPage" Click="btnNextPage_Click" Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold" 
+            <Button x:Name="btnNextPage" Click="btnNextPage_Click" Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold"
+                    IsEnabled="False"
                     VerticalContentAlignment="Center" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto"
                     Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
                 <TextBlock VerticalAlignment="Center" Text="Machine Learning Trainer" Margin="5"/>
