@@ -823,6 +823,19 @@ namespace MachineLearningTrainer.DrawerTool
                     SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
                 }
             }
+            
+            if(SelectedResizableRectangle == null && CropModeChecked == false)
+            {
+                foreach (var rect in AllRectangles)
+                {
+                    rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+                    rect.RectangleOpacity = 0.07;
+                    rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+                    rect.ThumbSize = 3;
+                    rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
+                    rect.Visibility = Visibility.Visible;
+                }
+            }
         }
 
         
