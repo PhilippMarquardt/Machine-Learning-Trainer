@@ -1,0 +1,25 @@
+﻿<Window x:Class="LicensingWindow.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LicensingWindow"
+        mc:Ignorable="d"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        WindowStartupLocation="CenterScreen"
+        Title="MainWindow" Height="350" Width="525">
+
+    <Grid>
+        <TextBox x:Name="textBoxLicenseKey" HorizontalAlignment="Left" Height="72" Margin="10,206,0,0"  TextWrapping="Wrap" Text="Key eingeben" VerticalAlignment="Top" Width="505" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="15" GotFocus="textBoxLicenseKey_GotFocus" LostFocus="textBoxLicenseKey_LostFocus"/>
+        <TextBox x:Name="textBox1" HorizontalAlignment="Left" IsEnabled="True" IsReadOnly="True" Height="86" Margin="10,49,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="505" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="20" BorderBrush="Transparent"/>
+        <Button x:Name="button" Content="Aktivieren" Background="Transparent" FontSize="20" BorderBrush="#FF2020BF" HorizontalAlignment="Center" Height="48" Margin="119,292,120,0" VerticalAlignment="Top" Width="286" Click="button_Click" Foreground="Black"/>
+        <Button x:Name="buttonSendMail" Background="Transparent" BorderBrush="#FF2020BF" Content="Code per Mail an HS-Analysis schicken" HorizontalAlignment="Center" Height="61" Margin="119,140,120,0" VerticalAlignment="Top" Width="286" Click="buttonSendMail_Click" Foreground="Black"/>
+        <Grid HorizontalAlignment="Left" Height="44" VerticalAlignment="Top" Width="525" Background="#FF1616C5">
+            <Label x:Name="labelHeader" Content="Aktivierungsfenster" HorizontalAlignment="Left" Height="44" VerticalAlignment="Top" Width="525" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" BorderBrush="Transparent" Background="#FF0F37A0"/>
+            <Button x:Name="buttonClose" Margin="437,0,0,0"  Content="X" Background="Transparent" BorderBrush="Transparent" Foreground="White" FontSize="22" Click="buttonClose_Click" BorderThickness="0"></Button>
+            <Button x:Name="buttonHelp" Margin="0,0,458,0" Content="?" Background="Transparent" BorderBrush="Transparent" BorderThickness="0" Foreground="White" FontSize="22" Click="buttonHelp_Click"></Button>
+        </Grid>
+
+    </Grid>
+</Window>
