@@ -9,6 +9,8 @@ Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MachineLearningTrainer Setu
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LicensingWindow", "LicensingWindow\LicensingWindow.csproj", "{332615A4-5C28-40A4-8F54-CA2730B19ACF}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AnnotationTool", "AnnotationTool\AnnotationTool.vdproj", "{B48F7684-F737-4881-8673-43CC920A00CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

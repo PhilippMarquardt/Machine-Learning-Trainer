@@ -58,10 +58,7 @@ namespace MachineLearningTrainer.DrawerTool
                     rec.RectangleWidth = designerItem.Width;
                     rec.RectangleHeight = designerItem.Height;
                     drawerviewmodel.SelectClickedRectangle(rec);
-                    if(rec.RectangleHeight > 5 && rec.RectangleWidth > 5)
-                    {
-                        drawerviewmodel.UpdateCropedImage(rec);
-                    }
+                    drawerviewmodel.UpdateCropedImage(rec);
                 }
             }
 
