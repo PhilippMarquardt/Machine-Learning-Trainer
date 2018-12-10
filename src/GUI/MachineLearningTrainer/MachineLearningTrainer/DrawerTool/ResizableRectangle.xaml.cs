@@ -187,6 +187,20 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private static DependencyProperty RectangleOverFillProperty =
+            DependencyProperty.Register("RectangleOverFill", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
+        public System.Windows.Media.Brush RectangleOverFill
+        {
+            get
+            {
+                return (System.Windows.Media.Brush)GetValue(RectangleOverFillProperty);
+            }
+            set
+            {
+                SetValue(RectangleOverFillProperty, value);
+            }
+        }
+
         private static DependencyProperty ThumbColorProperty =
             DependencyProperty.Register("ThumbColor", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
         public System.Windows.Media.Brush ThumbColor
@@ -198,6 +212,20 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 SetValue(ThumbColorProperty, value);
+            }
+        }
+
+        private static DependencyProperty ResizeThumbColorProperty =
+            DependencyProperty.Register("ResizeThumbColor", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
+        public System.Windows.Media.Brush ResizeThumbColor
+        {
+            get
+            {
+                return (System.Windows.Media.Brush)GetValue(ResizeThumbColorProperty);
+            }
+            set
+            {
+                SetValue(ResizeThumbColorProperty, value);
             }
         }
 

@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MachineLearningTrainer", "M
 EndProject
 Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "MachineLearningToolInstaller", "MachineLearningToolInstaller\MachineLearningToolInstaller.vdproj", "{45009EFD-AA38-46F5-9CB3-C90F93241083}"
 EndProject
+Project("{54435603-DBB4-11D2-8724-00A0C9A8B90C}") = "AnnotationTool", "AnnotationTool\AnnotationTool.vdproj", "{B48F7684-F737-4881-8673-43CC920A00CD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -19,6 +21,8 @@ Global
 		{8E5C47CC-99F4-48A6-B660-32E609184165}.Release|Any CPU.Build.0 = Release|Any CPU
 		{45009EFD-AA38-46F5-9CB3-C90F93241083}.Debug|Any CPU.ActiveCfg = Debug
 		{45009EFD-AA38-46F5-9CB3-C90F93241083}.Release|Any CPU.ActiveCfg = Release
+		{B48F7684-F737-4881-8673-43CC920A00CD}.Debug|Any CPU.ActiveCfg = Debug
+		{B48F7684-F737-4881-8673-43CC920A00CD}.Release|Any CPU.ActiveCfg = Release
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

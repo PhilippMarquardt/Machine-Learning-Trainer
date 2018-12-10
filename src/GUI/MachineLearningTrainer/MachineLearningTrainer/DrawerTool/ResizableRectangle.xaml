@@ -30,13 +30,13 @@
         <ControlTemplate x:Key="ResizeDecoratorTemplate" TargetType="{x:Type Control}">
             <Grid>
                 <local:ResizeThumb Height="1" Background="Black" Cursor="SizeNS" Margin="0 -1 0 0"
-                       VerticalAlignment="Top" HorizontalAlignment="Stretch"/>
+                       VerticalAlignment="Top" HorizontalAlignment="Stretch" BorderBrush="{Binding ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="3"/>
                 <local:ResizeThumb Width="1" Background="Black" Cursor="SizeWE" Margin="-1 0 0 0"
-                       VerticalAlignment="Stretch" HorizontalAlignment="Left"/>
+                       VerticalAlignment="Stretch" HorizontalAlignment="Left" BorderBrush="{Binding ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="3"/>
                 <local:ResizeThumb Width="1" Background="Black" Cursor="SizeWE" Margin="0 0 -1 0"
-                       VerticalAlignment="Stretch" HorizontalAlignment="Right"/>
+                       VerticalAlignment="Stretch" HorizontalAlignment="Right" BorderBrush="{Binding ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="3"/>
                 <local:ResizeThumb Height="1" Background="Black" Cursor="SizeNS" Margin="0 0 0 -1"
-                       VerticalAlignment="Bottom" HorizontalAlignment="Stretch"/>
+                       VerticalAlignment="Bottom" HorizontalAlignment="Stretch" BorderBrush="{Binding ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="3"/>
                 <local:ResizeThumb BorderBrush="{Binding ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="2" Width="{Binding ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Height="{Binding ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Cursor="SizeNWSE" Margin="-2 -2 0 0"
                        VerticalAlignment="Top" HorizontalAlignment="Left" Background="LawnGreen"/>
                 <local:ResizeThumb BorderBrush="{Binding ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" BorderThickness="2" Width="{Binding ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Height="{Binding ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" Cursor="SizeNESW" Margin="0 -2 -2 0"

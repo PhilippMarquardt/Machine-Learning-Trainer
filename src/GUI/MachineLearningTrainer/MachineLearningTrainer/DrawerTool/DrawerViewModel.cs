@@ -638,11 +638,27 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private bool _cropModeChecked = false;
+
+        public bool CropModeChecked
+        {
+            get
+            {
+                return _cropModeChecked;
+            }
+            set
+            {
+                _cropModeChecked = value;
+                SelectedRectangleFill();
+                OnPropertyChanged("CropModeChecked");
+            }
+        }
+
         /// <summary>
         /// this is the default label. if you add multiple rectangles and do not want to manually enter 
         /// the name each time, the name is stored in default label
         /// </summary>
-        private string _defaultLabel;
+        private string _defaultLabel = "";
 
         public string DefaultLabel
         {
@@ -726,7 +742,37 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 _thumbColor = value;
-                OnPropertyChanged("RectangleFill");
+                OnPropertyChanged("ThumbColor");
+            }
+        }
+
+        public System.Windows.Media.Brush _resizeThumbColor = System.Windows.Media.Brushes.Gray;
+
+        public System.Windows.Media.Brush ResizeThumbColor
+        {
+            get
+            {
+                return _resizeThumbColor;
+            }
+            set
+            {
+                _resizeThumbColor = value;
+                OnPropertyChanged("ResizeThumbColor");
+            }
+        }
+
+        public System.Windows.Media.Brush _rectangleOverFill = System.Windows.Media.Brushes.Gray;
+
+        public System.Windows.Media.Brush RectangleOverFill
+        {
+            get
+            {
+                return _rectangleOverFill;
+            }
+            set
+            {
+                _rectangleOverFill = value;
+                OnPropertyChanged("RectangleOverFill");
             }
         }
 
@@ -737,18 +783,49 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (SelectedResizableRectangle != null)
             {
-                foreach (var rect in AllRectangles)
+                if(CropModeChecked == false)
                 {
-                    rect.RectangleFill = System.Windows.Media.Brushes.Blue;
-                    rect.RectangleOpacity = 0.07;
-                    rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
-                    rect.ThumbSize = 3;
+                    foreach (var rect in AllRectangles)
+                    {
+                        rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+                        rect.RectangleOpacity = 0.07;
+                        rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+                        rect.ThumbSize = 3;
+                        rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
+                        rect.Visibility = Visibility.Visible;
+                    }
+                    SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
+                    SelectedResizableRectangle.RectangleOpacity = 0.0;
+                    SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
+                    SelectedResizableRectangle.ThumbSize = 3;
+                    SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
+                    SelectedResizableRectangle.Visibility = Visibility.Visible;
                 }
 
-                SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
-                SelectedResizableRectangle.RectangleOpacity = 0.5;
+                if(CropModeChecked == true)
+                {
+                    foreach (var rect in AllRectangles)
+                    {
+                        rect.RectangleFill = null;
+                        rect.RectangleOpacity = 0.0;
+                        rect.ThumbColor = System.Windows.Media.Brushes.Transparent;
+                        rect.ThumbSize = 3;
+                        rect.ResizeThumbColor = System.Windows.Media.Brushes.Transparent;
+                        rect.Visibility = Visibility.Collapsed;
+
+                    }
+
+                    SelectedResizableRectangle.Visibility = Visibility.Visible;
+                    SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
+                    SelectedResizableRectangle.RectangleOpacity = 0.0;
+                    SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
+                    SelectedResizableRectangle.ThumbSize = 3;
+                    SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
+                }
             }
         }
+
+        
 
         private ICommand _deleteSelectionRectangle;
         public ICommand DeleteSelectionRectangle
@@ -772,6 +849,7 @@ namespace MachineLearningTrainer.DrawerTool
                 rect.RectangleOpacity = 0.07;
                 rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
                 rect.ThumbSize = 3;
+                rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
             }
             Enabled = true;
             MyCanvas.Cursor = Cursors.Arrow;
@@ -1207,26 +1285,30 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="resizable"></param>
         public void UpdateCropedImage(ResizableRectangle resizable)
         {
-            BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-            Bitmap src;
-            using (MemoryStream outStream = new MemoryStream())
+            if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5)
             {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+                BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+                Bitmap src;
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    BitmapEncoder enc = new BmpBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bImage));
+                    enc.Save(outStream);
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                src = new Bitmap(bitmap);
+                    src = new Bitmap(bitmap);
+                }
+
+                if (resizable.X > 0 && resizable.X + resizable.RectangleWidth < MyCanvas.ActualWidth && resizable.Y > 0 && resizable.Y + resizable.RectangleHeight < MyCanvas.ActualHeight)
+                {
+                    Mat mat = SupportCode.ConvertBmp2Mat(src);
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
+
+                    Mat croppedImage = new Mat(mat, rectCrop);
+                    resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                }
             }
-
-            if (resizable.X > 0 && resizable.X + resizable.RectangleWidth < MyCanvas.ActualWidth && resizable.Y > 0 && resizable.Y + resizable.RectangleHeight < MyCanvas.ActualHeight)
-            {
-                Mat mat = SupportCode.ConvertBmp2Mat(src);
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
-
-                Mat croppedImage = new Mat(mat, rectCrop);
-                resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-            }
+                
         }
 
         public void SelectClickedRectangle(ResizableRectangle resizableRectangle)
@@ -1360,12 +1442,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void RightButton()
         {
-            SelectedResizableRectangle.X = SelectedResizableRectangle.X + 2;
-            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
-            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-            OnPropertyChanged("SelectedResizableRectangle");
-            UpdateCropedImage(SelectedResizableRectangle);
+            if(SelectedResizableRectangle.RectangleWidth > 5)
+            {
+                SelectedResizableRectangle.X = SelectedResizableRectangle.X + 2;
+                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
+                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+                OnPropertyChanged("SelectedResizableRectangle");
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
         }
 
         private ICommand _leftButtonCommand;
@@ -1379,8 +1464,12 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void LeftButton()
         {
-            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
-            UpdateCropedImage(SelectedResizableRectangle);
+            if (SelectedResizableRectangle.RectangleWidth > 5)
+            {
+                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
+                
         }
 
         private ICommand _upButtonCommand;
@@ -1393,8 +1482,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
         public void UpButton()
         {
-            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
-            UpdateCropedImage(SelectedResizableRectangle);
+            if (SelectedResizableRectangle.RectangleHeight > 5)
+            {
+                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
+                
         }
 
         private ICommand _downButtonCommand;
@@ -1408,12 +1501,16 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DownButton()
         {
-            SelectedResizableRectangle.Y = SelectedResizableRectangle.Y + 2;
-            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
-            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-            OnPropertyChanged("SelectedResizableRectangle");
-            UpdateCropedImage(SelectedResizableRectangle);
+            if (SelectedResizableRectangle.RectangleHeight > 5)
+            {
+                SelectedResizableRectangle.Y = SelectedResizableRectangle.Y + 2;
+                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
+                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+                OnPropertyChanged("SelectedResizableRectangle");
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
+                
         }
 
         private ICommand _rightButtonCommand1;
