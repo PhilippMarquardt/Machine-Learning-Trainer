@@ -1,0 +1,24 @@
+﻿<Window x:Class="LicensingWindow.SendMail"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:LicensingWindow"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        ResizeMode="NoResize"
+        Title="SendMail" Height="350" Width="525">
+    <Grid>
+        <Grid HorizontalAlignment="Left" Height="44" VerticalAlignment="Top" Width="525" Background="#FF1616C5">
+            <Label x:Name="labelHeader" Content="Email senden" HorizontalAlignment="Left" Height="44" VerticalAlignment="Top" Width="525" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,0,0,0" Foreground="White" BorderBrush="Transparent" Background="#FF0F37A0"/>
+            <Button x:Name="buttonClose" Margin="437,0,0,0"  Content="X" Background="Transparent" BorderBrush="Transparent" Foreground="White" FontSize="22" Click="buttonClose_Click" BorderThickness="0"></Button>
+        </Grid>
+        <Label x:Name="labelCompanyName" Content="Firma:" BorderBrush="#FF2020BF" BorderThickness="1" FontSize="25" HorizontalAlignment="Left" Height="54" Margin="0,88,0,0" VerticalAlignment="Top" Width="205" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" />
+        <Label x:Name="labelName" Content="Nachname:" BorderBrush="#FF2020BF" BorderThickness="1" VerticalContentAlignment="Center" HorizontalContentAlignment="Right" FontSize="25" HorizontalAlignment="Left" Height="54" Margin="0,195,0,0" VerticalAlignment="Top" Width="205"/>
+        <TextBox x:Name="textBoxCompany" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="15" HorizontalAlignment="Left" Height="54" Margin="205,88,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="320"/>
+        <TextBox x:Name="textBox" HorizontalAlignment="Left" FontSize="15" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Height="54" Margin="205,195,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="320"/>
+        <Button x:Name="button" Content="Mail senden" Foreground="Black" HorizontalAlignment="Center" VerticalAlignment="Bottom" Width="286"  BorderBrush="#FF2020BF"  Margin="0,0,0,20" Background="Transparent"  Height="48" Click="button_Click"/>
+
+    </Grid>
+</Window>

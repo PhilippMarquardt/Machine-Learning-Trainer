@@ -384,8 +384,10 @@
                 <local:ZoomBorder x:Name="zoomBorder"  Background="LightGray" ClipToBounds="True" >
                     <Canvas x:Name="cnvImage" ClipToBounds="True" MouseDown="ImgCamera_MouseDown" MouseUp="ImgCamera_MouseUp" MouseMove="ImgCamera_MouseMove" MouseEnter="cnvImage_MouseEnter" MouseLeave="cnvImage_MouseLeave"
                     Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+
                         <Image x:Name="imgPreview" Source="{Binding ImagePath}" Width="auto" Height="auto" ClipToBounds="True"/>
                         <ItemsControl ItemsSource="{Binding AllRectanglesView}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center"
+
                               Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
@@ -423,7 +425,7 @@
                     <TextBlock Margin="10" Text="Crop Mode" Foreground="Black"/>
                 </WrapPanel>
                 
-                <TextBox x:Name="txtDefaultLabel" Foreground="Black" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Default Label" Text="{Binding DefaultLabel}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
+                <TextBox x:Name="txtDefaultLabel" Foreground="Black" materialDesign:HintAssist.IsFloating="True" materialDesign:HintAssist.Hint="Default Label" Text="{Binding DefaultLabel, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" Height="auto" TextAlignment="Left" Padding="2" Margin="10" 
                      Width="200" HorizontalAlignment="Center" FontSize="14" IsEnabled="{Binding IsChecked}"/>
                 <Grid Margin="15">
                     <Grid.Resources>
