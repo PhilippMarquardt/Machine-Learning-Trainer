@@ -121,8 +121,8 @@
                 if((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
                 {
                     var viewmodel = this.DataContext as DrawerViewModel;
-
-                    if(viewmodel.MyPreview.ActualWidth < 1500)
+                    
+                    if (viewmodel.MyPreview.ActualWidth < 1500)
 
                     {
                         var st = GetScaleTransform(child);
@@ -144,6 +144,7 @@
                     {
                         var st = GetScaleTransform(child);
                         var tt = GetTranslateTransform(child);
+
                         tt.X = (viewmodel.MyPreview.ActualWidth / 7) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth;
                         tt.Y = (viewmodel.MyPreview.ActualHeight / 7) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight;
                     }

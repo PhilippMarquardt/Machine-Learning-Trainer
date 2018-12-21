@@ -1279,8 +1279,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         public double ZoomBorderHeight
         {
-            get { return _zoomBorderWidth; }
-            set { _zoomBorderWidth = value; }
+            get { return _zoomBorderHeight; }
+            set { _zoomBorderHeight = value; }
         }
 
 
