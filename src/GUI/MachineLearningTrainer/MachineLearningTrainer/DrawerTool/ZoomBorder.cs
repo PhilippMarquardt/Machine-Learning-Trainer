@@ -14,7 +14,7 @@
         private UIElement child = null;
         public Point origin;
         private Point start;
-
+        
         private TranslateTransform GetTranslateTransform(UIElement element)
         {
             return (TranslateTransform)((TransformGroup)element.RenderTransform)
@@ -121,33 +121,15 @@
                 if((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
                 {
                     var viewmodel = this.DataContext as DrawerViewModel;
-                    
-                    if (viewmodel.MyPreview.ActualWidth < 1500)
-
-                    {
-                        var st = GetScaleTransform(child);
-                        var tt = GetTranslateTransform(child);
-                        tt.X = (viewmodel.MyPreview.ActualWidth / 2) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
-                        tt.Y = (viewmodel.MyPreview.ActualHeight / 2) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
-
-                    }
-
-                    if(viewmodel.MyPreview.ActualWidth >= 1500 && viewmodel.MyPreview.ActualWidth <= 2000)
-                    {
-                        var st = GetScaleTransform(child);
-                        var tt = GetTranslateTransform(child);
-                        tt.X = (viewmodel.MyPreview.ActualWidth / 4) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth / 2;
-                        tt.Y = (viewmodel.MyPreview.ActualHeight / 4) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight / 2;
-                    }
-
-                    if(viewmodel.MyPreview.ActualWidth > 2000)
-                    {
-                        var st = GetScaleTransform(child);
-                        var tt = GetTranslateTransform(child);
-
-                        tt.X = (viewmodel.MyPreview.ActualWidth / 7) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth;
-                        tt.Y = (viewmodel.MyPreview.ActualHeight / 7) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight;
-                    }
+                    var st = GetScaleTransform(child);
+                    var tt = GetTranslateTransform(child);
+              
+                    double devisionValueX = 2 * (viewmodel.MyPreview.ActualWidth / viewmodel.ZoomBorderWidth);
+                    double devisionValueY = 2 * (viewmodel.MyPreview.ActualHeight / viewmodel.ZoomBorderHeight);
+                    if (devisionValueX < 2) devisionValueX = 2;
+                    if (devisionValueY < 2) devisionValueY = 2;
+                    tt.X = (viewmodel.MyPreview.ActualWidth / devisionValueX) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
+                    tt.Y = (viewmodel.MyPreview.ActualHeight / devisionValueY) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
                 }
             }
         }
