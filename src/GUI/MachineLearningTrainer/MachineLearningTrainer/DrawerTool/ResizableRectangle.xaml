@@ -5,7 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              xmlns:local="clr-namespace:MachineLearningTrainer.DrawerTool"
              mc:Ignorable="d" 
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="10" d:DesignWidth="10">
     <UserControl.Resources>
         <ControlTemplate x:Key="MoveThumbTemplate" TargetType="{x:Type local:MoveThumb}">
             <Rectangle MouseLeftButtonDown="Rectangle_MouseLeftButtonDown">
