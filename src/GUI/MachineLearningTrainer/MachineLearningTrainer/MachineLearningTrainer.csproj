@@ -102,6 +102,9 @@
     <Compile Include="ConvolutionalNeuralNetwork\ObjectDetection\Retinanet.xaml.cs">
       <DependentUpon>Retinanet.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DecisionPages\AnnotationSelection.xaml.cs">
+      <DependentUpon>AnnotationSelection.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DecisionPages\ClassificationDecision.xaml.cs">
       <DependentUpon>ClassificationDecision.xaml</DependentUpon>
     </Compile>
@@ -128,6 +131,9 @@
     </Compile>
     <Compile Include="DrawerTool\MoveThumb.cs" />
     <Compile Include="DrawerTool\MyICommand.cs" />
+    <Compile Include="DrawerTool\PixelTool.xaml.cs">
+      <DependentUpon>PixelTool.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DrawerTool\ResizableRectangle.xaml.cs">
       <DependentUpon>ResizableRectangle.xaml</DependentUpon>
     </Compile>
@@ -163,6 +169,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="DecisionPages\AnnotationSelection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="DecisionPages\ClassificationDecision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -188,6 +198,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DrawerTool\ImageDrawer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawerTool\PixelTool.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

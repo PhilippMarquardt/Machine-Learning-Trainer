@@ -1682,6 +1682,22 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private string _annoToolMode = "Object";
+
+        public string AnnoToolMode
+        {
+            get
+            {
+                return _annoToolMode;
+            }
+            set
+            {
+                _annoToolMode = value;
+                OnPropertyChanged("AnnoToolMode");
+            }
+        }
+
+
     }
 
 }

@@ -1,0 +1,151 @@
+﻿<UserControl x:Class="MachineLearningTrainer.DrawerTool.PixelTool"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MachineLearningTrainer.DrawerTool"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             Focusable="True"
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             Loaded="UserControl_Loaded">
+    <UserControl.Triggers>
+        <EventTrigger RoutedEvent="Loaded">
+            <BeginStoryboard>
+                <Storyboard>
+                    <DoubleAnimation
+                      Storyboard.TargetProperty="Opacity"
+                      From="0.0" To="1.0" Duration="0:0:1"/>
+                </Storyboard>
+            </BeginStoryboard>
+        </EventTrigger>
+    </UserControl.Triggers>
+
+    <UserControl.Resources>
+        <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
+
+        <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Content" Value="Hello World"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF2196F3" />
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+
+        <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                              Storyboard.TargetProperty="Opacity"
+                              From="0.3" To="1.0" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="1.0" To="0.3" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            <MenuItem Margin="5" Header="File" Height="25">
+                <MenuItem Width="300" Header="Load Image" InputGestureText="Ctrl + O">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadimg.png"/>
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+        </Menu>
+
+
+        <Grid x:Name="NotMainGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*" x:Name="gridX"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" x:Name="gridY0"/>
+                <RowDefinition Height="*" x:Name="gridY1"/>
+                <RowDefinition Height="auto" x:Name="gridY2"/>
+            </Grid.RowDefinitions>
+
+            <Canvas Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
+
+                <StackPanel>
+                    <WrapPanel x:Name="WrapPanel_FileExplorer" Width="auto" MouseEnter="WrapPanel_FileExplorer_MouseEnter" MouseLeave="WrapPanel_FileExplorer_MouseLeave">
+                        <Rectangle x:Name="Rectangle_FileExplorer" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
+                        <Button x:Name="Button_FileExplorer" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" 
+                                Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
+                            <Button.LayoutTransform>
+                                <RotateTransform Angle="90"/>
+                            </Button.LayoutTransform>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+
+                <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                    <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+                </Button>
+
+            </Canvas>
+
+            <Grid x:Name="gridcolumn1" Grid.Column="3" Grid.Row="0" Grid.RowSpan="4" Width="auto" HorizontalAlignment="Left" Panel.ZIndex="3" Background="White">
+
+                <StackPanel x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
+                    <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
+                        <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
+                    </Grid>
+                    <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
+                        <TreeView.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
+                                                Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TreeView.Resources>
+                    </TreeView>
+                </StackPanel>
+            </Grid>
+
+            <Border Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="1" BorderBrush="Gray" BorderThickness="1.5">
+                <local:ZoomBorder x:Name="zoomBorder"  Background="LightGray" ClipToBounds="True" >
+
+                    <Canvas x:Name="cnvImage" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" MouseDown="cnvImage_MouseDown" MouseMove="cnvImage_MouseMove">
+
+                        <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\17.jpg" Width="800" Height="auto" ClipToBounds="True"/>
+                        <ItemsControl Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas/>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+                    </Canvas>
+                </local:ZoomBorder>
+            </Border>
+        </Grid>
+    </DockPanel>
+</UserControl>

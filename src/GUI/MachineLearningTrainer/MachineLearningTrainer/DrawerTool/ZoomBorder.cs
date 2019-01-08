@@ -275,7 +275,7 @@
         private void Child_MouseMove(object sender, MouseEventArgs e)
         {
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
-            if (child != null)
+            if (child != null && (this.DataContext as DrawerViewModel).AnnoToolMode == "Object")
             {
                 if (child.IsMouseCaptured)
                 {
@@ -285,6 +285,19 @@
                     tt.Y = origin.Y - v.Y;
                 }
             }
+
+            if (child != null && (this.DataContext as DrawerViewModel).AnnoToolMode == "Pixel")
+            {
+                if (e.MiddleButton == MouseButtonState.Pressed)
+
+                {
+                    var tt = GetTranslateTransform(child);
+                    Vector v = start - e.GetPosition(this);
+                    tt.X = origin.X - v.X;
+                    tt.Y = origin.Y - v.Y;
+                }
+            }
+
         }
 
         #endregion

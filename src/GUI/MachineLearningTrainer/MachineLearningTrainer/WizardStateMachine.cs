@@ -15,6 +15,8 @@ namespace MachineLearningTrainer
         CNNDataDecision,
         DNN,
         Drawer,
+        Pixel,
+        AnnotationSelection,
         ObjectDetectorSelection,
         ObjectDetectorDataSelection,
         ObjectDetectionRetinanet
@@ -65,7 +67,11 @@ namespace MachineLearningTrainer
             {
                 { new StateTransition(ProcessState.WelcomePage, Command.Next), ProcessState.DataDecision },
                 { new StateTransition(ProcessState.WelcomePage, Command.Previous), ProcessState.WelcomePage },
-                { new StateTransition(ProcessState.WelcomePage, Command.Right), ProcessState.Drawer },
+                { new StateTransition(ProcessState.WelcomePage, Command.Right), ProcessState.AnnotationSelection },
+
+                { new StateTransition(ProcessState.AnnotationSelection, Command.Previous), ProcessState.WelcomePage },
+                { new StateTransition(ProcessState.AnnotationSelection, Command.Next), ProcessState.Drawer },
+                { new StateTransition(ProcessState.AnnotationSelection, Command.Right), ProcessState.Pixel },
 
                 { new StateTransition(ProcessState.DataDecision, Command.Previous), ProcessState.WelcomePage },
                 { new StateTransition(ProcessState.DataDecision, Command.Left), ProcessState.TabularDataDecision },
@@ -77,7 +83,8 @@ namespace MachineLearningTrainer
                 
                 { new StateTransition(ProcessState.DNN, Command.Previous), ProcessState.TabularDataDecision },
 
-                { new StateTransition(ProcessState.Drawer, Command.Previous), ProcessState.WelcomePage },
+                { new StateTransition(ProcessState.Drawer, Command.Previous), ProcessState.AnnotationSelection },
+                { new StateTransition(ProcessState.Pixel, Command.Previous), ProcessState.AnnotationSelection },
 
                 { new StateTransition(ProcessState.CNNDataDecision, Command.Previous), ProcessState.DataDecision },
                 { new StateTransition(ProcessState.CNNDataDecision, Command.Right), ProcessState.ObjectDetectorSelection },

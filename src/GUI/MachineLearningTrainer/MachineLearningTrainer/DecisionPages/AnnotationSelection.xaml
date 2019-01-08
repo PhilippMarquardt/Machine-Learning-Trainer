@@ -1,9 +1,9 @@
-﻿<UserControl x:Class="MachineLearningTrainer.WelcomePage"
+﻿<UserControl x:Class="MachineLearningTrainer.DecisionPages.AnnotationSelection"
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-             xmlns:local="clr-namespace:MachineLearningTrainer"
+             xmlns:local="clr-namespace:MachineLearningTrainer.DecisionPages"
              mc:Ignorable="d" 
              xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
              Background="{DynamicResource MaterialDesignPaper}"
@@ -53,10 +53,10 @@
             <RowDefinition Height="0.1*"/>
         </Grid.RowDefinitions>
 
-        <Button x:Name="btnNextPage" Click="btnNextPage_Click" Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold"
+        <Button Command="{Binding NextPage}" Margin="30,50,30,50" FontFamily="Bold"
                     VerticalContentAlignment="Center" Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto"
                     Grid.Row="0" Grid.Column="0" VerticalAlignment="Center">
-            <TextBlock VerticalAlignment="Center" Text="Machine Learning Trainer" Margin="5"/>
+            <TextBlock VerticalAlignment="Center" Text="Object Annotation" Margin="5"/>
 
 
         </Button>
@@ -64,21 +64,11 @@
 
 
         <Button  Command="{Binding RightTransition}" Margin="30,50,30,50" FontFamily="Bold" VerticalContentAlignment="Center" 
-                     Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto"
-                     Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
-            <TextBlock VerticalAlignment="Center" Text="Annotation Tool" Margin="5"/>
+                         Foreground="#FF2196F3" Background="Transparent" FontSize="20" Height="Auto"
+                         Grid.Row="0" Grid.Column="1" VerticalAlignment="Center">
+            <TextBlock VerticalAlignment="Center" Text="Pixel Annotation" Margin="5"/>
 
 
         </Button>
-
-
-        <!--<Button Background="Transparent" Foreground="#FF2196F3" Grid.Row="1" Command="{Binding NextPage}" Grid.Column="1"  Height="Auto" Width="Auto" HorizontalAlignment="Right" Opacity="0.3" Style="{StaticResource IncreaseOpacityOnHover}">
-            <materialDesign:PackIcon Kind="SkipNextCircleOutline" Background="Transparent"/>
-        </Button>-->
-
-
-
-
-
     </Grid>
 </UserControl>

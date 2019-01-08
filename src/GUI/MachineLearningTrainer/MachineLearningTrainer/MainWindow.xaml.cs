@@ -37,11 +37,7 @@ namespace MachineLearningTrainer
                 MainViewModel viewModel = new MainViewModel(new MainModel(), MainGrid);
                 page.DataContext = viewModel;
                 MainGrid.Children.Add(page);
-
-                //Uncomment, if you want to use the whole program
-
-                // if (viewModel.RightTransition.CanExecute(null))
-                //    viewModel.RightTransition.Execute(null);
+                
             }
 
         }
