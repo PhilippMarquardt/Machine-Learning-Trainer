@@ -63,6 +63,8 @@
                 this.MouseLeftButtonDown += Child_MouseLeftButtonDown;
                 this.MouseLeftButtonUp += Child_MouseLeftButtonUp;
                 this.MouseMove += Child_MouseMove;
+                this.MouseDown += Child_MouseDown;
+                this.MouseUp += Child_MouseUp;
                 this.PreviewMouseRightButtonDown += new MouseButtonEventHandler(
                     Child_PreviewMouseRightButtonDown);
             }
@@ -150,7 +152,7 @@
 
         private void Child_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-           
+
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
             if (child != null)
             {
@@ -229,7 +231,7 @@
         private void Child_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
-            if (child != null && enabled)
+            if (child != null && enabled && (this.DataContext as DrawerViewModel).AnnoToolMode == "Object")
             {
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
@@ -237,12 +239,14 @@
                 this.Cursor = Cursors.Hand;
                 child.CaptureMouse();
             }
+
+
         }
 
         private void Child_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
-            if (child != null)
+            if (child != null && (this.DataContext as DrawerViewModel).AnnoToolMode == "Object")
             {
                 child.ReleaseMouseCapture();
                 this.Cursor = Cursors.Arrow;
@@ -251,13 +255,16 @@
 
         void Child_PreviewMouseRightButtonDown(object sender, MouseButtonEventArgs e)
         {
-            this.Reset();
+            if ((this.DataContext as DrawerViewModel).AnnoToolMode == "Object")
+            {
+                this.Reset();
+            }
         }
 
         private void Child_MouseMove(object sender, MouseEventArgs e)
         {
             var enabled = ((sender as ZoomBorder).DataContext as DrawerViewModel).Enabled;
-            if (child != null && (this.DataContext as DrawerViewModel).AnnoToolMode == "Object")
+            if (child != null)
             {
                 if (child.IsMouseCaptured)
                 {
@@ -268,21 +275,32 @@
                 }
             }
 
-            if (child != null && (this.DataContext as DrawerViewModel).AnnoToolMode == "Pixel")
-            {
-                if (e.MiddleButton == MouseButtonState.Pressed)
-
-                {
-                    var tt = GetTranslateTransform(child);
-                    Vector v = start - e.GetPosition(this);
-                    tt.X = origin.X - v.X;
-                    tt.Y = origin.Y - v.Y;
-                }
-            }
-
         }
 
-        #endregion
-    }
+        private void Child_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                var tt = GetTranslateTransform(child);
+                start = e.GetPosition(this);
+                origin = new Point(tt.X, tt.Y);
+                this.Cursor = Cursors.Hand;
+                child.CaptureMouse();
+            }
+            
+        }
+
+        private void Child_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if (e.MiddleButton == MouseButtonState.Released)
+            {
+                child.ReleaseMouseCapture();
+                this.Cursor = Cursors.Arrow;
+            }
+        }
+
+    #endregion
+}
 }
 
