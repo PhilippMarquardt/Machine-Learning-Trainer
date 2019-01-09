@@ -173,6 +173,20 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private static DependencyProperty RectangleBorderThicknessProperty =
+            DependencyProperty.Register("RectangleBorderThickness", typeof(int), typeof(ResizableRectangle));
+        public int RectangleBorderThickness
+        {
+            get
+            {
+                return (int)GetValue(RectangleBorderThicknessProperty);
+            }
+            set
+            {
+                SetValue(RectangleBorderThicknessProperty, value);
+            }
+        }
+
         private static DependencyProperty RectangleFillProperty =
             DependencyProperty.Register("RectangleFill", typeof(System.Windows.Media.Brush), typeof(ResizableRectangle));
         public System.Windows.Media.Brush RectangleFill

@@ -58,6 +58,18 @@
 
     </UserControl.Resources>
 
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="R"
+            Command="{Binding PixelDrawRectangleCommand}"/>
+        <KeyBinding
+            Key="D"
+            Command="{Binding PixelDrawCommand}"/>
+        <KeyBinding
+            Key="Space"
+            Command="{Binding SpaceCommand}"/>
+    </UserControl.InputBindings>
+
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem Margin="5" Header="File" Height="25">
@@ -96,6 +108,16 @@
                             </Button.LayoutTransform>
                         </Button>
                     </WrapPanel>
+                    <Button Click="Button_Click_1" Content="Draw" Style="{StaticResource BasicButtonStyle}" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
+                        <Button.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Button.LayoutTransform>
+                    </Button>
+                    <Button Click="Button_Click_3" Content="Save Bmp" Style="{StaticResource BasicButtonStyle}" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
+                        <Button.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Button.LayoutTransform>
+                    </Button>
                 </StackPanel>
 
                 <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
@@ -133,16 +155,32 @@
             <Border Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="1" BorderBrush="Gray" BorderThickness="1.5">
                 <local:ZoomBorder x:Name="zoomBorder"  Background="LightGray" ClipToBounds="True" >
 
-                    <Canvas x:Name="cnvImage" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" MouseDown="cnvImage_MouseDown" MouseMove="cnvImage_MouseMove">
-
-                        <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\17.jpg" Width="800" Height="auto" ClipToBounds="True"/>
-                        <ItemsControl Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                    <Canvas x:Name="cnvImage" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                                MouseDown="ImgCamera_MouseDown"
+                                MouseMove="ImgCamera_MouseMove"
+                                MouseUp="ImgCamera_MouseUp">
+                        <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False">
+                            <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\7.png" Width="auto" Height="auto" ClipToBounds="True"/>
+                            <ItemsControl ItemsSource="{Binding PixelRectangles}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="local:ResizableRectangle">
+                                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                        <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="RectangleBorderThickness" Value="{Binding DataContext.RectangleBorderThickness, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="ResizeThumbColor" Value="{Binding DataContext.ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                            </ItemsControl>
+                        </InkCanvas>
                     </Canvas>
                 </local:ZoomBorder>
             </Border>

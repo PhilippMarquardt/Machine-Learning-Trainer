@@ -30,8 +30,10 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
         }
 
-        System.Windows.Point currentPoint = new System.Windows.Point();
-        
+        private System.Windows.Point currentPoint;
+        private System.Windows.Point startPoint;
+        private System.Windows.Point polyPoint;
+        private ResizableRectangle rectSelectArea;
         
 
         private void WrapPanel_FileExplorer_MouseEnter(object sender, MouseEventArgs e)
@@ -61,6 +63,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
+
             this.Focus();
 
             (this.DataContext as DrawerViewModel).AnnoToolMode = "Pixel";
@@ -249,17 +252,180 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void GrabCut()
         { 
-            var rect = new OpenCvSharp.Rect(109, 6, 525, 521);
-            var result = new Mat();
-            var bgdModel = new Mat();
-            var fgdModel = new Mat();
-            var mask = new Mat();
-            Mat image = Cv2.ImRead(@"C:\Users\hsa\Desktop\17.jpg");
-            Mat original_img = Cv2.ImRead(@"C:\Users\hsa\Desktop\17.jpg");
-            Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
-            Cv2.ImWrite(@"C:\Users\hsa\Desktop\testaml.png", mask);
+            foreach(var rec in (this.DataContext as DrawerViewModel).PixelRectangles)
+            {
+                if (rec != null)
+                {
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    var rect = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                    var result = new Mat();
+                    var bgdModel = new Mat();
+                    var fgdModel = new Mat();
+                    var mask = new Mat();
+                    Mat image = Cv2.ImRead(@"C:\Users\hsa\Desktop\7.png");
+                    Mat original_img = Cv2.ImRead(@"C:\Users\hsa\Desktop\7.png");
+                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
+                    Cv2.ImWrite(@"C:\Users\hsa\Desktop\testaml.png", mask);
 
-            Bitmap img = new Bitmap(@"C:\Users\hsa\Desktop\testaml.png");
+                    Bitmap img = new Bitmap(@"C:\Users\hsa\Desktop\testaml.png");
+                    Bitmap newBitmap = new Bitmap(img.Width, img.Height);
+                    System.Drawing.Color actualColor;
+                    System.Drawing.Color white = System.Drawing.Color.White;
+                    System.Drawing.Color black = System.Drawing.Color.Black;
+
+                    for (int i = 0; i < img.Width; i++)
+                    {
+                        for (int j = 0; j < img.Height; j++)
+                        {
+                            actualColor = img.GetPixel(i, j);
+                            if (actualColor.R == 3 && actualColor.G == 3 && actualColor.B == 3)
+                                newBitmap.SetPixel(i, j, white);
+                            else
+                                newBitmap.SetPixel(i, j, black);
+
+                        }
+                    }
+
+                    newBitmap.Save(@"C:\Users\hsa\Desktop\mask_binary.png", ImageFormat.Png);
+                    Mat newMask = Cv2.ImRead(@"C:\Users\hsa\Desktop\mask_binary.png", ImreadModes.GrayScale);
+                    Cv2.Threshold(newMask, newMask, 0, 255, ThresholdTypes.Binary);
+                    
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+                    Scalar lightblue = Scalar.Blue;
+                    Scalar blue = Scalar.Blue;
+
+                    Cv2.FindContours(newMask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxNone);
+                    Cv2.FillPoly(image, contours, lightblue);
+                    double alpha = 0.3;
+                    double beta = 1 - alpha;
+                    Mat output = new Mat();
+                    Cv2.AddWeighted(image, alpha, original_img, beta, 0.0, output, -1);
+                    Cv2.DrawContours(output, contours, 0, blue, 2);
+                    
+                    Cv2.ImWrite(@"C:\Users\hsa\Desktop\output.png", output);
+                    
+                    imgPreview.Source = new BitmapImage(new Uri(@"C:\Users\hsa\Desktop\output.png"));
+
+
+                    foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
+                    {
+                        q.RectangleMovable = false;
+                        q.Visibility = Visibility.Collapsed;
+                    }
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    Console.WriteLine(elapsedMs + " ms");
+                }
+            }
+        }
+        
+        
+        private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
+            {
+                cnvImage.Cursor = Cursors.Cross;
+                startPoint = e.GetPosition(cnvImage);
+                rectSelectArea = new ResizableRectangle();
+                rectSelectArea.RectangleBorderThickness = 3;
+                rectSelectArea.ThumbColor = System.Windows.Media.Brushes.Blue;
+                rectSelectArea.ThumbSize = 5;
+                rectSelectArea.RectangleOpacity = 0;
+                rectSelectArea.ResizeThumbColor = System.Windows.Media.Brushes.Blue;
+
+                (this.DataContext as DrawerViewModel).PixelRectangles.Add(rectSelectArea);
+                
+                Canvas.SetLeft(rectSelectArea, startPoint.X);
+                Canvas.SetTop(rectSelectArea, startPoint.Y);
+            }
+            
+            currentPoint = e.GetPosition(cnvImage);
+            startPoint = e.GetPosition(cnvImage);
+
+        }
+
+        private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
+        {
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
+
+            {
+                cnvImage.Cursor = Cursors.Cross;
+                if (e.LeftButton == MouseButtonState.Released || rectSelectArea == null)
+                    return;
+
+                var pos = e.GetPosition(cnvImage);
+
+                // Set the position of rectangle
+                var x = Math.Min(pos.X, startPoint.X);
+                var y = Math.Min(pos.Y, startPoint.Y);
+
+                // Set the dimenssion of the rectangle
+                var w = Math.Max(pos.X, startPoint.X) - x;
+                var h = Math.Max(pos.Y, startPoint.Y) - y;
+
+                rectSelectArea.RectangleWidth = w;
+                rectSelectArea.RectangleHeight = h;
+
+                Canvas.SetLeft(rectSelectArea, x);
+                Canvas.SetTop(rectSelectArea, y);
+
+                rectSelectArea.X = x;
+                rectSelectArea.Y = y;
+
+                int recStartX = (Convert.ToInt16(x));
+                int recStartY = (Convert.ToInt16(y));
+                int recWidth = (Convert.ToInt16(w));
+                int recHeight = (Convert.ToInt16(h));
+
+            }
+
+        }
+
+        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
+            {
+                foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
+                    q.RectangleMovable = true;
+                (this.DataContext as DrawerViewModel).Enabled = true;
+                cnvImage.Cursor = Cursors.Arrow;
+                GrabCut();
+
+            }
+        }
+
+        private void Button_Click_1(object sender, RoutedEventArgs e)
+        {
+            cnvInk.IsEnabled = true;
+            cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
+            cnvInk.DefaultDrawingAttributes.Height = 5;
+            cnvInk.DefaultDrawingAttributes.Width = 5;
+        }
+
+
+
+        private void CreateSaveBitmap(InkCanvas canvas, string filename)
+        {
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
+             (int)canvas.Width, (int)canvas.Height,
+             96d, 96d, PixelFormats.Pbgra32);
+            // needed otherwise the image output is black
+            canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
+            canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
+
+            renderBitmap.Render(canvas);
+
+            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+            using (FileStream file = File.Create(filename))
+            {
+                encoder.Save(file);
+            }
+
+            Bitmap img = new Bitmap(filename);
             Bitmap newBitmap = new Bitmap(img.Width, img.Height);
             System.Drawing.Color actualColor;
             System.Drawing.Color white = System.Drawing.Color.White;
@@ -270,7 +436,7 @@ namespace MachineLearningTrainer.DrawerTool
                 for (int j = 0; j < img.Height; j++)
                 {
                     actualColor = img.GetPixel(i, j);
-                    if (actualColor.R > 2)
+                    if (actualColor.R == 255 && actualColor.G == 0 && actualColor.B == 0)
                         newBitmap.SetPixel(i, j, white);
                     else
                         newBitmap.SetPixel(i, j, black);
@@ -278,89 +444,16 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
 
-            newBitmap.Save(@"C:\Users\hsa\Desktop\mask_binary.png", ImageFormat.Png);
-            Mat newMask = Cv2.ImRead(@"C:\Users\hsa\Desktop\mask_binary.png", ImreadModes.GrayScale);
-            Cv2.Threshold(newMask, newMask, 0, 255, ThresholdTypes.Binary);
+            newBitmap.Save(@"C:\Users\hsa\Desktop\gfrergergeghrege.png", ImageFormat.Png);
 
-
-            OpenCvSharp.Point[][] contours;
-            HierarchyIndex[] hierarchy;
-            Scalar lightblue = Scalar.Blue;
-            Scalar blue = Scalar.Blue;
-
-            Cv2.FindContours(newMask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxNone);
-            Cv2.FillPoly(image, contours, lightblue);
-            double alpha = 0.3;
-            double beta = 1 - alpha;
-            Mat output = new Mat();
-            Cv2.AddWeighted(image, alpha, original_img, beta, 0.0, output, -1);
-            Cv2.DrawContours(output, contours, 0, blue, 2);
-
-
-            Cv2.ImWrite(@"C:\Users\hsa\Desktop\output.png", output);
-
-
-
-            imgPreview.Source = new BitmapImage(new Uri(@"C:\Users\hsa\Desktop\output.png"));
 
 
 
         }
 
-        private void cnvImage_MouseDown(object sender, MouseButtonEventArgs e)
+        private void Button_Click_3(object sender, RoutedEventArgs e)
         {
-            
-            
-            if (e.ClickCount == 2)
-            {
-                var watch = System.Diagnostics.Stopwatch.StartNew();
-                GrabCut();
-                watch.Stop();
-                var elapsedMs = watch.ElapsedMilliseconds;
-                Console.WriteLine(elapsedMs + " ms");
-            }
-
-            if (e.ButtonState == MouseButtonState.Pressed)
-            {
-                currentPoint = e.GetPosition(imgPreview);
-            }
-
-
-        }
-
-        private void cnvImage_MouseMove(object sender, MouseEventArgs e)
-        {
-            if (e.LeftButton == MouseButtonState.Pressed)
-            {
-                Line line = new Line();
-
-                line.Stroke = System.Windows.Media.Brushes.LawnGreen;
-                line.StrokeThickness = 5;
-                line.X1 = currentPoint.X;
-                line.Y1 = currentPoint.Y;
-                line.X2 = e.GetPosition(imgPreview).X;
-                line.Y2 = e.GetPosition(imgPreview).Y;
-
-                currentPoint = e.GetPosition(imgPreview);
-
-                cnvImage.Children.Add(line);
-            }
-
-            if (e.RightButton == MouseButtonState.Pressed)
-            {
-                Line line = new Line();
-
-                line.Stroke = System.Windows.Media.Brushes.Black;
-                line.StrokeThickness = 5;
-                line.X1 = currentPoint.X;
-                line.Y1 = currentPoint.Y;
-                line.X2 = e.GetPosition(imgPreview).X;
-                line.Y2 = e.GetPosition(imgPreview).Y;
-
-                currentPoint = e.GetPosition(imgPreview);
-
-                cnvImage.Children.Add(line);
-            }
+            CreateSaveBitmap(cnvInk, @"C:\Users\hsa\Desktop\mask_canvas.png");
         }
     }
 }

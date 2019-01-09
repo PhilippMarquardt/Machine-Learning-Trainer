@@ -101,6 +101,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
 
         public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
+        public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
 
@@ -780,13 +781,28 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
+        private int _rectangleBorderThickness = 2;
+    
+        public int RectangleBorderThickness
+        {
+            get
+            {
+                return
+                    _rectangleBorderThickness;
+            }
+            set
+            {
+                _rectangleBorderThickness = value;
+                OnPropertyChanged("RectangleBorderThickness");
+            }
+        }
+        
         /// <summary>
         /// this method colors the selected rectangle and increases the opacity
         /// </summary>
         public void SelectedRectangleFill()
         {
-            if (SelectedResizableRectangle != null)
+            if (SelectedResizableRectangle != null && AnnoToolMode == "Object")
             {
                 if(CropModeChecked == false)
                 {
@@ -1290,7 +1306,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="resizable"></param>
         public void UpdateCropedImage(ResizableRectangle resizable)
         {
-            if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5)
+            if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5 && AnnoToolMode == "Object") 
             {
                 BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
                 Bitmap src;
@@ -1697,6 +1713,104 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private ICommand _pixelDrawRectangleCommand;
+        public ICommand PixelDrawRectangleCommand
+        {
+            get
+            {
+                return _pixelDrawRectangleCommand ?? (_pixelDrawRectangleCommand = new CommandHandler(() => PixelDrawRectangle(), _canExecute));
+            }
+        }
+
+        public void PixelDrawRectangle()
+        {
+            if(Enabled == true && PixelRectangles.Count == 0) 
+            {
+                Enabled = false;
+                drawEnabled = false;
+                MyCanvas.Cursor = Cursors.Cross; ;
+            }
+
+            else
+            {
+                Enabled = true;
+                drawEnabled = false;
+                MyCanvas.Cursor = Cursors.Arrow;
+            }
+
+        }
+
+        private bool drawEnabled = false;
+
+        public bool DrawEnabled
+        {
+            get
+            {
+                return drawEnabled;
+            }
+            set
+            {
+                drawEnabled = value;
+                OnPropertyChanged("DrawEnabled");
+            }
+        }
+
+
+
+        private ICommand _pixelDrawCommand;
+        public ICommand PixelDrawCommand
+        {
+            get
+            {
+                return _pixelDrawCommand ?? (_pixelDrawCommand = new CommandHandler(() => PixelDraw(), _canExecute));
+            }
+        }
+
+        public void PixelDraw()
+        {
+            if(DrawEnabled == false)
+            {
+                DrawEnabled = true;
+                Enabled = true;
+
+                foreach (var q in PixelRectangles)
+                {
+                    q.RectangleMovable = false;
+                    q.Visibility = Visibility.Collapsed;
+                }
+                    
+
+                MyCanvas.Cursor = Cursors.Pen;
+            }
+
+            else
+            {
+                DrawEnabled = false;
+                MyCanvas.Cursor = Cursors.Arrow;
+                foreach (var q in PixelRectangles)
+                {
+                    q.RectangleMovable = true;
+                    q.Visibility = Visibility.Visible;
+                }
+            }
+        }
+
+        private ICommand _spaceCommand;
+        public ICommand SpaceCommand
+        {
+            get
+            {
+                return _spaceCommand ?? (_spaceCommand = new CommandHandler(() => Space(), _canExecute));
+            }
+        }
+
+        public void Space()
+        {
+            foreach(var rec in PixelRectangles)
+            {
+                MessageBox.Show("X: " + (int)rec.X + ", Y: " + (int)rec.Y + ", Width: " + (int)rec.RectangleWidth + ", Height: " + (int)rec.RectangleHeight);
+            }
+        }
 
     }
 
