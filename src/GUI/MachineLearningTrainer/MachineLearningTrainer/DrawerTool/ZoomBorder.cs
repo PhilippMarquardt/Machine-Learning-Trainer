@@ -282,6 +282,11 @@
 
             if (e.MiddleButton == MouseButtonState.Pressed)
             {
+                if(e.ClickCount == 2)
+                {
+                    this.Reset();
+                }
+
                 var tt = GetTranslateTransform(child);
                 start = e.GetPosition(this);
                 origin = new Point(tt.X, tt.Y);

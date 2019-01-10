@@ -68,6 +68,12 @@
         <KeyBinding
             Key="Space"
             Command="{Binding SpaceCommand}"/>
+        <KeyBinding
+            Key="F"
+            Command="{Binding FGCommand}"/>
+        <KeyBinding
+            Key="B"
+            Command="{Binding BGCommand}"/>
     </UserControl.InputBindings>
 
     <DockPanel>
@@ -108,12 +114,17 @@
                             </Button.LayoutTransform>
                         </Button>
                     </WrapPanel>
-                    <Button Click="Button_Click_1" Content="Draw" Style="{StaticResource BasicButtonStyle}" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
+                    <Button x:Name="Draw_Button" Click="Button_Click_1" Content="Draw" Style="{StaticResource BasicButtonStyle}" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
                         <Button.LayoutTransform>
                             <RotateTransform Angle="90"/>
                         </Button.LayoutTransform>
                     </Button>
                     <Button Click="Button_Click_3" Content="Save Bmp" Style="{StaticResource BasicButtonStyle}" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
+                        <Button.LayoutTransform>
+                            <RotateTransform Angle="90"/>
+                        </Button.LayoutTransform>
+                    </Button>
+                    <Button Click="Button_Click" Content="GrabCut" Style="{StaticResource BasicButtonStyle}" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
                         <Button.LayoutTransform>
                             <RotateTransform Angle="90"/>
                         </Button.LayoutTransform>
@@ -153,14 +164,18 @@
             </Grid>
 
             <Border Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="1" BorderBrush="Gray" BorderThickness="1.5">
-                <local:ZoomBorder x:Name="zoomBorder"  Background="LightGray" ClipToBounds="True" >
+                <local:ZoomBorder x:Name="zoomBorder"  Background="LightGray" ClipToBounds="True">
 
                     <Canvas x:Name="cnvImage" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" 
                                 MouseDown="ImgCamera_MouseDown"
                                 MouseMove="ImgCamera_MouseMove"
                                 MouseUp="ImgCamera_MouseUp">
-                        <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False">
-                            <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\7.png" Width="auto" Height="auto" ClipToBounds="True"/>
+                        <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\7.png" Width="auto" Height="auto" ClipToBounds="True"/>
+                        <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False" KeyUp="DrawPanel_KeyUp" Background="Transparent">
+                            <InkCanvas.DefaultDrawingAttributes>
+                                <DrawingAttributes Width="5" Height="5" Color="LawnGreen" FitToCurve="True" StylusTip="Ellipse"/>
+                            </InkCanvas.DefaultDrawingAttributes>
+                            
                             <ItemsControl ItemsSource="{Binding PixelRectangles}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>

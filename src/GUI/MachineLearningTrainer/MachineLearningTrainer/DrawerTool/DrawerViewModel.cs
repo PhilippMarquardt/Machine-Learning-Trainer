@@ -104,7 +104,6 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-
         public Stack<ResizableRectangle> undoRectangles { get; set; } = new Stack<ResizableRectangle>();
         public Stack<string> undoInformation { get; set; } = new Stack<string>();
         public Stack<ResizableRectangle> redoRectangles { get; set; } = new Stack<ResizableRectangle>();
@@ -1755,46 +1754,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-
-        private ICommand _pixelDrawCommand;
-        public ICommand PixelDrawCommand
-        {
-            get
-            {
-                return _pixelDrawCommand ?? (_pixelDrawCommand = new CommandHandler(() => PixelDraw(), _canExecute));
-            }
-        }
-
-        public void PixelDraw()
-        {
-            if(DrawEnabled == false)
-            {
-                DrawEnabled = true;
-                Enabled = true;
-
-                foreach (var q in PixelRectangles)
-                {
-                    q.RectangleMovable = false;
-                    q.Visibility = Visibility.Collapsed;
-                }
-                    
-
-                MyCanvas.Cursor = Cursors.Pen;
-            }
-
-            else
-            {
-                DrawEnabled = false;
-                MyCanvas.Cursor = Cursors.Arrow;
-                foreach (var q in PixelRectangles)
-                {
-                    q.RectangleMovable = true;
-                    q.Visibility = Visibility.Visible;
-                }
-            }
-        }
-
         private ICommand _spaceCommand;
         public ICommand SpaceCommand
         {
@@ -1811,6 +1770,8 @@ namespace MachineLearningTrainer.DrawerTool
                 MessageBox.Show("X: " + (int)rec.X + ", Y: " + (int)rec.Y + ", Width: " + (int)rec.RectangleWidth + ", Height: " + (int)rec.RectangleHeight);
             }
         }
+
+
 
     }
 

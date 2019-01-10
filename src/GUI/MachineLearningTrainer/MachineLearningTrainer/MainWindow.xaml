@@ -15,7 +15,8 @@
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
         ShowInTaskbar="True"
-        Title="MachineLearningTrainer" Height="800" Width="800">
+        Title="MachineLearningTrainer" Height="800" Width="800"
+        Icon="/Icons/hsa.ico">
     <Grid>
         <!--<Grid.RowDefinitions>
             <RowDefinition Height="0.05*"/>

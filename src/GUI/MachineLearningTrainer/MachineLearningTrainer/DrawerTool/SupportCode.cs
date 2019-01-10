@@ -47,5 +47,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
         }
+
+        public static Bitmap MatToBitmap(Mat image)
+        {
+            return OpenCvSharp.Extensions.BitmapConverter.ToBitmap(image);
+        }
+
     }
 }

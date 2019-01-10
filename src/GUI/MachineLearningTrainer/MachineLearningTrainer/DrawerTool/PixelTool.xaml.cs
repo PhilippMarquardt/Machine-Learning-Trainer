@@ -32,9 +32,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         private System.Windows.Point currentPoint;
         private System.Windows.Point startPoint;
-        private System.Windows.Point polyPoint;
         private ResizableRectangle rectSelectArea;
-        
+        private PointCollection points { get; set; } = new PointCollection();
+
+
 
         private void WrapPanel_FileExplorer_MouseEnter(object sender, MouseEventArgs e)
         {
@@ -234,21 +235,7 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         #endregion
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            System.Windows.Shapes.Rectangle rect;
-            rect = new System.Windows.Shapes.Rectangle();
-            rect.Stroke = new SolidColorBrush(Colors.Blue);
-            rect.StrokeThickness = 3;
-            rect.Width = 525;
-            rect.Height = 521;
-            Canvas.SetLeft(rect, 109);
-            Canvas.SetTop(rect, 6);
-            cnvImage.Children.Add(rect);
-            
-
-        }
+        
 
         public void GrabCut()
         { 
@@ -258,16 +245,39 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     var watch = System.Diagnostics.Stopwatch.StartNew();
                     var rect = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-                    var result = new Mat();
                     var bgdModel = new Mat();
                     var fgdModel = new Mat();
-                    var mask = new Mat();
-                    Mat image = Cv2.ImRead(@"C:\Users\hsa\Desktop\7.png");
-                    Mat original_img = Cv2.ImRead(@"C:\Users\hsa\Desktop\7.png");
-                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
-                    Cv2.ImWrite(@"C:\Users\hsa\Desktop\testaml.png", mask);
 
-                    Bitmap img = new Bitmap(@"C:\Users\hsa\Desktop\testaml.png");
+
+                    BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+                    Bitmap src;
+
+                    using (MemoryStream outStream = new MemoryStream())
+                    {
+                        BitmapEncoder enc = new BmpBitmapEncoder();
+                        enc.Frames.Add(BitmapFrame.Create(bImage));
+                        enc.Save(outStream);
+                        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                        src = new Bitmap(bitmap);
+                    }
+
+                    Mat image = SupportCode.ConvertBmp2Mat(src);
+
+                    //Mat mask = Mat.Ones(image.Size(), MatType.CV_8UC1);
+                    Mat mask = Cv2.ImRead(@"C:\Users\hsa\Desktop\gfrergergeghrege.png", ImreadModes.Unchanged);
+                    Mat maskBGR = new Mat();
+                    Cv2.Threshold(mask, maskBGR, 0, 255, ThresholdTypes.Binary);
+                    maskBGR.ConvertTo(maskBGR, MatType.CV_8U);
+                    Cv2.CvtColor(maskBGR, mask, ColorConversionCodes.BGR2GRAY);
+
+                    Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
+                    Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
+                    Mat original_img = image.Clone();
+
+                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
+                    Console.WriteLine(mask.GetType());
+                    Bitmap img = SupportCode.MatToBitmap(mask);
                     Bitmap newBitmap = new Bitmap(img.Width, img.Height);
                     System.Drawing.Color actualColor;
                     System.Drawing.Color white = System.Drawing.Color.White;
@@ -285,34 +295,38 @@ namespace MachineLearningTrainer.DrawerTool
 
                         }
                     }
-
-                    newBitmap.Save(@"C:\Users\hsa\Desktop\mask_binary.png", ImageFormat.Png);
-                    Mat newMask = Cv2.ImRead(@"C:\Users\hsa\Desktop\mask_binary.png", ImreadModes.GrayScale);
-                    Cv2.Threshold(newMask, newMask, 0, 255, ThresholdTypes.Binary);
                     
+                    Mat newMask = SupportCode.ConvertBmp2Mat(newBitmap);
+                    Cv2.CvtColor(newMask, newMask, ColorConversionCodes.BGR2GRAY);
+                    Cv2.Threshold(newMask, newMask, 0, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
+
                     OpenCvSharp.Point[][] contours;
                     HierarchyIndex[] hierarchy;
                     Scalar lightblue = Scalar.Blue;
                     Scalar blue = Scalar.Blue;
 
                     Cv2.FindContours(newMask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxNone);
-                    Cv2.FillPoly(image, contours, lightblue);
-                    double alpha = 0.3;
-                    double beta = 1 - alpha;
-                    Mat output = new Mat();
-                    Cv2.AddWeighted(image, alpha, original_img, beta, 0.0, output, -1);
-                    Cv2.DrawContours(output, contours, 0, blue, 2);
-                    
-                    Cv2.ImWrite(@"C:\Users\hsa\Desktop\output.png", output);
-                    
-                    imgPreview.Source = new BitmapImage(new Uri(@"C:\Users\hsa\Desktop\output.png"));
 
+                    Polygon p = new Polygon();
+                    p.Stroke = System.Windows.Media.Brushes.Blue;
+                    p.Fill = System.Windows.Media.Brushes.LightBlue;
+                    p.StrokeThickness = 1;
+                    p.Opacity = 0.4;
 
+                    for (int k = 0; k < contours[0].Length; k++)
+                    {
+                        points.Add(new System.Windows.Point(contours[0][k].X, contours[0][k].Y)); 
+                    }
+                    p.Points = points;
+                    p.IsHitTestVisible = false;
+                    cnvInk.Children.Add(p);
+                    
                     foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
                     {
                         q.RectangleMovable = false;
                         q.Visibility = Visibility.Collapsed;
                     }
+
                     watch.Stop();
                     var elapsedMs = watch.ElapsedMilliseconds;
                     Console.WriteLine(elapsedMs + " ms");
@@ -355,12 +369,10 @@ namespace MachineLearningTrainer.DrawerTool
                     return;
 
                 var pos = e.GetPosition(cnvImage);
-
-                // Set the position of rectangle
+                
                 var x = Math.Min(pos.X, startPoint.X);
                 var y = Math.Min(pos.Y, startPoint.Y);
-
-                // Set the dimenssion of the rectangle
+                
                 var w = Math.Max(pos.X, startPoint.X) - x;
                 var h = Math.Max(pos.Y, startPoint.Y) - y;
 
@@ -382,6 +394,54 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
 
+        private void DrawPanel_KeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.F || e.Key == Key.B || e.Key == Key.E || e.Key == Key.OemPlus || e.Key == Key.OemMinus) 
+            {
+
+                if(cnvInk.DefaultDrawingAttributes.Height < 3)
+                {
+                    cnvInk.UseCustomCursor = true;
+                    cnvInk.Cursor = Cursors.Pen;
+                }
+
+                else
+                {
+                    cnvInk.UseCustomCursor = false;
+                }
+
+                switch (e.Key)
+                {
+                    case Key.F:
+                        cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
+                        cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+                        Draw_Button.Background = System.Windows.Media.Brushes.LawnGreen;
+                        break;
+                    case Key.B:
+                        cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
+                        Draw_Button.Background = System.Windows.Media.Brushes.Red;
+                        cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+                        break;
+                    case Key.E:
+                        cnvInk.EditingMode = InkCanvasEditingMode.EraseByPoint;
+                        cnvInk.DefaultDrawingAttributes.StylusTip = System.Windows.Ink.StylusTip.Ellipse;
+                        Draw_Button.Background = System.Windows.Media.Brushes.SlateGray;
+                        break;
+                    case Key.OemPlus:
+                        cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height + 1;
+                        cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width + 1;
+                        break;
+                    case Key.OemMinus:
+                        if(cnvInk.DefaultDrawingAttributes.Height > 1 && cnvInk.DefaultDrawingAttributes.Width > 1)
+                        {
+                            cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height - 1;
+                            cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width - 1;
+                        }
+                        break;
+                }
+            }
+        }
+
         private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -397,10 +457,30 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            cnvInk.IsEnabled = true;
-            cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
-            cnvInk.DefaultDrawingAttributes.Height = 5;
-            cnvInk.DefaultDrawingAttributes.Width = 5;
+            var viewModel = (this.DataContext as DrawerViewModel);
+            if ((this.DataContext as DrawerViewModel).DrawEnabled == false)
+            {
+                viewModel.DrawEnabled = true;
+                viewModel.Enabled = true;
+                cnvInk.IsEnabled = true;
+                cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
+                cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+                Draw_Button.Background = System.Windows.Media.Brushes.LawnGreen;
+                foreach (var q in viewModel.PixelRectangles)
+                {
+                    q.RectangleMovable = false;
+                    q.Visibility = Visibility.Collapsed;
+                }
+                
+            }
+
+            else
+            {
+                Draw_Button.Background = System.Windows.Media.Brushes.White;
+                viewModel.DrawEnabled = false;
+                cnvInk.IsEnabled = false;
+            }
+
         }
 
 
@@ -410,13 +490,11 @@ namespace MachineLearningTrainer.DrawerTool
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
              (int)canvas.Width, (int)canvas.Height,
              96d, 96d, PixelFormats.Pbgra32);
-            // needed otherwise the image output is black
             canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
             canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
 
             renderBitmap.Render(canvas);
-
-            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
 
@@ -436,10 +514,10 @@ namespace MachineLearningTrainer.DrawerTool
                 for (int j = 0; j < img.Height; j++)
                 {
                     actualColor = img.GetPixel(i, j);
-                    if (actualColor.R == 255 && actualColor.G == 0 && actualColor.B == 0)
-                        newBitmap.SetPixel(i, j, white);
-                    else
+                    if (actualColor.A == 0)
                         newBitmap.SetPixel(i, j, black);
+                    else
+                        newBitmap.SetPixel(i, j, white);
 
                 }
             }
@@ -454,6 +532,11 @@ namespace MachineLearningTrainer.DrawerTool
         private void Button_Click_3(object sender, RoutedEventArgs e)
         {
             CreateSaveBitmap(cnvInk, @"C:\Users\hsa\Desktop\mask_canvas.png");
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            GrabCut();
         }
     }
 }
