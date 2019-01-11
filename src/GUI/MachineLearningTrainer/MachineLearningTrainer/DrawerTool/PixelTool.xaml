@@ -169,7 +169,8 @@
                     <Canvas x:Name="cnvImage" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" 
                                 MouseDown="ImgCamera_MouseDown"
                                 MouseMove="ImgCamera_MouseMove"
-                                MouseUp="ImgCamera_MouseUp">
+                                MouseUp="ImgCamera_MouseUp"
+                                KeyUp="DrawPanel_KeyUp">
                         <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\7.png" Width="auto" Height="auto" ClipToBounds="True"/>
                         <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False" KeyUp="DrawPanel_KeyUp" Background="Transparent">
                             <InkCanvas.DefaultDrawingAttributes>

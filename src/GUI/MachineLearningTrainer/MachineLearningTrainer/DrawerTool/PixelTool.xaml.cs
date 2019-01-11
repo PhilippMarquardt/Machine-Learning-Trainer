@@ -34,6 +34,7 @@ namespace MachineLearningTrainer.DrawerTool
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
         private PointCollection points { get; set; } = new PointCollection();
+        private Polygon p = new Polygon();
 
 
 
@@ -66,7 +67,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
 
             this.Focus();
-
             (this.DataContext as DrawerViewModel).AnnoToolMode = "Pixel";
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
@@ -264,19 +264,20 @@ namespace MachineLearningTrainer.DrawerTool
 
                     Mat image = SupportCode.ConvertBmp2Mat(src);
 
-                    //Mat mask = Mat.Ones(image.Size(), MatType.CV_8UC1);
-                    Mat mask = Cv2.ImRead(@"C:\Users\hsa\Desktop\gfrergergeghrege.png", ImreadModes.Unchanged);
-                    Mat maskBGR = new Mat();
-                    Cv2.Threshold(mask, maskBGR, 0, 255, ThresholdTypes.Binary);
-                    maskBGR.ConvertTo(maskBGR, MatType.CV_8U);
-                    Cv2.CvtColor(maskBGR, mask, ColorConversionCodes.BGR2GRAY);
+                    //Mat mask = Cv2.ImRead(@"C:\Users\hsa\Desktop\maskb.png", ImreadModes.Unchanged);
+                    //Mat maskBGR = new Mat();
+                    //Cv2.Threshold(mask, maskBGR, 0, 255, ThresholdTypes.Binary);
+                    //maskBGR.ConvertTo(maskBGR, MatType.CV_8U);
+
+                    Mat mask = new Mat();
+
+                    //Cv2.CvtColor(maskBGR, mask, ColorConversionCodes.BGR2GRAY);
 
                     Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
                     Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
                     Mat original_img = image.Clone();
-
                     Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
-                    Console.WriteLine(mask.GetType());
+
                     Bitmap img = SupportCode.MatToBitmap(mask);
                     Bitmap newBitmap = new Bitmap(img.Width, img.Height);
                     System.Drawing.Color actualColor;
@@ -295,28 +296,42 @@ namespace MachineLearningTrainer.DrawerTool
 
                         }
                     }
+
+
                     
                     Mat newMask = SupportCode.ConvertBmp2Mat(newBitmap);
                     Cv2.CvtColor(newMask, newMask, ColorConversionCodes.BGR2GRAY);
                     Cv2.Threshold(newMask, newMask, 0, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
-
+                    
                     OpenCvSharp.Point[][] contours;
                     HierarchyIndex[] hierarchy;
                     Scalar lightblue = Scalar.Blue;
                     Scalar blue = Scalar.Blue;
 
                     Cv2.FindContours(newMask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxNone);
-
-                    Polygon p = new Polygon();
+                    
                     p.Stroke = System.Windows.Media.Brushes.Blue;
                     p.Fill = System.Windows.Media.Brushes.LightBlue;
-                    p.StrokeThickness = 1;
-                    p.Opacity = 0.4;
+                    p.StrokeThickness = 2;
+                    p.Opacity = 0.3;
 
-                    for (int k = 0; k < contours[0].Length; k++)
+                    for(int l = 0; l < contours.Length; l++)
                     {
-                        points.Add(new System.Windows.Point(contours[0][k].X, contours[0][k].Y)); 
+                        int m = 0;
+
+                        if (contours[l].Count() > m)
+                            m = l;
+
+                        if(l == contours.Length - 1)
+                        {
+                            for (int k = 0; k < contours[m].Length; k++)
+                            {
+                                points.Add(new System.Windows.Point(contours[m][k].X, contours[m][k].Y));
+                            }
+                        }
+                        
                     }
+                    
                     p.Points = points;
                     p.IsHitTestVisible = false;
                     cnvInk.Children.Add(p);
@@ -333,8 +348,118 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
         }
-        
-        
+
+        public void GrabCutMask()
+        {
+            foreach (var rec in (this.DataContext as DrawerViewModel).PixelRectangles)
+            {
+                if (rec != null)
+                {
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    var rect = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                    var bgdModel = new Mat();
+                    var fgdModel = new Mat();
+
+
+                    BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+                    Bitmap src;
+
+                    using (MemoryStream outStream = new MemoryStream())
+                    {
+                        BitmapEncoder enc = new BmpBitmapEncoder();
+                        enc.Frames.Add(BitmapFrame.Create(bImage));
+                        enc.Save(outStream);
+                        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                        src = new Bitmap(bitmap);
+                    }
+
+                    Mat image = SupportCode.ConvertBmp2Mat(src);
+
+                    Mat mask = Cv2.ImRead(@"C:\Users\hsa\Desktop\viktor.png", ImreadModes.Unchanged);
+                    Mat maskBGR = new Mat();
+                    Cv2.Threshold(mask, maskBGR, 0, 255, ThresholdTypes.Binary);
+                    maskBGR.ConvertTo(maskBGR, MatType.CV_8U);
+
+                    //Mat mask = new Mat();
+
+                    //Cv2.CvtColor(maskBGR, mask, ColorConversionCodes.BGR2GRAY);
+
+                    Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
+                    Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
+                    Mat original_img = image.Clone();
+                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithMask);
+                    Bitmap img = SupportCode.MatToBitmap(mask);
+                    Bitmap newBitmap = new Bitmap(img.Width, img.Height);
+                    System.Drawing.Color actualColor;
+                    System.Drawing.Color white = System.Drawing.Color.White;
+                    System.Drawing.Color black = System.Drawing.Color.Black;
+
+                    for (int i = 0; i < img.Width; i++)
+                    {
+                        for (int j = 0; j < img.Height; j++)
+                        {
+                            actualColor = img.GetPixel(i, j);
+                            if ((actualColor.R == 3 && actualColor.G == 3 && actualColor.B == 3) || (actualColor.R == 1 && actualColor.G == 1 && actualColor.B == 1))
+                                newBitmap.SetPixel(i, j, white);
+                            else
+                                newBitmap.SetPixel(i, j, black);
+
+                        }
+                    }
+
+                    Mat newMask = SupportCode.ConvertBmp2Mat(newBitmap);
+                    Cv2.CvtColor(newMask, newMask, ColorConversionCodes.BGR2GRAY);
+                    Cv2.Threshold(newMask, newMask, 0, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
+
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+                    Scalar lightblue = Scalar.Blue;
+                    Scalar blue = Scalar.Blue;
+
+                    Cv2.FindContours(newMask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+                    
+                    p.Stroke = System.Windows.Media.Brushes.Red;
+                    p.Fill = System.Windows.Media.Brushes.LightBlue;
+                    p.StrokeThickness = 2;
+                    p.Opacity = 0.4;
+                    points.Clear();
+
+                    for (int l = 0; l < contours.Length; l++)
+                    {
+                        int m = 0;
+
+                        if (contours[l].Count() > m)
+                            m = l;
+
+                        if (l == contours.Length - 1)
+                        {
+                            for (int k = 0; k < contours[m].Length; k++)
+                            {
+                                points.Add(new System.Windows.Point(contours[m][k].X, contours[m][k].Y));
+                            }
+                        }
+
+                    }
+
+                    p.Points = points;
+                    p.IsHitTestVisible = false;
+                    cnvInk.Children.Add(p);
+
+                    foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
+                    {
+                        q.RectangleMovable = false;
+                        q.Visibility = Visibility.Collapsed;
+                    }
+
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    Console.WriteLine(elapsedMs + " ms");
+                }
+            }
+        }
+
+
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -487,6 +612,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void CreateSaveBitmap(InkCanvas canvas, string filename)
         {
+
             RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
              (int)canvas.Width, (int)canvas.Height,
              96d, 96d, PixelFormats.Pbgra32);
@@ -494,7 +620,7 @@ namespace MachineLearningTrainer.DrawerTool
             canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
 
             renderBitmap.Render(canvas);
-            
+
             PngBitmapEncoder encoder = new PngBitmapEncoder();
             encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
 
@@ -504,28 +630,104 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
             Bitmap img = new Bitmap(filename);
+
             Bitmap newBitmap = new Bitmap(img.Width, img.Height);
             System.Drawing.Color actualColor;
             System.Drawing.Color white = System.Drawing.Color.White;
             System.Drawing.Color black = System.Drawing.Color.Black;
+            var sure_bg = System.Drawing.Color.FromArgb(0, 0, 0);
+            var sure_fg = System.Drawing.Color.FromArgb(1, 1, 1);
+            var mask_rect = System.Drawing.Color.FromArgb(2, 2, 2);
+            var mask_mask = System.Drawing.Color.FromArgb(3, 3, 3);
 
-            for (int i = 0; i < img.Width; i++)
+            var mat = new Mat(img.Height, img.Width, MatType.CV_8U, Scalar.White);
+            var indexer = mat.GetGenericIndexer<Vec3b>();
+            Console.WriteLine(indexer[0, 0]);
+
+            for (int i = 0; i < img.Height; i++)
             {
-                for (int j = 0; j < img.Height; j++)
+                for (int j = 0; j < img.Width; j++)
                 {
-                    actualColor = img.GetPixel(i, j);
+                    //actualColor = img.GetPixel(j, i);
+                    //newBitmap.SetPixel(i, j, sure_bg);
+
+                    Vec3b color = mat.Get<Vec3b>(i, j);
+                    color.Item0 = 0;
+                    color.Item1 = 0;
+                    color.Item2 = 0;
+                    indexer[i, j] = color;
+                }
+            }
+            Cv2.ImWrite(@"C:\Users\hsa\Desktop\viktor.png", mat);
+
+
+
+            int aa = 0;
+            int rr = 0;
+            int gg = 0;
+            for (int i = 40; i < img.Height-10; i++)
+            {
+                for (int j = 40; j < img.Width-10; j++)
+                {
+                    actualColor = img.GetPixel(j, i);
                     if (actualColor.A == 0)
-                        newBitmap.SetPixel(i, j, black);
+                    {
+                        aa++;
+                        
+                        //newBitmap.SetPixel(i, j, mask_rect);
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 2;
+                        color.Item1 = 2;
+                        color.Item2 = 2;
+                        indexer[i, j] = color;
+                    }
+                        
+                    else if(actualColor.R == 255 && actualColor.G == 0 && actualColor.B == 0)
+                    {
+                        rr++;
+                        
+                        //newBitmap.SetPixel(i, j, sure_bg);
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 0;
+                        color.Item1 = 0;
+                        color.Item2 = 0;
+                        indexer[i, j] = color;
+                    }
+
+                    else if (actualColor.R == 124 && actualColor.G == 252 && actualColor.B == 0)
+                    {
+                        gg++;
+                        
+                        //newBitmap.SetPixel(i, j, sure_bg);
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 1;
+                        color.Item1 = 1;
+                        color.Item2 = 1;
+                        indexer[i, j] = color;
+                    }
+
                     else
-                        newBitmap.SetPixel(i, j, white);
+                    {
+                        //newBitmap.SetPixel(i, j, mask_mask);
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 3;
+                        color.Item1 = 3;
+                        color.Item2 = 3;
+                        indexer[i, j] = color;
+                    }
+
 
                 }
             }
+            Console.WriteLine("A"+ aa);
+            Console.WriteLine("R" + rr);
+            Console.WriteLine("G" + gg);
 
-            newBitmap.Save(@"C:\Users\hsa\Desktop\gfrergergeghrege.png", ImageFormat.Png);
-
-
-
+            Cv2.ImWrite(@"C:\Users\hsa\Desktop\viktor.png", mat);
+            newBitmap.Save(@"C:\Users\hsa\Desktop\final_mask.png", ImageFormat.Png);
+            
+            
+            
 
         }
 
@@ -536,8 +738,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
-            GrabCut();
+            cnvInk.Children.Remove(p);
+            GrabCutMask();
         }
+        
     }
 }
  
