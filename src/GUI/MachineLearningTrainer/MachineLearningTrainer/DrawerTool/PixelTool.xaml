@@ -66,9 +66,6 @@
             Key="D"
             Command="{Binding PixelDrawCommand}"/>
         <KeyBinding
-            Key="Space"
-            Command="{Binding SpaceCommand}"/>
-        <KeyBinding
             Key="F"
             Command="{Binding FGCommand}"/>
         <KeyBinding
@@ -78,10 +75,104 @@
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
-            <MenuItem Margin="5" Header="File" Height="25">
-                <MenuItem Width="300" Header="Load Image" InputGestureText="Ctrl + O">
+            <MenuItem
+                Height="25"
+                Margin="5"
+                Header="File">
+                <MenuItem
+                    Width="300"
+                    Command="{Binding LoadImageCommand}"
+                    Header="Load Image"
+                    InputGestureText="Ctrl + O">
                     <MenuItem.Icon>
-                        <Image Source="/Icons/loadimg.png"/>
+                        <Image Source="/Icons/loadimg.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem
+                    Command="{Binding AddRectangle}"
+                    Header="Rectangle"
+                    InputGestureText="R"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/new.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem
+                    Command="{Binding ExportPascalVoc}"
+                    Header="Export to XML"
+                    InputGestureText="Ctrl + S"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/save.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Command="{Binding LoadXMLCommand}"
+                    Header="Load XML"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadxml.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem
+                Height="25"
+                Margin="5"
+                Header="Edit">
+                <MenuItem
+                    Width="250"
+                    Command="{Binding UndoCommand}"
+                    Header="Undo"
+                    InputGestureText="Ctrl + Z"
+                    IsEnabled="{Binding UndoEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/undo.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Width="250"
+                    Command="{Binding RedoCommand}"
+                    Header="Redo"
+                    InputGestureText="Ctrl + Y"
+                    IsEnabled="{Binding UndoEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/redo.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+            <MenuItem
+                Height="25"
+                Margin="5"
+                Header="View">
+                <MenuItem
+                    Width="300"
+                    Click="MenuItem_ZoomIn"
+                    Header="Zoom  in"
+                    InputGestureText="Ctrl + +"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_in.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <MenuItem
+                    Click="MenuItem_ZoomOut"
+                    Header="Zoom  out"
+                    InputGestureText="Ctrl + -"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_out.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                <Separator />
+                <MenuItem
+                    Click="MenuItem_Reset"
+                    Header="Fit to width"
+                    InputGestureText="Ctrl + 0"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/fit.png" />
                     </MenuItem.Icon>
                 </MenuItem>
             </MenuItem>
@@ -171,7 +262,7 @@
                                 MouseMove="ImgCamera_MouseMove"
                                 MouseUp="ImgCamera_MouseUp"
                                 KeyUp="DrawPanel_KeyUp">
-                        <Image x:Name="imgPreview" Source="C:\Users\hsa\Desktop\7.png" Width="auto" Height="auto" ClipToBounds="True"/>
+                        <Image x:Name="imgPreview" Source="{Binding ImagePath}"  Width="auto" Height="auto" ClipToBounds="True"/>
                         <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False" KeyUp="DrawPanel_KeyUp" Background="Transparent">
                             <InkCanvas.DefaultDrawingAttributes>
                                 <DrawingAttributes Width="5" Height="5" Color="LawnGreen" FitToCurve="True" StylusTip="Ellipse"/>

@@ -24,6 +24,11 @@ namespace MachineLearningTrainer.DrawerTool
             return OpenCvSharp.Extensions.BitmapConverter.ToMat(bitmap);
         }
 
+        public static Mat ConvertCroppedBmp2Mat(CroppedBitmap croppedBitmap)
+        {
+            return OpenCvSharp.Extensions.BitmapSourceConverter.ToMat(croppedBitmap);
+        }
+
         /// <summary>
         /// this method converts mat to bitmap
         /// </summary>
