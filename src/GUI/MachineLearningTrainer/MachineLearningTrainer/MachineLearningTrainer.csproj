@@ -96,8 +96,14 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="ControlOperations.cs" />
-    <Compile Include="ConvolutionalNeuralNetwork\DataSelection.xaml.cs">
-      <DependentUpon>DataSelection.xaml</DependentUpon>
+    <Compile Include="ConvolutionalNeuralNetwork\DataSelectionObjectClassification.xaml.cs">
+      <DependentUpon>DataSelectionObjectClassification.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConvolutionalNeuralNetwork\DataSelectionObjectDetection.xaml.cs">
+      <DependentUpon>DataSelectionObjectDetection.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="ConvolutionalNeuralNetwork\ObjectClassification\ObjectClassificationSettings.xaml.cs">
+      <DependentUpon>ObjectClassificationSettings.xaml</DependentUpon>
     </Compile>
     <Compile Include="ConvolutionalNeuralNetwork\ObjectDetection\Retinanet.xaml.cs">
       <DependentUpon>Retinanet.xaml</DependentUpon>
@@ -155,7 +161,15 @@
     <Compile Include="ValueConverter\ToggleBoolean.cs" />
     <Compile Include="WizardStateMachine.cs" />
     <Compile Include="XMLWriter.cs" />
-    <Page Include="ConvolutionalNeuralNetwork\DataSelection.xaml">
+    <Page Include="ConvolutionalNeuralNetwork\DataSelectionObjectClassification.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConvolutionalNeuralNetwork\DataSelectionObjectDetection.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConvolutionalNeuralNetwork\ObjectClassification\ObjectClassificationSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -277,9 +291,7 @@
     <Resource Include="Icons\redo.png" />
     <Resource Include="Icons\undo.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ConvolutionalNeuralNetwork\ObjectClassification\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <ProjectReference Include="..\LicensingWindow\LicensingWindow.csproj">
       <Project>{332615a4-5c28-40a4-8f54-ca2730b19acf}</Project>

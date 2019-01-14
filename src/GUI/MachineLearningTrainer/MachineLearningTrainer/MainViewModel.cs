@@ -128,6 +128,7 @@ namespace MachineLearningTrainer
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
+            //set variable if we are on specific page..
             this._mainGrid.Children.Clear();
             if (usc is ImageDrawer)
             {
@@ -139,6 +140,7 @@ namespace MachineLearningTrainer
             }
             this._mainGrid.Children.Add(usc);
         }
+
         #endregion
 
         #region DeepNeuralNetwork
@@ -341,6 +343,8 @@ namespace MachineLearningTrainer
         #endregion
 
 
+       
+
         #region ObjectDetector
 
         private string SpecifyInputFolder()
@@ -465,6 +469,26 @@ namespace MachineLearningTrainer
 
         #endregion
 
+        #region ObjectClassificator
+        private bool _useImageNet;
+
+        public List<string> NetworkArchitectures { get; set; } = new List<string> { "Resnet" };
+
+        public bool UseImageNet
+        {
+            get
+            {
+                return this._useImageNet;
+            }
+            set
+            {
+                this._useImageNet = value;
+                OnPropertyChanged("UseImageNet");
+            }
+        }
+
+
+        #endregion
     }
 
 

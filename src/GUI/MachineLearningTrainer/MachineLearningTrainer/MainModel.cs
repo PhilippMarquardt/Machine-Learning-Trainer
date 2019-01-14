@@ -23,6 +23,10 @@ namespace MachineLearningTrainer
             return SetNewWizardPage(mainGrid);
         }
 
+        private ProcessState GetCurrentState()
+        {
+            return this._stateMachine.CurrentState;
+        }
 
         private UserControl SetNewWizardPage(Grid mainGrid)
         {
@@ -46,7 +50,12 @@ namespace MachineLearningTrainer
                 case ProcessState.ObjectDetectorDataSelection:
                     return new ConvolutionalNeuralNetwork.DataSelection();
                 case ProcessState.ObjectDetectionRetinanet:
-                    return new ConvolutionalNeuralNetwork.ObjectDetection.Retinanet();            
+                    return new ConvolutionalNeuralNetwork.ObjectDetection.Retinanet();
+                case ProcessState.ClassificationDataSelection:
+                    return new ConvolutionalNeuralNetwork.DataSelectionObjectClassification();
+                case ProcessState.ObjectClassificationSettings:
+                    return new ConvolutionalNeuralNetwork.ObjectClassification.ObjectClassificationSettings();
+                            
                 default:
                     return new WelcomePage();
             }

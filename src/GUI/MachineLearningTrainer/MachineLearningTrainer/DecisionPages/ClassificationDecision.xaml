@@ -83,6 +83,7 @@
                     Background="Transparent"
                     FontFamily="Bold"
                     FontSize="20"
+                    Command="{Binding LeftTransition}"
                     Foreground="#FF2196F3">
                     <TextBlock
                         Width="Auto"

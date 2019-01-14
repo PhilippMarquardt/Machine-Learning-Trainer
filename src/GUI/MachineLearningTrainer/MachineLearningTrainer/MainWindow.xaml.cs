@@ -23,7 +23,7 @@ namespace MachineLearningTrainer
     {
         public MainWindow()
         {
-            if (LicensingWindow.LicenseChecker.IsLicenseActivated())
+            if (!LicensingWindow.LicenseChecker.IsLicenseActivated())
             {
                 LicensingWindow.MainWindow licensingWindow = new LicensingWindow.MainWindow();
                 licensingWindow.ShowDialog();

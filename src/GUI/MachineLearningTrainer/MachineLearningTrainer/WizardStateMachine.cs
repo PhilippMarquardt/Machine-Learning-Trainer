@@ -16,8 +16,10 @@ namespace MachineLearningTrainer
         DNN,
         Drawer,
         ObjectDetectorSelection,
+        ClassificationDataSelection,
         ObjectDetectorDataSelection,
-        ObjectDetectionRetinanet
+        ObjectDetectionRetinanet,
+        ObjectClassificationSettings
 
        
     }
@@ -80,13 +82,23 @@ namespace MachineLearningTrainer
                 { new StateTransition(ProcessState.Drawer, Command.Previous), ProcessState.WelcomePage },
 
                 { new StateTransition(ProcessState.CNNDataDecision, Command.Previous), ProcessState.DataDecision },
+                { new StateTransition(ProcessState.CNNDataDecision, Command.Left), ProcessState.ClassificationDataSelection },
                 { new StateTransition(ProcessState.CNNDataDecision, Command.Right), ProcessState.ObjectDetectorSelection },
 
                 { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Right), ProcessState.ObjectDetectorDataSelection },
-                { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Left), ProcessState.ObjectDetectorDataSelection },
+                { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Left), ProcessState.ObjectDetectionRetinanet },
+                { new StateTransition(ProcessState.ObjectDetectorSelection, Command.Previous), ProcessState.CNNDataDecision },
+
+                { new StateTransition(ProcessState.ClassificationDataSelection, Command.Previous), ProcessState.CNNDataDecision },
+                { new StateTransition(ProcessState.ClassificationDataSelection, Command.Next), ProcessState.ObjectClassificationSettings },
 
                  { new StateTransition(ProcessState.ObjectDetectorDataSelection, Command.Previous), ProcessState.ObjectDetectorSelection },
-                {new StateTransition(ProcessState.ObjectDetectorDataSelection, Command.Next), ProcessState.ObjectDetectionRetinanet }
+                {new StateTransition(ProcessState.ObjectDetectorDataSelection, Command.Next), ProcessState.ObjectDetectionRetinanet },
+
+
+                {new StateTransition(ProcessState.ObjectClassificationSettings, Command.Previous), ProcessState.ClassificationDataSelection },
+
+
 
             };
         }
