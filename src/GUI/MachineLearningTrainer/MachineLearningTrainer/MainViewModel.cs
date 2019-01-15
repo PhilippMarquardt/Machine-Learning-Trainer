@@ -488,6 +488,28 @@ namespace MachineLearningTrainer
         }
 
 
+        private ICommand _onRunResnetClick;
+
+        public ICommand OnRunResnetClick
+        {
+            get
+            {
+                return _onRunResnetClick ?? (_onRunResnetClick = new CommandHandler(() => RunResnetThreaded(), _canExecute));
+            }
+        }
+
+        private void RunResnetThreaded()
+        {
+            System.Threading.ThreadStart childref = new System.Threading.ThreadStart(RunResnet);
+            new System.Threading.Thread(childref).Start();
+        }
+
+        private void RunResnet()
+        {
+            PythonRunner.RunScriptSynchronous("resnet.py", true, new string[] { "" }, false);
+        }
+
+
         #endregion
     }
 

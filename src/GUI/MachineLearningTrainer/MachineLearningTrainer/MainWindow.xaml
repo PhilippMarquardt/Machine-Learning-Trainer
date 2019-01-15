@@ -14,7 +14,7 @@
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        WindowStyle="None"
+        WindowStyle="ToolWindow"
         ShowInTaskbar="True"
         Title="MachineLearningTrainer" Height="800" Width="800">
     <Grid>
