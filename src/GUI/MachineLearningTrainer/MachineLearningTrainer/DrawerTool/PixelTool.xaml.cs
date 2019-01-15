@@ -69,6 +69,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             this.Focus();
             (this.DataContext as DrawerViewModel).AnnoToolMode = "Pixel";
+            (this.DataContext as DrawerViewModel).MyInkCanvas = cnvInk;
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
 
@@ -319,7 +320,8 @@ namespace MachineLearningTrainer.DrawerTool
                             }
                         }
                     }
-                    
+                    (this.DataContext as DrawerViewModel).points = points;
+                    (this.DataContext as DrawerViewModel).p.Points = points;
                     p.Points = points;
                     p.IsHitTestVisible = false;
                     cnvInk.Children.Add(p);
@@ -370,7 +372,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                     Cv2.Threshold(mask, mask, 2, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
                     OpenCvSharp.Point[][] contours;
-                    HierarchyIndex[] hierarchy;
+                    HierarchyIndex[] hierarchy; 
 
                     Cv2.FindContours(mask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
 
@@ -655,7 +657,7 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
 
-            drawMask = mat;
+            (this.DataContext as DrawerViewModel).drawMask = mat;
 
         }
 
@@ -670,7 +672,12 @@ namespace MachineLearningTrainer.DrawerTool
             cnvInk.Strokes.Clear();
             GrabCutMask();
         }
-        
+
+        private void UserControl_KeyUp(object sender, KeyEventArgs e)
+        {
+            cnvInk = (this.DataContext as DrawerViewModel).MyInkCanvas;
+            Console.WriteLine("MYINKCANVAS");
+        }
     }
 }
  

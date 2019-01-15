@@ -10,7 +10,8 @@
              FontFamily="{DynamicResource MaterialDesignFont}"
              Focusable="True"
              d:DesignHeight="1080" d:DesignWidth="1920"
-             Loaded="UserControl_Loaded">
+             Loaded="UserControl_Loaded"
+             KeyUp="UserControl_KeyUp">
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -71,6 +72,14 @@
         <KeyBinding
             Key="B"
             Command="{Binding BGCommand}"/>
+        <KeyBinding
+            Key="G"
+            Command="{Binding SpaceCommand}"
+            Modifiers="Ctrl"/>
+        <KeyBinding
+            Key="S"
+            Command="{Binding SaveCanvasCommand}"
+            Modifiers="Ctrl"/>
     </UserControl.InputBindings>
 
     <DockPanel>

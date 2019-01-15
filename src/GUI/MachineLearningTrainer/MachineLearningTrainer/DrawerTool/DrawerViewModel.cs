@@ -20,6 +20,7 @@ using MachineLearningTrainer.DrawerTool;
 using System.Runtime.CompilerServices;
 using System.Xml;
 using System.Threading;
+using System.Windows.Shapes;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -1274,6 +1275,15 @@ namespace MachineLearningTrainer.DrawerTool
             set { _myCanvas = value; }
         }
 
+        private InkCanvas _myInkCanvas;
+
+        public InkCanvas MyInkCanvas
+        {
+            get { return _myInkCanvas; }
+            set { _myInkCanvas = value; }
+        }
+
+
         private System.Windows.Controls.Image _myPreview;
 
         public System.Windows.Controls.Image MyPreview
@@ -1759,7 +1769,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _spaceCommand ?? (_spaceCommand = new CommandHandler(() => Space(), _canExecute));
+                return _spaceCommand ?? (_spaceCommand = new CommandHandler(() => GrabCutMask(), _canExecute));
             }
         }
 
@@ -1769,6 +1779,202 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 MessageBox.Show("X: " + (int)rec.X + ", Y: " + (int)rec.Y + ", Width: " + (int)rec.RectangleWidth + ", Height: " + (int)rec.RectangleHeight);
             }
+        }
+
+
+        public PointCollection points { get; set; } = new PointCollection();
+        public Polygon p = new Polygon();
+        public Mat drawMask { get; set; } = new Mat();
+
+        public void GrabCutMask()
+        {
+            MyInkCanvas.Children.Remove(p);
+            MyInkCanvas.Strokes.Clear();
+
+            foreach (var rec in PixelRectangles)
+            {
+                if (rec != null)
+                {
+                    var rect = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
+                    var bgdModel = new Mat();
+                    var fgdModel = new Mat();
+
+                    BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+                    Bitmap src;
+
+                    using (MemoryStream outStream = new MemoryStream())
+                    {
+                        BitmapEncoder enc = new BmpBitmapEncoder();
+                        enc.Frames.Add(BitmapFrame.Create(bImage));
+                        enc.Save(outStream);
+                        Bitmap bitmap = new Bitmap(outStream);
+
+                        src = new Bitmap(bitmap);
+                    }
+
+                    Mat image = SupportCode.ConvertBmp2Mat(src);
+
+                    Mat mask = drawMask;
+                    Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
+                    Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
+
+                    var watch = System.Diagnostics.Stopwatch.StartNew();
+                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithMask);
+                    watch.Stop();
+                    var elapsedMs = watch.ElapsedMilliseconds;
+                    Console.WriteLine(elapsedMs + " ms");
+
+                    Cv2.Threshold(mask, mask, 2, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
+                    OpenCvSharp.Point[][] contours;
+                    HierarchyIndex[] hierarchy;
+
+                    Cv2.FindContours(mask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
+
+                    p.Stroke = System.Windows.Media.Brushes.Blue;
+                    p.Fill = System.Windows.Media.Brushes.LightBlue;
+                    p.Opacity = 0.4;
+                    p.StrokeThickness = 2;
+                    points.Clear();
+
+                    for (int l = 0; l < contours.Length; l++)
+                    {
+                        int m = 0;
+
+                        if (contours[l].Count() > m)
+                            m = l;
+
+                        if (l == contours.Length - 1)
+                        {
+                            for (int k = 0; k < contours[m].Length; k++)
+                            {
+                                points.Add(new System.Windows.Point(contours[m][k].X, contours[m][k].Y));
+                            }
+                        }
+
+                    }
+
+                    p.Points = points;
+                    p.IsHitTestVisible = false;
+                    MyInkCanvas.Children.Add(p);
+                    
+                    foreach (var q in PixelRectangles)
+                    {
+                        q.RectangleMovable = false;
+                        q.Visibility = Visibility.Collapsed;
+                    }
+
+                    Console.WriteLine(points.Count);
+                }
+            }
+        }
+
+        private ICommand _saveCanvasCommand;
+        public ICommand SaveCanvasCommand
+        {
+            get
+            {
+                return _saveCanvasCommand ?? (_saveCanvasCommand = new CommandHandler(() => CreateSaveBitmap(MyInkCanvas), _canExecute));
+            }
+        }
+
+        private void CreateSaveBitmap(InkCanvas canvas)
+        {
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
+             (int)canvas.Width, (int)canvas.Height,
+             96d, 96d, PixelFormats.Pbgra32);
+            canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
+            canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
+
+            renderBitmap.Render(canvas);
+
+
+            MemoryStream stream = new MemoryStream();
+            BitmapEncoder encoder = new BmpBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+            encoder.Save(stream);
+
+            Bitmap img = new Bitmap(stream);
+            int width = (int)MyPreview.ActualWidth;
+            int height = (int)MyPreview.ActualHeight;
+            Bitmap newBitmap = new Bitmap(100, 100);
+            System.Drawing.Color actualColor;
+            System.Drawing.Color white = System.Drawing.Color.White;
+            System.Drawing.Color black = System.Drawing.Color.Black;
+            var sure_bg = System.Drawing.Color.FromArgb(0, 0, 0);
+            var sure_fg = System.Drawing.Color.FromArgb(1, 1, 1);
+            var mask_rect = System.Drawing.Color.FromArgb(2, 2, 2);
+            var mask_mask = System.Drawing.Color.FromArgb(3, 3, 3);
+
+            var mat = new Mat(img.Height, img.Width, MatType.CV_8U, Scalar.White);
+            var indexer = mat.GetGenericIndexer<Vec3b>();
+            Console.WriteLine(indexer[0, 0]);
+
+            for (int i = 0; i < img.Height; i++)
+            {
+                for (int j = 0; j < img.Width; j++)
+                {
+                    Vec3b color = mat.Get<Vec3b>(i, j);
+                    color.Item0 = 0;
+                    color.Item1 = 0;
+                    color.Item2 = 0;
+                    indexer[i, j] = color;
+                }
+            }
+
+            var rectSelectArea = PixelRectangles[0];
+
+            int x1 = (int)rectSelectArea.X;
+            int x2 = (int)rectSelectArea.X + (int)rectSelectArea.RectangleWidth;
+            int y1 = (int)rectSelectArea.Y;
+            int y2 = (int)rectSelectArea.Y + (int)rectSelectArea.RectangleHeight;
+
+            for (int i = y1; i <= y2; i++)
+            {
+                for (int j = x1; j <= x2; j++)
+                {
+                    actualColor = img.GetPixel(j, i);
+                    if (actualColor.A == 0)
+                    {
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 2;
+                        color.Item1 = 2;
+                        color.Item2 = 2;
+                        indexer[i, j] = color;
+                    }
+
+                    else if (actualColor.R == 255 && actualColor.G == 0 && actualColor.B == 0)
+                    {
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 0;
+                        color.Item1 = 0;
+                        color.Item2 = 0;
+                        indexer[i, j] = color;
+                    }
+
+                    else if (actualColor.R == 124 && actualColor.G == 252 && actualColor.B == 0)
+                    {
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 1;
+                        color.Item1 = 1;
+                        color.Item2 = 1;
+                        indexer[i, j] = color;
+                    }
+
+                    else
+                    {
+                        Vec3b color = mat.Get<Vec3b>(i, j);
+                        color.Item0 = 3;
+                        color.Item1 = 3;
+                        color.Item2 = 3;
+                        indexer[i, j] = color;
+                    }
+
+
+                }
+            }
+
+            drawMask = mat;
+
         }
 
 
