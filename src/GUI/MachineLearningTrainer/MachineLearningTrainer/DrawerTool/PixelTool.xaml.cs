@@ -33,9 +33,9 @@ namespace MachineLearningTrainer.DrawerTool
         private System.Windows.Point currentPoint;
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
-        private PointCollection points { get; set; } = new PointCollection();
-        private Polygon p = new Polygon();
-        private Mat drawMask { get; set; } = new Mat();
+        //private PointCollection points { get; set; } = new PointCollection();
+        //private Polygon p = new Polygon();
+        //private Mat drawMask { get; set; } = new Mat();
 
 
 
@@ -257,162 +257,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         #endregion
-
-
-        public void GrabCut()
-        { 
-            foreach(var rec in (this.DataContext as DrawerViewModel).PixelRectangles)
-            {
-                if (rec != null)
-                {
-                    var rect = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-                    var bgdModel = new Mat();
-                    var fgdModel = new Mat();
-
-
-                    BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-                    Bitmap src;
-
-                    using (MemoryStream outStream = new MemoryStream())
-                    {
-                        BitmapEncoder enc = new BmpBitmapEncoder();
-                        enc.Frames.Add(BitmapFrame.Create(bImage));
-                        enc.Save(outStream);
-                        Bitmap bitmap = new Bitmap(outStream);
-
-                        src = new Bitmap(bitmap);
-                    }
-
-                    Mat image = SupportCode.ConvertBmp2Mat(src);
-                    Mat mask = new Mat();
-
-                    Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
-                    Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
-
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
-                    watch.Stop();
-                    var elapsedMs = watch.ElapsedMilliseconds;
-                    Console.WriteLine(elapsedMs + " ms");
-                    Cv2.Threshold(mask, mask, 2, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
-                    OpenCvSharp.Point[][] contours;
-                    HierarchyIndex[] hierarchy;
-                    
-                    Cv2.FindContours(mask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
-                    
-                    p.Stroke = System.Windows.Media.Brushes.Blue;
-                    p.StrokeThickness = 2;
-                    p.Fill = System.Windows.Media.Brushes.LightBlue;
-                    p.Opacity = 0.5;
-
-                    for (int l = 0; l < contours.Length; l++)
-                    {
-                        int m = 0;
-
-                        if (contours[l].Count() > m)
-                            m = l;
-
-                        if(l == contours.Length - 1)
-                        {
-                            for (int k = 0; k < contours[m].Length; k++)
-                            {
-                                points.Add(new System.Windows.Point(contours[m][k].X, contours[m][k].Y));
-                            }
-                        }
-                    }
-                    (this.DataContext as DrawerViewModel).points = points;
-                    (this.DataContext as DrawerViewModel).p.Points = points;
-                    p.Points = points;
-                    p.IsHitTestVisible = false;
-                    cnvInk.Children.Add(p);
-                    
-                    foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
-                    {
-                        q.RectangleMovable = false;
-                        q.Visibility = Visibility.Collapsed;
-                    }
-                }
-            }
-        }
-
-        public void GrabCutMask()
-        {
-            foreach (var rec in (this.DataContext as DrawerViewModel).PixelRectangles)
-            {
-                if (rec != null)
-                {
-                    var rect = new OpenCvSharp.Rect((int)rec.X, (int)rec.Y, (int)rec.RectangleWidth, (int)rec.RectangleHeight);
-                    var bgdModel = new Mat();
-                    var fgdModel = new Mat();
-                    
-                    BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-                    Bitmap src;
-
-                    using (MemoryStream outStream = new MemoryStream())
-                    {
-                        BitmapEncoder enc = new BmpBitmapEncoder();
-                        enc.Frames.Add(BitmapFrame.Create(bImage));
-                        enc.Save(outStream);
-                        Bitmap bitmap = new Bitmap(outStream);
-
-                        src = new Bitmap(bitmap);
-                    }
-
-                    Mat image = SupportCode.ConvertBmp2Mat(src);
-                    
-                    Mat mask = drawMask;
-                    Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
-                    Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
-
-                    var watch = System.Diagnostics.Stopwatch.StartNew();
-                    Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithMask);
-                    watch.Stop();
-                    var elapsedMs = watch.ElapsedMilliseconds;
-                    Console.WriteLine(elapsedMs + " ms");
-
-                    Cv2.Threshold(mask, mask, 2, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
-                    OpenCvSharp.Point[][] contours;
-                    HierarchyIndex[] hierarchy; 
-
-                    Cv2.FindContours(mask, out contours, out hierarchy, RetrievalModes.External, ContourApproximationModes.ApproxSimple);
-
-                    p.Stroke = System.Windows.Media.Brushes.Blue;
-                    p.Fill = System.Windows.Media.Brushes.LightBlue;
-                    p.Opacity = 0.4;
-                    p.StrokeThickness = 2;
-                    points.Clear();
-
-                    for (int l = 0; l < contours.Length; l++)
-                    {
-                        int m = 0;
-
-                        if (contours[l].Count() > m)
-                            m = l;
-
-                        if (l == contours.Length - 1)
-                        {
-                            for (int k = 0; k < contours[m].Length; k++)
-                            {
-                                points.Add(new System.Windows.Point(contours[m][k].X, contours[m][k].Y));
-                            }
-                        }
-
-                    }
-
-                    p.Points = points;
-                    p.IsHitTestVisible = false;
-                    cnvInk.Children.Add(p);
-
-                    foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
-                    {
-                        q.RectangleMovable = false;
-                        q.Visibility = Visibility.Collapsed;
-                    }
-                }
-            }
-        }
-
-
+        
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if ((this.DataContext as DrawerViewModel).Enabled == false)
@@ -469,15 +314,63 @@ namespace MachineLearningTrainer.DrawerTool
                 int recHeight = (Convert.ToInt16(h));
 
             }
-
         }
 
-        private void DrawPanel_KeyUp(object sender, KeyEventArgs e)
+        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (e.Key == Key.F || e.Key == Key.B || e.Key == Key.E || e.Key == Key.OemPlus || e.Key == Key.OemMinus) 
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
+            {
+                foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
+                    q.RectangleMovable = true;
+                (this.DataContext as DrawerViewModel).Enabled = true;
+                cnvImage.Cursor = Cursors.Arrow;
+            }
+        }
+        
+
+        private void CreateSaveBitmap(Canvas canvas, string filename)
+        {
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
+             (int)canvas.Width, (int)canvas.Height,
+             96d, 96d, PixelFormats.Pbgra32);
+            // needed otherwise the image output is black
+            canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
+            canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
+
+            renderBitmap.Render(canvas);
+
+            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+            using (FileStream file = File.Create(filename))
+            {
+                encoder.Save(file);
+            }
+        }
+
+        private void UserControl_KeyUp(object sender, KeyEventArgs e)
+        {
+            cnvInk = (this.DataContext as DrawerViewModel).MyInkCanvas;
+            var viewModel = (this.DataContext as DrawerViewModel);
+
+            if (e.Key == Key.D)
+            {
+                cnvInk.IsEnabled = viewModel.DrawEnabled;
+                cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
+                cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+
+                foreach (var q in viewModel.PixelRectangles)
+                {
+                    q.RectangleMovable = false;
+                    q.Visibility = Visibility.Collapsed;
+                }
+            }
+
+            if (e.Key == Key.F || e.Key == Key.B || e.Key == Key.E || e.Key == Key.OemPlus || e.Key == Key.OemMinus)
             {
 
-                if(cnvInk.DefaultDrawingAttributes.Height < 3)
+                if (cnvInk.DefaultDrawingAttributes.Height < 3)
                 {
                     cnvInk.UseCustomCursor = true;
                     cnvInk.Cursor = Cursors.Pen;
@@ -493,24 +386,22 @@ namespace MachineLearningTrainer.DrawerTool
                     case Key.F:
                         cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
                         cnvInk.EditingMode = InkCanvasEditingMode.Ink;
-                        Draw_Button.Background = System.Windows.Media.Brushes.LawnGreen;
                         break;
                     case Key.B:
                         cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
-                        Draw_Button.Background = System.Windows.Media.Brushes.Red;
                         cnvInk.EditingMode = InkCanvasEditingMode.Ink;
                         break;
                     case Key.E:
                         cnvInk.EditingMode = InkCanvasEditingMode.EraseByPoint;
                         cnvInk.DefaultDrawingAttributes.StylusTip = System.Windows.Ink.StylusTip.Ellipse;
-                        Draw_Button.Background = System.Windows.Media.Brushes.SlateGray;
                         break;
                     case Key.OemPlus:
                         cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height + 1;
                         cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width + 1;
+                        CreateSaveBitmap(cnvImage, @"C:\Users\hsa\Desktop\output.png");
                         break;
                     case Key.OemMinus:
-                        if(cnvInk.DefaultDrawingAttributes.Height > 1 && cnvInk.DefaultDrawingAttributes.Width > 1)
+                        if (cnvInk.DefaultDrawingAttributes.Height > 1 && cnvInk.DefaultDrawingAttributes.Width > 1)
                         {
                             cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height - 1;
                             cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width - 1;
@@ -520,163 +411,64 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        private void Button_Crop(object sender, RoutedEventArgs e)
         {
-            if ((this.DataContext as DrawerViewModel).Enabled == false)
-            {
-                foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
-                    q.RectangleMovable = true;
-                (this.DataContext as DrawerViewModel).Enabled = true;
-                cnvImage.Cursor = Cursors.Arrow;
-                GrabCut();
+            BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+            Bitmap src;
 
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new JpegBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                Bitmap bitmap = new Bitmap(outStream);
+
+                src = new Bitmap(bitmap);
             }
+
+            var rec = (this.DataContext as DrawerViewModel).PixelRectangles[(this.DataContext as DrawerViewModel).PixelRectangles.Count - 1];
+
+            double RECX = rec.X;
+            double RECY = rec.Y;
+            double RECH = rec.RectangleHeight;
+            double RECW = rec.RectangleWidth;
+
+
+            Mat mat = SupportCode.ConvertBmp2Mat(src);
+            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+            Mat croppedImage = new Mat(mat, rectCrop);
+            Cv2.ImWrite(@"C:\Users\hsa\Desktop\2345525.png", croppedImage);
+            (this.DataContext as DrawerViewModel).image = croppedImage;
+            
+            (this.DataContext as DrawerViewModel).cropOrNot = 1;
+
+            (this.DataContext as DrawerViewModel).GrabCut();
+
+            var viewmodel = (this.DataContext as DrawerViewModel);
+            //cnvInk.Children.Remove(viewmodel.pFull);
+            //cnvInk.Children.Add(viewmodel.pFull);
+        }
+
+        private void Button_Finish(object sender, RoutedEventArgs e)
+        {
+            var viewmodel = (this.DataContext as DrawerViewModel);
+            viewmodel.polygonsCollection.Add(viewmodel.pFull);
+            //cnvInk.Children.Remove(viewmodel.pFull);
+        }
+
+
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            int i = 0;
+            cnvInk.Children.Add((this.DataContext as DrawerViewModel).polygonsCollection[i]);
+            i++;
         }
 
         private void Button_Click_1(object sender, RoutedEventArgs e)
         {
-            var viewModel = (this.DataContext as DrawerViewModel);
-            if ((this.DataContext as DrawerViewModel).DrawEnabled == false)
-            {
-                viewModel.DrawEnabled = true;
-                viewModel.Enabled = true;
-                cnvInk.IsEnabled = true;
-                cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
-                cnvInk.EditingMode = InkCanvasEditingMode.Ink;
-                Draw_Button.Background = System.Windows.Media.Brushes.LawnGreen;
-                foreach (var q in viewModel.PixelRectangles)
-                {
-                    q.RectangleMovable = false;
-                    q.Visibility = Visibility.Collapsed;
-                }
-                
-            }
-
-            else
-            {
-                Draw_Button.Background = System.Windows.Media.Brushes.White;
-                viewModel.DrawEnabled = false;
-                cnvInk.IsEnabled = false;
-            }
-
-        }
-
-
-
-        private void CreateSaveBitmap(InkCanvas canvas)
-        {
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
-             (int)canvas.Width, (int)canvas.Height,
-             96d, 96d, PixelFormats.Pbgra32);
-            canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
-            canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
-
-            renderBitmap.Render(canvas);
-            
-
-            MemoryStream stream = new MemoryStream();
-            BitmapEncoder encoder = new BmpBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
-            encoder.Save(stream);
-
-            Bitmap img = new Bitmap(stream);
-            int width = (int)imgPreview.ActualWidth;
-            int height = (int)imgPreview.ActualHeight;
-            Bitmap newBitmap = new Bitmap(100,100);
-            System.Drawing.Color actualColor;
-            System.Drawing.Color white = System.Drawing.Color.White;
-            System.Drawing.Color black = System.Drawing.Color.Black;
-            var sure_bg = System.Drawing.Color.FromArgb(0, 0, 0);
-            var sure_fg = System.Drawing.Color.FromArgb(1, 1, 1);
-            var mask_rect = System.Drawing.Color.FromArgb(2, 2, 2);
-            var mask_mask = System.Drawing.Color.FromArgb(3, 3, 3);
-
-            var mat = new Mat(img.Height, img.Width, MatType.CV_8U, Scalar.White);
-            var indexer = mat.GetGenericIndexer<Vec3b>();
-            Console.WriteLine(indexer[0, 0]);
-
-            for (int i = 0; i < img.Height; i++)
-            {
-                for (int j = 0; j < img.Width; j++)
-                {
-                    Vec3b color = mat.Get<Vec3b>(i, j);
-                    color.Item0 = 0;
-                    color.Item1 = 0;
-                    color.Item2 = 0;
-                    indexer[i, j] = color;
-                }
-            }
-
-            int x1 = (int)rectSelectArea.X;
-            int x2 = (int)rectSelectArea.X + (int)rectSelectArea.RectangleWidth;
-            int y1 = (int)rectSelectArea.Y;
-            int y2 = (int)rectSelectArea.Y + (int)rectSelectArea.RectangleHeight;
-            
-            for (int i = y1; i <= y2; i++)
-            {
-                for (int j = x1; j <= x2; j++)
-                {
-                    actualColor = img.GetPixel(j, i);
-                    if (actualColor.A == 0)
-                    {
-                        Vec3b color = mat.Get<Vec3b>(i, j);
-                        color.Item0 = 2;
-                        color.Item1 = 2;
-                        color.Item2 = 2;
-                        indexer[i, j] = color;
-                    }
-                        
-                    else if(actualColor.R == 255 && actualColor.G == 0 && actualColor.B == 0)
-                    {
-                        Vec3b color = mat.Get<Vec3b>(i, j);
-                        color.Item0 = 0;
-                        color.Item1 = 0;
-                        color.Item2 = 0;
-                        indexer[i, j] = color;
-                    }
-
-                    else if (actualColor.R == 124 && actualColor.G == 252 && actualColor.B == 0)
-                    {
-                        Vec3b color = mat.Get<Vec3b>(i, j);
-                        color.Item0 = 1;
-                        color.Item1 = 1;
-                        color.Item2 = 1;
-                        indexer[i, j] = color;
-                    }
-
-                    else
-                    {
-                        Vec3b color = mat.Get<Vec3b>(i, j);
-                        color.Item0 = 3;
-                        color.Item1 = 3;
-                        color.Item2 = 3;
-                        indexer[i, j] = color;
-                    }
-
-
-                }
-            }
-
-            (this.DataContext as DrawerViewModel).drawMask = mat;
-
-        }
-
-        private void Button_Click_3(object sender, RoutedEventArgs e)
-        {
-            CreateSaveBitmap(cnvInk);
-        }
-
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-            cnvInk.Children.Remove(p);
-            cnvInk.Strokes.Clear();
-            GrabCutMask();
-        }
-
-        private void UserControl_KeyUp(object sender, KeyEventArgs e)
-        {
-            cnvInk = (this.DataContext as DrawerViewModel).MyInkCanvas;
-            Console.WriteLine("MYINKCANVAS");
+            //cnvInk.Children.RemoveAt(cnvInk.Children.Count);
+            Console.WriteLine(cnvInk.Children.Count);
         }
     }
 }
