@@ -1959,20 +1959,7 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-
-            //pFull.StrokeThickness = 1;
-            //pFull.Stroke = System.Windows.Media.Brushes.Blue;
-            //pFull.Fill = System.Windows.Media.Brushes.LightBlue;
-            //pFull.Opacity = 0.4;
-            //pFull.Points = pointsFull;
-            //pFull.IsHitTestVisible = false;
-            //MyInkCanvas.Children.Add(p);
             
-
-
-            Polygon polygon = new Polygon();
-            polygon.Points = pointsFull;
-
             polygonsCollection.Add(new Polygon());
 
             foreach (var q in PixelRectangles)
@@ -2048,13 +2035,8 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
 
-            pFull.StrokeThickness = 1;
-            pFull.Stroke = System.Windows.Media.Brushes.Blue;
-            pFull.Fill = System.Windows.Media.Brushes.LightBlue;
-            pFull.Opacity = 0.4;
-            pFull.IsHitTestVisible = false;
-            pFull.Points = pointsFull;
-            //MyInkCanvas.Children.Add(pFull);
+            polygonsCollection.RemoveAt(polygonsCollection.Count - 1);
+            polygonsCollection.Add(new Polygon());
 
             foreach (var q in PixelRectangles)
             {
