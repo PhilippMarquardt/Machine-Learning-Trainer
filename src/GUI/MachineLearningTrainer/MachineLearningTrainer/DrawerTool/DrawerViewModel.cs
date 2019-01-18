@@ -1967,11 +1967,13 @@ namespace MachineLearningTrainer.DrawerTool
             //pFull.Points = pointsFull;
             //pFull.IsHitTestVisible = false;
             //MyInkCanvas.Children.Add(p);
+            
+
 
             Polygon polygon = new Polygon();
             polygon.Points = pointsFull;
 
-            polygonsCollection.Add(polygon);
+            polygonsCollection.Add(new Polygon());
 
             foreach (var q in PixelRectangles)
             {

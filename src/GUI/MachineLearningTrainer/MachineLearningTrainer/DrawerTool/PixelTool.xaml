@@ -299,6 +299,7 @@
                                         <Setter Property="Opacity" Value="0.4"/>
                                         <Setter Property="StrokeThickness" Value="1"/>
                                         <Setter Property="Fill" Value="LightBlue"/>
+                                        <Setter Property="Points" Value="{Binding pointsFull}"/>
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
                             </ItemsControl>
