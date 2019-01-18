@@ -1893,6 +1893,34 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void GrabCut()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
+
+            BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            Bitmap src;
+
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new JpegBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                Bitmap bitmap = new Bitmap(outStream);
+
+                src = new Bitmap(bitmap);
+            }
+
+            var rec = PixelRectangles[PixelRectangles.Count - 1];
+
+            double RECX = rec.X;
+            double RECY = rec.Y;
+            double RECH = rec.RectangleHeight;
+            double RECW = rec.RectangleWidth;
+
+            Mat mat = SupportCode.ConvertBmp2Mat(src);
+            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+            Mat croppedImage = new Mat(mat, rectCrop);
+            image = croppedImage;
+            cropOrNot = 1;
+
             var rectSelectArea = PixelRectangles[PixelRectangles.Count - 1];
             //var lastRectangle = new ResizableRectangle();
             //if (PixelRectangles.Count >=2)
@@ -1909,33 +1937,29 @@ namespace MachineLearningTrainer.DrawerTool
 
             if(cropOrNot == 0)
             {
-                BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-                Bitmap src;
+                BitmapImage bImage1 = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+                Bitmap src1;
 
                 using (MemoryStream outStream = new MemoryStream())
                 {
                     BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
+                    enc.Frames.Add(BitmapFrame.Create(bImage1));
                     enc.Save(outStream);
                     Bitmap bitmap = new Bitmap(outStream);
 
-                    src = new Bitmap(bitmap);
+                    src1 = new Bitmap(bitmap);
                 }
 
 
-                image = SupportCode.ConvertBmp2Mat(src);
+                image = SupportCode.ConvertBmp2Mat(src1);
             }
 
             Mat mask = new Mat();
 
             Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
             Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            
             Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithRect);
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine(elapsedMs + " ms");
             Cv2.Threshold(mask, mask, 2, 255, ThresholdTypes.Binary & ThresholdTypes.Otsu);
             OpenCvSharp.Point[][] contours;
             HierarchyIndex[] hierarchy;
@@ -1971,11 +1995,15 @@ namespace MachineLearningTrainer.DrawerTool
             
             _rectOrMask++;
             OnPropertyChanged("polygonsCollection");
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine(elapsedMs + " ms");
 
         }
 
         public async void GrabCutMask()
         {
+            var watch = System.Diagnostics.Stopwatch.StartNew();
             var rectSelectArea = PixelRectangles[PixelRectangles.Count - 1];
 
             int x1 = (int)rectSelectArea.X;
@@ -2000,12 +2028,8 @@ namespace MachineLearningTrainer.DrawerTool
             Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
             Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
 
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            
             Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithMask);
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine(elapsedMs + " ms");
-
             Mat mask1 = new Mat();
             Mat mask2 = new Mat();
 
@@ -2045,13 +2069,15 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
             OnPropertyChanged("polygonsCollection");
-                
+            watch.Stop();
+            var elapsedMs = watch.ElapsedMilliseconds;
+            Console.WriteLine(elapsedMs + " ms");
+
         }
         
         private async Task CreateSaveBitmap(InkCanvas canvas, System.Windows.Rect rectangle)
         {
-
-            var watch = System.Diagnostics.Stopwatch.StartNew();
+            
             RenderTargetBitmap rtb = new RenderTargetBitmap((int)canvas.RenderSize.Width, (int)canvas.RenderSize.Height, 96d, 96d, PixelFormats.Default);
             rtb.Render(canvas);
             var crop = new CroppedBitmap(rtb, new Int32Rect((int)rectangle.X, (int)rectangle.Y, (int)rectangle.Width, (int)rectangle.Height));
@@ -2061,11 +2087,6 @@ namespace MachineLearningTrainer.DrawerTool
             
             MemoryStream stream = new MemoryStream();
             pngEncoder.Save(stream);
-
-            
-            watch.Stop();
-            var elapsedMs = watch.ElapsedMilliseconds;
-            Console.WriteLine(elapsedMs + " ms render");
 
             Bitmap img = new Bitmap(stream);
             int width = (int)MyPreview.ActualWidth;
@@ -2081,7 +2102,6 @@ namespace MachineLearningTrainer.DrawerTool
 
             var mat = new Mat(img.Height, img.Width, MatType.CV_8U, Scalar.White);
             var indexer = mat.GetGenericIndexer<Vec3b>();
-            Console.WriteLine(indexer[0, 0]);
 
             for (int i = 0; i < img.Height; i++)
             {

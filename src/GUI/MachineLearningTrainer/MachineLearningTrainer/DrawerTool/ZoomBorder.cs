@@ -277,7 +277,7 @@
 
         }
 
-        private void Child_MouseDown(object sender, MouseButtonEventArgs e)
+        public void Child_MouseDown(object sender, MouseButtonEventArgs e)
         {
 
             if (e.MiddleButton == MouseButtonState.Pressed)

@@ -203,45 +203,9 @@
                 <RowDefinition Height="auto" x:Name="gridY2"/>
             </Grid.RowDefinitions>
 
-            <Canvas Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
+            <Canvas Width="{Binding ActualWidth, ElementName=previous_btn}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
 
-                <StackPanel>
-                    <WrapPanel x:Name="WrapPanel_FileExplorer" Width="auto" MouseEnter="WrapPanel_FileExplorer_MouseEnter" MouseLeave="WrapPanel_FileExplorer_MouseLeave">
-                        <Rectangle x:Name="Rectangle_FileExplorer" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
-                        <Button x:Name="Button_FileExplorer" Style="{StaticResource BasicButtonStyle}" Content="File Explorer" HorizontalAlignment="Center" Margin="1" Height="25" 
-                                Click="Button_Click_2" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
-                            <Button.LayoutTransform>
-                                <RotateTransform Angle="90"/>
-                            </Button.LayoutTransform>
-                        </Button>
-                    </WrapPanel>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="Crop" HorizontalAlignment="Center" Margin="1" Height="25" 
-                                Click="Button_Crop" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </Button.LayoutTransform>
-                    </Button>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="Finish" HorizontalAlignment="Center" Margin="1" Height="25" 
-                                Click="Button_Finish" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </Button.LayoutTransform>
-                    </Button>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="Draw All" HorizontalAlignment="Center" Margin="1" Height="25" 
-                                Click="Button_Click" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </Button.LayoutTransform>
-                    </Button>
-                    <Button Style="{StaticResource BasicButtonStyle}" Content="Remove" HorizontalAlignment="Center" Margin="1" Height="25" 
-                                Click="Button_Click_1" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" TextOptions.TextRenderingMode="Auto">
-                        <Button.LayoutTransform>
-                            <RotateTransform Angle="90"/>
-                        </Button.LayoutTransform>
-                    </Button>
-                </StackPanel>
-
-                <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                <Button x:Name="previous_btn" Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
                     <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
                 </Button>
 
@@ -281,7 +245,7 @@
                                 MouseMove="ImgCamera_MouseMove"
                                 MouseUp="ImgCamera_MouseUp">
                         <Image x:Name="imgPreview" Source="{Binding ImagePath}"  Width="auto" Height="auto" ClipToBounds="True"/>
-                        <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False" Background="Transparent">
+                        <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False" Background="Transparent" MouseRightButtonUp="cnvInk_PreviewMouseRightButtonUp">
                             <InkCanvas.DefaultDrawingAttributes>
                                 <DrawingAttributes Width="5" Height="5" Color="LawnGreen" FitToCurve="True" StylusTip="Ellipse"/>
                             </InkCanvas.DefaultDrawingAttributes>
@@ -295,7 +259,6 @@
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="Polygon">
                                         <Setter Property="Stroke" Value="Blue" />
-                                        <Setter Property="Fill" Value="LightBlue"/>
                                         <Setter Property="Opacity" Value="0.4"/>
                                         <Setter Property="StrokeThickness" Value="1"/>
                                         <Setter Property="Fill" Value="LightBlue"/>
