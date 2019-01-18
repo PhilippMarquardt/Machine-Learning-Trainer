@@ -12,6 +12,7 @@
              d:DesignHeight="1080" d:DesignWidth="1920"
              Loaded="UserControl_Loaded"
              KeyUp="UserControl_KeyUp">
+
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -25,6 +26,7 @@
     </UserControl.Triggers>
 
     <UserControl.Resources>
+        
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
 
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
@@ -85,10 +87,12 @@
 
     <DockPanel>
         <Menu DockPanel.Dock="Top">
+            
             <MenuItem
                 Height="25"
                 Margin="5"
                 Header="File">
+                
                 <MenuItem
                     Width="300"
                     Command="{Binding LoadImageCommand}"
@@ -98,7 +102,9 @@
                         <Image Source="/Icons/loadimg.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <Separator />
+                
                 <MenuItem
                     Command="{Binding AddRectangle}"
                     Header="Rectangle"
@@ -108,7 +114,9 @@
                         <Image Source="/Icons/new.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <Separator />
+                
                 <MenuItem
                     Command="{Binding ExportPascalVoc}"
                     Header="Export to XML"
@@ -118,6 +126,7 @@
                         <Image Source="/Icons/save.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <MenuItem
                     Command="{Binding LoadXMLCommand}"
                     Header="Load XML"
@@ -126,11 +135,14 @@
                         <Image Source="/Icons/loadxml.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
             </MenuItem>
+            
             <MenuItem
                 Height="25"
                 Margin="5"
                 Header="Edit">
+                
                 <MenuItem
                     Width="250"
                     Command="{Binding UndoCommand}"
@@ -141,6 +153,7 @@
                         <Image Source="/Icons/undo.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <MenuItem
                     Width="250"
                     Command="{Binding RedoCommand}"
@@ -151,11 +164,14 @@
                         <Image Source="/Icons/redo.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
             </MenuItem>
+            
             <MenuItem
                 Height="25"
                 Margin="5"
                 Header="View">
+                
                 <MenuItem
                     Width="300"
                     Click="MenuItem_ZoomIn"
@@ -166,6 +182,7 @@
                         <Image Source="/Icons/zoom_in.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <MenuItem
                     Click="MenuItem_ZoomOut"
                     Header="Zoom  out"
@@ -175,7 +192,9 @@
                         <Image Source="/Icons/zoom_out.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
                 <Separator />
+                
                 <MenuItem
                     Click="MenuItem_Reset"
                     Header="Fit to width"
@@ -185,9 +204,10 @@
                         <Image Source="/Icons/fit.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+                
             </MenuItem>
+            
         </Menu>
-
 
         <Grid x:Name="NotMainGrid">
             <Grid.ColumnDefinitions>
@@ -203,59 +223,80 @@
                 <RowDefinition Height="auto" x:Name="gridY2"/>
             </Grid.RowDefinitions>
 
-            <Canvas Width="{Binding ActualWidth, ElementName=previous_btn}" Grid.Column="0" Panel.ZIndex="1" Grid.Row="0" Grid.RowSpan="4">
+            <Canvas Width="{Binding ActualWidth, ElementName=previous_btn}" 
+                    Grid.Column="0" 
+                    Panel.ZIndex="1" 
+                    Grid.Row="0" 
+                    Grid.RowSpan="4">
 
-                <Button x:Name="previous_btn" Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                <Button x:Name="previous_btn" 
+                        Canvas.Bottom="0" 
+                        Margin="1" 
+                        Background="White" 
+                        Command="{Binding PreviousPage}" 
+                        Height="25" 
+                        Width="25" 
+                        Style="{StaticResource IncreaseOpacityOnHover}" 
+                        Opacity="0.3">
                     <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
                 </Button>
 
             </Canvas>
+            
+            <Border Grid.Column="3" 
+                    Panel.ZIndex="0" 
+                    Grid.Row="0" 
+                    Grid.RowSpan="4"
+                    Grid.ColumnSpan="1" 
+                    BorderBrush="Gray" 
+                    BorderThickness="1.5">
+                
+                <local:ZoomBorder x:Name="zoomBorder"  
+                                  Background="LightGray" 
+                                  ClipToBounds="True">
 
-            <Grid x:Name="gridcolumn1" Grid.Column="3" Grid.Row="0" Grid.RowSpan="4" Width="auto" HorizontalAlignment="Left" Panel.ZIndex="3" Background="White">
+                    <Canvas x:Name="cnvImage" 
+                            ClipToBounds="True" 
+                            Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                            Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                            MouseDown="ImgCamera_MouseDown"
+                            MouseMove="ImgCamera_MouseMove"                                
+                            MouseUp="ImgCamera_MouseUp">
+                        
+                        <Image x:Name="imgPreview" 
+                               Source="{Binding ImagePath}"  
+                               Width="auto" 
+                               Height="auto" 
+                               ClipToBounds="True"/>
+                        
+                        <InkCanvas x:Name="cnvInk" 
+                                   Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                                   Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                                   IsEnabled="False" 
+                                   Background="Transparent" 
+                                   MouseRightButtonUp="cnvInk_PreviewMouseRightButtonUp">
 
-                <StackPanel x:Name="FolderView_Panel" Visibility="Collapsed" Width="auto" MinWidth="160">
-                    <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
-                        <TextBlock Text="File Explorer" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-                    </Grid>
-                    <TreeView x:Name="FolderView" Height="700" ScrollViewer.VerticalScrollBarVisibility="Auto" Margin="10" MinWidth="160" HorizontalAlignment="Stretch" Width="auto" BorderBrush="Gray" BorderThickness="0.5" Padding="10">
-                        <TreeView.Resources>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <Setter Property="HeaderTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Image Width="20" Margin="3" Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}},
-                                                Path=Tag,Converter={x:Static local:HeaderToImageConverter.Instance}}" />
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding}"/>
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </TreeView.Resources>
-                    </TreeView>
-                </StackPanel>
-            </Grid>
-
-            <Border Grid.Column="3" Panel.ZIndex="0" Grid.Row="0" Grid.RowSpan="4" Grid.ColumnSpan="1" BorderBrush="Gray" BorderThickness="1.5">
-                <local:ZoomBorder x:Name="zoomBorder"  Background="LightGray" ClipToBounds="True">
-
-                    <Canvas x:Name="cnvImage" ClipToBounds="True" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" 
-                                MouseDown="ImgCamera_MouseDown"
-                                MouseMove="ImgCamera_MouseMove"
-                                MouseUp="ImgCamera_MouseUp">
-                        <Image x:Name="imgPreview" Source="{Binding ImagePath}"  Width="auto" Height="auto" ClipToBounds="True"/>
-                        <InkCanvas x:Name="cnvInk" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" IsEnabled="False" Background="Transparent" MouseRightButtonUp="cnvInk_PreviewMouseRightButtonUp">
                             <InkCanvas.DefaultDrawingAttributes>
-                                <DrawingAttributes Width="5" Height="5" Color="LawnGreen" FitToCurve="True" StylusTip="Ellipse"/>
+                                <DrawingAttributes Width="5" 
+                                                   Height="5" 
+                                                   Color="LawnGreen" 
+                                                   FitToCurve="True" 
+                                                   StylusTip="Ellipse"/>
                             </InkCanvas.DefaultDrawingAttributes>
 
-                            <ItemsControl ItemsSource="{Binding polygonsCollection}" Background="Transparent" x:Name="ad" VerticalAlignment="Center" HorizontalAlignment="Center" Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}">
+                            <ItemsControl ItemsSource="{Binding polygonsCollection}" 
+                                          Background="Transparent" 
+                                          VerticalAlignment="Center" 
+                                          HorizontalAlignment="Center" 
+                                          Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                                          Height="{Binding ActualHeight, ElementName=imgPreview}">
+                                
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas/>
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
+                                
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="Polygon">
                                         <Setter Property="Stroke" Value="Blue" />
@@ -265,14 +306,22 @@
                                         <Setter Property="Points" Value="{Binding pointsFull}"/>
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
+                                
                             </ItemsControl>
-                            <ItemsControl Width="{Binding ActualWidth, ElementName=imgPreview}" Height="{Binding ActualHeight, ElementName=imgPreview}" HorizontalAlignment="Center"
-                                          VerticalAlignment="Center" Background="Transparent" ItemsSource="{Binding PixelRectangles}">
+                            
+                            <ItemsControl Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                                          Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" 
+                                          Background="Transparent" 
+                                          ItemsSource="{Binding PixelRectangles}">
+                                
                                 <ItemsControl.ItemsPanel>
                                     <ItemsPanelTemplate>
                                         <Canvas />
                                     </ItemsPanelTemplate>
                                 </ItemsControl.ItemsPanel>
+                                
                                 <ItemsControl.ItemContainerStyle>
                                     <Style TargetType="local:ResizableRectangle">
                                         <Setter Property="Canvas.Left" Value="{Binding X}" />
@@ -285,11 +334,19 @@
                                         <Setter Property="ResizeThumbColor" Value="{Binding DataContext.ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     </Style>
                                 </ItemsControl.ItemContainerStyle>
+                                
                             </ItemsControl>
+                            
                         </InkCanvas>
+                        
                     </Canvas>
+                    
                 </local:ZoomBorder>
+                
             </Border>
+            
         </Grid>
+        
     </DockPanel>
+    
 </UserControl>
