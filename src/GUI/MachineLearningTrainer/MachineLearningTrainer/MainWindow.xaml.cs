@@ -23,14 +23,14 @@ namespace MachineLearningTrainer
     {
         public MainWindow()
         {
-            if (LicensingWindow.LicenseChecker.IsLicenseActivated())
-            {
-                LicensingWindow.MainWindow licensingWindow = new LicensingWindow.MainWindow();
-                licensingWindow.ShowDialog();
-                Application.Current.Shutdown();
-            }
-            else
-            {
+            //if (LicensingWindow.LicenseChecker.IsLicenseActivated())
+            //{
+            //    LicensingWindow.MainWindow licensingWindow = new LicensingWindow.MainWindow();
+            //    licensingWindow.ShowDialog();
+            //    Application.Current.Shutdown();
+            //}
+            //else
+            //{
 
                 InitializeComponent();
                 WelcomePage page = new WelcomePage();
@@ -42,7 +42,7 @@ namespace MachineLearningTrainer
 
                 // if (viewModel.RightTransition.CanExecute(null))
                 //    viewModel.RightTransition.Execute(null);
-            }
+            //}
 
         }
 
