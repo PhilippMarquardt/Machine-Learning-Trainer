@@ -22,6 +22,7 @@ using System.Xml;
 using System.Threading;
 using System.Windows.Shapes;
 using System.Windows.Ink;
+using Brushes = System.Drawing.Brushes;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
@@ -1337,29 +1338,29 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="resizable"></param>
         public void UpdateCropedImage(ResizableRectangle resizable)
         {
-            if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5 && AnnoToolMode == "Object") 
-            {
-                BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-                Bitmap src;
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+            //if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5 && AnnoToolMode == "Object") 
+            //{
+            //    BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            //    Bitmap src;
+            //    using (MemoryStream outStream = new MemoryStream())
+            //    {
+            //        BitmapEncoder enc = new BmpBitmapEncoder();
+            //        enc.Frames.Add(BitmapFrame.Create(bImage));
+            //        enc.Save(outStream);
+            //        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                    src = new Bitmap(bitmap);
-                }
+            //        src = new Bitmap(bitmap);
+            //    }
 
-                if (resizable.X > 0 && resizable.X + resizable.RectangleWidth < MyCanvas.ActualWidth && resizable.Y > 0 && resizable.Y + resizable.RectangleHeight < MyCanvas.ActualHeight)
-                {
-                    Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
+            //    if (resizable.X > 0 && resizable.X + resizable.RectangleWidth < MyCanvas.ActualWidth && resizable.Y > 0 && resizable.Y + resizable.RectangleHeight < MyCanvas.ActualHeight)
+            //    {
+            //        Mat mat = SupportCode.ConvertBmp2Mat(src);
+            //        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
 
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-                }
-            }
+            //        Mat croppedImage = new Mat(mat, rectCrop);
+            //        resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+            //    }
+            //}
                 
         }
 
@@ -1384,47 +1385,47 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public async Task cropImageLabelBegin()
         {
-            if (MyPreview.Source != null)
-            {
-                BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-                Bitmap src;
+            //if (MyPreview.Source != null)
+            //{
+            //    BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            //    Bitmap src;
 
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+            //    using (MemoryStream outStream = new MemoryStream())
+            //    {
+            //        BitmapEncoder enc = new BmpBitmapEncoder();
+            //        enc.Frames.Add(BitmapFrame.Create(bImage));
+            //        enc.Save(outStream);
+            //        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                    src = new Bitmap(bitmap);
-                }
+            //        src = new Bitmap(bitmap);
+            //    }
 
-                foreach (var rec in AllRectanglesView)
-                {
+            //    foreach (var rec in AllRectanglesView)
+            //    {
 
-                    if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
-                    {
-                        double RECX = rec.X;
-                        double RECY = rec.Y;
-                        double RECH = rec.RectangleHeight;
-                        double RECW = rec.RectangleWidth;
-                        RECI = rec.CroppedImage;
+            //        if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
+            //        {
+            //            double RECX = rec.X;
+            //            double RECY = rec.Y;
+            //            double RECH = rec.RectangleHeight;
+            //            double RECW = rec.RectangleWidth;
+            //            RECI = rec.CroppedImage;
 
-                        await Task.Run(() =>
-                        {
+            //            await Task.Run(() =>
+            //            {
                             
-                            Mat mat = SupportCode.ConvertBmp2Mat(src);
-                            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+            //                Mat mat = SupportCode.ConvertBmp2Mat(src);
+            //                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
 
-                            Mat croppedImage = new Mat(mat, rectCrop);
-                            RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
-                        });
+            //                Mat croppedImage = new Mat(mat, rectCrop);
+            //                RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
+            //            });
 
-                        rec.CroppedImage = RECI;
-                        OnPropertyChanged("CroppedImage");
-                    }
-                }
-            }
+            //            rec.CroppedImage = RECI;
+            //            OnPropertyChanged("CroppedImage");
+            //        }
+            //    }
+            //}
         }
 
         private ICommand _updatePreviewsCommand;
@@ -1441,44 +1442,44 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public async Task UpdatePreviews()
         {
-            BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-            Bitmap src;
+            //BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            //Bitmap src;
 
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new BmpBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bImage));
-                enc.Save(outStream);
-                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+            //using (MemoryStream outStream = new MemoryStream())
+            //{
+            //    BitmapEncoder enc = new BmpBitmapEncoder();
+            //    enc.Frames.Add(BitmapFrame.Create(bImage));
+            //    enc.Save(outStream);
+            //    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                src = new Bitmap(bitmap);
-            }
+            //    src = new Bitmap(bitmap);
+            //}
 
-            foreach (var rec in AllRectanglesView)
-            {
-                if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
-                {
-                    rec.CroppedImage = null;
-                    double RECX = rec.X;
-                    double RECY = rec.Y;
-                    double RECH = rec.RectangleHeight;
-                    double RECW = rec.RectangleWidth;
-                    RECI = rec.CroppedImage;
+            //foreach (var rec in AllRectanglesView)
+            //{
+            //    if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
+            //    {
+            //        rec.CroppedImage = null;
+            //        double RECX = rec.X;
+            //        double RECY = rec.Y;
+            //        double RECH = rec.RectangleHeight;
+            //        double RECW = rec.RectangleWidth;
+            //        RECI = rec.CroppedImage;
 
-                    await Task.Run(() =>
-                    {
+            //        await Task.Run(() =>
+            //        {
 
-                        Mat mat = SupportCode.ConvertBmp2Mat(src);
-                        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+            //            Mat mat = SupportCode.ConvertBmp2Mat(src);
+            //            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
 
-                        Mat croppedImage = new Mat(mat, rectCrop);
-                        RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
-                    });
+            //            Mat croppedImage = new Mat(mat, rectCrop);
+            //            RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
+            //        });
 
-                    rec.CroppedImage = RECI;
-                    OnPropertyChanged("CroppedImage");
-                }
-            }
+            //        rec.CroppedImage = RECI;
+            //        OnPropertyChanged("CroppedImage");
+            //    }
+            //}
         }
 
         #region KeyArrowCommands
@@ -1887,7 +1888,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         public Mat image { get; set; } = new Mat();
-
+        
         //if 0, no crop. if 1, crop.
         public int cropOrNot { get; set; } = 0;
 
@@ -1983,7 +1984,7 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-            
+
             polygonsCollection.Add(new Polygon());
 
             foreach (var q in PixelRectangles)
@@ -1991,8 +1992,8 @@ namespace MachineLearningTrainer.DrawerTool
                 q.RectangleMovable = false;
                 q.Visibility = Visibility.Collapsed;
             }
-            
-            
+
+
             _rectOrMask++;
             OnPropertyChanged("polygonsCollection");
             watch.Stop();
@@ -2028,7 +2029,7 @@ namespace MachineLearningTrainer.DrawerTool
             Cv2.CvtColor(image, image, ColorConversionCodes.BGR2RGB);
             Cv2.CvtColor(image, image, ColorConversionCodes.RGB2BGR);
 
-            
+
             Cv2.GrabCut(image, mask, rect, bgdModel, fgdModel, 1, GrabCutModes.InitWithMask);
             Mat mask1 = new Mat();
             Mat mask2 = new Mat();
@@ -2193,6 +2194,115 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private InkCanvas _inkCanvas;
+
+        public InkCanvas inkCanvas
+        {
+            get
+            {
+                return _inkCanvas;
+            }
+            set
+            {
+                _inkCanvas = value;
+                OnPropertyChanged("inkCanvas");
+            }
+        }
+
+        private ICommand _preprocessFolderCommand;
+        public ICommand PreprocessFolderCommand
+        {
+            get
+            {
+                return _preprocessFolderCommand ?? (_preprocessFolderCommand = new CommandHandler(() => PreprocessFolder(), _canExecute));
+            }
+        }
+
+        private bool showMessageBox;
+
+        public void PreprocessFolder()
+        {
+            showMessageBox = false;
+            using (var fbd = new System.Windows.Forms.FolderBrowserDialog())
+            {
+                System.Windows.Forms.DialogResult result = fbd.ShowDialog();
+
+                if (result == System.Windows.Forms.DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    string folderPath = fbd.SelectedPath;
+                    string croppedImageFolder = System.IO.Path.Combine(folderPath, "Cropped Images");
+                    
+                    Directory.CreateDirectory(croppedImageFolder);
+                    
+                    string[] files = Directory.GetFiles(fbd.SelectedPath);
+                    int found = 0;
+                    
+                    foreach (var file in files)
+                    {
+                        if (file.Contains(".png") || file.Contains(".tif"))
+                        {
+                            string s = file.ToString();
+
+                            found = s.IndexOf(folderPath);
+
+                            string filename = s.Substring(found + folderPath.Length);
+                            string destFileName = filename.Remove(filename.LastIndexOf('.'));
+
+
+
+                            BitmapImage src = new BitmapImage();
+                            src.BeginInit();
+                            src.UriSource = new Uri(file, UriKind.Relative);
+                            src.CacheOption = BitmapCacheOption.OnLoad;
+                            src.EndInit();
+
+                            int width = (int)src.Width / 2;
+                            int height = (int)src.Height / 2;
+
+
+                            for (int i = 0; i < 2; i++)
+                                for (int j = 0; j < 2; j++)
+                                {
+                                    CroppedBitmap croppedBitmap = new CroppedBitmap(src, new Int32Rect(i * width, j * height, width, height));
+
+                                    if (file.ToString().Contains(".tif"))
+                                        TIFFEncoder(destFileName, croppedBitmap, i, j, croppedImageFolder);
+                                    else if (file.ToString().Contains(".png"))
+                                        PNGEncoder(destFileName, croppedBitmap, i, j, croppedImageFolder);
+                                }
+                        }
+                    }
+                }
+            }
+            if(showMessageBox == true)
+                MessageBox.Show("Successful!", "Preprocess Folder", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+        }
+
+        private void PNGEncoder(string file, CroppedBitmap croppedBitmap, int i, int j, string folder)
+        {
+            BitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(croppedBitmap));
+
+            string filename = folder +  file + j.ToString() + i.ToString() + ".png";
+            using (var fileStream = new FileStream(filename, FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
+            showMessageBox = true;
+        }
+
+        private void TIFFEncoder(string file, CroppedBitmap croppedBitmap, int i, int j, string folder)
+        {
+            BitmapEncoder encoder = new TiffBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(croppedBitmap));
+
+            string filename = folder + file + j.ToString() + i.ToString() + ".tif";
+            using (var fileStream = new FileStream(filename, FileMode.Create))
+            {
+                encoder.Save(fileStream);
+            }
+            showMessageBox = true;
+        }
     }
 
 }

@@ -13,18 +13,6 @@
              Loaded="UserControl_Loaded"
              KeyUp="UserControl_KeyUp">
 
-    <UserControl.Triggers>
-        <EventTrigger RoutedEvent="Loaded">
-            <BeginStoryboard>
-                <Storyboard>
-                    <DoubleAnimation
-                      Storyboard.TargetProperty="Opacity"
-                      From="0.0" To="1.0" Duration="0:0:1"/>
-                </Storyboard>
-            </BeginStoryboard>
-        </EventTrigger>
-    </UserControl.Triggers>
-
     <UserControl.Resources>
         
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
@@ -153,7 +141,7 @@
                         <Image Source="/Icons/undo.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                
+
                 <MenuItem
                     Width="250"
                     Command="{Binding RedoCommand}"
@@ -164,10 +152,8 @@
                         <Image Source="/Icons/redo.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                
-            </MenuItem>
-            
-            <MenuItem
+
+                <MenuItem
                 Height="25"
                 Margin="5"
                 Header="View">
@@ -262,13 +248,13 @@
                             MouseDown="ImgCamera_MouseDown"
                             MouseMove="ImgCamera_MouseMove"                                
                             MouseUp="ImgCamera_MouseUp">
-                        
+
                         <Image x:Name="imgPreview" 
                                Source="{Binding ImagePath}"  
                                Width="auto" 
                                Height="auto" 
                                ClipToBounds="True"/>
-                        
+
                         <InkCanvas x:Name="cnvInk" 
                                    Width="{Binding ActualWidth, ElementName=imgPreview}" 
                                    Height="{Binding ActualHeight, ElementName=imgPreview}" 

@@ -204,7 +204,8 @@ namespace MachineLearningTrainer
 
                 writer.WriteEndDocument();
                 writer.Close();
-                System.Windows.MessageBox.Show("Erfolgreich");
+                System.Windows.MessageBox.Show("Successful!", "Save to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
+
             }
             catch (Exception ex)
             {

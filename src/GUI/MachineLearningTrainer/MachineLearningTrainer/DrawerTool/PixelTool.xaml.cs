@@ -34,7 +34,8 @@ namespace MachineLearningTrainer.DrawerTool
         private System.Windows.Point startPoint;
         private ResizableRectangle rectSelectArea;
         private int colorFG { get; set; }
-        
+        public InkCanvas inkCanvas = new InkCanvas();
+
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
 
@@ -137,6 +138,21 @@ namespace MachineLearningTrainer.DrawerTool
                 (this.DataContext as DrawerViewModel).Enabled = true;
                 cnvImage.Cursor = Cursors.Arrow;
                 (this.DataContext as DrawerViewModel).RectOrMask = 0;
+                
+                //inkCanvas.Width = rectSelectArea.RectangleWidth;
+                //inkCanvas.Opacity = 0.3;
+
+                //inkCanvas.DefaultDrawingAttributes.Color = Colors.Purple;
+                //inkCanvas.Height = rectSelectArea.RectangleHeight;
+                //inkCanvas.Background = System.Windows.Media.Brushes.LawnGreen;
+                //inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+                //inkCanvas.IsEnabled = true;
+
+                //Canvas.SetLeft(inkCanvas, rectSelectArea.X);
+                //Canvas.SetTop(inkCanvas, rectSelectArea.Y);
+
+                //cnvImage.Children.Add(inkCanvas);
+
             }
         }
          
@@ -144,6 +160,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             cnvInk = (this.DataContext as DrawerViewModel).MyInkCanvas;
             var viewModel = (this.DataContext as DrawerViewModel);
+            viewModel.inkCanvas = inkCanvas;
 
             if (e.Key == Key.D)
             {
@@ -204,40 +221,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void Button_Crop(object sender, RoutedEventArgs e)
-        {
-            BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-            Bitmap src;
-
-            using (MemoryStream outStream = new MemoryStream())
-            {
-                BitmapEncoder enc = new JpegBitmapEncoder();
-                enc.Frames.Add(BitmapFrame.Create(bImage));
-                enc.Save(outStream);
-                Bitmap bitmap = new Bitmap(outStream);
-
-                src = new Bitmap(bitmap);
-            }
-
-            var rec = (this.DataContext as DrawerViewModel).PixelRectangles[(this.DataContext as DrawerViewModel).PixelRectangles.Count - 1];
-
-            double RECX = rec.X;
-            double RECY = rec.Y;
-            double RECH = rec.RectangleHeight;
-            double RECW = rec.RectangleWidth;
-
-
-            Mat mat = SupportCode.ConvertBmp2Mat(src);
-            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
-            Mat croppedImage = new Mat(mat, rectCrop);
-            (this.DataContext as DrawerViewModel).image = croppedImage;
-            
-            (this.DataContext as DrawerViewModel).cropOrNot = 1;
-
-            (this.DataContext as DrawerViewModel).GrabCut();
-            
-        }
-
         private void cnvInk_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
         {
             if (colorFG == 0)
@@ -254,6 +237,27 @@ namespace MachineLearningTrainer.DrawerTool
                 colorFG = 0;
             }
             
+        }
+
+        private void CreateSaveBitmap(InkCanvas canvas, string filename)
+        {
+            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
+             (int)canvas.Width, (int)canvas.Height,
+             96d, 96d, PixelFormats.Pbgra32);
+            // needed otherwise the image output is black
+            canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
+            canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
+
+            renderBitmap.Render(canvas);
+
+            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+            PngBitmapEncoder encoder = new PngBitmapEncoder();
+            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+            using (FileStream file = File.Create(filename))
+            {
+                encoder.Save(file);
+            }
         }
     }
 }

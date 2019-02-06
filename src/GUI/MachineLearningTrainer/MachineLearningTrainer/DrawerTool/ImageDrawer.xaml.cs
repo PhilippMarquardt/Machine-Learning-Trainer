@@ -163,24 +163,24 @@ namespace MachineLearningTrainer.DrawerTool
                     q.RectangleMovable = true;
                 (this.DataContext as DrawerViewModel).Enabled = true;
 
-                BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-                Bitmap src;
+                //BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+                //Bitmap src;
 
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+                //using (MemoryStream outStream = new MemoryStream())
+                //{
+                //    BitmapEncoder enc = new BmpBitmapEncoder();
+                //    enc.Frames.Add(BitmapFrame.Create(bImage));
+                //    enc.Save(outStream);
+                //    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                    src = new Bitmap(bitmap);
-                }
+                //    src = new Bitmap(bitmap);
+                //}
 
-                Mat mat = SupportCode.ConvertBmp2Mat(src);
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
-                Mat croppedImage = new Mat(mat, rectCrop);
+                //Mat mat = SupportCode.ConvertBmp2Mat(src);
+                //OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
+                //Mat croppedImage = new Mat(mat, rectCrop);
 
-                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                //rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
 
             }
 
