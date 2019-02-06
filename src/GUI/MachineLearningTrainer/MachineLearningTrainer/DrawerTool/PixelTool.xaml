@@ -152,11 +152,12 @@
                         <Image Source="/Icons/redo.png" />
                     </MenuItem.Icon>
                 </MenuItem>
+            </MenuItem>
 
-                <MenuItem
-                Height="25"
-                Margin="5"
-                Header="View">
+            <MenuItem
+            Height="25"
+            Margin="5"
+            Header="View">
                 
                 <MenuItem
                     Width="300"
