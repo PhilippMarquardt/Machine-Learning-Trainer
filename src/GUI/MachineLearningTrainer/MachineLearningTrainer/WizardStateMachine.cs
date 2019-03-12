@@ -98,8 +98,6 @@ namespace MachineLearningTrainer
 
                 {new StateTransition(ProcessState.ObjectClassificationSettings, Command.Previous), ProcessState.ClassificationDataSelection },
 
-                {new StateTransition(ProcessState.ObjectDetectionRetinanet, Command.Previous), ProcessState.ObjectDetectorDataSelection },
-
 
 
             };

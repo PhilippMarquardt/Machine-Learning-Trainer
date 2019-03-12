@@ -100,10 +100,12 @@
 
         </StackPanel>
         <WrapPanel Grid.Row="1" HorizontalAlignment="Right">
-            
+            <materialDesign:Card Margin="10" Padding="10">
+                <Button Command="{Binding OnRunRetinanetClick}" Style="{StaticResource BasicButtonStyle}" Content="Start the training"/>
+            </materialDesign:Card>
 
             <materialDesign:Card Margin="10" Padding="10">
-                <Button Command="{Binding OnRunResnetClick}" Style="{StaticResource BasicButtonStyle}" Content="Start training"/>
+                <Button Command="{Binding OnRunDebugClick}" Style="{StaticResource BasicButtonStyle}" Content="Debug Data"/>
             </materialDesign:Card>
         </WrapPanel>
         <Button

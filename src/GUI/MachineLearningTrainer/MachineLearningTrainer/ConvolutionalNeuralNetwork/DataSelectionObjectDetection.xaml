@@ -108,7 +108,7 @@
                 </Button>
 
 
-                <!--<TextBlock
+                <TextBlock
                     Grid.Row="1"
                     Grid.Column="0"
                     VerticalAlignment="Center"
@@ -125,7 +125,7 @@
                     Foreground="#FF2196F3"
                     Style="{StaticResource BasicButtonStyle}">
                     <materialDesign:PackIcon Kind="Folder" />
-                </Button>-->
+                </Button>
 
                 <Button
                     Grid.Row="2"
