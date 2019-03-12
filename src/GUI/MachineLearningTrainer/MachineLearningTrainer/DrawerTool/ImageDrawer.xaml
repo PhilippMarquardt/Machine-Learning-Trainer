@@ -320,9 +320,9 @@
                     </WrapPanel>-->
                 </StackPanel>
 
-                <Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
+                <!--<Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
                     <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
-                </Button>
+                </Button>-->
 
             </Canvas>
 

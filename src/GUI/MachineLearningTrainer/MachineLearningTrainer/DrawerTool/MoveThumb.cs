@@ -32,19 +32,23 @@ namespace MachineLearningTrainer.DrawerTool
                 double left = Canvas.GetLeft(designerItem);
                 double top = Canvas.GetTop(designerItem);
 
-                Canvas.SetLeft(designerItem, left + e.HorizontalChange);
-                Canvas.SetTop(designerItem, top + e.VerticalChange);
                 if (rec != null)
                 {
-                    rec.X = rec.X + e.HorizontalChange;
-                    rec.Y = rec.Y + e.VerticalChange;
-                    //(this.DataContext as DrawerViewModel).MoveRectangle(rec);
-
-                   
-
-
-                    drawerviewmodel.SelectClickedRectangle(rec);
-                    drawerviewmodel.UpdateCropedImage(rec);
+                    double rXMin = rec.X + e.HorizontalChange;
+                    double rYMin = rec.Y + e.VerticalChange;
+                    double rXMax = rXMin + rec.RectangleWidth;
+                    double rYMax = rYMin + rec.RectangleHeight;
+                    if (rXMin >= 0 && rYMin >= 0 && rXMax <= drawerviewmodel.MyCanvas.ActualWidth && rYMax <= drawerviewmodel.MyCanvas.ActualHeight)
+                    {
+                        Canvas.SetLeft(designerItem, left + e.HorizontalChange);
+                        Canvas.SetTop(designerItem, top + e.VerticalChange);
+                        rec.X = rXMin;
+                        rec.Y = rYMin;
+                        //(this.DataContext as DrawerViewModel).MoveRectangle(rec);               
+                        
+                        drawerviewmodel.SelectClickedRectangle(rec);
+                        drawerviewmodel.UpdateCropedImage(rec);
+                    }
                 }
             }
         }

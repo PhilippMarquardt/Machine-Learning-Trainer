@@ -38,10 +38,10 @@ namespace MachineLearningTrainer
                 page.DataContext = viewModel;
                 MainGrid.Children.Add(page);
 
-                //Uncomment, if you want to use the whole program
+            //Uncomment, if you want to use the whole program
 
-                // if (viewModel.RightTransition.CanExecute(null))
-                //    viewModel.RightTransition.Execute(null);
+            if (viewModel.RightTransition.CanExecute(null))
+                viewModel.RightTransition.Execute(null);
             //}
 
         }

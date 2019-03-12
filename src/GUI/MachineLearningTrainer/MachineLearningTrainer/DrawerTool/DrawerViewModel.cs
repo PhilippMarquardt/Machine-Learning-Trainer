@@ -406,12 +406,18 @@ namespace MachineLearningTrainer.DrawerTool
 
             set
             {
-                _selectedResizableRectangle = value;
-                SelectedRectangleFill();
-                DeleteCommand.RaiseCanExecuteChanged();
-                DuplicateCommand.RaiseCanExecuteChanged();
-                DuplicateMenuCommand.RaiseCanExecuteChanged();
-                RenameCommand.RaiseCanExecuteChanged();
+                if(value != null)
+                {
+                    _selectedResizableRectangle = value;
+                    if (value.X < 0) _selectedResizableRectangle.X = 0;
+                    if (value.Y < 0) _selectedResizableRectangle.Y = 0;
+                    SelectedRectangleFill();
+                    DeleteCommand.RaiseCanExecuteChanged();
+                    DuplicateCommand.RaiseCanExecuteChanged();
+                    DuplicateMenuCommand.RaiseCanExecuteChanged();
+                    RenameCommand.RaiseCanExecuteChanged();
+                }
+                
             }
         }
 
@@ -425,10 +431,13 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 while(SelectedResizableRectangle != null)
                 {
-                    undoRectangles.Push(SelectedResizableRectangle);
-                    undoInformation.Push("Delete");
-                    AllRectangles.Remove(SelectedResizableRectangle);
-                    AllRectanglesView.Remove(SelectedResizableRectangle);
+                    if(undoRectangles != null)
+                    {
+                        undoRectangles.Push(SelectedResizableRectangle);
+                        undoInformation.Push("Delete");
+                        AllRectangles.Remove(SelectedResizableRectangle);
+                        AllRectanglesView.Remove(SelectedResizableRectangle);
+                    }
                 }
             }
 
@@ -1460,7 +1469,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void RightButton()
         {
-            if(SelectedResizableRectangle.RectangleWidth > 5)
+            if(SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleWidth > 5)
             {
                 SelectedResizableRectangle.X = SelectedResizableRectangle.X + 2;
                 SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
@@ -1482,7 +1491,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void LeftButton()
         {
-            if (SelectedResizableRectangle.RectangleWidth > 5)
+            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleWidth > 5)
             {
                 SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
                 UpdateCropedImage(SelectedResizableRectangle);
@@ -1500,7 +1509,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
         public void UpButton()
         {
-            if (SelectedResizableRectangle.RectangleHeight > 5)
+            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleHeight > 5)
             {
                 SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
                 UpdateCropedImage(SelectedResizableRectangle);
@@ -1519,7 +1528,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DownButton()
         {
-            if (SelectedResizableRectangle.RectangleHeight > 5)
+            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleHeight > 5)
             {
                 SelectedResizableRectangle.Y = SelectedResizableRectangle.Y + 2;
                 SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
@@ -1542,12 +1551,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void RightButton1()
         {
-            SelectedResizableRectangle.X = SelectedResizableRectangle.X - 2;
-            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 2;
-            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-            OnPropertyChanged("SelectedResizableRectangle");
-            UpdateCropedImage(SelectedResizableRectangle);
+            if(SelectedResizableRectangle != null && SelectedResizableRectangle.X > 1)
+            {
+                SelectedResizableRectangle.X = SelectedResizableRectangle.X - 2;
+                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 2;
+                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+                OnPropertyChanged("SelectedResizableRectangle");
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
         }
 
         private ICommand _leftButtonCommand1;
@@ -1561,8 +1573,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void LeftButton1()
         {
-            SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 2;
-            UpdateCropedImage(SelectedResizableRectangle);
+            if(SelectedResizableRectangle != null && SelectedResizableRectangle.X + SelectedResizableRectangle.RectangleWidth + 2 < MyCanvas.ActualWidth)
+            {
+                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 2;
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
         }
 
         private ICommand _upButtonCommand1;
@@ -1575,8 +1590,11 @@ namespace MachineLearningTrainer.DrawerTool
         }
         public void UpButton1()
         {
-            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 2;
-            UpdateCropedImage(SelectedResizableRectangle);
+            if(SelectedResizableRectangle != null && SelectedResizableRectangle.Y + SelectedResizableRectangle.RectangleHeight + 2 < MyCanvas.ActualHeight)
+            {
+                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 2;
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
         }
 
         private ICommand _downButtonCommand1;
@@ -1590,12 +1608,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DownButton1()
         {
-            SelectedResizableRectangle.Y = SelectedResizableRectangle.Y - 2;
-            SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 2;
-            Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-            Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-            OnPropertyChanged("SelectedResizableRectangle");
-            UpdateCropedImage(SelectedResizableRectangle);
+            if(SelectedResizableRectangle != null && SelectedResizableRectangle.Y > 1)
+            {
+                SelectedResizableRectangle.Y = SelectedResizableRectangle.Y - 2;
+                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 2;
+                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
+                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
+                OnPropertyChanged("SelectedResizableRectangle");
+                UpdateCropedImage(SelectedResizableRectangle);
+            }
         }
 
         #endregion
