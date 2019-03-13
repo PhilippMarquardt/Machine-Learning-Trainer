@@ -157,30 +157,34 @@ namespace MachineLearningTrainer.DrawerTool
             //(this.DataContext as DrawerViewModel).SortList();
             (this.DataContext as DrawerViewModel).ComboBoxNames();
 
-            if ((this.DataContext as DrawerViewModel).Enabled == false)
+            if ((this.DataContext as DrawerViewModel).Enabled == false && rectSelectArea != null)
             {
                 foreach (var q in (this.DataContext as DrawerViewModel).AllRectanglesView)
                     q.RectangleMovable = true;
                 (this.DataContext as DrawerViewModel).Enabled = true;
-
-                BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-                Bitmap src;
-
-                using (MemoryStream outStream = new MemoryStream())
+                var w = (int)rectSelectArea.RectangleWidth;
+                var h = (int)rectSelectArea.RectangleHeight;
+                if (w > 1 && h > 1)
                 {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+                    BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
+                    Bitmap src;
 
-                    src = new Bitmap(bitmap);
-                }
+                    using (MemoryStream outStream = new MemoryStream())
+                    {
+                        BitmapEncoder enc = new BmpBitmapEncoder();
+                        enc.Frames.Add(BitmapFrame.Create(bImage));
+                        enc.Save(outStream);
+                        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                Mat mat = SupportCode.ConvertBmp2Mat(src);
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
-                Mat croppedImage = new Mat(mat, rectCrop);
+                        src = new Bitmap(bitmap);
+                    }
 
-                rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                    Mat mat = SupportCode.ConvertBmp2Mat(src);
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
+                    Mat croppedImage = new Mat(mat, rectCrop);
+
+                    rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                }               
 
             }
 
@@ -537,7 +541,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
-            if((this.DataContext as DrawerViewModel).DuplicateVar == 0)
+            if((this.DataContext as DrawerViewModel).DuplicateVar == 0 || (this.DataContext as DrawerViewModel).CropModeChecked == true)
             {
                 zoomBorder.ZoomToRectangle();
             }

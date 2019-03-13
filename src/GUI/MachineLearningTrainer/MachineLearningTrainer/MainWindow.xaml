@@ -14,16 +14,17 @@
         ResizeMode="CanResizeWithGrip"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        WindowStyle="None"
         ShowInTaskbar="True"
-        Title="MachineLearningTrainer" Height="800" Width="800">
+        Title="MachineLearningTrainer" 
+        Icon="Icons/application_icon.ico"
+        Height="800" Width="800">
     <Grid>
-        <Grid.RowDefinitions>
+        <!--<Grid.RowDefinitions>
             <RowDefinition Height="0.05*"/>
             <RowDefinition Height="0.95*"/>
-        </Grid.RowDefinitions>
+        </Grid.RowDefinitions>-->
         <Grid x:Name="MainGrid" Grid.Row="1"/>
-        <WrapPanel Grid.Row="0" HorizontalAlignment="Right">
+        <!--<WrapPanel Grid.Row="0" HorizontalAlignment="Right">
             <Button x:Name="btnMinimize" VerticalAlignment="Center" Background="Transparent" Margin="1" VerticalContentAlignment="Bottom" Click="btnMinimize_Click">
                 <materialDesign:PackIcon Kind="WindowMinimize" Foreground="Black" VerticalContentAlignment="Bottom"/>
             </Button>
@@ -33,7 +34,7 @@
             <Button x:Name="btnClose" VerticalAlignment="Center" Background="Transparent" Margin="1" Click="btnClose_Click">
                 <materialDesign:PackIcon Kind="WindowClose" Foreground="Black"/>
             </Button>
-        </WrapPanel>
+        </WrapPanel>-->
 
 
 

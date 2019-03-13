@@ -14,7 +14,7 @@
         private UIElement child = null;
         public Point origin;
         private Point start;
-
+        
         private TranslateTransform GetTranslateTransform(UIElement element)
         {
             return (TranslateTransform)((TransformGroup)element.RenderTransform)
@@ -118,14 +118,18 @@
                     this.Reset();
                 }
 
-                if((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
+                if ((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
                 {
+                    var viewmodel = this.DataContext as DrawerViewModel;
                     var st = GetScaleTransform(child);
                     var tt = GetTranslateTransform(child);
-                    var viewmodel = this.DataContext as DrawerViewModel;
-                    tt.X = (viewmodel.MyPreview.ActualWidth / 2) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
-                    tt.Y = (viewmodel.MyPreview.ActualHeight / 2) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
-                    double zeroX = (viewmodel.ZoomBorderWidth - viewmodel.MyPreview.ActualWidth) / 2;
+              
+                    double devisionValueX = 2 * (viewmodel.MyPreview.ActualWidth / viewmodel.ZoomBorderWidth);
+                    double devisionValueY = 2 * (viewmodel.MyPreview.ActualHeight / viewmodel.ZoomBorderHeight);
+                    if (devisionValueX < 2) devisionValueX = 2;
+                    if (devisionValueY < 2) devisionValueY = 2;
+                    tt.X = (viewmodel.MyPreview.ActualWidth / devisionValueX) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
+                    tt.Y = (viewmodel.MyPreview.ActualHeight / devisionValueY) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
                 }
             }
         }
