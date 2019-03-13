@@ -541,7 +541,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
-            if((this.DataContext as DrawerViewModel).DuplicateVar == 0)
+            if((this.DataContext as DrawerViewModel).DuplicateVar == 0 || (this.DataContext as DrawerViewModel).CropModeChecked == true)
             {
                 zoomBorder.ZoomToRectangle();
             }
