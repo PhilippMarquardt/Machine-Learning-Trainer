@@ -1479,20 +1479,20 @@ namespace MachineLearningTrainer.DrawerTool
             //}
         }
 
-        private ICommand _updatePreviewsCommand;
-        public ICommand UpdatePreviewsCommand
-        {
-            get
-            {
-                return _updatePreviewsCommand ?? (_updatePreviewsCommand = new CommandHandler(() => UpdatePreviews(), _canExecute));
-            }
-        }
+        //private ICommand _updatePreviewsCommand;
+        //public ICommand UpdatePreviewsCommand
+        //{
+        //    get
+        //    {
+        //        return _updatePreviewsCommand ?? (_updatePreviewsCommand = new CommandHandler(() => UpdatePreviews(), _canExecute));
+        //    }
+        //}
 
         /// <summary>
         /// this method updates all cropped images in the list
         /// </summary>
-        public async Task UpdatePreviews()
-        {
+        //public async Task UpdatePreviews()
+        //{
             //BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
             //Bitmap src;
 
@@ -1531,7 +1531,7 @@ namespace MachineLearningTrainer.DrawerTool
             //        OnPropertyChanged("CroppedImage");
             //    }
             //}
-        }
+        //}
 
         #region KeyArrowCommands
 

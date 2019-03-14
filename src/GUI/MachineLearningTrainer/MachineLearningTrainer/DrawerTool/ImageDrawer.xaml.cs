@@ -188,10 +188,10 @@ namespace MachineLearningTrainer.DrawerTool
 
             }
 
-            else
-            {
-                await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
-            }
+            //else
+            //{
+            //    await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
+            //}
 
             if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
             {
