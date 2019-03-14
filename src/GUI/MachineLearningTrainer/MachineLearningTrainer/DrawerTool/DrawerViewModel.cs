@@ -1401,15 +1401,15 @@ namespace MachineLearningTrainer.DrawerTool
                     enc.Save(outStream);
                     System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-            //        src = new Bitmap(bitmap);
-            //    }
+                    src = new Bitmap(bitmap);
+                }
 
 
                 Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
+                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
 
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                Mat croppedImage = new Mat(mat, rectCrop);
+                resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
             }
                 
         }
