@@ -124,13 +124,13 @@ namespace MachineLearningTrainer
         //    }
         //}
 
-        #endregion
+        #endregion 
         public void SetNextState(Command command)
         {
             UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
             //set variable if we are on specific page..
             this._mainGrid.Children.Clear();
-            if (usc is ImageDrawer)
+            if (usc is ImageDrawer || usc is PixelTool)
             {
                 usc.DataContext = new DrawerViewModel(new DrawerModel(), this._mainModel, this._mainGrid, this);
             }

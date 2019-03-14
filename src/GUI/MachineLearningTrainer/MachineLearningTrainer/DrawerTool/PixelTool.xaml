@@ -1,0 +1,339 @@
+﻿<UserControl x:Class="MachineLearningTrainer.DrawerTool.PixelTool"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:MachineLearningTrainer.DrawerTool"
+             xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+             mc:Ignorable="d" 
+             Background="{DynamicResource MaterialDesignPaper}"
+             FontFamily="{DynamicResource MaterialDesignFont}"
+             Focusable="True"
+             d:DesignHeight="1080" d:DesignWidth="1920"
+             Loaded="UserControl_Loaded"
+             KeyUp="UserControl_KeyUp">
+
+    <UserControl.Resources>
+        
+        <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
+
+        <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Setter Property="Content" Value="Hello World"/>
+            <Setter Property="Background" Value="Transparent"/>
+            <Setter Property="Foreground" Value="#FF2196F3" />
+            <Setter Property="Margin" Value="10"/>
+        </Style>
+
+        <Style x:Key="IncreaseOpacityOnHover" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                              Storyboard.TargetProperty="Opacity"
+                              From="0.3" To="1.0" Duration="0:0:0.5"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="1.0" To="0.3" Duration="0:0:1"/>
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
+    </UserControl.Resources>
+
+    <UserControl.InputBindings>
+        <KeyBinding
+            Key="R"
+            Command="{Binding PixelDrawRectangleCommand}"/>
+        <KeyBinding
+            Key="D"
+            Command="{Binding PixelDrawCommand}"/>
+        <KeyBinding
+            Key="F"
+            Command="{Binding FGCommand}"/>
+        <KeyBinding
+            Key="B"
+            Command="{Binding BGCommand}"/>
+        <KeyBinding
+            Key="C"
+            Command="{Binding ResetMaskCommand}"/>
+        <KeyBinding
+            Key="G"
+            Command="{Binding GrabCutCommand}"/>
+        <KeyBinding
+            Key="S"
+            Command="{Binding StrokesCommand}"/>
+    </UserControl.InputBindings>
+
+    <DockPanel>
+        <Menu DockPanel.Dock="Top">
+            
+            <MenuItem
+                Height="25"
+                Margin="5"
+                Header="File">
+                
+                <MenuItem
+                    Width="300"
+                    Command="{Binding LoadImageCommand}"
+                    Header="Load Image"
+                    InputGestureText="Ctrl + O">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadimg.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <Separator />
+                
+                <MenuItem
+                    Command="{Binding AddRectangle}"
+                    Header="Rectangle"
+                    InputGestureText="R"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/new.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <Separator />
+                
+                <MenuItem
+                    Command="{Binding ExportPascalVoc}"
+                    Header="Export to XML"
+                    InputGestureText="Ctrl + S"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/save.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <MenuItem
+                    Command="{Binding LoadXMLCommand}"
+                    Header="Load XML"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/loadxml.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+            </MenuItem>
+            
+            <MenuItem
+                Height="25"
+                Margin="5"
+                Header="Edit">
+                
+                <MenuItem
+                    Width="250"
+                    Command="{Binding UndoCommand}"
+                    Header="Undo"
+                    InputGestureText="Ctrl + Z"
+                    IsEnabled="{Binding UndoEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/undo.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+
+                <MenuItem
+                    Width="250"
+                    Command="{Binding RedoCommand}"
+                    Header="Redo"
+                    InputGestureText="Ctrl + Y"
+                    IsEnabled="{Binding UndoEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/redo.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+            </MenuItem>
+
+            <MenuItem
+            Height="25"
+            Margin="5"
+            Header="View">
+                
+                <MenuItem
+                    Width="300"
+                    Click="MenuItem_ZoomIn"
+                    Header="Zoom  in"
+                    InputGestureText="Ctrl + +"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_in.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <MenuItem
+                    Click="MenuItem_ZoomOut"
+                    Header="Zoom  out"
+                    InputGestureText="Ctrl + -"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/zoom_out.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+                <Separator />
+                
+                <MenuItem
+                    Click="MenuItem_Reset"
+                    Header="Fit to width"
+                    InputGestureText="Ctrl + 0"
+                    IsEnabled="{Binding IsEnabled}">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/fit.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
+                
+            </MenuItem>
+            
+        </Menu>
+
+        <Grid x:Name="NotMainGrid">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="auto"/>
+                <ColumnDefinition Width="4"/>
+                <ColumnDefinition Width="*" x:Name="gridX"/>
+                <ColumnDefinition Width="auto"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="auto" x:Name="gridY0"/>
+                <RowDefinition Height="*" x:Name="gridY1"/>
+                <RowDefinition Height="auto" x:Name="gridY2"/>
+            </Grid.RowDefinitions>
+
+            <Canvas Width="{Binding ActualWidth, ElementName=previous_btn}" 
+                    Grid.Column="0" 
+                    Panel.ZIndex="1" 
+                    Grid.Row="0" 
+                    Grid.RowSpan="4">
+
+                <Button x:Name="previous_btn" 
+                        Canvas.Bottom="0" 
+                        Margin="1" 
+                        Background="White" 
+                        Command="{Binding PreviousPage}" 
+                        Height="25" 
+                        Width="25" 
+                        Style="{StaticResource IncreaseOpacityOnHover}" 
+                        Opacity="0.3">
+                    <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
+                </Button>
+
+            </Canvas>
+            
+            <Border Grid.Column="3" 
+                    Panel.ZIndex="0" 
+                    Grid.Row="0" 
+                    Grid.RowSpan="4"
+                    Grid.ColumnSpan="1" 
+                    BorderBrush="Gray" 
+                    BorderThickness="1.5">
+                
+                <local:ZoomBorder x:Name="zoomBorder"  
+                                  Background="LightGray" 
+                                  ClipToBounds="True">
+
+                    <Canvas x:Name="cnvImage" 
+                            ClipToBounds="True" 
+                            Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                            Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                            MouseDown="ImgCamera_MouseDown"
+                            MouseMove="ImgCamera_MouseMove"                                
+                            MouseUp="ImgCamera_MouseUp">
+
+                        <Image x:Name="imgPreview" 
+                               Source="{Binding ImagePath}"  
+                               Width="auto" 
+                               Height="auto" 
+                               ClipToBounds="True"/>
+
+                        <InkCanvas x:Name="cnvInk" 
+                                   Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                                   Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                                   IsEnabled="False" 
+                                   Background="Transparent" 
+                                   MouseRightButtonUp="cnvInk_PreviewMouseRightButtonUp">
+
+                            <InkCanvas.DefaultDrawingAttributes>
+                                <DrawingAttributes Width="5" 
+                                                   Height="5" 
+                                                   Color="LawnGreen" 
+                                                   FitToCurve="True" 
+                                                   StylusTip="Ellipse"/>
+                            </InkCanvas.DefaultDrawingAttributes>
+
+                            <ItemsControl ItemsSource="{Binding polygonsCollection}" 
+                                          Background="Transparent" 
+                                          VerticalAlignment="Center" 
+                                          HorizontalAlignment="Center" 
+                                          Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                                          Height="{Binding ActualHeight, ElementName=imgPreview}">
+                                
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas/>
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="Polygon">
+                                        <Setter Property="Stroke" Value="Blue" />
+                                        <Setter Property="Opacity" Value="0.4"/>
+                                        <Setter Property="StrokeThickness" Value="1"/>
+                                        <Setter Property="Fill" Value="LightBlue"/>
+                                        <Setter Property="Points" Value="{Binding pointsFull}"/>
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                
+                            </ItemsControl>
+                            
+                            <ItemsControl Width="{Binding ActualWidth, ElementName=imgPreview}" 
+                                          Height="{Binding ActualHeight, ElementName=imgPreview}" 
+                                          HorizontalAlignment="Center"
+                                          VerticalAlignment="Center" 
+                                          Background="Transparent" 
+                                          ItemsSource="{Binding PixelRectangles}">
+                                
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <Canvas />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                
+                                <ItemsControl.ItemContainerStyle>
+                                    <Style TargetType="local:ResizableRectangle">
+                                        <Setter Property="Canvas.Left" Value="{Binding X}" />
+                                        <Setter Property="Canvas.Top" Value="{Binding Y}" />
+                                        <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="RectangleBorderThickness" Value="{Binding DataContext.RectangleBorderThickness, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                        <Setter Property="ResizeThumbColor" Value="{Binding DataContext.ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                    </Style>
+                                </ItemsControl.ItemContainerStyle>
+                                
+                            </ItemsControl>
+                            
+                        </InkCanvas>
+                        
+                    </Canvas>
+                    
+                </local:ZoomBorder>
+                
+            </Border>
+            
+        </Grid>
+        
+    </DockPanel>
+    
+</UserControl>

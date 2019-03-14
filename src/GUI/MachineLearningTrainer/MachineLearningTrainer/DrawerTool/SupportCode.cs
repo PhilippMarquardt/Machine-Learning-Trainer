@@ -23,7 +23,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             return OpenCvSharp.Extensions.BitmapConverter.ToMat(bitmap);
         }
-
+        
         /// <summary>
         /// this method converts mat to bitmap
         /// </summary>
@@ -47,5 +47,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
         }
+
+        public static Bitmap MatToBitmap(Mat image)
+        {
+            return OpenCvSharp.Extensions.BitmapConverter.ToBitmap(image);
+        }
+
     }
 }

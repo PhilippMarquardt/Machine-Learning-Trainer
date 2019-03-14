@@ -1,4 +1,5 @@
-﻿using MachineLearningTrainer.Layer;
+﻿using MachineLearningTrainer.DecisionPages;
+using MachineLearningTrainer.Layer;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -37,12 +38,16 @@ namespace MachineLearningTrainer
                     return new WelcomePage();                 
                 case ProcessState.DataDecision:
                     return new DataDecision();
+                case ProcessState.AnnotationSelection:
+                    return new AnnotationSelection();
                 case ProcessState.TabularDataDecision:
                     return new TabularDataDecision();
                 case ProcessState.DNN:
                     return new DeepNeuralNetwork();
                 case ProcessState.Drawer:
                     return new DrawerTool.ImageDrawer();
+                case ProcessState.Pixel:
+                    return new DrawerTool.PixelTool();
                 case ProcessState.CNNDataDecision:
                     return new DecisionPages.ClassificationDecision();
                 case ProcessState.ObjectDetectorSelection:

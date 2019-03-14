@@ -116,6 +116,11 @@
             CommandParameter="O"
             Modifiers="Ctrl" />
         <KeyBinding
+            Key="F"
+            Command="{Binding PreprocessFolderCommand}"
+            CommandParameter="F"
+            Modifiers="Ctrl" />
+        <KeyBinding
             Key="D"
             Command="{Binding DuplicateCommand}"
             CommandParameter="D"
@@ -195,7 +200,14 @@
                         <Image Source="/Icons/loadimg.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--<MenuItem Header="Load Folder"/>-->
+                <MenuItem
+                    Command="{Binding PreprocessFolderCommand}"
+                    Header="Preprocess Folder"
+                    InputGestureText="Ctrl + F">
+                    <MenuItem.Icon>
+                        <Image Source="/Icons/preprocess.png" />
+                    </MenuItem.Icon>
+                </MenuItem>
                 <Separator />
                 <MenuItem
                     Command="{Binding AddRectangle}"
@@ -720,6 +732,7 @@
                                     <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
+                                    <Setter Property="RectangleBorderThickness" Value="{Binding DataContext.RectangleBorderThickness, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     <Setter Property="ResizeThumbColor" Value="{Binding DataContext.ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
                                     <!--<Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>-->
@@ -772,7 +785,7 @@
                     <Grid.Resources>
                         <ImageBrush x:Key="AddButtonImageBrush" ImageSource="{Binding ListViewImage}" />
                     </Grid.Resources>
-                    <Button
+                    <!--<Button
                         Width="26"
                         Height="26"
                         Margin="5"
@@ -780,7 +793,7 @@
                         materialDesign:ShadowAssist.ShadowDepth="Depth0"
                         Background="{StaticResource AddButtonImageBrush}"
                         BorderBrush="Transparent"
-                        Command="{Binding ListViewCommand}" />
+                        Command="{Binding ListViewCommand}" />-->
                     <ComboBox
                         Width="auto"
                         Height="30"
@@ -860,25 +873,23 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <WrapPanel>
-                            <Image
-                                Width="50"
-                                Height="50"
-                                Margin="10"
-                                Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
+                        <WrapPanel Width="auto" HorizontalAlignment="Center">
                             <TextBox
+                                Height="auto"
                                 x:Name="lblTextBox"
                                 Width="auto"
                                 MinWidth="70"
-                                Padding="3,0,0,0"
-                                HorizontalAlignment="Left"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 AcceptsReturn="False"
                                 FontSize="12"
                                 Foreground="Black"
                                 Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Left"
-                                TextWrapping="Wrap" />
+                                TextChanged="ListBoxTextBox_TextChanged"
+                                TextWrapping="Wrap"
+                                Margin="20"
+                                Padding="5"/>
                         </WrapPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
@@ -1068,18 +1079,13 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <WrapPanel>
-                            <Image
-                                Width="50"
-                                Height="50"
-                                Margin="10"
-                                Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
+                        <WrapPanel Width="auto" HorizontalAlignment="Center">
                             <TextBox
+                                Height="auto"
                                 x:Name="lblTextBox"
                                 Width="auto"
                                 MinWidth="70"
-                                Padding="3,0,0,0"
-                                HorizontalAlignment="Left"
+                                HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 AcceptsReturn="False"
                                 FontSize="12"
@@ -1087,7 +1093,9 @@
                                 Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Left"
                                 TextChanged="ListBoxTextBox_TextChanged"
-                                TextWrapping="Wrap" />
+                                TextWrapping="Wrap"
+                                Margin="20"
+                                Padding="5"/>
                         </WrapPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
