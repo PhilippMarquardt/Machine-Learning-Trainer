@@ -7,13 +7,13 @@ using System.Windows;
 
 using System.ComponentModel;
 
-namespace SuperCanvas.Model
+namespace MachineLearningTrainer.DrawerTool
 {
     class ShapeModel
     {
     }
 
-    public class Shape : INotifyPropertyChanged
+    public class CustomShape : INotifyPropertyChanged
     {
         private string type;
         private double width;
@@ -33,7 +33,7 @@ namespace SuperCanvas.Model
         private Point center;
 
 
-        public Shape(double x1, double x2, double y1, double y2, int id)
+        public CustomShape(double x1, double x2, double y1, double y2, int id)
         {
             this.x1 = x1;
             this.x2 = x2;

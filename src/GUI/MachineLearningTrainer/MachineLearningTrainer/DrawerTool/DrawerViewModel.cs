@@ -22,6 +22,7 @@ using System.Xml;
 using System.Threading;
 using System.Windows.Shapes;
 using System.Windows.Ink;
+using System.Collections.Specialized;
 using Brushes = System.Drawing.Brushes;
 
 namespace MachineLearningTrainer.DrawerTool 
@@ -78,9 +79,640 @@ namespace MachineLearningTrainer.DrawerTool
             undoInformation.Push("Dummy");
             redoRectangles.Push(new ResizableRectangle());
             redoInformation.Push("Dummy");
+
+            Rectangles = new ObservableCollection<CustomShape>();
+            Rectangles.Add(new CustomShape(10, 100, 10, 100, 0));
+            indexRectangles++;
+            Rectangles.CollectionChanged += ShapeCollectionChanged;                     //
+
+        }
+
+        public ObservableCollection<CustomShape> Rectangles { get; set; }
+
+        private readonly int borderWidth = 20;                   //used when detecting, moving & resizing shapes
+        private readonly double minShapeSize = 20;
+
+        /// <summary>
+        /// declares a string that stores the IconPath to differentiate between active and not active
+        /// </summary>
+        private string _iconPath = "\\Icons\\new.png";
+        public string IconPath
+        {
+            get
+            {
+                return this._iconPath;
+            }
+            set
+            {
+                this._iconPath = value;
+                OnPropertyChanged("IconPath");
+            }
+        }
+
+        /// <summary>
+        /// declares a string that stores the IconPath to differentiate between active and not active
+        /// </summary>
+        private string _iconPath2 = "\\Icons\\new2.png";
+        public string IconPath2
+        {
+            get
+            {
+                return this._iconPath2;
+            }
+            set
+            {
+                this._iconPath2 = value;
+                OnPropertyChanged("IconPath2");
+            }
+        }
+
+        public enum MouseState { Normal, CreateRectangle, CreateEllipse, Move, Resize }
+        private MouseState mouseHandlingState;
+        public MouseState MouseHandlingState
+        {
+            get => mouseHandlingState;
+            set
+            {
+                if (mouseHandlingState != value)
+                {
+                    this.mouseHandlingState = value;
+                    OnPropertyChanged("MouseHandlingState");
+                }
+            }
         }
 
 
+        private CustomShape selectedCustomShape = new CustomShape(0, 0, 0, 0, 0);
+
+
+        #region CheckIfMouseOnCanvas
+        //CheckCanvas:
+        //makes sure that you only draw on canvas
+
+        private double tmpX;
+        private double tmpY;
+
+        private void CheckCanvas(System.Windows.Point mousePosition)
+        {
+            if (mousePosition.X < 0)
+            {
+                tmpX = 0;
+                selectedCustomShape.X1 = 0;
+                selectedCustomShape.XLeft = 0;
+            }
+            else if (mousePosition.X > MyCanvas.ActualWidth)
+            {
+                tmpX = MyCanvas.ActualWidth;
+                selectedCustomShape.X2 = MyCanvas.ActualWidth;
+            }
+            if (mousePosition.Y < 0)
+            {
+                tmpY = 0;
+                selectedCustomShape.Y1 = 0;
+                selectedCustomShape.YTop = 0;
+            }
+            else if (mousePosition.Y > MyCanvas.ActualHeight)
+            {
+                tmpY = MyCanvas.ActualHeight;
+                selectedCustomShape.Y2 = MyCanvas.ActualHeight;
+            }
+        }
+        private void CheckCanvas(System.Windows.Point mousePosition, double deltaX, double deltaY)
+        {
+            if (mousePosition.X - deltaX - selectedCustomShape.Width / 2 < 0)
+            {
+                tmpX = 0;
+                selectedCustomShape.X1 = 0;
+                selectedCustomShape.XLeft = 0;
+            }
+            else if (mousePosition.X - deltaX + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth)
+            {
+                tmpX = MyCanvas.ActualWidth;
+                selectedCustomShape.X2 = MyCanvas.ActualWidth;
+            }
+            if (mousePosition.Y - deltaY - selectedCustomShape.Height / 2 < 0)
+            {
+                tmpY = 0;
+                selectedCustomShape.Y1 = 0;
+                selectedCustomShape.YTop = 0;
+            }
+            else if (mousePosition.Y - deltaY + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight)
+            {
+                tmpY = MyCanvas.ActualHeight;
+                selectedCustomShape.Y2 = MyCanvas.ActualHeight;
+            }
+        }
+        #endregion
+
+
+        #region Create ShapeRectangles
+        //Create Rectangles:
+        //routine to create rectangles
+
+        private int indexRectangles;
+
+        public void CreateRectangle(System.Windows.Point mousePosition)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                tmpX = mousePosition.X;
+                tmpY = mousePosition.Y;
+                CheckCanvas(mousePosition);
+
+                if (Rectangles.Count < indexRectangles + 1)
+                {
+                    Rectangles.Add(new CustomShape(tmpX, tmpX, tmpY, tmpY, indexRectangles));
+                }
+                else
+                {
+                    if (Rectangles[indexRectangles].X1 == -1 && Rectangles[indexRectangles].Y1 == -1)
+                    {
+                        Rectangles[indexRectangles].X1 = tmpX;
+                        Rectangles[indexRectangles].Y1 = tmpY;
+                    }
+                    Rectangles[indexRectangles].X2 = tmpX;
+                    Rectangles[indexRectangles].Y2 = tmpY;
+
+                    if (Rectangles[indexRectangles].X1 > Rectangles[indexRectangles].X2)
+                    {
+                        Rectangles[indexRectangles].XLeft = Rectangles[indexRectangles].X2;
+                    }
+                    else
+                    {
+                        Rectangles[indexRectangles].XLeft = Rectangles[indexRectangles].X1;
+                    }
+                    if (Rectangles[indexRectangles].Y1 > Rectangles[indexRectangles].Y2)
+                    {
+                        Rectangles[indexRectangles].YTop = Rectangles[indexRectangles].Y2;
+                    }
+                    else
+                    {
+                        Rectangles[indexRectangles].YTop = Rectangles[indexRectangles].Y1;
+                    }
+                }
+            }
+            else if (Mouse.LeftButton == MouseButtonState.Released)
+            {
+                double tmp;
+                if (Rectangles.Count == indexRectangles + 1)
+                {
+                    if (Math.Abs(Rectangles[indexRectangles].X1 - Rectangles[indexRectangles].X2) < minShapeSize
+                        || Math.Abs(Rectangles[indexRectangles].Y1 - Rectangles[indexRectangles].Y2) < minShapeSize)
+                    {
+                        Rectangles[indexRectangles].X1 = -1;
+                        Rectangles[indexRectangles].X2 = -1;
+                        Rectangles[indexRectangles].Y1 = -1;
+                        Rectangles[indexRectangles].Y2 = -1;
+                    }
+                    else
+                    {
+                        if (Rectangles[indexRectangles].X1 > Rectangles[indexRectangles].X2)
+                        {
+                            tmp = Rectangles[indexRectangles].X1;
+                            Rectangles[indexRectangles].X1 = Rectangles[indexRectangles].X2;
+                            Rectangles[indexRectangles].X2 = tmp;
+                        }
+                        if (Rectangles[indexRectangles].Y1 > Rectangles[indexRectangles].Y2)
+                        {
+                            tmp = Rectangles[indexRectangles].Y1;
+                            Rectangles[indexRectangles].Y1 = Rectangles[indexRectangles].Y2;
+                            Rectangles[indexRectangles].Y2 = tmp;
+                        }
+                        Console.WriteLine(Rectangles[indexRectangles].Id);
+                        indexRectangles++;
+                        Console.WriteLine("Rectangle count: " + Rectangles.Count);
+                    }
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region ShapeCollectionChangedHandler
+        private void ShapeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        {
+            Console.WriteLine("ShapeCollectionChanged()");
+            if (e.NewItems != null)
+            {
+                {
+                    foreach (object item in e.NewItems)
+                    {
+                        if (item is CustomShape)
+                            ((CustomShape)item).PropertyChanged += Shape_PropertyChanged;
+                    }
+                }
+
+                if (e.OldItems != null)
+                {
+                    foreach (object item in e.OldItems)
+                    {
+                        if (item is CustomShape)
+                            ((CustomShape)item).PropertyChanged -= Shape_PropertyChanged;
+                    }
+                }
+            }
+        }
+
+        private void Shape_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(Rectangles).Refresh();
+        }
+        #endregion
+
+
+        #region ResizeCustomShape
+        //resize-Block:
+        //routine to resize different shapes on canvas
+
+        enum ResizeDirection { SizeN, SizeNE, SizeE, SizeSE, SizeS, SizeSW, SizeW, SizeNW }
+        ResizeDirection resizeDirection;
+
+        internal void Resize(System.Windows.Point mousePosition)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Released)
+            {
+                if (selectedCustomShape.Resize == false)
+                {
+                    DetectResize(mousePosition);
+                }
+                else if (selectedCustomShape.Resize == true)
+                {
+                    DeactivateResize();
+                }
+            }
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                if (selectedCustomShape.Resize == false)
+                {
+                    ActivateResize(mousePosition);
+                }
+                else if (selectedCustomShape.Resize == true)
+                {
+                    ResizeCustomShape(mousePosition);
+                }
+            }
+        }
+
+        private void DetectResize(System.Windows.Point mousePosition)
+        {
+            if (selectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X1 + borderWidth)
+            {
+                if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeNWSE;
+                    mouseHandlingState = MouseState.Resize;
+                }
+                else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeWE;
+                    mouseHandlingState = MouseState.Resize;
+                }
+                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeNESW;
+                    mouseHandlingState = MouseState.Resize;
+                }
+            }
+            else if (selectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
+            {
+                if (selectedCustomShape.Y1 < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeNESW;
+                    mouseHandlingState = MouseState.Resize;
+                }
+                else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeWE;
+                    mouseHandlingState = MouseState.Resize;
+                }
+                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeNWSE;
+                    mouseHandlingState = MouseState.Resize;
+                }
+            }
+            else if (selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth)
+            {
+                if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeNS;
+                    mouseHandlingState = MouseState.Resize;
+                }
+                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                {
+                    Mouse.OverrideCursor = Cursors.SizeNS;
+                    mouseHandlingState = MouseState.Resize;
+                }
+            }
+            else
+            {
+                mouseHandlingState = MouseState.Normal;
+            }
+        }
+
+        private void ActivateResize(System.Windows.Point mousePosition)
+        {
+            if (selectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X1 + borderWidth)
+            {
+                if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeNW;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeNWSE;
+                }
+                else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeW;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeWE;
+                }
+                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeSW;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeNESW;
+                }
+            }
+            else if (selectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
+            {
+                if (selectedCustomShape.Y1 < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeNE;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeNESW;
+                }
+                else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeE;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeWE;
+                }
+                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeSE;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeNWSE;
+                }
+            }
+            else if (selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth)
+            {
+                if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeN;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeNS;
+                }
+                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                {
+                    resizeDirection = ResizeDirection.SizeS;
+                    selectedCustomShape.Resize = true;
+                    Mouse.OverrideCursor = Cursors.SizeNS;
+                }
+            }
+        }
+
+        private void ResizeCustomShape(System.Windows.Point mousePosition)
+        {
+            tmpX = mousePosition.X;
+            tmpY = mousePosition.Y;
+            CheckCanvas(mousePosition);
+
+            switch (resizeDirection)
+            {
+                case ResizeDirection.SizeN:
+                    {
+                        //if (selectedCustomShape.Y1 < selectedCustomShape.Y2)
+                        {
+                            selectedCustomShape.Y1 = tmpY;
+                            selectedCustomShape.YTop = tmpY;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeNE:
+                    {
+                        //if (selectedCustomShape.Y1 <= selectedCustomShape.Y2)
+                        {
+                            selectedCustomShape.Y1 = tmpY;
+                            selectedCustomShape.YTop = tmpY;
+                        }
+                        //if (selectedCustomShape.X2 <= selectedCustomShape.X1)
+                        {
+                            selectedCustomShape.X2 = tmpX;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeE:
+                    {
+                        //if (selectedCustomShape.X2 <= selectedCustomShape.X1)
+                        {
+                            selectedCustomShape.X2 = tmpX;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeSE:
+                    {
+                        //if (selectedCustomShape.X2 <= selectedCustomShape.X1)
+                        {
+                            selectedCustomShape.X2 = tmpX;
+                        }
+                        //if (selectedCustomShape.Y2 <= selectedCustomShape.Y1)
+                        {
+                            selectedCustomShape.Y2 = tmpY;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeS:
+                    {
+                        //if (selectedCustomShape.Y2 <= selectedCustomShape.Y1)
+                        {
+                            selectedCustomShape.Y2 = tmpY;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeSW:
+                    {
+                        //if(selectedCustomShape.X1 <= selectedCustomShape.X2)
+                        {
+                            selectedCustomShape.X1 = tmpX;
+                            selectedCustomShape.XLeft = tmpX;
+                        }
+                        //if (selectedCustomShape.Y2 <= selectedCustomShape.Y1)
+                        {
+                            selectedCustomShape.Y2 = tmpY;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeW:
+                    {
+                        //if (selectedCustomShape.X1 <= selectedCustomShape.X2)
+                        {
+                            selectedCustomShape.X1 = tmpX;
+                            selectedCustomShape.XLeft = tmpX;
+                        }
+                        break;
+                    }
+                case ResizeDirection.SizeNW:
+                    {
+                        //if (selectedCustomShape.X1 <= selectedCustomShape.X2)
+                        {
+                            selectedCustomShape.X1 = tmpX;
+                            selectedCustomShape.XLeft = tmpX;
+                        }
+                        //if (selectedCustomShape.Y1 <= selectedCustomShape.Y2)
+                        {
+                            selectedCustomShape.Y1 = tmpY;
+                            selectedCustomShape.YTop = tmpY;
+                        }
+                        break;
+                    }
+            }
+        }
+
+        private void DeactivateResize()
+        {
+            selectedCustomShape.Resize = false;
+        }
+
+        #endregion
+
+
+        #region MoveShape
+        //Move-Block:
+        //Routine to move different shapes on canvas
+
+        private double deltaX = 0;
+        private double deltaY = 0;
+        private System.Windows.Point tmpRelativPosition;
+
+
+
+        internal void Move(System.Windows.Point mousePosition)
+        {
+            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            {
+                if (selectedCustomShape.Move == false)
+                {
+                    ActivateMove(mousePosition);
+                }
+                else
+                {
+                    MoveCustomShape(mousePosition);
+                }
+            }
+            else
+            {
+                if (selectedCustomShape.Move == false)
+                {
+                    DetectMove(mousePosition);
+                }
+                else
+                {
+                    DeactivateMove(mousePosition);
+                }
+            }
+        }
+
+        private void DetectMove(System.Windows.Point mousePosition)
+        {
+            if ((selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth) &&
+                (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth))
+            {
+                Mouse.OverrideCursor = Cursors.SizeAll;
+            }
+        }
+
+        private void ActivateMove(System.Windows.Point mousePosition)
+        {
+            if (selectedCustomShape.IsMouseOver == true && selectedCustomShape.Resize == false)
+            {
+                deltaX = mousePosition.X - selectedCustomShape.Center.X;
+                deltaY = mousePosition.Y - selectedCustomShape.Center.Y;
+                selectedCustomShape.Move = true;
+            }
+        }
+
+        private void MoveCustomShape(System.Windows.Point mousePosition)
+        {
+            if (selectedCustomShape.Move == true)
+            {
+                tmpRelativPosition.X = mousePosition.X - deltaX;
+                tmpRelativPosition.Y = mousePosition.Y - deltaY;
+                selectedCustomShape.Center = tmpRelativPosition;
+                selectedCustomShape.YTop = selectedCustomShape.Y1;
+                selectedCustomShape.XLeft = selectedCustomShape.X1;
+                Mouse.OverrideCursor = Cursors.SizeAll;
+            }
+        }
+
+        private void DeactivateMove(System.Windows.Point mousePosition)
+        {
+            selectedCustomShape.Move = false;
+            CheckCanvas(mousePosition, deltaX, deltaY);
+            Console.WriteLine(selectedCustomShape.X1);
+            Console.WriteLine(selectedCustomShape.Y1);
+            Console.WriteLine(tmpX);
+            Console.WriteLine(tmpY + "\n");
+        }
+        #endregion
+
+
+        #region DetectShape
+        //DetectShape:
+        //routines to detect different Shapes on Canvas
+        private bool shapeDetected = false;
+
+        public bool ShapeDetected
+        {
+            get => shapeDetected;
+            set
+            {
+                if (shapeDetected != value)
+                {
+                    this.shapeDetected = value;
+                    OnPropertyChanged("ShapeDetected");
+                }
+            }
+        }
+
+
+        
+
+        internal void DetectCustomShape(System.Windows.Point mousePosition)
+        {
+
+            if (!((selectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
+                && (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)))
+            {
+                selectedCustomShape.Opacity = 1;
+                selectedCustomShape.Fill = "Transparent";
+                selectedCustomShape.IsMouseOver = false;
+                shapeDetected = false;
+
+                foreach (CustomShape r in Rectangles)
+                {
+                    if ((r.X1 < mousePosition.X && mousePosition.X < r.X2) && (r.Y1 < mousePosition.Y && mousePosition.Y < r.Y2))
+                    {
+                        selectedCustomShape = r;
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                selectedCustomShape.Opacity = 0.3;
+                selectedCustomShape.Fill = "Red";
+                selectedCustomShape.IsMouseOver = true;
+                shapeDetected = true;
+            }
+        }
+        #endregion
+
+
+
+        /// <summary>
+        /// Old stuff
+        /// </summary>
 
         public MyICommand DeleteCommand { get; set; }
         public MyICommand DuplicateCommand { get; set; }
@@ -90,6 +722,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         /// <summary>
         /// compare rectangle text to each other
+        /// 
+        /// without function
         /// </summary>
         public int CompareTo(object obj)
         {
@@ -100,6 +734,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
             return this.RectangleText.CompareTo(resizable.RectangleText);
         }
+
+
 
         public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
 
