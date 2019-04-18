@@ -46,13 +46,11 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.CreateRectangle;
                 (this.DataContext as DrawerViewModel).IconPath = "\\Icons\\new_activated.png";
-                Console.WriteLine((this.DataContext as DrawerViewModel).MouseHandlingState);
             }
             else if ((this.DataContext as DrawerViewModel).MouseHandlingState != DrawerViewModel.MouseState.Normal)
             {
                 (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
                 (this.DataContext as DrawerViewModel).IconPath = "\\Icons\\new.png";
-                Console.WriteLine((this.DataContext as DrawerViewModel).MouseHandlingState);
             }
         }
 
@@ -91,15 +89,17 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
+        #region Define MouseEvents
+
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize 
-                || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
-            {
-                UIElement element = (UIElement)sender;
-                element.CaptureMouse();
-                e.Handled = true;
-            }
+            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize 
+            //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
+            //{
+            //    UIElement element = (UIElement)sender;
+            //    element.CaptureMouse();
+            //    e.Handled = true;
+            //}
 
             //if ((this.DataContext as DrawerViewModel).Enabled == false)
             //{
@@ -155,23 +155,21 @@ namespace MachineLearningTrainer.DrawerTool
 
                     Mouse.OverrideCursor = Cursors.Arrow;
                 }
-
                 (this.DataContext as DrawerViewModel).Resize(mousePosition);
                 (this.DataContext as DrawerViewModel).Move(mousePosition);
-                Console.WriteLine((this.DataContext as DrawerViewModel).MouseHandlingState);
             }
         }
 
         private async void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
-                || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
-            {
-                UIElement element = (UIElement)sender;
-                element.ReleaseMouseCapture();
-                e.Handled = true;
-                (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
-            }
+            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
+            //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
+            //{
+            //    UIElement element = (UIElement)sender;
+            //    element.ReleaseMouseCapture();
+            //    e.Handled = true;
+            //    (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
+            //}
 
 
             //(this.DataContext as DrawerViewModel).SortList();
@@ -228,7 +226,17 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
+        {
+            //(this.DataContext as DrawerViewModel).DuplicateVar = 0;
+        }
 
+        private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
+        {
+            //(this.DataContext as DrawerViewModel).DuplicateVar = 1;
+        }
+
+        #endregion
 
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
         {
@@ -585,15 +593,6 @@ namespace MachineLearningTrainer.DrawerTool
             
         }
 
-        private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).DuplicateVar = 1;
-        }
-
-        private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).DuplicateVar = 0;
-        }
 
         private void MenuItem_OpenClick(object sender, RoutedEventArgs e)
         {

@@ -90,7 +90,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<CustomShape> Rectangles { get; set; }
 
         private readonly int borderWidth = 20;                   //used when detecting, moving & resizing shapes
-        private readonly double minShapeSize = 20;
+        private readonly double minShapeSize = 50;
 
         /// <summary>
         /// declares a string that stores the IconPath to differentiate between active and not active
@@ -361,17 +361,14 @@ namespace MachineLearningTrainer.DrawerTool
                 if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
-                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeWE;
-                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNESW;
-                    mouseHandlingState = MouseState.Resize;
                 }
             }
             else if (selectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
@@ -379,17 +376,14 @@ namespace MachineLearningTrainer.DrawerTool
                 if (selectedCustomShape.Y1 < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNESW;
-                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeWE;
-                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
-                    mouseHandlingState = MouseState.Resize;
                 }
             }
             else if (selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth)
@@ -397,12 +391,10 @@ namespace MachineLearningTrainer.DrawerTool
                 if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNS;
-                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNS;
-                    mouseHandlingState = MouseState.Resize;
                 }
             }
             else
@@ -420,18 +412,21 @@ namespace MachineLearningTrainer.DrawerTool
                     resizeDirection = ResizeDirection.SizeNW;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
+                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeW;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeWE;
+                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeSW;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNESW;
+                    mouseHandlingState = MouseState.Resize;
                 }
             }
             else if (selectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
@@ -441,18 +436,21 @@ namespace MachineLearningTrainer.DrawerTool
                     resizeDirection = ResizeDirection.SizeNE;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNESW;
+                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeE;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeWE;
+                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeSE;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
+                    mouseHandlingState = MouseState.Resize;
                 }
             }
             else if (selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth)
@@ -462,12 +460,14 @@ namespace MachineLearningTrainer.DrawerTool
                     resizeDirection = ResizeDirection.SizeN;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNS;
+                    mouseHandlingState = MouseState.Resize;
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeS;
                     selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNS;
+                    mouseHandlingState = MouseState.Resize;
                 }
             }
         }
@@ -482,87 +482,145 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 case ResizeDirection.SizeN:
                     {
-                        //if (selectedCustomShape.Y1 < selectedCustomShape.Y2)
+                        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
                         {
                             selectedCustomShape.Y1 = tmpY;
                             selectedCustomShape.YTop = tmpY;
+                        }
+                        else
+                        {
+                            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+                            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeNE:
                     {
-                        //if (selectedCustomShape.Y1 <= selectedCustomShape.Y2)
+                        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
                         {
                             selectedCustomShape.Y1 = tmpY;
                             selectedCustomShape.YTop = tmpY;
                         }
-                        //if (selectedCustomShape.X2 <= selectedCustomShape.X1)
+                        else
+                        {
+                            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+                            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                        }
+
+                        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
                         {
                             selectedCustomShape.X2 = tmpX;
+                        }
+                        else
+                        {
+                            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeE:
                     {
-                        //if (selectedCustomShape.X2 <= selectedCustomShape.X1)
+                        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
                         {
                             selectedCustomShape.X2 = tmpX;
+                        }
+                        else
+                        {
+                            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeSE:
                     {
-                        //if (selectedCustomShape.X2 <= selectedCustomShape.X1)
+                        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
                         {
                             selectedCustomShape.X2 = tmpX;
                         }
-                        //if (selectedCustomShape.Y2 <= selectedCustomShape.Y1)
+                        else
+                        {
+                            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+                        }
+
+                        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
                         {
                             selectedCustomShape.Y2 = tmpY;
+                        }
+                        else
+                        {
+                            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeS:
                     {
-                        //if (selectedCustomShape.Y2 <= selectedCustomShape.Y1)
+                        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
                         {
                             selectedCustomShape.Y2 = tmpY;
+                        }
+                        else
+                        {
+                            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeSW:
                     {
-                        //if(selectedCustomShape.X1 <= selectedCustomShape.X2)
+                        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 -tmpX))
                         {
                             selectedCustomShape.X1 = tmpX;
                             selectedCustomShape.XLeft = tmpX;
                         }
-                        //if (selectedCustomShape.Y2 <= selectedCustomShape.Y1)
+                        else
+                        {
+                            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+                            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                        }
+
+                        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
                         {
                             selectedCustomShape.Y2 = tmpY;
+                        }
+                        else
+                        {
+                            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeW:
                     {
-                        //if (selectedCustomShape.X1 <= selectedCustomShape.X2)
+                        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
                         {
                             selectedCustomShape.X1 = tmpX;
                             selectedCustomShape.XLeft = tmpX;
+                        }
+                        else
+                        {
+                            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+                            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
                         }
                         break;
                     }
                 case ResizeDirection.SizeNW:
                     {
-                        //if (selectedCustomShape.X1 <= selectedCustomShape.X2)
+                        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
                         {
                             selectedCustomShape.X1 = tmpX;
                             selectedCustomShape.XLeft = tmpX;
                         }
-                        //if (selectedCustomShape.Y1 <= selectedCustomShape.Y2)
+                        else
+                        {
+                            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+                            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                        }
+
+                        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
                         {
                             selectedCustomShape.Y1 = tmpY;
                             selectedCustomShape.YTop = tmpY;
+                        }
+                        else
+                        {
+                            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+                            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
                         }
                         break;
                     }
@@ -629,6 +687,7 @@ namespace MachineLearningTrainer.DrawerTool
                 deltaX = mousePosition.X - selectedCustomShape.Center.X;
                 deltaY = mousePosition.Y - selectedCustomShape.Center.Y;
                 selectedCustomShape.Move = true;
+                mouseHandlingState = MouseState.Move;
             }
         }
 
@@ -636,6 +695,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (selectedCustomShape.Move == true)
             {
+                selectedCustomShape.Resize = false;
                 tmpRelativPosition.X = mousePosition.X - deltaX;
                 tmpRelativPosition.Y = mousePosition.Y - deltaY;
                 selectedCustomShape.Center = tmpRelativPosition;
@@ -649,10 +709,10 @@ namespace MachineLearningTrainer.DrawerTool
         {
             selectedCustomShape.Move = false;
             CheckCanvas(mousePosition, deltaX, deltaY);
-            Console.WriteLine(selectedCustomShape.X1);
-            Console.WriteLine(selectedCustomShape.Y1);
-            Console.WriteLine(tmpX);
-            Console.WriteLine(tmpY + "\n");
+            //Console.WriteLine(selectedCustomShape.X1);
+            //Console.WriteLine(selectedCustomShape.Y1);
+            //Console.WriteLine(tmpX);
+            //Console.WriteLine(tmpY + "\n");
         }
         #endregion
 
