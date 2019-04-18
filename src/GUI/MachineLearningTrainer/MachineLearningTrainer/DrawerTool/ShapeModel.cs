@@ -27,6 +27,7 @@ namespace MachineLearningTrainer.DrawerTool
         private int id;
         private double opacity;
         private string fill;
+        private string stroke;
         private Boolean isMouseOver;
         private Boolean move;
         private Boolean resize;
@@ -46,6 +47,7 @@ namespace MachineLearningTrainer.DrawerTool
             this.opacity = 1;
             this.fill = "Transparent";
             this.isMouseOver = false;
+            this.stroke = "LawnGreen";
 
         }
 
@@ -192,6 +194,19 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.fill = value;
                     this.NotifyPropertyChanged("Fill");
+                }
+            }
+        }
+
+        public string Stroke
+        {
+            get => stroke;
+            set
+            {
+                if (stroke != value)
+                {
+                    this.stroke = value;
+                    this.NotifyPropertyChanged("Stroke");
                 }
             }
         }

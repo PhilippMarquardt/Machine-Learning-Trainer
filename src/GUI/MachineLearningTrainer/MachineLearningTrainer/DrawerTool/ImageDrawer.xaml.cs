@@ -93,6 +93,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
+            (this.DataContext as DrawerViewModel).SelectCustomShape();
+
             //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize 
             //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
             //{
@@ -228,12 +230,12 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
         {
-            //(this.DataContext as DrawerViewModel).DuplicateVar = 0;
+            (this.DataContext as DrawerViewModel).DuplicateVar = 0;
         }
 
         private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
         {
-            //(this.DataContext as DrawerViewModel).DuplicateVar = 1;
+            (this.DataContext as DrawerViewModel).DuplicateVar = 1;
         }
 
         #endregion

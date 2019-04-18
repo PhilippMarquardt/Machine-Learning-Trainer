@@ -141,8 +141,20 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
+        private bool shapeSelected = false;
         private CustomShape selectedCustomShape = new CustomShape(0, 0, 0, 0, 0);
+        public bool ShapeSelected
+        {
+            get => shapeDetected;
+            set
+            {
+                if (shapeSelected != value)
+                {
+                    this.shapeSelected = value;
+                    OnPropertyChanged("ShapeSelected");
+                }
+            }
+        }
 
 
         #region CheckIfMouseOnCanvas
@@ -356,43 +368,43 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void DetectResize(System.Windows.Point mousePosition)
         {
-            if (selectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X1 + borderWidth)
+            if (detectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X1 + borderWidth)
             {
-                if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                if (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y1 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
                 }
-                else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
+                else if (detectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 - borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeWE;
                 }
-                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                else if (detectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNESW;
                 }
             }
-            else if (selectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
+            else if (detectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 + borderWidth)
             {
-                if (selectedCustomShape.Y1 < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                if (detectedCustomShape.Y1 < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y1 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNESW;
                 }
-                else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
+                else if (detectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 - borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeWE;
                 }
-                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                else if (detectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
                 }
             }
-            else if (selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth)
+            else if (detectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 - borderWidth)
             {
-                if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
+                if (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y1 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNS;
                 }
-                else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
+                else if (detectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)
                 {
                     Mouse.OverrideCursor = Cursors.SizeNS;
                 }
@@ -673,8 +685,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void DetectMove(System.Windows.Point mousePosition)
         {
-            if ((selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth) &&
-                (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth))
+            if ((detectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 - borderWidth) &&
+                (detectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 - borderWidth))
             {
                 Mouse.OverrideCursor = Cursors.SizeAll;
             }
@@ -688,6 +700,7 @@ namespace MachineLearningTrainer.DrawerTool
                 deltaY = mousePosition.Y - selectedCustomShape.Center.Y;
                 selectedCustomShape.Move = true;
                 mouseHandlingState = MouseState.Move;
+
             }
         }
 
@@ -717,10 +730,11 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region DetectShape
+        #region Detect & Select Shape
         //DetectShape:
         //routines to detect different Shapes on Canvas
         private bool shapeDetected = false;
+        private CustomShape detectedCustomShape = new CustomShape(0, 0, 0, 0, 0);
 
         public bool ShapeDetected
         {
@@ -741,30 +755,38 @@ namespace MachineLearningTrainer.DrawerTool
         internal void DetectCustomShape(System.Windows.Point mousePosition)
         {
 
-            if (!((selectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
-                && (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)))
+            if (!((detectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 + borderWidth)
+                && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
-                selectedCustomShape.Opacity = 1;
-                selectedCustomShape.Fill = "Transparent";
-                selectedCustomShape.IsMouseOver = false;
+                detectedCustomShape.Opacity = 1;
+                detectedCustomShape.Fill = "Transparent";
+                detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
 
                 foreach (CustomShape r in Rectangles)
                 {
                     if ((r.X1 < mousePosition.X && mousePosition.X < r.X2) && (r.Y1 < mousePosition.Y && mousePosition.Y < r.Y2))
                     {
-                        selectedCustomShape = r;
+                        detectedCustomShape = r;
                         break;
                     }
                 }
             }
             else
             {
-                selectedCustomShape.Opacity = 0.3;
-                selectedCustomShape.Fill = "Red";
-                selectedCustomShape.IsMouseOver = true;
+                detectedCustomShape.Opacity = 0.3;
+                detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
+                detectedCustomShape.Fill = "Gray";
             }
+        }
+
+        internal void SelectCustomShape()
+        {
+            selectedCustomShape.Stroke = "LawnGreen";
+
+            selectedCustomShape = this.detectedCustomShape;
+            selectedCustomShape.Stroke = "Red";
         }
         #endregion
 

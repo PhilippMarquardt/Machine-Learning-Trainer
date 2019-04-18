@@ -724,12 +724,13 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Rectangle
-                                        Fill="{Binding Fill}"
-                                        Opacity="{Binding Opacity}"
                                         Width="{Binding Width}"
                                         Height="{Binding Height}"
-                                        Stroke="LawnGreen"
+                                        Stroke="{Binding Stroke}"
                                         StrokeThickness="6">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
+                                        </Rectangle.Fill>
                                         <Rectangle.RenderTransform>
                                             <TranslateTransform X="{Binding XLeft}" Y="{Binding YTop}" />
                                         </Rectangle.RenderTransform>
