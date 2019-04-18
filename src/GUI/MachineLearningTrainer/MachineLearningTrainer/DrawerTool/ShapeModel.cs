@@ -50,6 +50,21 @@ namespace MachineLearningTrainer.DrawerTool
             this.stroke = "LawnGreen";
 
         }
+        public CustomShape(double x1, double x2, double y1, double y2)
+        {
+            this.x1 = x1;
+            this.x2 = x2;
+            this.y1 = y1;
+            this.y2 = y2;
+
+            this.xLeft = x1;
+            this.yTop = x2;
+            this.opacity = 1;
+            this.fill = "Transparent";
+            this.isMouseOver = false;
+            this.stroke = "Transparent";
+
+        }
 
         public string Type
         {

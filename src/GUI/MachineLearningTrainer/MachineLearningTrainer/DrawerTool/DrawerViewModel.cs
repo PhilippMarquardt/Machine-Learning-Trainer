@@ -82,6 +82,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             Rectangles = new ObservableCollection<CustomShape>();
             Rectangles.Add(new CustomShape(10, 100, 10, 100, 0));
+            id++;
             indexRectangles++;
             Rectangles.CollectionChanged += ShapeCollectionChanged;                     //
 
@@ -142,7 +143,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private bool shapeSelected = false;
-        private CustomShape selectedCustomShape = new CustomShape(0, 0, 0, 0, 0);
+        private CustomShape selectedCustomShape = new CustomShape(-1, -1, -1, -1);
         public bool ShapeSelected
         {
             get => shapeDetected;
@@ -222,6 +223,7 @@ namespace MachineLearningTrainer.DrawerTool
         //routine to create rectangles
 
         private int indexRectangles;
+        private int id;
 
         public void CreateRectangle(System.Windows.Point mousePosition)
         {
@@ -233,7 +235,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 if (Rectangles.Count < indexRectangles + 1)
                 {
-                    Rectangles.Add(new CustomShape(tmpX, tmpX, tmpY, tmpY, indexRectangles));
+                    Rectangles.Add(new CustomShape(tmpX, tmpX, tmpY, tmpY, id));
                 }
                 else
                 {
@@ -291,6 +293,7 @@ namespace MachineLearningTrainer.DrawerTool
                             Rectangles[indexRectangles].Y2 = tmp;
                         }
                         Console.WriteLine(Rectangles[indexRectangles].Id);
+                        id++;
                         indexRectangles++;
                         Console.WriteLine("Rectangle count: " + Rectangles.Count);
                     }
@@ -734,7 +737,7 @@ namespace MachineLearningTrainer.DrawerTool
         //DetectShape:
         //routines to detect different Shapes on Canvas
         private bool shapeDetected = false;
-        private CustomShape detectedCustomShape = new CustomShape(0, 0, 0, 0, 0);
+        private CustomShape detectedCustomShape = new CustomShape(-1, -1, -1, -1);
 
         public bool ShapeDetected
         {
@@ -1177,30 +1180,41 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void OnDelete() 
         {
-            for(int i = 0; i < AllRectangles.Count + 1; i++)
+            foreach (CustomShape r in Rectangles)
             {
-                if(undoRectangles != null)
+                if (r == selectedCustomShape)
                 {
-                    if(undoRectangles != null)
-                    {
-                        undoRectangles.Push(SelectedResizableRectangle);
-                        undoInformation.Push("Delete");
-                        AllRectangles.Remove(SelectedResizableRectangle);
-                        AllRectanglesView.Remove(SelectedResizableRectangle);
-                    }
+
+                    Rectangles.Remove(r);
+                    indexRectangles--;
+                    break;
                 }
             }
+            
+            //for(int i = 0; i < AllRectangles.Count + 1; i++)
+            //{
+            //    if(undoRectangles != null)
+            //    {
+            //        if(undoRectangles != null)
+            //        {
+            //            undoRectangles.Push(SelectedResizableRectangle);
+            //            undoInformation.Push("Delete");
+            //            AllRectangles.Remove(SelectedResizableRectangle);
+            //            AllRectanglesView.Remove(SelectedResizableRectangle);
+            //        }
+            //    }
+            //}
 
-            this.IsOpen = false;
-            temp = SelectedComboBoxItem;
-            ComboBoxNames();
-            AllRectanglesView = AllRectangles;
-            FilteredRectangles = AllRectangles;
-            OnPropertyChanged("AllRectanglesView");
-            OnPropertyChanged("FilteredRectangles");
-            OnPropertyChanged("ComboBoxNames");
-            SelectedComboBoxItem = temp;
-            FilterName();
+            //this.IsOpen = false;
+            //temp = SelectedComboBoxItem;
+            //ComboBoxNames();
+            //AllRectanglesView = AllRectangles;
+            //FilteredRectangles = AllRectangles;
+            //OnPropertyChanged("AllRectanglesView");
+            //OnPropertyChanged("FilteredRectangles");
+            //OnPropertyChanged("ComboBoxNames");
+            //SelectedComboBoxItem = temp;
+            //FilterName();
         }
 
         public string temp { get; set; }
@@ -1211,7 +1225,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <returns></returns>
         private bool CanDelete()
         {
-            return SelectedResizableRectangle != null;
+            return selectedCustomShape != null;
         }
 
         private System.Windows.Point _vmMousePoint;
