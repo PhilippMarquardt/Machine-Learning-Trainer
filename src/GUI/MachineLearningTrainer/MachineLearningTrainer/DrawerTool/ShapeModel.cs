@@ -34,12 +34,12 @@ namespace MachineLearningTrainer.DrawerTool
         private Point center;
 
 
-        public CustomShape(double x1, double x2, double y1, double y2, int id)
+        public CustomShape(double x, double y, int id)
         {
-            this.x1 = x1;
-            this.x2 = x2;
-            this.y1 = y1;
-            this.y2 = y2;
+            this.x1 = x;
+            this.x2 = x;
+            this.y1 = y;
+            this.y2 = y;
             this.id = id;
 
             this.xLeft = x1;
@@ -50,12 +50,12 @@ namespace MachineLearningTrainer.DrawerTool
             this.stroke = "LawnGreen";
 
         }
-        public CustomShape(double x1, double x2, double y1, double y2)
+        public CustomShape(double x, double y)
         {
-            this.x1 = x1;
-            this.x2 = x2;
-            this.y1 = y1;
-            this.y2 = y2;
+            this.x1 = x;
+            this.x2 = x;
+            this.y1 = y;
+            this.y2 = y;
 
             this.xLeft = x1;
             this.yTop = x2;
@@ -63,7 +63,23 @@ namespace MachineLearningTrainer.DrawerTool
             this.fill = "Transparent";
             this.isMouseOver = false;
             this.stroke = "Transparent";
+        }
 
+        public CustomShape(double x1, double y1, double width, double height, int id)
+        {
+            this.x1 = x1;
+            this.y1 = y1;
+            this.id = id;
+
+            this.xLeft = x1;
+            this.yTop = y1;
+            this.x2 = x1 + width;
+            this.y2 = y1 + height;
+
+            this.opacity = 1;
+            this.fill = "Transparent";
+            this.isMouseOver = false;
+            this.stroke = "LawnGreen";
         }
 
         public string Type

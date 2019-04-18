@@ -70,7 +70,6 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainViewModel = mainViewModel;
             DeleteCommand = new MyICommand(OnDelete, CanDelete);
             DuplicateCommand = new MyICommand(OnDuplicate, CanDuplicate);
-            DuplicateMenuCommand = new MyICommand(OnDuplicateMenu, CanDuplicateMenu);
             RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
@@ -143,7 +142,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private bool shapeSelected = false;
-        private CustomShape selectedCustomShape = new CustomShape(-1, -1, -1, -1);
+        private CustomShape selectedCustomShape = new CustomShape(-1, -1);
         public bool ShapeSelected
         {
             get => shapeDetected;
@@ -235,7 +234,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 if (Rectangles.Count < indexRectangles + 1)
                 {
-                    Rectangles.Add(new CustomShape(tmpX, tmpX, tmpY, tmpY, id));
+                    Rectangles.Add(new CustomShape(tmpX, tmpY, id));
                 }
                 else
                 {
@@ -737,7 +736,7 @@ namespace MachineLearningTrainer.DrawerTool
         //DetectShape:
         //routines to detect different Shapes on Canvas
         private bool shapeDetected = false;
-        private CustomShape detectedCustomShape = new CustomShape(-1, -1, -1, -1);
+        private CustomShape detectedCustomShape = new CustomShape(-1, -1);
 
         public bool ShapeDetected
         {
@@ -802,7 +801,6 @@ namespace MachineLearningTrainer.DrawerTool
         public MyICommand DeleteCommand { get; set; }
         public MyICommand DuplicateCommand { get; set; }
         public MyICommand RenameCommand { get; set; }
-        public MyICommand DuplicateMenuCommand { get; set; }
         public bool Enabled { get; set; } = true;
 
         /// <summary>
@@ -1167,14 +1165,13 @@ namespace MachineLearningTrainer.DrawerTool
                     SelectedRectangleFill();
                     DeleteCommand.RaiseCanExecuteChanged();
                     DuplicateCommand.RaiseCanExecuteChanged();
-                    DuplicateMenuCommand.RaiseCanExecuteChanged();
                     RenameCommand.RaiseCanExecuteChanged();
                 }
                 
             }
         }
 
-
+        #region Delete Routine
         /// <summary>
         /// this method deletes the selection of rectangles
         /// </summary>
@@ -1217,8 +1214,6 @@ namespace MachineLearningTrainer.DrawerTool
             //FilterName();
         }
 
-        public string temp { get; set; }
-
         /// <summary>
         /// says if you can execute the "On Delete" method
         /// </summary>
@@ -1227,6 +1222,12 @@ namespace MachineLearningTrainer.DrawerTool
         {
             return selectedCustomShape != null;
         }
+        #endregion
+
+
+        public string temp { get; set; }
+
+        
 
         private System.Windows.Point _vmMousePoint;
         public System.Windows.Point vmMousePoint
@@ -1235,6 +1236,8 @@ namespace MachineLearningTrainer.DrawerTool
             set { _vmMousePoint = value; }
         }
 
+
+        #region Duplicate-Routine
         /// <summary>
         /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
         /// </summary>
@@ -1242,42 +1245,58 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (DuplicateVar == 1) 
             {
-                SortList();
-                ResizableRectangle DuplicateRect = new ResizableRectangle();
+                double tmpHeight = selectedCustomShape.Height;
+                double tmpWidth = selectedCustomShape.Width;
+                double tmpX1 = vmMousePoint.X - selectedCustomShape.Width / 2;
+                double tmpY1 = vmMousePoint.Y - selectedCustomShape.Height / 2;
 
-                DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
-                DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
-                DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
-                DuplicateRect.X = vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2;
-                DuplicateRect.Y = vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2;
-                DuplicateRect = validateResizableRect(DuplicateRect);
+                Rectangles.Add(new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id));
+                Console.WriteLine(Rectangles.Count());
+                id++;
 
-                Canvas.SetLeft(DuplicateRect, DuplicateRect.X);
-                Canvas.SetTop(DuplicateRect, DuplicateRect.Y);
 
-                undoRectangles.Push(DuplicateRect);
-                undoInformation.Push("Add");
+                //SortList();
+                //ResizableRectangle DuplicateRect = new ResizableRectangle();
 
-                AllRectanglesView.Insert(0, DuplicateRect);
-                AllRectangles.Insert(0, DuplicateRect);
-                OnPropertyChanged("AllRectanglesView");
-                OnPropertyChanged("AllRectangles");
-                await cropImageLabelBegin();
+                //DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
+                //DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
+                //DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
+                //DuplicateRect.X = vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2;
+                //DuplicateRect.Y = vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2;
+                //DuplicateRect = validateResizableRect(DuplicateRect);
 
-                if (SelectedComboBoxItem == "All Labels")
-                {
-                    RectangleCount = "#" + AllRectangles.Count.ToString();
-                }
+                //Canvas.SetLeft(DuplicateRect, DuplicateRect.X);
+                //Canvas.SetTop(DuplicateRect, DuplicateRect.Y);
 
-                else if (SelectedComboBoxItem != "All Labels")
-                {
-                    RectangleCount = "#" + AllRectanglesView.Count.ToString();
-                }
+                //undoRectangles.Push(DuplicateRect);
+                //undoInformation.Push("Add");
+
+                //AllRectanglesView.Insert(0, DuplicateRect);
+                //AllRectangles.Insert(0, DuplicateRect);
+                //OnPropertyChanged("AllRectanglesView");
+                //OnPropertyChanged("AllRectangles");
+                //await cropImageLabelBegin();
+
+                //if (SelectedComboBoxItem == "All Labels")
+                //{
+                //    RectangleCount = "#" + AllRectangles.Count.ToString();
+                //}
+
+                //else if (SelectedComboBoxItem != "All Labels")
+                //{
+                //    RectangleCount = "#" + AllRectanglesView.Count.ToString();
+                //}
             }
 
             else if (DuplicateVar == 0)
             {
-                OnDuplicateMenu();
+                double tmpHeight = selectedCustomShape.Height;
+                double tmpWidth = selectedCustomShape.Width;
+                double tmpX1 = selectedCustomShape.X1 + 30;
+                double tmpY1 = selectedCustomShape.Y1 + 30;
+
+                Rectangles.Add(new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id));
+                id++;
             }
         }
 
@@ -1292,58 +1311,15 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-        /// <summary>
-        /// this method, let you duplicate the selected rectangle with its text, height, ...
-        /// </summary>
-        public async void OnDuplicateMenu()
-        {
-            SortList();
-            ResizableRectangle DuplicateRect = new ResizableRectangle();
-
-            DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
-            DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
-            DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
-            DuplicateRect.X = SelectedResizableRectangle.X + 30;
-            DuplicateRect.Y = SelectedResizableRectangle.Y + 30;
-
-            DuplicateRect = validateResizableRect(DuplicateRect);
-
-            Canvas.SetLeft(DuplicateRect, DuplicateRect.X);
-            Canvas.SetTop(DuplicateRect, DuplicateRect.Y);
-
-            undoRectangles.Push(DuplicateRect);
-            undoInformation.Push("Add");
-
-            AllRectanglesView.Insert(0, DuplicateRect);
-            AllRectangles.Insert(0, DuplicateRect);
-            OnPropertyChanged("AllRectanglesView");
-            OnPropertyChanged("AllRectangles");
-            await cropImageLabelBegin();
-
-            if (SelectedComboBoxItem == "All Labels")
-            {
-                RectangleCount = "#" + AllRectangles.Count.ToString();
-            }
-
-            else if (SelectedComboBoxItem != "All Labels")
-            {
-                RectangleCount = "#" + AllRectanglesView.Count.ToString();
-            }
-        }
-
         /// <summary>
         /// says if you can execute the "On Duplicate" method
         /// </summary>
         private bool CanDuplicate()
         {
-            return SelectedResizableRectangle != null;
+            return selectedCustomShape != null;
         }
+        #endregion
 
-        private bool CanDuplicateMenu()
-        {
-            return SelectedResizableRectangle != null;
-        }
 
         /// <summary>
         /// this method rename all files in the listox

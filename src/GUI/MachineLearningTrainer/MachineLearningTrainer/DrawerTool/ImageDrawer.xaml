@@ -274,7 +274,7 @@
                 <Separator />
                 <MenuItem
                     Width="250"
-                    Command="{Binding DuplicateMenuCommand}"
+                    Command="{Binding DuplicateCommand}"
                     Header="Duplicate"
                     InputGestureText="Ctrl + D"
                     IsEnabled="{Binding IsEnabled}">
@@ -403,7 +403,7 @@
                     Height="22"
                     Margin="5,10,5,10"
                     BorderBrush="Transparent"
-                    Command="{Binding DuplicateMenuCommand}"
+                    Command="{Binding DuplicateCommand}"
                     IsEnabled="{Binding IsEnabled}">
                     <Button.Template>
                         <ControlTemplate>
@@ -929,7 +929,7 @@
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                         <MenuItem
                             Width="300"
-                            Command="{Binding DuplicateMenuCommand}"
+                            Command="{Binding DuplicateCommand}"
                             Header="Duplicate"
                             InputGestureText="Ctrl + D">
                             <MenuItem.Icon>
@@ -1031,7 +1031,7 @@
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                         <MenuItem
                             Width="300"
-                            Command="{Binding DuplicateMenuCommand}"
+                            Command="{Binding DuplicateCommand}"
                             Header="Duplicate"
                             InputGestureText="Ctrl + D">
                             <MenuItem.Icon>
@@ -1135,7 +1135,7 @@
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                         <MenuItem
                             Width="300"
-                            Command="{Binding DuplicateMenuCommand}"
+                            Command="{Binding DuplicateCommand}"
                             Header="Duplicate"
                             InputGestureText="Ctrl + D">
                             <MenuItem.Icon>
@@ -1236,7 +1236,7 @@
                     <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
                         <MenuItem
                             Width="300"
-                            Command="{Binding DuplicateMenuCommand}"
+                            Command="{Binding DuplicateCommand}"
                             Header="Duplicate"
                             InputGestureText="Ctrl + D">
                             <MenuItem.Icon>
