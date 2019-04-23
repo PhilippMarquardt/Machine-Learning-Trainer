@@ -307,9 +307,6 @@
     <Resource Include="Icons\undo.png" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Icons\new2.png" />
-  </ItemGroup>
-  <ItemGroup>
     <ProjectReference Include="..\LicensingWindow\LicensingWindow.csproj">
       <Project>{332615a4-5c28-40a4-8f54-ca2730b19acf}</Project>
       <Name>LicensingWindow</Name>
@@ -320,9 +317,6 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\preprocess.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <Resource Include="Icons\new2_activated.png" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Icons\new_activated.png" />

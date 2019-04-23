@@ -74,20 +74,26 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
-            undoRectangles.Push(new ResizableRectangle());
-            undoInformation.Push("Dummy");
-            redoRectangles.Push(new ResizableRectangle());
-            redoInformation.Push("Dummy");
+            //undoRectangles.Push(new CustomShape());
+            //undoInformation.Push("Dummy");
+            //redoRectangles.Push(new CustomShape());
+            //redoInformation.Push("Dummy");
 
             Rectangles = new ObservableCollection<CustomShape>();
-            Rectangles.Add(new CustomShape(10, 100, 10, 100, 0));
-            id++;
-            indexRectangles++;
-            Rectangles.CollectionChanged += ShapeCollectionChanged;                     //
+            Rectangles.CollectionChanged += ShapeCollectionChanged;
+            undoCustomShapes.Push(new CustomShape(0, 0));
+            undoInformation.Push("Dummy");
+            redoCustomShapes.Push(new CustomShape(0, 0));
+            redoInformation.Push("Dummy");
+
 
         }
 
         public ObservableCollection<CustomShape> Rectangles { get; set; }
+        public Stack<CustomShape> undoCustomShapes { get; set; } = new Stack<CustomShape>();
+        public Stack<string> undoInformation { get; set; } = new Stack<string>();
+        public Stack<CustomShape> redoCustomShapes { get; set; } = new Stack<CustomShape>();
+        public Stack<string> redoInformation { get; set; } = new Stack<string>();
 
         private readonly int borderWidth = 20;                   //used when detecting, moving & resizing shapes
         private readonly double minShapeSize = 50;
@@ -109,23 +115,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        /// <summary>
-        /// declares a string that stores the IconPath to differentiate between active and not active
-        /// </summary>
-        private string _iconPath2 = "\\Icons\\new2.png";
-        public string IconPath2
-        {
-            get
-            {
-                return this._iconPath2;
-            }
-            set
-            {
-                this._iconPath2 = value;
-                OnPropertyChanged("IconPath2");
-            }
-        }
-
         public enum MouseState { Normal, CreateRectangle, CreateEllipse, Move, Resize }
         private MouseState mouseHandlingState;
         public MouseState MouseHandlingState
@@ -141,6 +130,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
         private bool shapeSelected = false;
         private CustomShape selectedCustomShape = new CustomShape(-1, -1);
         public bool ShapeSelected
@@ -154,6 +144,14 @@ namespace MachineLearningTrainer.DrawerTool
                     OnPropertyChanged("ShapeSelected");
                 }
             }
+        }
+
+
+        private System.Windows.Point _vmMousePoint;
+        public System.Windows.Point vmMousePoint
+        {
+            get { return _vmMousePoint; }
+            set { _vmMousePoint = value; }
         }
 
 
@@ -291,6 +289,10 @@ namespace MachineLearningTrainer.DrawerTool
                             Rectangles[indexRectangles].Y1 = Rectangles[indexRectangles].Y2;
                             Rectangles[indexRectangles].Y2 = tmp;
                         }
+
+                        undoCustomShapes.Push(Rectangles[indexRectangles]);
+                        undoInformation.Push("Add");
+
                         Console.WriteLine(Rectangles[indexRectangles].Id);
                         id++;
                         indexRectangles++;
@@ -424,23 +426,26 @@ namespace MachineLearningTrainer.DrawerTool
                 if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeNW;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeW;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeWE;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeSW;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNESW;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
             }
             else if (selectedCustomShape.X2 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 + borderWidth)
@@ -448,23 +453,26 @@ namespace MachineLearningTrainer.DrawerTool
                 if (selectedCustomShape.Y1 < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeNE;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNESW;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeE;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeWE;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeSE;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
             }
             else if (selectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X2 - borderWidth)
@@ -472,16 +480,18 @@ namespace MachineLearningTrainer.DrawerTool
                 if (selectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y1 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeN;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNS;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
                 {
                     resizeDirection = ResizeDirection.SizeS;
-                    selectedCustomShape.Resize = true;
                     Mouse.OverrideCursor = Cursors.SizeNS;
                     mouseHandlingState = MouseState.Resize;
+                    selectedCustomShape.Resize = true;
+                    CopyForUndo("Resize");
                 }
             }
         }
@@ -700,9 +710,10 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 deltaX = mousePosition.X - selectedCustomShape.Center.X;
                 deltaY = mousePosition.Y - selectedCustomShape.Center.Y;
-                selectedCustomShape.Move = true;
                 mouseHandlingState = MouseState.Move;
 
+                selectedCustomShape.Move = true;
+                CopyForUndo("Move");
             }
         }
 
@@ -793,6 +804,292 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
+        #region Duplicate-Routine
+        /// <summary>
+        /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
+        /// </summary>
+        private async void OnDuplicate()
+        {
+            if (DuplicateVar == 1)
+            {
+                double tmpHeight = selectedCustomShape.Height;
+                double tmpWidth = selectedCustomShape.Width;
+                double tmpX1 = vmMousePoint.X - selectedCustomShape.Width / 2;
+                double tmpY1 = vmMousePoint.Y - selectedCustomShape.Height / 2;
+
+                if (vmMousePoint.X - selectedCustomShape.Width / 2 < 0)
+                {
+                    tmpX1 = 0;
+                }
+                else if (vmMousePoint.X + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth)
+                {
+                    tmpWidth = MyCanvas.ActualWidth - tmpX1;
+                }
+                if (vmMousePoint.Y - selectedCustomShape.Height / 2 < 0)
+                {
+                    tmpY1 = 0;
+                }
+                else if (vmMousePoint.Y + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight)
+                {
+                    tmpHeight = MyCanvas.ActualHeight - tmpY1;
+                }
+
+                CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+                Rectangles.Add(duplicatedCustomShape);
+                id++;
+
+                undoCustomShapes.Push(duplicatedCustomShape);
+                undoInformation.Push("Add");
+
+                Console.WriteLine(Rectangles.Count());
+                //undoRectangles.Push(DuplicateRect);
+                //undoInformation.Push("Add");
+
+                //await cropImageLabelBegin();
+
+                //if (SelectedComboBoxItem == "All Labels")
+                //{
+                //    RectangleCount = "#" + AllRectangles.Count.ToString();
+                //}
+
+                //else if (SelectedComboBoxItem != "All Labels")
+                //{
+                //    RectangleCount = "#" + AllRectanglesView.Count.ToString();
+                //}
+            }
+
+            else if (DuplicateVar == 0)
+            {
+                double tmpHeight = selectedCustomShape.Height;
+                double tmpWidth = selectedCustomShape.Width;
+                double tmpX1 = selectedCustomShape.X1 + 30;
+                double tmpY1 = selectedCustomShape.Y1 + 30;
+
+                Rectangles.Add(new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id));
+                id++;
+            }
+        }
+
+
+        private int _duplicateVar;
+
+        public int DuplicateVar
+        {
+            get { return _duplicateVar; }
+            set
+            {
+                _duplicateVar = value;
+                OnPropertyChanged("DuplicateVar");
+            }
+        }
+
+        /// <summary>
+        /// says if you can execute the "On Duplicate" method
+        /// </summary>
+        private bool CanDuplicate()
+        {
+            return selectedCustomShape != null;
+        }
+        #endregion
+
+
+        #region Delete Routine
+        /// <summary>
+        /// this method deletes the selection of rectangles
+        /// </summary>
+        private void OnDelete()
+        {
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r == selectedCustomShape)
+                {
+                    undoCustomShapes.Push(r);
+                    undoInformation.Push("Delete");
+                    Rectangles.Remove(r);
+                    indexRectangles--;
+                    break;
+                }
+            }
+
+            //this.IsOpen = false;
+            //temp = SelectedComboBoxItem;
+            //ComboBoxNames();
+            //AllRectanglesView = AllRectangles;
+            //FilteredRectangles = AllRectangles;
+            //OnPropertyChanged("AllRectanglesView");
+            //OnPropertyChanged("FilteredRectangles");
+            //OnPropertyChanged("ComboBoxNames");
+            //SelectedComboBoxItem = temp;
+            //FilterName();
+        }
+
+        /// <summary>
+        /// says if you can execute the "On Delete" method
+        /// </summary>
+        /// <returns></returns>
+        private bool CanDelete()
+        {
+            return selectedCustomShape != null;
+        }
+        #endregion
+
+
+        #region Undo
+        private ICommand _undoStackCommand;
+        public ICommand UndoCommand
+        {
+            get
+            {
+                return _undoStackCommand ?? (_undoStackCommand = new CommandHandler(() => Undo(), _canExecute));
+            }
+        }
+
+        private void CopyForUndo(string undoInformation)
+        {
+            //double tmpHeight = selectedCustomShape.Height;
+            //double tmpWidth = selectedCustomShape.Width;
+            //double tmpX1 = selectedCustomShape.Y1;
+            //double tmpY1 = selectedCustomShape.Y1;
+            //int tmpId = selectedCustomShape.Id;
+            //CustomShape undoShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpId);
+            //undoCustomShapes.Push(undoShape);
+            //this.undoInformation.Push(undoInformation);
+        }
+
+        /// <summary>
+        /// this method undoes actions on canvas 
+        /// </summary>
+        private void Undo()
+        {
+            if (undoCustomShapes.Count() > 1 && undoInformation.Count() > 1)
+            {
+                switch (undoInformation.Peek())
+                {
+                    // when you have added a rectangle, the undo command will delete the rectangle.
+                    case "Add":
+                        {
+                            CustomShape top = undoCustomShapes.Pop();
+                            string info = undoInformation.Pop();
+
+                            redoCustomShapes.Push(top);
+                            redoInformation.Push(info);
+
+                            Rectangles.Remove(top);
+                            break;
+                        }
+                    // when you have deleted a rectangle, the undo command will add the rectangle.
+                    case "Delete":
+                        {
+                            CustomShape top = undoCustomShapes.Pop();
+                            string info = undoInformation.Pop();
+
+                            redoCustomShapes.Push(top);
+                            redoInformation.Push(info);
+
+                            Rectangles.Add(top);
+                            break;
+                        }
+                    //// when you have resized a rectangle, the undo command will restore the old size.
+                    //// when you have moved a rectangle, the undo command will restore the old position.
+                    //case "Resize":
+                    //case "Move":
+                    //    {
+                    //        CustomShape top = undoCustomShapes.Pop();
+                    //        string info = undoInformation.Pop();
+
+                    //        redoCustomShapes.Push(top);
+                    //        redoInformation.Push(info);
+
+                    //        foreach (CustomShape r in Rectangles)
+                    //        {
+                    //            if (r.Id == top.Id)
+                    //            {
+                    //                int tmpIndex = Rectangles.IndexOf(r);
+                    //                Rectangles.RemoveAt(tmpIndex);
+                    //                Rectangles.Insert(tmpIndex, top);
+                    //                break;
+                    //            }
+                    //        }
+                    //        break;
+                    //    }
+                }
+
+            }
+            OnPropertyChanged("");
+        }
+        #endregion
+
+
+        #region Redo
+        private ICommand _redoStackCommand;
+        public ICommand RedoCommand
+        {
+            get
+            {
+                return _redoStackCommand ?? (_redoStackCommand = new CommandHandler(() => Redo(), _canExecute));
+            }
+        }
+
+        private void Redo()
+        {
+            // Undo the undo command :D
+            if (redoCustomShapes.Count() > 1 && redoInformation.Count() > 1)
+            {
+                switch (redoInformation.Peek())
+                {
+                    // see undo command documentation above.
+                    case "Add":
+                    {
+                        var top = redoCustomShapes.Pop();
+                        var info = redoInformation.Pop();
+
+                        undoCustomShapes.Push(top);
+                        undoInformation.Push(info);
+
+                        Rectangles.Add(top);
+                         break;
+                    }
+
+                    // see undo documentation above.
+                    case "Delete":
+                    {
+                        var top = redoCustomShapes.Pop();
+                        var info = redoInformation.Pop();
+
+                        undoCustomShapes.Push(top);
+                        undoInformation.Push(info);
+
+                        Rectangles.Remove(top);
+                        break;
+                    }
+
+                    //// see undo documentation above.
+                    //case "Resize":
+                    //case "Move":
+                    //{
+                    //    CustomShape top = undoCustomShapes.Pop();
+                    //    string info = undoInformation.Pop();
+
+                    //    redoCustomShapes.Push(top);
+                    //    redoInformation.Push(info);
+
+                    //    foreach (CustomShape r in Rectangles)
+                    //    {
+                    //        if (r.Id == top.Id)
+                    //        {
+                    //            int tmpIndex = Rectangles.IndexOf(r);
+                    //            Rectangles.RemoveAt(tmpIndex);
+                    //            Rectangles.Insert(tmpIndex, top);
+                    //            break;
+                    //        }
+                    //    }
+                    //    break;
+                    //}
+                }
+            }   
+            OnPropertyChanged("");
+        }
+        #endregion
 
         /// <summary>
         /// Old stuff
@@ -827,112 +1124,116 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-        public Stack<ResizableRectangle> undoRectangles { get; set; } = new Stack<ResizableRectangle>();
-        public Stack<string> undoInformation { get; set; } = new Stack<string>();
-        public Stack<ResizableRectangle> redoRectangles { get; set; } = new Stack<ResizableRectangle>();
-        public Stack<string> redoInformation { get; set; } = new Stack<string>();
+        //public Stack<ResizableRectangle> undoRectangles { get; set; } = new Stack<ResizableRectangle>();
+        //public Stack<string> undoInformation { get; set; } = new Stack<string>();
+        //public Stack<ResizableRectangle> redoRectangles { get; set; } = new Stack<ResizableRectangle>();
+        //public Stack<string> redoInformation { get; set; } = new Stack<string>();
 
-        private ICommand _undoStackCommand;
-        public ICommand UndoCommand
-        {
-            get
-            {
-                return _undoStackCommand ?? (_undoStackCommand = new CommandHandler(() => Undo(), _canExecute));
-            }
-        }
+        #region old Undo for ResizableRectangles
+        //private ICommand _undoStackCommand;
+        //public ICommand UndoCommand
+        //{
+        //    get
+        //    {
+        //        return _undoStackCommand ?? (_undoStackCommand = new CommandHandler(() => Undo(), _canExecute));
+        //    }
+        //}
 
-        /// <summary>
-        /// this method undo a rectangle on canvas. 
-        /// </summary>
-        private void Undo()
-        {
-            if (undoRectangles.Count() > 1 && undoInformation.Count() > 1)
-            {
-                // when you have added a rectangle, the undo command will delete the rectangle.
-                if (undoInformation.Peek() == "Add")
-                {
-                    var top = undoRectangles.Pop();
-                    var info = undoInformation.Pop();
+        ///// <summary>
+        ///// this method undo a rectangle on canvas. 
+        ///// </summary>
+        //private void Undo()
+        //{
+        //    if (undoRectangles.Count() > 1 && undoInformation.Count() > 1)
+        //    {
+        //        // when you have added a rectangle, the undo command will delete the rectangle.
+        //        if (undoInformation.Peek() == "Add")
+        //        {
+        //            var top = undoRectangles.Pop();
+        //            var info = undoInformation.Pop();
 
-                    redoRectangles.Push(top);
-                    redoInformation.Push(info);
+        //            redoRectangles.Push(top);
+        //            redoInformation.Push(info);
 
-                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
-                    top.RectangleOpacity = 0.07;
-                    AllRectangles.Remove(top);
-                    AllRectanglesView = AllRectangles;
-                    UpdateCropedImage(top);
-                }
+        //            top.RectangleFill = System.Windows.Media.Brushes.Blue;
+        //            top.RectangleOpacity = 0.07;
+        //            AllRectangles.Remove(top);
+        //            AllRectanglesView = AllRectangles;
+        //            UpdateCropedImage(top);
+        //        }
 
-                // when you have deleted a rectangle, the undo command will add the rectangle.
-                if (undoInformation.Peek() == "Delete")
-                {
-                    var top = undoRectangles.Pop();
-                    var info = undoInformation.Pop();
+        //        // when you have deleted a rectangle, the undo command will add the rectangle.
+        //        if (undoInformation.Peek() == "Delete")
+        //        {
+        //            var top = undoRectangles.Pop();
+        //            var info = undoInformation.Pop();
 
-                    redoRectangles.Push(top);
-                    redoInformation.Push(info);
+        //            redoRectangles.Push(top);
+        //            redoInformation.Push(info);
 
-                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
-                    top.RectangleOpacity = 0.07;
-                    AllRectangles.Add(top);
-                    AllRectanglesView = AllRectangles;
-                    UpdateCropedImage(top);
-                }
-            }
-            OnPropertyChanged("");
-        }
+        //            top.RectangleFill = System.Windows.Media.Brushes.Blue;
+        //            top.RectangleOpacity = 0.07;
+        //            AllRectangles.Add(top);
+        //            AllRectanglesView = AllRectangles;
+        //            UpdateCropedImage(top);
+        //        }
+        //    }
+        //    OnPropertyChanged("");
+        //}
+        #endregion
 
-        private ICommand _redoStackCommand;
-        public ICommand RedoCommand
-        {
-            get
-            {
-                return _redoStackCommand ?? (_redoStackCommand = new CommandHandler(() => Redo(), _canExecute));
-            }
-        }
 
-        private void Redo()
-        {
-            // Undo the undo command :D
-            if (redoRectangles.Count() > 1 && redoInformation.Count() > 1)
-            {
-                // see undo command documentation above.
-                if (redoInformation.Peek() == "Add")
-                {
-                    var top = redoRectangles.Pop();
-                    var info = redoInformation.Pop();
+        #region old Redo for ResizableRectangles
+        //private ICommand _redoStackCommand;
+        //public ICommand RedoCommand
+        //{
+        //    get
+        //    {
+        //        return _redoStackCommand ?? (_redoStackCommand = new CommandHandler(() => Redo(), _canExecute));
+        //    }
+        //}
 
-                    undoRectangles.Push(top);
-                    undoInformation.Push(info);
+        //private void Redo()
+        //{
+        //    // Undo the undo command :D
+        //    if (redoRectangles.Count() > 1 && redoInformation.Count() > 1)
+        //    {
+        //        // see undo command documentation above.
+        //        if (redoInformation.Peek() == "Add")
+        //        {
+        //            var top = redoRectangles.Pop();
+        //            var info = redoInformation.Pop();
 
-                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
-                    top.RectangleOpacity = 0.07;
+        //            undoRectangles.Push(top);
+        //            undoInformation.Push(info);
 
-                    AllRectangles.Add(top);
-                    AllRectanglesView = AllRectangles;
-                    UpdateCropedImage(top);
-                }
+        //            top.RectangleFill = System.Windows.Media.Brushes.Blue;
+        //            top.RectangleOpacity = 0.07;
 
-                // see undo documentation above.
-                if (redoInformation.Peek() == "Delete")
-                {
-                    var top = redoRectangles.Pop();
-                    var info = redoInformation.Pop();
+        //            AllRectangles.Add(top);
+        //            AllRectanglesView = AllRectangles;
+        //            UpdateCropedImage(top);
+        //        }
 
-                    undoRectangles.Push(top);
-                    undoInformation.Push(info);
+        //        // see undo documentation above.
+        //        if (redoInformation.Peek() == "Delete")
+        //        {
+        //            var top = redoRectangles.Pop();
+        //            var info = redoInformation.Pop();
 
-                    top.RectangleFill = System.Windows.Media.Brushes.Blue;
-                    top.RectangleOpacity = 0.07;
-                    AllRectangles.Remove(top);
-                    AllRectanglesView = AllRectangles;
-                    UpdateCropedImage(top);
-                }
-            }
-            OnPropertyChanged("");
-        }
+        //            undoRectangles.Push(top);
+        //            undoInformation.Push(info);
 
+        //            top.RectangleFill = System.Windows.Media.Brushes.Blue;
+        //            top.RectangleOpacity = 0.07;
+        //            AllRectangles.Remove(top);
+        //            AllRectanglesView = AllRectangles;
+        //            UpdateCropedImage(top);
+        //        }
+        //    }
+        //    OnPropertyChanged("");
+        //}
+        #endregion
 
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
@@ -1070,15 +1371,15 @@ namespace MachineLearningTrainer.DrawerTool
         public void clearUndoRedoStack()
         {
             // Clear Undo and Redo Stack
-            undoRectangles.Clear();
+            undoCustomShapes.Clear();
             undoInformation.Clear();
-            redoRectangles.Clear();
+            redoCustomShapes.Clear();
             redoInformation.Clear();
 
             // Add one Dummy item to each Stack
-            undoRectangles.Push(new ResizableRectangle());
+            undoCustomShapes.Push(new CustomShape(0,0));
             undoInformation.Push("Dummy");
-            redoRectangles.Push(new ResizableRectangle());
+            redoCustomShapes.Push(new CustomShape(0,0));
             redoInformation.Push("Dummy");
 
         }
@@ -1171,154 +1472,13 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        #region Delete Routine
-        /// <summary>
-        /// this method deletes the selection of rectangles
-        /// </summary>
-        private void OnDelete() 
-        {
-            foreach (CustomShape r in Rectangles)
-            {
-                if (r == selectedCustomShape)
-                {
 
-                    Rectangles.Remove(r);
-                    indexRectangles--;
-                    break;
-                }
-            }
-            
-            //for(int i = 0; i < AllRectangles.Count + 1; i++)
-            //{
-            //    if(undoRectangles != null)
-            //    {
-            //        if(undoRectangles != null)
-            //        {
-            //            undoRectangles.Push(SelectedResizableRectangle);
-            //            undoInformation.Push("Delete");
-            //            AllRectangles.Remove(SelectedResizableRectangle);
-            //            AllRectanglesView.Remove(SelectedResizableRectangle);
-            //        }
-            //    }
-            //}
-
-            //this.IsOpen = false;
-            //temp = SelectedComboBoxItem;
-            //ComboBoxNames();
-            //AllRectanglesView = AllRectangles;
-            //FilteredRectangles = AllRectangles;
-            //OnPropertyChanged("AllRectanglesView");
-            //OnPropertyChanged("FilteredRectangles");
-            //OnPropertyChanged("ComboBoxNames");
-            //SelectedComboBoxItem = temp;
-            //FilterName();
-        }
-
-        /// <summary>
-        /// says if you can execute the "On Delete" method
-        /// </summary>
-        /// <returns></returns>
-        private bool CanDelete()
-        {
-            return selectedCustomShape != null;
-        }
-        #endregion
 
 
         public string temp { get; set; }
 
         
 
-        private System.Windows.Point _vmMousePoint;
-        public System.Windows.Point vmMousePoint
-        {
-            get { return _vmMousePoint; }
-            set { _vmMousePoint = value; }
-        }
-
-
-        #region Duplicate-Routine
-        /// <summary>
-        /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
-        /// </summary>
-        private async void OnDuplicate()
-        {
-            if (DuplicateVar == 1) 
-            {
-                double tmpHeight = selectedCustomShape.Height;
-                double tmpWidth = selectedCustomShape.Width;
-                double tmpX1 = vmMousePoint.X - selectedCustomShape.Width / 2;
-                double tmpY1 = vmMousePoint.Y - selectedCustomShape.Height / 2;
-
-                Rectangles.Add(new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id));
-                Console.WriteLine(Rectangles.Count());
-                id++;
-
-
-                //SortList();
-                //ResizableRectangle DuplicateRect = new ResizableRectangle();
-
-                //DuplicateRect.RectangleHeight = SelectedResizableRectangle.RectangleHeight;
-                //DuplicateRect.RectangleWidth = SelectedResizableRectangle.RectangleWidth;
-                //DuplicateRect.RectangleText = SelectedResizableRectangle.RectangleText;
-                //DuplicateRect.X = vmMousePoint.X - SelectedResizableRectangle.RectangleWidth / 2;
-                //DuplicateRect.Y = vmMousePoint.Y - SelectedResizableRectangle.RectangleHeight / 2;
-                //DuplicateRect = validateResizableRect(DuplicateRect);
-
-                //Canvas.SetLeft(DuplicateRect, DuplicateRect.X);
-                //Canvas.SetTop(DuplicateRect, DuplicateRect.Y);
-
-                //undoRectangles.Push(DuplicateRect);
-                //undoInformation.Push("Add");
-
-                //AllRectanglesView.Insert(0, DuplicateRect);
-                //AllRectangles.Insert(0, DuplicateRect);
-                //OnPropertyChanged("AllRectanglesView");
-                //OnPropertyChanged("AllRectangles");
-                //await cropImageLabelBegin();
-
-                //if (SelectedComboBoxItem == "All Labels")
-                //{
-                //    RectangleCount = "#" + AllRectangles.Count.ToString();
-                //}
-
-                //else if (SelectedComboBoxItem != "All Labels")
-                //{
-                //    RectangleCount = "#" + AllRectanglesView.Count.ToString();
-                //}
-            }
-
-            else if (DuplicateVar == 0)
-            {
-                double tmpHeight = selectedCustomShape.Height;
-                double tmpWidth = selectedCustomShape.Width;
-                double tmpX1 = selectedCustomShape.X1 + 30;
-                double tmpY1 = selectedCustomShape.Y1 + 30;
-
-                Rectangles.Add(new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id));
-                id++;
-            }
-        }
-
-
-        private int _duplicateVar;
-
-        public int DuplicateVar
-        {
-            get { return _duplicateVar; }
-            set { _duplicateVar = value;
-                OnPropertyChanged("DuplicateVar");
-            }
-        }
-
-        /// <summary>
-        /// says if you can execute the "On Duplicate" method
-        /// </summary>
-        private bool CanDuplicate()
-        {
-            return selectedCustomShape != null;
-        }
-        #endregion
 
 
         /// <summary>

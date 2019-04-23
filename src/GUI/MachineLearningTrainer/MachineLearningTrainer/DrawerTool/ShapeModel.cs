@@ -82,6 +82,18 @@ namespace MachineLearningTrainer.DrawerTool
             this.stroke = "LawnGreen";
         }
 
+        //public CustomShape CopyObject(CustomShape originalShape)
+        //{
+        //    double tmpHeight = originalShape.Height;
+        //    double tmpWidth = originalShape.Width;
+        //    double tmpX1 = originalShape.Y1;
+        //    double tmpY1 = originalShape.Y1;
+        //    int tmpId = originalShape.Id;
+        //    CustomShape Copy = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpId);
+
+        //    return Copy;
+        //}
+
         public string Type
         {
             get { return this.type; }

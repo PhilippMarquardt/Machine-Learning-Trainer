@@ -222,7 +222,7 @@ namespace MachineLearningTrainer.DrawerTool
                 (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
             }
 
-            if ((this.DataContext as DrawerViewModel).undoRectangles.Count != 0)
+            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count != 0)
             {
                 (this.DataContext as DrawerViewModel).UndoEnabled = true;
             }
