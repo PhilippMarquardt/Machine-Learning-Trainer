@@ -86,6 +86,11 @@ namespace MachineLearningTrainer.DrawerTool
             redoCustomShapes.Push(new CustomShape(0, 0));
             redoInformation.Push("Dummy");
 
+            Rectangles.Add(new CustomShape(100, 50, 200, 100, 0));
+            undoCustomShapes.Push(Rectangles[0]);
+            undoInformation.Push("Add");
+            id++;
+            indexRectangles++;
 
         }
 
@@ -791,6 +796,10 @@ namespace MachineLearningTrainer.DrawerTool
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
                 detectedCustomShape.Fill = "Gray";
+                Console.WriteLine("X1: " + detectedCustomShape.X1);
+                Console.WriteLine("Y1: " + detectedCustomShape.Y1);
+                Console.WriteLine("X2: " + detectedCustomShape.X2);
+                Console.WriteLine("Y2: " + detectedCustomShape.Y2);
             }
         }
 
@@ -946,14 +955,14 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void CopyForUndo(string undoInformation)
         {
-            //double tmpHeight = selectedCustomShape.Height;
-            //double tmpWidth = selectedCustomShape.Width;
-            //double tmpX1 = selectedCustomShape.Y1;
-            //double tmpY1 = selectedCustomShape.Y1;
-            //int tmpId = selectedCustomShape.Id;
-            //CustomShape undoShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpId);
-            //undoCustomShapes.Push(undoShape);
-            //this.undoInformation.Push(undoInformation);
+            double tmpHeight = selectedCustomShape.Height;
+            double tmpWidth = selectedCustomShape.Width;
+            double tmpX1 = selectedCustomShape.X1;
+            double tmpY1 = selectedCustomShape.Y1;
+            int tmpId = selectedCustomShape.Id;
+            CustomShape undoShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpId);
+            undoCustomShapes.Push(undoShape);
+            this.undoInformation.Push(undoInformation);
         }
 
         /// <summary>
@@ -989,29 +998,29 @@ namespace MachineLearningTrainer.DrawerTool
                             Rectangles.Add(top);
                             break;
                         }
-                    //// when you have resized a rectangle, the undo command will restore the old size.
-                    //// when you have moved a rectangle, the undo command will restore the old position.
-                    //case "Resize":
-                    //case "Move":
-                    //    {
-                    //        CustomShape top = undoCustomShapes.Pop();
-                    //        string info = undoInformation.Pop();
+                    // when you have resized a rectangle, the undo command will restore the old size.
+                    // when you have moved a rectangle, the undo command will restore the old position.
+                    case "Resize":
+                    case "Move":
+                        {
+                            CustomShape top = undoCustomShapes.Pop();
+                            string info = undoInformation.Pop();
 
-                    //        redoCustomShapes.Push(top);
-                    //        redoInformation.Push(info);
+                            redoCustomShapes.Push(top);
+                            redoInformation.Push(info);
 
-                    //        foreach (CustomShape r in Rectangles)
-                    //        {
-                    //            if (r.Id == top.Id)
-                    //            {
-                    //                int tmpIndex = Rectangles.IndexOf(r);
-                    //                Rectangles.RemoveAt(tmpIndex);
-                    //                Rectangles.Insert(tmpIndex, top);
-                    //                break;
-                    //            }
-                    //        }
-                    //        break;
-                    //    }
+                            foreach (CustomShape r in Rectangles)
+                            {
+                                if (r.Id == top.Id)
+                                {
+                                    int tmpIndex = Rectangles.IndexOf(r);
+                                    Rectangles.RemoveAt(tmpIndex);
+                                    Rectangles.Insert(tmpIndex, top);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                 }
 
             }
@@ -1063,33 +1072,35 @@ namespace MachineLearningTrainer.DrawerTool
                         break;
                     }
 
-                    //// see undo documentation above.
-                    //case "Resize":
-                    //case "Move":
-                    //{
-                    //    CustomShape top = undoCustomShapes.Pop();
-                    //    string info = undoInformation.Pop();
+                    // see undo documentation above.
+                    case "Resize":
+                    case "Move":
+                        {
+                            CustomShape top = redoCustomShapes.Pop();
+                            string info = redoInformation.Pop();
 
-                    //    redoCustomShapes.Push(top);
-                    //    redoInformation.Push(info);
+                            undoCustomShapes.Push(top);
+                            undoInformation.Push(info);
 
-                    //    foreach (CustomShape r in Rectangles)
-                    //    {
-                    //        if (r.Id == top.Id)
-                    //        {
-                    //            int tmpIndex = Rectangles.IndexOf(r);
-                    //            Rectangles.RemoveAt(tmpIndex);
-                    //            Rectangles.Insert(tmpIndex, top);
-                    //            break;
-                    //        }
-                    //    }
-                    //    break;
-                    //}
+                            foreach (CustomShape r in Rectangles)
+                            {
+                                if (r.Id == top.Id)
+                                {
+                                    int tmpIndex = Rectangles.IndexOf(r);
+                                    Rectangles.RemoveAt(tmpIndex);
+                                    Rectangles.Insert(tmpIndex, top);
+                                    break;
+                                }
+                            }
+                            break;
+                        }
                 }
             }   
             OnPropertyChanged("");
         }
         #endregion
+
+
 
         /// <summary>
         /// Old stuff
