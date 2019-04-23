@@ -326,15 +326,7 @@ namespace MachineLearningTrainer.DrawerTool
                         Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
                         Console.WriteLine("Rectangles count: " + Rectangles.Count);
 
-                        if (SelectedComboBoxItem == "All Labels")
-                        {
-                            RectangleCount = "#" + Rectangles.Count.ToString();
-                        }
-
-                        else if (SelectedComboBoxItem != "All Labels")
-                        {
-                            RectangleCount = "#" + RectanglesView.Count.ToString();
-                        }
+                        RectangleCount = "#" + RectanglesView.Count.ToString();
 
 
                         OnPropertyChanged("Rectangles");
@@ -912,15 +904,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 //await cropImageLabelBegin();
 
-                if (SelectedComboBoxItem == "All Labels")
-                {
-                    RectangleCount = "#" + Rectangles.Count.ToString();
-                }
-
-                else if (SelectedComboBoxItem != "All Labels")
-                {
-                    RectangleCount = "#" + RectanglesView.Count.ToString();
-                }
+                RectangleCount = "#" + RectanglesView.Count.ToString();
             }
 
             else if (DuplicateVar == 0)
@@ -1130,15 +1114,7 @@ namespace MachineLearningTrainer.DrawerTool
                         }
                 }
 
-                if (SelectedComboBoxItem == "All Labels")
-                {
-                    RectangleCount = "#" + Rectangles.Count.ToString();
-                }
-
-                else if (SelectedComboBoxItem != "All Labels")
-                {
-                    RectangleCount = "#" + RectanglesView.Count.ToString();
-                }
+                RectangleCount = "#" + RectanglesView.Count.ToString();
 
             }
             OnPropertyChanged("");
@@ -1366,6 +1342,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     RectanglesView.Add(new CustomShape(r));
                 }
+                indexRectanglesView = RectanglesView.Count();
 
                 RectangleCount = "#" + Rectangles.Count.ToString();
                 OnPropertyChanged("Rectangles");
@@ -1408,6 +1385,7 @@ namespace MachineLearningTrainer.DrawerTool
                         RectanglesView.Add(new CustomShape(r));
                     }
                 }
+                indexRectanglesView = RectanglesView.Count();
 
                 OnPropertyChanged("Rectangles");
                 OnPropertyChanged("RectanglesView");
@@ -1441,6 +1419,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #region Variablen
         private string _selectedComboBoxItem;
 
         public string SelectedComboBoxItem
@@ -1524,6 +1503,7 @@ namespace MachineLearningTrainer.DrawerTool
                 return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
             }
         }
+        #endregion
 
         /// <summary>
         /// with this method, you can open an xml file from a different location as the loaded image.
