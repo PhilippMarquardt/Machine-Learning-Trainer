@@ -213,14 +213,14 @@ namespace MachineLearningTrainer.DrawerTool
             ////    await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
             ////}
 
-            if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
-            {
-                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectanglesView.Count.ToString();
-            }
-            else
-            {
-                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
-            }
+            //if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
+            //{
+            //    (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectanglesView.Count.ToString();
+            //}
+            //else
+            //{
+            //    (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
+            //}
 
             if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count != 0)
             {
@@ -244,14 +244,14 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).FilterName();
 
-            if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
-            {
-                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectanglesView.Count.ToString();
-            }
-            else
-            {
-                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
-            }
+            //if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
+            //{
+            //    (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).RectanglesView.Count.ToString();
+            //}
+            //else
+            //{
+            //    (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).Rectangles.Count.ToString();
+            //}
         }
 
 

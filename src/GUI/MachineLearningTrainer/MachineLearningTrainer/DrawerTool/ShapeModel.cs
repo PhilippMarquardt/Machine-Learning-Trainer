@@ -15,7 +15,7 @@ namespace MachineLearningTrainer.DrawerTool
 
     public class CustomShape : INotifyPropertyChanged
     {
-        private string type;
+        private string label;
         private double width;
         private double height;
         private double x1;
@@ -41,6 +41,7 @@ namespace MachineLearningTrainer.DrawerTool
             this.y1 = y;
             this.y2 = y;
             this.id = id;
+            this.label = "";
 
             this.xLeft = x1;
             this.yTop = x2;
@@ -56,13 +57,14 @@ namespace MachineLearningTrainer.DrawerTool
             this.x2 = x;
             this.y1 = y;
             this.y2 = y;
+            this.label = "";
 
             this.xLeft = x1;
             this.yTop = x2;
             this.opacity = 1;
             this.fill = "Transparent";
             this.isMouseOver = false;
-            this.stroke = "Transparent";
+            this.stroke = "LawnGreen";
         }
 
         public CustomShape(double x1, double y1, double width, double height, int id)
@@ -70,6 +72,7 @@ namespace MachineLearningTrainer.DrawerTool
             this.x1 = x1;
             this.y1 = y1;
             this.id = id;
+            this.label = "";
 
             this.xLeft = x1;
             this.yTop = y1;
@@ -82,27 +85,35 @@ namespace MachineLearningTrainer.DrawerTool
             this.stroke = "LawnGreen";
         }
 
-        //public CustomShape CopyObject(CustomShape originalShape)
-        //{
-        //    double tmpHeight = originalShape.Height;
-        //    double tmpWidth = originalShape.Width;
-        //    double tmpX1 = originalShape.Y1;
-        //    double tmpY1 = originalShape.Y1;
-        //    int tmpId = originalShape.Id;
-        //    CustomShape Copy = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpId);
-
-        //    return Copy;
-        //}
-
-        public string Type
+        public CustomShape(CustomShape tmp)
         {
-            get { return this.type; }
+            this.x1 = tmp.X1;
+            this.x2 = tmp.X2;
+            this.xLeft = tmp.XLeft;
+
+            this.y1 = tmp.Y1;
+            this.y2 = tmp.Y2;
+            this.yTop = tmp.YTop;
+
+            this.id = tmp.Id;
+            this.label = tmp.Label;
+
+
+            this.opacity = 1;
+            this.fill = "Transparent";
+            this.isMouseOver = false;
+            this.stroke = "LawnGreen";
+        }
+
+        public string Label
+        {
+            get { return this.label; }
             set
             {
-                if (type != value)
+                if (label != value)
                 {
-                    this.type = value;
-                    this.NotifyPropertyChanged("Type");
+                    this.label = value;
+                    this.NotifyPropertyChanged("Label");
                 }
             }
         }

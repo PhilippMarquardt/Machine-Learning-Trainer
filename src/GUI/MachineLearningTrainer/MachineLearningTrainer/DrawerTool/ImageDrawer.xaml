@@ -720,7 +720,7 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Background="Transparent"
-                            ItemsSource="{Binding Rectangles, UpdateSourceTrigger=PropertyChanged}">
+                            ItemsSource="{Binding RectanglesView, UpdateSourceTrigger=PropertyChanged}">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Rectangle

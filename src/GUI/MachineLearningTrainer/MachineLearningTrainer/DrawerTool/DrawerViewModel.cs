@@ -74,34 +74,35 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxItems.Add("All Labels");
             AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
-            //undoRectangles.Push(new CustomShape());
-            //undoInformation.Push("Dummy");
-            //redoRectangles.Push(new CustomShape());
-            //redoInformation.Push("Dummy");
 
+            RectanglesView = new ObservableCollection<CustomShape>();
             Rectangles = new ObservableCollection<CustomShape>();
-            Rectangles.CollectionChanged += ShapeCollectionChanged;
+            RectanglesView.CollectionChanged += ShapeCollectionChanged;
             undoCustomShapes.Push(new CustomShape(0, 0));
             undoInformation.Push("Dummy");
             redoCustomShapes.Push(new CustomShape(0, 0));
             redoInformation.Push("Dummy");
 
-            Rectangles.Add(new CustomShape(100, 50, 200, 100, 0));
-            undoCustomShapes.Push(Rectangles[0]);
+
+
+            RectanglesView.Add(new CustomShape(100, 50, 200, 100, 0));
+            Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
+            undoCustomShapes.Push(RectanglesView[0]);
             undoInformation.Push("Add");
             id++;
             indexRectangles++;
-
+            indexRectanglesView++;
         }
 
+        public ObservableCollection<CustomShape> RectanglesView { get; set; }
         public ObservableCollection<CustomShape> Rectangles { get; set; }
         public Stack<CustomShape> undoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> undoInformation { get; set; } = new Stack<string>();
         public Stack<CustomShape> redoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> redoInformation { get; set; } = new Stack<string>();
 
-        private readonly int borderWidth = 20;                   //used when detecting, moving & resizing shapes
-        private readonly double minShapeSize = 50;
+        private readonly int borderWidth = 10;                   //used when detecting, moving & resizing shapes
+        private readonly double minShapeSize = 20;
 
         /// <summary>
         /// declares a string that stores the IconPath to differentiate between active and not active
@@ -160,7 +161,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        #region CheckIfMouseOnCanvas
+        #region Check If Mouse || Shape On Canvas
         //CheckCanvas:
         //makes sure that you only draw on canvas
 
@@ -225,6 +226,7 @@ namespace MachineLearningTrainer.DrawerTool
         //routine to create rectangles
 
         private int indexRectangles;
+        private int indexRectanglesView;
         private int id;
 
         public void CreateRectangle(System.Windows.Point mousePosition)
@@ -235,73 +237,108 @@ namespace MachineLearningTrainer.DrawerTool
                 tmpY = mousePosition.Y;
                 CheckCanvas(mousePosition);
 
-                if (Rectangles.Count < indexRectangles + 1)
+                if (RectanglesView.Count < indexRectanglesView + 1)
                 {
-                    Rectangles.Add(new CustomShape(tmpX, tmpY, id));
+                    RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
                 }
                 else
                 {
-                    if (Rectangles[indexRectangles].X1 == -1 && Rectangles[indexRectangles].Y1 == -1)
+                    if (RectanglesView[indexRectanglesView].X1 == -1 && RectanglesView[indexRectanglesView].Y1 == -1)
                     {
-                        Rectangles[indexRectangles].X1 = tmpX;
-                        Rectangles[indexRectangles].Y1 = tmpY;
+                        RectanglesView[indexRectanglesView].X1 = tmpX;
+                        RectanglesView[indexRectanglesView].Y1 = tmpY;
                     }
-                    Rectangles[indexRectangles].X2 = tmpX;
-                    Rectangles[indexRectangles].Y2 = tmpY;
+                    RectanglesView[indexRectanglesView].X2 = tmpX;
+                    RectanglesView[indexRectanglesView].Y2 = tmpY;
 
-                    if (Rectangles[indexRectangles].X1 > Rectangles[indexRectangles].X2)
+                    if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
                     {
-                        Rectangles[indexRectangles].XLeft = Rectangles[indexRectangles].X2;
+                        RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X2;
                     }
                     else
                     {
-                        Rectangles[indexRectangles].XLeft = Rectangles[indexRectangles].X1;
+                        RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X1;
                     }
-                    if (Rectangles[indexRectangles].Y1 > Rectangles[indexRectangles].Y2)
+                    if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
                     {
-                        Rectangles[indexRectangles].YTop = Rectangles[indexRectangles].Y2;
+                        RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y2;
                     }
                     else
                     {
-                        Rectangles[indexRectangles].YTop = Rectangles[indexRectangles].Y1;
+                        RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
                     }
                 }
             }
             else if (Mouse.LeftButton == MouseButtonState.Released)
             {
                 double tmp;
-                if (Rectangles.Count == indexRectangles + 1)
+                if (RectanglesView.Count == indexRectanglesView + 1)
                 {
-                    if (Math.Abs(Rectangles[indexRectangles].X1 - Rectangles[indexRectangles].X2) < minShapeSize
-                        || Math.Abs(Rectangles[indexRectangles].Y1 - Rectangles[indexRectangles].Y2) < minShapeSize)
+                    if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
+                        || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
                     {
-                        Rectangles[indexRectangles].X1 = -1;
-                        Rectangles[indexRectangles].X2 = -1;
-                        Rectangles[indexRectangles].Y1 = -1;
-                        Rectangles[indexRectangles].Y2 = -1;
+                        RectanglesView[indexRectanglesView].X1 = -1;
+                        RectanglesView[indexRectanglesView].X2 = -1;
+                        RectanglesView[indexRectanglesView].Y1 = -1;
+                        RectanglesView[indexRectanglesView].Y2 = -1;
                     }
                     else
                     {
-                        if (Rectangles[indexRectangles].X1 > Rectangles[indexRectangles].X2)
+                        if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
                         {
-                            tmp = Rectangles[indexRectangles].X1;
-                            Rectangles[indexRectangles].X1 = Rectangles[indexRectangles].X2;
-                            Rectangles[indexRectangles].X2 = tmp;
+                            tmp = RectanglesView[indexRectanglesView].X1;
+                            RectanglesView[indexRectanglesView].X1 = RectanglesView[indexRectanglesView].X2;
+                            RectanglesView[indexRectanglesView].X2 = tmp;
                         }
-                        if (Rectangles[indexRectangles].Y1 > Rectangles[indexRectangles].Y2)
+                        if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
                         {
-                            tmp = Rectangles[indexRectangles].Y1;
-                            Rectangles[indexRectangles].Y1 = Rectangles[indexRectangles].Y2;
-                            Rectangles[indexRectangles].Y2 = tmp;
+                            tmp = RectanglesView[indexRectanglesView].Y1;
+                            RectanglesView[indexRectanglesView].Y1 = RectanglesView[indexRectanglesView].Y2;
+                            RectanglesView[indexRectanglesView].Y2 = tmp;
                         }
 
-                        undoCustomShapes.Push(Rectangles[indexRectangles]);
+                        if (SelectedComboBoxItem != "All Labels")
+                        {
+                            Enabled = false;
+                            RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
+                        }
+
+                        else
+                        {
+                            Enabled = false;
+                            if (IsChecked == true && DefaultLabel.Length > 0)
+                                RectanglesView[indexRectanglesView].Label = _defaultLabel;
+                            else
+                                RectanglesView[indexRectanglesView].Label = "";
+                        }
+
+                        Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
+
+
+                        undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
                         undoInformation.Push("Add");
 
-                        Console.WriteLine(Rectangles[indexRectangles].Id);
+                        Console.WriteLine(RectanglesView[indexRectanglesView].Id);
                         id++;
                         indexRectangles++;
-                        Console.WriteLine("Rectangle count: " + Rectangles.Count);
+                        indexRectanglesView++;
+
+                        Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
+                        Console.WriteLine("Rectangles count: " + Rectangles.Count);
+
+                        if (SelectedComboBoxItem == "All Labels")
+                        {
+                            RectangleCount = "#" + Rectangles.Count.ToString();
+                        }
+
+                        else if (SelectedComboBoxItem != "All Labels")
+                        {
+                            RectangleCount = "#" + RectanglesView.Count.ToString();
+                        }
+
+
+                        OnPropertyChanged("Rectangles");
+                        OnPropertyChanged("RectanglesView");
                     }
                 }
             }
@@ -337,7 +374,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void Shape_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            CollectionViewSource.GetDefaultView(Rectangles).Refresh();
+            CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
         }
         #endregion
 
@@ -658,6 +695,18 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void DeactivateResize()
         {
+            int tmpIndex = 0;
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r.Id == selectedCustomShape.Id)
+                {
+                    Rectangles.RemoveAt(tmpIndex);
+                    Rectangles.Insert(tmpIndex, selectedCustomShape);
+                    break;
+                }
+                tmpIndex++;
+            }
+
             selectedCustomShape.Resize = false;
         }
 
@@ -738,12 +787,21 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void DeactivateMove(System.Windows.Point mousePosition)
         {
-            selectedCustomShape.Move = false;
             CheckCanvas(mousePosition, deltaX, deltaY);
-            //Console.WriteLine(selectedCustomShape.X1);
-            //Console.WriteLine(selectedCustomShape.Y1);
-            //Console.WriteLine(tmpX);
-            //Console.WriteLine(tmpY + "\n");
+
+            int tmpIndex = 0;
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r.Id == selectedCustomShape.Id)
+                {
+                    Rectangles.RemoveAt(tmpIndex);
+                    Rectangles.Insert(tmpIndex, selectedCustomShape);
+                    break;
+                }
+                tmpIndex++;
+            }
+
+            selectedCustomShape.Move = false;
         }
         #endregion
 
@@ -781,7 +839,7 @@ namespace MachineLearningTrainer.DrawerTool
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
 
-                foreach (CustomShape r in Rectangles)
+                foreach (CustomShape r in RectanglesView)
                 {
                     if ((r.X1 < mousePosition.X && mousePosition.X < r.X2) && (r.Y1 < mousePosition.Y && mousePosition.Y < r.Y2))
                     {
@@ -796,10 +854,6 @@ namespace MachineLearningTrainer.DrawerTool
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
                 detectedCustomShape.Fill = "Gray";
-                Console.WriteLine("X1: " + detectedCustomShape.X1);
-                Console.WriteLine("Y1: " + detectedCustomShape.Y1);
-                Console.WriteLine("X2: " + detectedCustomShape.X2);
-                Console.WriteLine("Y2: " + detectedCustomShape.Y2);
             }
         }
 
@@ -844,27 +898,29 @@ namespace MachineLearningTrainer.DrawerTool
                 }
 
                 CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+                duplicatedCustomShape.Label = selectedCustomShape.Label;
+                RectanglesView.Add(duplicatedCustomShape);
                 Rectangles.Add(duplicatedCustomShape);
+                indexRectanglesView++;
+                indexRectangles++;
                 id++;
 
                 undoCustomShapes.Push(duplicatedCustomShape);
                 undoInformation.Push("Add");
 
-                Console.WriteLine(Rectangles.Count());
-                //undoRectangles.Push(DuplicateRect);
-                //undoInformation.Push("Add");
+                Console.WriteLine("RectanglesView Count: " + RectanglesView.Count());
 
                 //await cropImageLabelBegin();
 
-                //if (SelectedComboBoxItem == "All Labels")
-                //{
-                //    RectangleCount = "#" + AllRectangles.Count.ToString();
-                //}
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    RectangleCount = "#" + Rectangles.Count.ToString();
+                }
 
-                //else if (SelectedComboBoxItem != "All Labels")
-                //{
-                //    RectangleCount = "#" + AllRectanglesView.Count.ToString();
-                //}
+                else if (SelectedComboBoxItem != "All Labels")
+                {
+                    RectangleCount = "#" + RectanglesView.Count.ToString();
+                }
             }
 
             else if (DuplicateVar == 0)
@@ -874,8 +930,17 @@ namespace MachineLearningTrainer.DrawerTool
                 double tmpX1 = selectedCustomShape.X1 + 30;
                 double tmpY1 = selectedCustomShape.Y1 + 30;
 
-                Rectangles.Add(new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id));
+                CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+                RectanglesView.Add(duplicatedCustomShape);
+                Rectangles.Add(duplicatedCustomShape);
+                indexRectanglesView++;
+                indexRectangles++;
                 id++;
+
+                undoCustomShapes.Push(duplicatedCustomShape);
+                undoInformation.Push("Add");
+
+                Console.WriteLine("RectanglesView Count: " + RectanglesView.Count());
             }
         }
 
@@ -908,14 +973,38 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void OnDelete()
         {
-            foreach (CustomShape r in Rectangles)
+            foreach (CustomShape rv in RectanglesView)
             {
-                if (r == selectedCustomShape)
+                if (rv == selectedCustomShape)
                 {
-                    undoCustomShapes.Push(r);
+                    undoCustomShapes.Push(rv);
                     undoInformation.Push("Delete");
-                    Rectangles.Remove(r);
+                    RectanglesView.Remove(rv);
+                    int tmpIndex = 0;
+                    indexRectanglesView--;
                     indexRectangles--;
+                    foreach (CustomShape r in Rectangles) 
+                    {
+                        if (r.Id == selectedCustomShape.Id)
+                        {
+                            Rectangles.RemoveAt(tmpIndex);
+
+                            Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
+                            Console.WriteLine("Rectangles count: " + Rectangles.Count);
+
+                            if (SelectedComboBoxItem == "All Labels")
+                            {
+                                RectangleCount = "#" + Rectangles.Count.ToString();
+                            }
+
+                            else if (SelectedComboBoxItem != "All Labels")
+                            {
+                                RectangleCount = "#" + RectanglesView.Count.ToString();
+                            }
+                            break;
+                        }
+                        tmpIndex++;
+                    }
                     break;
                 }
             }
@@ -955,14 +1044,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void CopyForUndo(string undoInformation)
         {
-            double tmpHeight = selectedCustomShape.Height;
-            double tmpWidth = selectedCustomShape.Width;
-            double tmpX1 = selectedCustomShape.X1;
-            double tmpY1 = selectedCustomShape.Y1;
-            int tmpId = selectedCustomShape.Id;
-            CustomShape undoShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpId);
-            undoCustomShapes.Push(undoShape);
-            this.undoInformation.Push(undoInformation);
+            //double tmpHeight = selectedCustomShape.Height;
+            //double tmpWidth = selectedCustomShape.Width;
+            //double tmpX1 = selectedCustomShape.X1;
+            //double tmpY1 = selectedCustomShape.Y1;
+            //int tmpId = selectedCustomShape.Id;
+
+            //CustomShape undoShape = new CustomShape(selectedCustomShape);
+            //undoCustomShapes.Push(undoShape);
+            //this.undoInformation.Push(undoInformation);
         }
 
         /// <summary>
@@ -983,7 +1073,10 @@ namespace MachineLearningTrainer.DrawerTool
                             redoCustomShapes.Push(top);
                             redoInformation.Push(info);
 
+                            RectanglesView.Remove(top);
                             Rectangles.Remove(top);
+                            indexRectanglesView--;
+                            indexRectangles--;
                             break;
                         }
                     // when you have deleted a rectangle, the undo command will add the rectangle.
@@ -995,7 +1088,10 @@ namespace MachineLearningTrainer.DrawerTool
                             redoCustomShapes.Push(top);
                             redoInformation.Push(info);
 
+                            RectanglesView.Add(top);
                             Rectangles.Add(top);
+                            indexRectanglesView++;
+                            indexRectangles++;
                             break;
                         }
                     // when you have resized a rectangle, the undo command will restore the old size.
@@ -1009,18 +1105,39 @@ namespace MachineLearningTrainer.DrawerTool
                             redoCustomShapes.Push(top);
                             redoInformation.Push(info);
 
-                            foreach (CustomShape r in Rectangles)
+                            foreach (CustomShape rv in RectanglesView)
                             {
-                                if (r.Id == top.Id)
+                                if (rv.Id == top.Id)
                                 {
-                                    int tmpIndex = Rectangles.IndexOf(r);
-                                    Rectangles.RemoveAt(tmpIndex);
-                                    Rectangles.Insert(tmpIndex, top);
+                                    int tmpIndex = RectanglesView.IndexOf(rv);
+                                    RectanglesView.RemoveAt(tmpIndex);
+                                    RectanglesView.Insert(tmpIndex, top);
+                                    tmpIndex = 0;
+                                    foreach (CustomShape r in Rectangles)
+                                    {
+                                        if (r.Id == top.Id)
+                                        {
+                                            Rectangles.RemoveAt(tmpIndex);
+                                            Rectangles.Insert(tmpIndex, top);
+                                            break;
+                                        }
+                                        tmpIndex++;
+                                    }
                                     break;
                                 }
                             }
                             break;
                         }
+                }
+
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    RectangleCount = "#" + Rectangles.Count.ToString();
+                }
+
+                else if (SelectedComboBoxItem != "All Labels")
+                {
+                    RectangleCount = "#" + RectanglesView.Count.ToString();
                 }
 
             }
@@ -1048,29 +1165,35 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     // see undo command documentation above.
                     case "Add":
-                    {
-                        var top = redoCustomShapes.Pop();
-                        var info = redoInformation.Pop();
+                        {
+                            var top = redoCustomShapes.Pop();
+                            var info = redoInformation.Pop();
 
-                        undoCustomShapes.Push(top);
-                        undoInformation.Push(info);
+                            undoCustomShapes.Push(top);
+                            undoInformation.Push(info);
 
-                        Rectangles.Add(top);
-                         break;
-                    }
+                            RectanglesView.Add(top);
+                            Rectangles.Add(top);
+                            indexRectanglesView++;
+                            indexRectangles++;
+                            break;
+                        }
 
                     // see undo documentation above.
                     case "Delete":
-                    {
-                        var top = redoCustomShapes.Pop();
-                        var info = redoInformation.Pop();
+                        {
+                            var top = redoCustomShapes.Pop();
+                            var info = redoInformation.Pop();
 
-                        undoCustomShapes.Push(top);
-                        undoInformation.Push(info);
+                            undoCustomShapes.Push(top);
+                            undoInformation.Push(info);
 
-                        Rectangles.Remove(top);
-                        break;
-                    }
+                            RectanglesView.Remove(top);
+                            Rectangles.Remove(top);
+                            indexRectanglesView--;
+                            indexRectangles--;
+                            break;
+                        }
 
                     // see undo documentation above.
                     case "Resize":
@@ -1082,18 +1205,39 @@ namespace MachineLearningTrainer.DrawerTool
                             undoCustomShapes.Push(top);
                             undoInformation.Push(info);
 
-                            foreach (CustomShape r in Rectangles)
+                            foreach (CustomShape rv in RectanglesView)
                             {
-                                if (r.Id == top.Id)
+                                if (rv.Id == top.Id)
                                 {
-                                    int tmpIndex = Rectangles.IndexOf(r);
-                                    Rectangles.RemoveAt(tmpIndex);
-                                    Rectangles.Insert(tmpIndex, top);
+                                    int tmpIndex = RectanglesView.IndexOf(rv);
+                                    RectanglesView.RemoveAt(tmpIndex);
+                                    RectanglesView.Insert(tmpIndex, top);
+                                    tmpIndex = 0;
+                                    foreach (CustomShape r in Rectangles)
+                                    {
+                                        if (r.Id == top.Id)
+                                        {
+                                            Rectangles.RemoveAt(tmpIndex);
+                                            Rectangles.Insert(tmpIndex, top);
+                                            break;
+                                        }
+                                        tmpIndex++;
+                                    }
                                     break;
                                 }
                             }
                             break;
                         }
+                }
+
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    RectangleCount = "#" + Rectangles.Count.ToString();
+                }
+
+                else if (SelectedComboBoxItem != "All Labels")
+                {
+                    RectangleCount = "#" + RectanglesView.Count.ToString();
                 }
             }   
             OnPropertyChanged("");
@@ -1101,6 +1245,346 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
+        #region ComboBox for ItemLabels
+
+        private ICommand _enterCommand;
+        public ICommand EnterCommand
+        {
+            get
+            {
+                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
+            }
+        }
+
+        public void Enter()
+        {
+            FilterName();
+            SortList();
+        }
+
+
+        /// <summary>
+        /// this method loads all rectangles from an xml file and draws them on the canvas
+        /// </summary>
+        public void LoadRectangles()
+        {
+            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+
+            if (File.Exists(destFileName) == true)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(destFileName);
+
+                foreach (XmlNode node in doc.DocumentElement)
+                {
+
+                    if (node.Name == "object")
+                    {
+                        foreach (XmlNode objectChild in node)
+                        {
+                            if (objectChild.Name == "name")
+                            {
+                                name = objectChild.InnerText;
+                                RectangleText = name;
+                            }
+
+                            if (objectChild.Name == "bndbox")
+                            {
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+
+                                CustomShape loadedRect = new CustomShape(xmin,ymin,xmax-xmin,ymax-ymin,id);
+                                id++;
+                                loadedRect.Label = name;
+
+                                Rectangles.Add(loadedRect);
+                                RectanglesView.Add(loadedRect);
+                                indexRectangles++;
+                                indexRectanglesView++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        private bool _isOpen = false;
+
+        public bool IsOpen
+        {
+            get
+            {
+                return this._isOpen;
+            }
+
+            set
+            {
+                this._isOpen = value;
+                OnPropertyChanged("IsOpen");
+            }
+        }
+
+        /// <summary>
+        /// sorts the list of rectangles in ascending order of their name
+        /// </summary>
+        public void SortList()
+        {
+            //ObservableCollection<CustomShape> sortedRectangles = new ObservableCollection<CustomShape>
+            //    (RectanglesView.OrderBy(resizable => resizable.Label));
+
+            //RectanglesView = sortedRectangles;
+            //OnPropertyChanged("RectanglesView");
+        }
+
+        /// <summary>
+        /// this method filters the list, depending on which label is selected in the combobox
+        /// </summary>
+        public void FilterName()
+        {
+            if (SelectedComboBoxItem == "All Labels")
+            {
+                if (ListViewImage.Contains("grid"))
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = true;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = false;
+                }
+
+                else if (ListViewImage.Contains("list"))
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = true;
+                    FilterVisibilitySelected = false;
+                }
+
+                RectanglesView.Clear();
+                foreach (CustomShape r in Rectangles)
+                {
+                    RectanglesView.Add(new CustomShape(r));
+                }
+
+                RectangleCount = "#" + Rectangles.Count.ToString();
+                OnPropertyChanged("Rectangles");
+                OnPropertyChanged("RectanglesView");
+                OnPropertyChanged("FilteredRectangles");
+                OnPropertyChanged("RectangleCount");
+                OnPropertyChanged("FilterVisibilitySelected");
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+                OnPropertyChanged("FilterVisibilityAllLabels");
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+
+            }
+
+            else if (SelectedComboBoxItem != "All Labels")
+            {
+                if (ListViewImage.Contains("grid"))
+                {
+                    FilterVisibilitySelectedGallery = false;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = true;
+                }
+
+                else if (ListViewImage.Contains("list"))
+                {
+                    FilterVisibilitySelectedGallery = true;
+                    FilterVisibilityAllLabels = false;
+                    FilterVisibilityAllLabelsGallery = false;
+                    FilterVisibilitySelected = false;
+                }
+
+                DefaultLabel = SelectedComboBoxItem;
+                RectangleCount = "#" + RectanglesView.Count.ToString();
+
+                RectanglesView.Clear();
+                foreach (CustomShape r in Rectangles)
+                {
+                    if(r.Label == SelectedComboBoxItem)
+                    {
+                        RectanglesView.Add(new CustomShape(r));
+                    }
+                }
+
+                OnPropertyChanged("Rectangles");
+                OnPropertyChanged("RectanglesView");
+                OnPropertyChanged("FilteredRectangles");
+                OnPropertyChanged("DefaultLabel");
+                OnPropertyChanged("RectangleCount");
+                OnPropertyChanged("FilterVisibilitySelected");
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+                OnPropertyChanged("FilterVisibilityAllLabels");
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+            }
+        }
+
+        /// <summary>
+        /// this method adds all different labels to the combobox
+        /// </summary>
+        public void ComboBoxNames()
+        {
+            temp = SelectedComboBoxItem;
+            ComboBoxItems.Clear();
+            ComboBoxItems.Add("All Labels");
+            SelectedComboBoxItem = temp;
+
+            foreach (var rec in Rectangles)
+            {
+                if (!ComboBoxItems.Contains(rec.Label))
+                {
+                    ComboBoxItems.Add(rec.Label);
+                    OnPropertyChanged("ComboBoxItems");
+                }
+            }
+        }
+
+        private string _selectedComboBoxItem;
+
+        public string SelectedComboBoxItem
+        {
+            get
+            {
+                return _selectedComboBoxItem;
+            }
+            set
+            {
+                _selectedComboBoxItem = value;
+                OnPropertyChanged("SelectedComboBoxItem");
+            }
+        }
+
+        private bool _filterVisibilitySelected = false;
+
+        public bool FilterVisibilitySelected
+        {
+            get
+            {
+                return _filterVisibilitySelected;
+            }
+            set
+            {
+                _filterVisibilitySelected = value;
+                OnPropertyChanged("FilterVisibility1");
+            }
+        }
+
+        private bool _filterVisibilityAllLabels = true;
+
+        public bool FilterVisibilityAllLabels
+        {
+            get
+            {
+                return _filterVisibilityAllLabels;
+            }
+            set
+            {
+                _filterVisibilityAllLabels = value;
+                OnPropertyChanged("FilterVisibility");
+            }
+        }
+
+        private bool _filterVisibilitySelectedGallery = false;
+
+        public bool FilterVisibilitySelectedGallery
+        {
+            get
+            {
+                return _filterVisibilitySelectedGallery;
+            }
+            set
+            {
+                _filterVisibilitySelectedGallery = value;
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+            }
+        }
+
+        private bool _filterVisibilityAllLabelsGallery = false;
+
+        public bool FilterVisibilityAllLabelsGallery
+        {
+            get
+            {
+                return _filterVisibilityAllLabelsGallery;
+            }
+            set
+            {
+                _filterVisibilityAllLabelsGallery = value;
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+            }
+        }
+
+        private ICommand _loadXMLCommand;
+        public ICommand LoadXMLCommand
+        {
+            get
+            {
+                return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// with this method, you can open an xml file from a different location as the loaded image.
+        /// </summary>
+        private async void LoadXML()
+        {
+            this.IsEnabled = true;
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "XML Files | *.xml";
+
+            if (openFileDialog.ShowDialog() == true)
+                dst = openFileDialog.FileName;
+
+            if (dst != null)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(dst);
+
+                foreach (XmlNode node in doc.DocumentElement)
+                {
+
+                    if (node.Name == "object")
+                    {
+                        foreach (XmlNode objectChild in node)
+                        {
+                            if (objectChild.Name == "name")
+                            {
+                                name = objectChild.InnerText;
+                                RectangleText = name;
+                            }
+
+                            if (objectChild.Name == "bndbox")
+                            {
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+
+                                CustomShape loadedRect = new CustomShape(xmin,ymin,xmax-xmin,ymax-ymin,id);
+                                id++;
+                                loadedRect.Label = name;
+
+                                Rectangles.Add(loadedRect);
+                                RectanglesView.Add(loadedRect);
+                                indexRectangles++;
+                                indexRectanglesView++;
+                                OnPropertyChanged("");
+                            }
+                        }
+                    }
+                }
+            }
+            ComboBoxNames();
+            SortList();
+            await cropImageLabelBegin();
+
+
+        }
+
+
+        #endregion
 
         /// <summary>
         /// Old stuff
@@ -1812,20 +2296,20 @@ namespace MachineLearningTrainer.DrawerTool
             MyCanvas.Cursor = Cursors.Arrow;
         }
 
-        private ICommand _enterCommand;
-        public ICommand EnterCommand
-        {
-            get
-            {
-                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
-            }
-        }
+        //private ICommand _enterCommand;
+        //public ICommand EnterCommand
+        //{
+        //    get
+        //    {
+        //        return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
+        //    }
+        //}
 
-        public void Enter()
-        {
-            FilterName();
-            SortList();
-        }
+        //public void Enter()
+        //{
+        //    FilterName();
+        //    SortList();
+        //}
         
         private BitmapImage _croppedImage;
         public BitmapImage CroppedImage
@@ -1871,323 +2355,323 @@ namespace MachineLearningTrainer.DrawerTool
             set { _dst = value; }
         }
 
-        /// <summary>
-        /// this method loads all rectangles from an xml file and draws them on the canvas
-        /// </summary>
-        public void LoadRectangles()
-        {
-            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+        ///// <summary>
+        ///// this method loads all rectangles from an xml file and draws them on the canvas
+        ///// </summary>
+        //public void LoadRectangles()
+        //{
+        //    string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
 
-            if (File.Exists(destFileName) == true)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(destFileName);
+        //    if (File.Exists(destFileName) == true)
+        //    {
+        //        XmlDocument doc = new XmlDocument();
+        //        doc.Load(destFileName);
 
-                foreach (XmlNode node in doc.DocumentElement)
-                {
+        //        foreach (XmlNode node in doc.DocumentElement)
+        //        {
 
-                    if (node.Name == "object")
-                    {
-                        foreach (XmlNode objectChild in node)
-                        {
-                            if (objectChild.Name == "name")
-                            {
-                                name = objectChild.InnerText;
-                                RectangleText = name;
-                            }
+        //            if (node.Name == "object")
+        //            {
+        //                foreach (XmlNode objectChild in node)
+        //                {
+        //                    if (objectChild.Name == "name")
+        //                    {
+        //                        name = objectChild.InnerText;
+        //                        RectangleText = name;
+        //                    }
 
-                            if (objectChild.Name == "bndbox")
-                            {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+        //                    if (objectChild.Name == "bndbox")
+        //                    {
+        //                        int xmin = int.Parse(objectChild["xmin"].InnerText);
+        //                        int ymin = int.Parse(objectChild["ymin"].InnerText);
+        //                        int xmax = int.Parse(objectChild["xmax"].InnerText);
+        //                        int ymax = int.Parse(objectChild["ymax"].InnerText);
                                 
-                                    ResizableRectangle loadedRect = new ResizableRectangle();
+        //                            ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                    loadedRect.RectangleHeight = ymax - ymin;
-                                    loadedRect.RectangleWidth = xmax - xmin;
-                                    loadedRect.RectangleText = name;
-                                    loadedRect.X = xmin;
-                                    loadedRect.Y = ymin;
+        //                            loadedRect.RectangleHeight = ymax - ymin;
+        //                            loadedRect.RectangleWidth = xmax - xmin;
+        //                            loadedRect.RectangleText = name;
+        //                            loadedRect.X = xmin;
+        //                            loadedRect.Y = ymin;
 
-                                    Canvas.SetLeft(loadedRect, xmin);
-                                    Canvas.SetTop(loadedRect, ymin);
+        //                            Canvas.SetLeft(loadedRect, xmin);
+        //                            Canvas.SetTop(loadedRect, ymin);
 
-                                    AllRectangles.Add(loadedRect);
-                            }
-                        }
-                    }
-                }
-            }
-        }
+        //                            AllRectangles.Add(loadedRect);
+        //                    }
+        //                }
+        //            }
+        //        }
+        //    }
+        //}
 
-        private bool _isOpen = false;
+        //private bool _isOpen = false;
 
-        public bool IsOpen
-        {
-            get
-            {
-                return this._isOpen;
-            }
+        //public bool IsOpen
+        //{
+        //    get
+        //    {
+        //        return this._isOpen;
+        //    }
 
-            set
-            {
-                this._isOpen = value;
-                OnPropertyChanged("IsOpen");
-            }
-        }
+        //    set
+        //    {
+        //        this._isOpen = value;
+        //        OnPropertyChanged("IsOpen");
+        //    }
+        //}
 
-        /// <summary>
-        /// sorts the list of rectangles in ascending order of their name
-        /// </summary>
-        public void SortList()
-        {
-            ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>
-                (AllRectangles.OrderBy(resizable => resizable.RectangleText));
+        ///// <summary>
+        ///// sorts the list of rectangles in ascending order of their name
+        ///// </summary>
+        //public void SortList()
+        //{
+        //    ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>
+        //        (AllRectangles.OrderBy(resizable => resizable.RectangleText));
 
-            AllRectangles = sortedRectangles;
-            OnPropertyChanged("AllRectangles");
-        }
+        //    AllRectangles = sortedRectangles;
+        //    OnPropertyChanged("AllRectangles");
+        //}
 
-        /// <summary>
-        /// this method filters the list, depending on which label is selected in the combobox
-        /// </summary>
-        public void FilterName()
-        {
-            if (SelectedComboBoxItem == "All Labels")
-            {
-                if (ListViewImage.Contains("grid"))
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = true;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = false;
-                }
+        ///// <summary>
+        ///// this method filters the list, depending on which label is selected in the combobox
+        ///// </summary>
+        //public void FilterName()
+        //{
+        //    if (SelectedComboBoxItem == "All Labels")
+        //    {
+        //        if (ListViewImage.Contains("grid"))
+        //        {
+        //            FilterVisibilitySelectedGallery = false;
+        //            FilterVisibilityAllLabels = true;
+        //            FilterVisibilityAllLabelsGallery = false;
+        //            FilterVisibilitySelected = false;
+        //        }
 
-                else if (ListViewImage.Contains("list"))
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = true;
-                    FilterVisibilitySelected = false;
-                }
+        //        else if (ListViewImage.Contains("list"))
+        //        {
+        //            FilterVisibilitySelectedGallery = false;
+        //            FilterVisibilityAllLabels = false;
+        //            FilterVisibilityAllLabelsGallery = true;
+        //            FilterVisibilitySelected = false;
+        //        }
                 
-                AllRectanglesView = AllRectangles;
-                RectangleCount = "#" + AllRectangles.Count.ToString();
-                OnPropertyChanged("AllRectangles");
-                OnPropertyChanged("AllRectanglesView");
-                OnPropertyChanged("FilteredRectangles");
-                OnPropertyChanged("RectangleCount");
-                OnPropertyChanged("FilterVisibilitySelected");
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-                OnPropertyChanged("FilterVisibilityAllLabels");
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+        //        AllRectanglesView = AllRectangles;
+        //        RectangleCount = "#" + AllRectangles.Count.ToString();
+        //        OnPropertyChanged("AllRectangles");
+        //        OnPropertyChanged("AllRectanglesView");
+        //        OnPropertyChanged("FilteredRectangles");
+        //        OnPropertyChanged("RectangleCount");
+        //        OnPropertyChanged("FilterVisibilitySelected");
+        //        OnPropertyChanged("FilterVisibilitySelectedGallery");
+        //        OnPropertyChanged("FilterVisibilityAllLabels");
+        //        OnPropertyChanged("FilterVisibilityAllLabelsGallery");
                 
-            }
+        //    }
 
-            else if (SelectedComboBoxItem != "All Labels")
-            {
-                if (ListViewImage.Contains("grid"))
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = true;
-                }
+        //    else if (SelectedComboBoxItem != "All Labels")
+        //    {
+        //        if (ListViewImage.Contains("grid"))
+        //        {
+        //            FilterVisibilitySelectedGallery = false;
+        //            FilterVisibilityAllLabels = false;
+        //            FilterVisibilityAllLabelsGallery = false;
+        //            FilterVisibilitySelected = true;
+        //        }
 
-                else if (ListViewImage.Contains("list"))
-                {
-                    FilterVisibilitySelectedGallery = true;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = false;
-                }
+        //        else if (ListViewImage.Contains("list"))
+        //        {
+        //            FilterVisibilitySelectedGallery = true;
+        //            FilterVisibilityAllLabels = false;
+        //            FilterVisibilityAllLabelsGallery = false;
+        //            FilterVisibilitySelected = false;
+        //        }
 
-                DefaultLabel = SelectedComboBoxItem;
-                RectangleCount = "#" + AllRectanglesView.Count.ToString();
+        //        DefaultLabel = SelectedComboBoxItem;
+        //        RectangleCount = "#" + AllRectanglesView.Count.ToString();
 
-                ObservableCollection<ResizableRectangle> FilteredRectangles = new ObservableCollection<ResizableRectangle>
-                    (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
-                AllRectanglesView = FilteredRectangles;
-                OnPropertyChanged("AllRectangles");
-                OnPropertyChanged("AllRectanglesView");
-                OnPropertyChanged("FilteredRectangles");
-                OnPropertyChanged("DefaultLabel");
-                OnPropertyChanged("RectangleCount");
-                OnPropertyChanged("FilterVisibilitySelected");
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-                OnPropertyChanged("FilterVisibilityAllLabels");
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-            }
-        }
+        //        ObservableCollection<ResizableRectangle> FilteredRectangles = new ObservableCollection<ResizableRectangle>
+        //            (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
+        //        AllRectanglesView = FilteredRectangles;
+        //        OnPropertyChanged("AllRectangles");
+        //        OnPropertyChanged("AllRectanglesView");
+        //        OnPropertyChanged("FilteredRectangles");
+        //        OnPropertyChanged("DefaultLabel");
+        //        OnPropertyChanged("RectangleCount");
+        //        OnPropertyChanged("FilterVisibilitySelected");
+        //        OnPropertyChanged("FilterVisibilitySelectedGallery");
+        //        OnPropertyChanged("FilterVisibilityAllLabels");
+        //        OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+        //    }
+        //}
 
-        /// <summary>
-        /// this method adds all different labels to the combobox
-        /// </summary>
-        public void ComboBoxNames()
-        {
-            temp = SelectedComboBoxItem;
-            ComboBoxItems.Clear();
-            ComboBoxItems.Add("All Labels");
-            SelectedComboBoxItem = temp;
+        ///// <summary>
+        ///// this method adds all different labels to the combobox
+        ///// </summary>
+        //public void ComboBoxNames()
+        //{
+        //    temp = SelectedComboBoxItem;
+        //    ComboBoxItems.Clear();
+        //    ComboBoxItems.Add("All Labels");
+        //    SelectedComboBoxItem = temp;
 
-            foreach (var rec in AllRectangles)
-            {
-                if (!ComboBoxItems.Contains(rec.RectangleText))
-                {
-                    ComboBoxItems.Add(rec.RectangleText);
-                    OnPropertyChanged("ComboBoxItems");
-                }
-            }
-        }
+        //    foreach (var rec in AllRectangles)
+        //    {
+        //        if (!ComboBoxItems.Contains(rec.RectangleText))
+        //        {
+        //            ComboBoxItems.Add(rec.RectangleText);
+        //            OnPropertyChanged("ComboBoxItems");
+        //        }
+        //    }
+        //}
 
-        private string _selectedComboBoxItem;
+        //private string _selectedComboBoxItem;
 
-        public string SelectedComboBoxItem
-        {
-            get
-            {
-                return _selectedComboBoxItem;
-            }
-            set
-            {
-                _selectedComboBoxItem = value;
-                OnPropertyChanged("SelectedComboBoxItem");
-            }
-        }
+        //public string SelectedComboBoxItem
+        //{
+        //    get
+        //    {
+        //        return _selectedComboBoxItem;
+        //    }
+        //    set
+        //    {
+        //        _selectedComboBoxItem = value;
+        //        OnPropertyChanged("SelectedComboBoxItem");
+        //    }
+        //}
 
-        private bool _filterVisibilitySelected = false;
+        //private bool _filterVisibilitySelected = false;
 
-        public bool FilterVisibilitySelected
-        {
-            get
-            {
-                return _filterVisibilitySelected;
-            }
-            set
-            {
-                _filterVisibilitySelected = value;
-                OnPropertyChanged("FilterVisibility1");
-            }
-        }
+        //public bool FilterVisibilitySelected
+        //{
+        //    get
+        //    {
+        //        return _filterVisibilitySelected;
+        //    }
+        //    set
+        //    {
+        //        _filterVisibilitySelected = value;
+        //        OnPropertyChanged("FilterVisibility1");
+        //    }
+        //}
 
-        private bool _filterVisibilityAllLabels = true;
+        //private bool _filterVisibilityAllLabels = true;
 
-        public bool FilterVisibilityAllLabels
-        {
-            get
-            {
-                return _filterVisibilityAllLabels;
-            }
-            set
-            {
-                _filterVisibilityAllLabels = value;
-                OnPropertyChanged("FilterVisibility");
-            }
-        }
+        //public bool FilterVisibilityAllLabels
+        //{
+        //    get
+        //    {
+        //        return _filterVisibilityAllLabels;
+        //    }
+        //    set
+        //    {
+        //        _filterVisibilityAllLabels = value;
+        //        OnPropertyChanged("FilterVisibility");
+        //    }
+        //}
 
-        private bool _filterVisibilitySelectedGallery = false;
+        //private bool _filterVisibilitySelectedGallery = false;
 
-        public bool FilterVisibilitySelectedGallery
-        {
-            get
-            {
-                return _filterVisibilitySelectedGallery;
-            }
-            set
-            {
-                _filterVisibilitySelectedGallery = value;
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-            }
-        }
+        //public bool FilterVisibilitySelectedGallery
+        //{
+        //    get
+        //    {
+        //        return _filterVisibilitySelectedGallery;
+        //    }
+        //    set
+        //    {
+        //        _filterVisibilitySelectedGallery = value;
+        //        OnPropertyChanged("FilterVisibilitySelectedGallery");
+        //    }
+        //}
 
-        private bool _filterVisibilityAllLabelsGallery = false;
+        //private bool _filterVisibilityAllLabelsGallery = false;
 
-        public bool FilterVisibilityAllLabelsGallery
-        {
-            get
-            {
-                return _filterVisibilityAllLabelsGallery;
-            }
-            set
-            {
-                _filterVisibilityAllLabelsGallery = value;
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-            }
-        }
+        //public bool FilterVisibilityAllLabelsGallery
+        //{
+        //    get
+        //    {
+        //        return _filterVisibilityAllLabelsGallery;
+        //    }
+        //    set
+        //    {
+        //        _filterVisibilityAllLabelsGallery = value;
+        //        OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+        //    }
+        //}
         
-        private ICommand _loadXMLCommand;
-        public ICommand LoadXMLCommand
-        {
-            get
-            {
-                return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
-            }
-        }
+        //private ICommand _loadXMLCommand;
+        //public ICommand LoadXMLCommand
+        //{
+        //    get
+        //    {
+        //        return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
+        //    }
+        //}
 
-        /// <summary>
-        /// with this method, you can open an xml file from a different location as the loaded image.
-        /// </summary>
-        private async void LoadXML()
-        {
-                this.IsEnabled = true;
-                OpenFileDialog openFileDialog = new OpenFileDialog();
-                openFileDialog.Filter = "XML Files | *.xml";
+        ///// <summary>
+        ///// with this method, you can open an xml file from a different location as the loaded image.
+        ///// </summary>
+        //private async void LoadXML()
+        //{
+        //        this.IsEnabled = true;
+        //        OpenFileDialog openFileDialog = new OpenFileDialog();
+        //        openFileDialog.Filter = "XML Files | *.xml";
 
-                if (openFileDialog.ShowDialog() == true)
-                    dst = openFileDialog.FileName;
+        //        if (openFileDialog.ShowDialog() == true)
+        //            dst = openFileDialog.FileName;
 
-                if (dst != null)
-                {
-                    XmlDocument doc = new XmlDocument();
-                    doc.Load(dst);
+        //        if (dst != null)
+        //        {
+        //            XmlDocument doc = new XmlDocument();
+        //            doc.Load(dst);
 
-                    foreach (XmlNode node in doc.DocumentElement)
-                    {
+        //            foreach (XmlNode node in doc.DocumentElement)
+        //            {
 
-                        if (node.Name == "object")
-                        {
-                            foreach (XmlNode objectChild in node)
-                            {
-                                if (objectChild.Name == "name")
-                                {
-                                    name = objectChild.InnerText;
-                                    RectangleText = name;
-                                }
+        //                if (node.Name == "object")
+        //                {
+        //                    foreach (XmlNode objectChild in node)
+        //                    {
+        //                        if (objectChild.Name == "name")
+        //                        {
+        //                            name = objectChild.InnerText;
+        //                            RectangleText = name;
+        //                        }
 
-                                if (objectChild.Name == "bndbox")
-                                {
-                                    int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                    int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                    int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                    int ymax = int.Parse(objectChild["ymax"].InnerText);
+        //                        if (objectChild.Name == "bndbox")
+        //                        {
+        //                            int xmin = int.Parse(objectChild["xmin"].InnerText);
+        //                            int ymin = int.Parse(objectChild["ymin"].InnerText);
+        //                            int xmax = int.Parse(objectChild["xmax"].InnerText);
+        //                            int ymax = int.Parse(objectChild["ymax"].InnerText);
 
-                                    ResizableRectangle loadedRect = new ResizableRectangle();
+        //                            ResizableRectangle loadedRect = new ResizableRectangle();
 
-                                    loadedRect.RectangleHeight = ymax - ymin;
-                                    loadedRect.RectangleWidth = xmax - xmin;
-                                    loadedRect.RectangleText = name;
-                                    loadedRect.X = xmin;
-                                    loadedRect.Y = ymin;
+        //                            loadedRect.RectangleHeight = ymax - ymin;
+        //                            loadedRect.RectangleWidth = xmax - xmin;
+        //                            loadedRect.RectangleText = name;
+        //                            loadedRect.X = xmin;
+        //                            loadedRect.Y = ymin;
 
-                                    Canvas.SetLeft(loadedRect, xmin);
-                                    Canvas.SetTop(loadedRect, ymin);
+        //                            Canvas.SetLeft(loadedRect, xmin);
+        //                            Canvas.SetTop(loadedRect, ymin);
 
-                                    AllRectangles.Add(loadedRect);
-                                    AllRectanglesView = AllRectangles;
-                                    OnPropertyChanged("");
-                                }
-                            }
-                        }
-                    }
-                }
-                ComboBoxNames();
-                SortList();
-                await cropImageLabelBegin();
+        //                            AllRectangles.Add(loadedRect);
+        //                            AllRectanglesView = AllRectangles;
+        //                            OnPropertyChanged("");
+        //                        }
+        //                    }
+        //                }
+        //            }
+        //        }
+        //        ComboBoxNames();
+        //        SortList();
+        //        await cropImageLabelBegin();
           
             
-        }
+        //}
 
         private string _rectangleCount;
         public string RectangleCount
