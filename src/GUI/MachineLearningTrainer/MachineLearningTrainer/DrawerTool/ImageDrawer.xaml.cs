@@ -40,22 +40,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        private void AddRectangle_Click(object sender, RoutedEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Normal)
-            {
-                (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.CreateRectangle;
-                (this.DataContext as DrawerViewModel).IconPath = "\\Icons\\new_activated.png";
-            }
-            else if ((this.DataContext as DrawerViewModel).MouseHandlingState != DrawerViewModel.MouseState.Normal)
-            {
-                (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
-                (this.DataContext as DrawerViewModel).IconPath = "\\Icons\\new.png";
-            }
-        }
-
-
-
         /// <summary>
         /// old stuff
         /// </summary>
@@ -175,7 +159,7 @@ namespace MachineLearningTrainer.DrawerTool
 
 
             //(this.DataContext as DrawerViewModel).SortList();
-            (this.DataContext as DrawerViewModel).ComboBoxNames();
+            //(this.DataContext as DrawerViewModel).ComboBoxNames();
 
             //if ((this.DataContext as DrawerViewModel).Enabled == false && rectSelectArea != null)
             //{
@@ -521,7 +505,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
-                    (this.DataContext as DrawerViewModel).clearUndoRedoStack();
+                    (this.DataContext as DrawerViewModel).ClearUndoRedoStack();
                     zoomBorder.Reset();
 
                 }

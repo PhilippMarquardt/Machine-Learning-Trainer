@@ -354,8 +354,7 @@
                     Margin="5,10,5,10"
                     BorderBrush="Transparent"
                     Command="{Binding AddRectangle}"
-                    IsEnabled="{Binding IsEnabled}"
-                    Click="AddRectangle_Click">
+                    IsEnabled="{Binding IsEnabled}">
                     <Button.Template>
                         <ControlTemplate>
                             <Image Margin="2" Source="{Binding IconPath}" />
@@ -700,11 +699,11 @@
                         Width="{Binding ActualWidth, ElementName=imgPreview}"
                         Height="{Binding ActualHeight, ElementName=imgPreview}"
                         ClipToBounds="True"
-                        MouseDown="ImgCamera_MouseDown"
+                        PreviewMouseDown="ImgCamera_MouseDown"
                         MouseEnter="cnvImage_MouseEnter"
                         MouseLeave="cnvImage_MouseLeave"
                         MouseMove="ImgCamera_MouseMove"
-                        MouseUp="ImgCamera_MouseUp">
+                        PreviewMouseUp="ImgCamera_MouseUp">
 
                         <Image
                             x:Name="imgPreview"
@@ -726,7 +725,7 @@
                                         Width="{Binding Width}"
                                         Height="{Binding Height}"
                                         Stroke="{Binding Stroke}"
-                                        StrokeThickness="3">
+                                        StrokeThickness="{Binding StrokeThickness}">
                                         <Rectangle.Fill>
                                             <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
                                         </Rectangle.Fill>
