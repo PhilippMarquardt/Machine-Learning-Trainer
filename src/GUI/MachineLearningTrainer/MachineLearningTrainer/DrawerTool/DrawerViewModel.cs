@@ -345,7 +345,17 @@ namespace MachineLearningTrainer.DrawerTool
                                 RectanglesView[indexRectanglesView].Label = "";
                         }
 
+                        int columnX1 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].X1 / fieldWidth));
+                        int columnX2 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].X2 / fieldWidth));
+                        int rowY1 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].Y1 / fieldHeight));
+                        int rowY2 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].Y2 / fieldHeight));
+
+                        //SaveShapeToField(columnX1, rowY1, RectanglesView[indexRectanglesView]));
+
+
+
                         Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
+
 
 
                         undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
@@ -369,6 +379,46 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
         }
+
+        private void SaveShapeToField(int column, int row, CustomShape customShape)
+        {
+            //if (column == 0)
+            //{
+            //    if (row == 0) { field00.Add(new CustomShape(customShape));  }
+            //    else if (row == 1) { field01.Add(new CustomShape(customShape)); }
+            //    else if (row == 2) { field02.Add(new CustomShape(customShape)); }
+            //    else if (row == 3) { field03.Add(new CustomShape(customShape)); }
+            //}
+            //else if (column == 1)
+            //{
+            //    if (row == 0) { field10.Add(new CustomShape(customShape)); }
+            //    else if (row == 1) { field11.Add(new CustomShape(customShape)); }
+            //    else if (row == 2) { field12.Add(new CustomShape(customShape)); }
+            //    else if (row == 3) { field13.Add(new CustomShape(customShape)); }
+            //}
+            //else if (column == 2)
+            //{
+            //    if (row == 0) { field20.Add(new CustomShape(customShape)); }
+            //    else if (row == 1) { field21.Add(new CustomShape(customShape)); }
+            //    else if (row == 2) { field22.Add(new CustomShape(customShape)); }
+            //    else if (row == 3) { field23.Add(new CustomShape(customShape)); }
+            //}
+            //else if (column == 3)
+            //{
+            //    if (row == 0) { field30.Add(new CustomShape(customShape)); }
+            //    else if (row == 1) { field31.Add(new CustomShape(customShape)); }
+            //    else if (row == 2) { field32.Add(new CustomShape(customShape)); }
+            //    else if (row == 3) { field33.Add(new CustomShape(customShape)); }
+            //}
+            //else if (column == 4)
+            //{
+            //    if (row == 0) { field40.Add(new CustomShape(customShape)); }
+            //    else if (row == 1) { field41.Add(new CustomShape(customShape)); }
+            //    else if (row == 2) { field42.Add(new CustomShape(customShape)); }
+            //    else if (row == 3) { field43.Add(new CustomShape(customShape)); }
+            //}
+        }
+
 
         #endregion
 
@@ -1722,32 +1772,52 @@ namespace MachineLearningTrainer.DrawerTool
                 indexRectangles = Rectangles.Count();
                 indexRectanglesView = RectanglesView.Count();
                 ClearUndoRedoStack();
-                LoadRectangles();
+                //LoadRectangles();
                 ComboBoxNames();
                 SortList();
                 FilterName();
                 System.Drawing.Image img = System.Drawing.Image.FromFile(ImagePath);
                 imgWidth=img.Width;
                 imgHeight=img.Height;
-                InitialiseMeshCustomShapes(imgWidth, imgHeight);
+                fieldWidth = imgWidth / meshColumnNumber;
+                fieldHeight = imgHeight / meshRowNumber;
+                fields = Enumerable.Repeat(new ObservableCollection<CustomShape>(), meshColumnNumber * meshRowNumber).ToArray();
             }
         }
 
-        private double meshSize = 200;
+
+        private int meshColumnNumber = 5;
+        private int meshRowNumber = 4;
+        private double fieldWidth;
+        private double fieldHeight;
+
         private double imgWidth;
         private double imgHeight;
-        //private var meshCustomShapes = new ObservableCollection<ObservableCollection<CustomShape>>();
 
-        private void InitialiseMeshCustomShapes(double width, double height)
-        {
-            int columns = Convert.ToInt32(Math.Ceiling(width / meshSize));
-            int rows = Convert.ToInt32(Math.Ceiling(height / meshSize));
-            int fields = columns * rows;
-            for (int i = 0; i < columns; i++)
-            {
-                //ObservableCollection()
-            }
-        }
+        private ObservableCollection<CustomShape>[] fields;
+
+
+        //private ObservableCollection<CustomShape> field00;
+        //private ObservableCollection<CustomShape> field01;
+        //private ObservableCollection<CustomShape> field02;
+        //private ObservableCollection<CustomShape> field03;
+        //private ObservableCollection<CustomShape> field10;
+        //private ObservableCollection<CustomShape> field11;
+        //private ObservableCollection<CustomShape> field12;
+        //private ObservableCollection<CustomShape> field13;
+        //private ObservableCollection<CustomShape> field20;
+        //private ObservableCollection<CustomShape> field21;
+        //private ObservableCollection<CustomShape> field22;
+        //private ObservableCollection<CustomShape> field23;
+        //private ObservableCollection<CustomShape> field30;
+        //private ObservableCollection<CustomShape> field31;
+        //private ObservableCollection<CustomShape> field32;
+        //private ObservableCollection<CustomShape> field33;
+        //private ObservableCollection<CustomShape> field40;
+        //private ObservableCollection<CustomShape> field41;
+        //private ObservableCollection<CustomShape> field42;
+        //private ObservableCollection<CustomShape> field43;
+
 
         #endregion
 
