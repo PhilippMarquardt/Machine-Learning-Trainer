@@ -116,7 +116,7 @@ namespace MachineLearningTrainer
                    
         }
 
-        public static void WritePascalVocToXML(List<ResizableRectangle> allRectangles, string name, int width, int height, int depth)
+        public static void WritePascalVocToXML(List<CustomShape> allRectangles, string name, int width, int height, int depth)
         {
             try
             {
@@ -161,7 +161,7 @@ namespace MachineLearningTrainer
                     writer.WriteStartElement("object");
 
                     writer.WriteStartElement("name");
-                    writer.WriteString(rec.RectangleText);
+                    writer.WriteString(rec.Label);
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("pose");
@@ -179,19 +179,19 @@ namespace MachineLearningTrainer
                     writer.WriteStartElement("bndbox");
 
                     writer.WriteStartElement("xmin");
-                    writer.WriteString(Convert.ToInt32(rec.X).ToString());
+                    writer.WriteString(Convert.ToInt32(rec.X1).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("ymin");
-                    writer.WriteString(Convert.ToInt32(rec.Y).ToString());
+                    writer.WriteString(Convert.ToInt32(rec.Y1).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("xmax");
-                    writer.WriteString(Convert.ToInt32(rec.X + rec.RectangleWidth).ToString());
+                    writer.WriteString(Convert.ToInt32(rec.X2).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("ymax");
-                    writer.WriteString(Convert.ToInt32(rec.Y + rec.RectangleHeight).ToString());
+                    writer.WriteString(Convert.ToInt32(rec.Y2).ToString());
                     writer.WriteEndElement();
 
                     writer.WriteEndElement();

@@ -85,13 +85,13 @@ namespace MachineLearningTrainer.DrawerTool
 
 
 
-            RectanglesView.Add(new CustomShape(100, 50, 200, 100, 0));
-            Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
-            undoCustomShapes.Push(RectanglesView[0]);
-            undoInformation.Push("Add");
-            id++;
-            indexRectangles++;
-            indexRectanglesView++;
+            //RectanglesView.Add(new CustomShape(100, 50, 200, 100, 0));
+            //Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
+            //undoCustomShapes.Push(RectanglesView[0]);
+            //undoInformation.Push("Add");
+            //id++;
+            //indexRectangles++;
+            //indexRectanglesView++;
         }
 
         public ObservableCollection<CustomShape> RectanglesView { get; set; }
@@ -380,26 +380,29 @@ namespace MachineLearningTrainer.DrawerTool
 
         internal void Resize(System.Windows.Point mousePosition)
         {
-            if (Mouse.LeftButton == MouseButtonState.Released)
+            if (selectedCustomShape != null)
             {
-                if (selectedCustomShape.Resize == false)
+                if (Mouse.LeftButton == MouseButtonState.Released)
                 {
-                    DetectResize(mousePosition);
+                    if (selectedCustomShape.Resize == false)
+                    {
+                        DetectResize(mousePosition);
+                    }
+                    else if (selectedCustomShape.Resize == true)
+                    {
+                        DeactivateResize();
+                    }
                 }
-                else if (selectedCustomShape.Resize == true)
+                else if (Mouse.LeftButton == MouseButtonState.Pressed)
                 {
-                    DeactivateResize();
-                }
-            }
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
-            {
-                if (selectedCustomShape.Resize == false)
-                {
-                    ActivateResize(mousePosition);
-                }
-                else if (selectedCustomShape.Resize == true)
-                {
-                    ResizeCustomShape(mousePosition);
+                    if (selectedCustomShape.Resize == false)
+                    {
+                        ActivateResize(mousePosition);
+                    }
+                    else if (selectedCustomShape.Resize == true)
+                    {
+                        ResizeCustomShape(mousePosition);
+                    }
                 }
             }
         }
@@ -717,26 +720,29 @@ namespace MachineLearningTrainer.DrawerTool
 
         internal void Move(System.Windows.Point mousePosition)
         {
-            if (Mouse.LeftButton == MouseButtonState.Pressed)
+            if (selectedCustomShape != null)
             {
-                if (selectedCustomShape.Move == false)
+                if (Mouse.LeftButton == MouseButtonState.Pressed)
                 {
-                    ActivateMove(mousePosition);
+                    if (selectedCustomShape.Move == false)
+                    {
+                        ActivateMove(mousePosition);
+                    }
+                    else
+                    {
+                        MoveCustomShape(mousePosition);
+                    }
                 }
                 else
                 {
-                    MoveCustomShape(mousePosition);
-                }
-            }
-            else
-            {
-                if (selectedCustomShape.Move == false)
-                {
-                    DetectMove(mousePosition);
-                }
-                else
-                {
-                    DeactivateMove(mousePosition);
+                    if (selectedCustomShape.Move == false)
+                    {
+                        DetectMove(mousePosition);
+                    }
+                    else
+                    {
+                        DeactivateMove(mousePosition);
+                    }
                 }
             }
         }
@@ -851,7 +857,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         internal void SelectCustomShape()
         {
-            selectedCustomShape.Stroke = "LawnGreen";
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Stroke = "LawnGreen";   
+            }
 
             selectedCustomShape = this.detectedCustomShape;
             selectedCustomShape.Stroke = "Red";
@@ -1238,54 +1247,6 @@ namespace MachineLearningTrainer.DrawerTool
             SortList();
         }
 
-
-        /// <summary>
-        /// this method loads all rectangles from an xml file and draws them on the canvas
-        /// </summary>
-        public void LoadRectangles()
-        {
-            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
-
-            if (File.Exists(destFileName) == true)
-            {
-                XmlDocument doc = new XmlDocument();
-                doc.Load(destFileName);
-
-                foreach (XmlNode node in doc.DocumentElement)
-                {
-
-                    if (node.Name == "object")
-                    {
-                        foreach (XmlNode objectChild in node)
-                        {
-                            if (objectChild.Name == "name")
-                            {
-                                name = objectChild.InnerText;
-                                RectangleText = name;
-                            }
-
-                            if (objectChild.Name == "bndbox")
-                            {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
-
-                                CustomShape loadedRect = new CustomShape(xmin,ymin,xmax-xmin,ymax-ymin,id);
-                                id++;
-                                loadedRect.Label = name;
-
-                                Rectangles.Add(loadedRect);
-                                RectanglesView.Add(loadedRect);
-                                indexRectangles++;
-                                indexRectanglesView++;
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
         private bool _isOpen = false;
 
         public bool IsOpen
@@ -1505,6 +1466,118 @@ namespace MachineLearningTrainer.DrawerTool
         }
         #endregion
 
+
+        #endregion
+
+
+        #region ListBox
+
+        /// <summary>
+        /// compare rectangle text to each other
+        /// 
+        /// without function
+        /// </summary>
+        public int CompareTo(object obj)
+        {
+            CustomShape resizable = obj as CustomShape;
+            if (resizable == null)
+            {
+                throw new ArgumentException("Object is not Rectangle");
+            }
+            return this.Label.CompareTo(resizable.Label);
+        }
+
+        /// <summary>
+        /// string variabel, which contains the name of rectangle
+        /// </summary>
+        private string _label;
+        public string Label
+        {
+            get
+            {
+                return _label;
+            }
+
+            set
+            {
+                _label = value;
+                OnPropertyChanged("Label");
+            }
+        }
+
+
+        #endregion
+
+
+        #region Import/Export Rectangles <=> XML
+
+        private ICommand _exportPascalVoc;
+        public ICommand ExportPascalVoc
+        {
+            get
+            {
+                return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// export rectangles to xml file
+        /// </summary>
+        private void ExportToPascal()
+        {
+            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+            XMLWriter.WritePascalVocToXML(Rectangles.ToList(), destFileName, 1337, 1337, 3);
+        }
+
+
+        /// <summary>
+        /// this method loads all rectangles from an xml file and draws them on the canvas
+        /// </summary>
+        public void LoadRectangles()
+        {
+            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+
+            if (File.Exists(destFileName) == true)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(destFileName);
+
+                foreach (XmlNode node in doc.DocumentElement)
+                {
+
+                    if (node.Name == "object")
+                    {
+                        foreach (XmlNode objectChild in node)
+                        {
+                            if (objectChild.Name == "name")
+                            {
+                                name = objectChild.InnerText;
+                                RectangleText = name;
+                            }
+
+                            if (objectChild.Name == "bndbox")
+                            {
+                                int xmin = int.Parse(objectChild["xmin"].InnerText);
+                                int ymin = int.Parse(objectChild["ymin"].InnerText);
+                                int xmax = int.Parse(objectChild["xmax"].InnerText);
+                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+
+                                CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
+                                id++;
+                                loadedRect.Label = name;
+
+                                Rectangles.Add(loadedRect);
+                                RectanglesView.Add(loadedRect);
+                                indexRectangles++;
+                                indexRectanglesView++;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+
         /// <summary>
         /// with this method, you can open an xml file from a different location as the loaded image.
         /// </summary>
@@ -1542,7 +1615,7 @@ namespace MachineLearningTrainer.DrawerTool
                                 int xmax = int.Parse(objectChild["xmax"].InnerText);
                                 int ymax = int.Parse(objectChild["ymax"].InnerText);
 
-                                CustomShape loadedRect = new CustomShape(xmin,ymin,xmax-xmin,ymax-ymin,id);
+                                CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
                                 id++;
                                 loadedRect.Label = name;
 
@@ -1559,12 +1632,82 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxNames();
             SortList();
             await cropImageLabelBegin();
-
-
         }
+
+        #endregion
+
+
+        #region LoadImage
+
+        /// <summary>
+        /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
+        /// </summary>
+        private void LoadImage()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+            openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png; *.tif";
+
+            if (openFileDialog.ShowDialog() == true)
+            {
+                ImagePath = openFileDialog.FileName;
+            }
+
+
+
+            if (ImagePath != null)
+            {
+                this.IsEnabled = true;
+                Rectangles.Clear();
+                RectanglesView.Clear();
+                indexRectangles = Rectangles.Count();
+                indexRectanglesView = RectanglesView.Count();
+                clearUndoRedoStack();
+                LoadRectangles();
+                ComboBoxNames();
+                SortList();
+                FilterName();
+            }
+        }
+
+        #endregion
+
+
+        #region ButtonCommands
+
+        #region ESC-Button => deselect Rectangle
+
+        private ICommand _deleteSelectionRectangle;
+        public ICommand DeleteSelectionRectangle
+        {
+            get
+            {
+                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// this method unselect the selected rectangle
+        /// </summary>
+        public void DeleteSelection()
+        {
+            Console.WriteLine("delete");
+            selectedCustomShape = null;
+
+            foreach (var rect in Rectangles)
+            {
+                rect.Fill = "Transparent";
+                rect.Stroke = "LawnGreen";
+                rect.Opacity = 1;
+
+            }
+            Enabled = true;
+            MyCanvas.Cursor = Cursors.Arrow;
+        }
+        #endregion
 
 
         #endregion
+
 
         /// <summary>
         /// Old stuff
@@ -1575,20 +1718,20 @@ namespace MachineLearningTrainer.DrawerTool
         public MyICommand RenameCommand { get; set; }
         public bool Enabled { get; set; } = true;
 
-        /// <summary>
-        /// compare rectangle text to each other
-        /// 
-        /// without function
-        /// </summary>
-        public int CompareTo(object obj)
-        {
-            ResizableRectangle resizable = obj as ResizableRectangle;
-            if (resizable == null)
-            {
-                throw new ArgumentException("Object is not Rectangle");
-            }
-            return this.RectangleText.CompareTo(resizable.RectangleText);
-        }
+        ///// <summary>
+        ///// compare rectangle text to each other
+        ///// 
+        ///// without function
+        ///// </summary>
+        //public int CompareTo(object obj)
+        //{
+        //    ResizableRectangle resizable = obj as ResizableRectangle;
+        //    if (resizable == null)
+        //    {
+        //        throw new ArgumentException("Object is not Rectangle");
+        //    }
+        //    return this.RectangleText.CompareTo(resizable.RectangleText);
+        //}
 
 
 
@@ -1710,48 +1853,48 @@ namespace MachineLearningTrainer.DrawerTool
         //}
         #endregion
 
-        private ICommand _exportPascalVoc;
-        public ICommand ExportPascalVoc
-        {
-            get
-            {
-                return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
-            }
-        }
+        //private ICommand _exportPascalVoc;
+        //public ICommand ExportPascalVoc
+        //{
+        //    get
+        //    {
+        //        return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
+        //    }
+        //}
 
-        /// <summary>
-        /// export rectangles to xml file
-        /// </summary>
-        private void ExportToPascal()
-        {
-            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
-            XMLWriter.WritePascalVocToXML(AllRectangles.ToList(), destFileName, 1337, 1337, 3);
+        ///// <summary>
+        ///// export rectangles to xml file
+        ///// </summary>
+        //private void ExportToPascal()
+        //{
+        //    string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+        //    XMLWriter.WritePascalVocToXML(Rectangles.ToList(), destFileName, 1337, 1337, 3);
 
-            //UpdatePreviews();
+        //    //UpdatePreviews();
 
-            //string destFileName1 = ImagePath.Remove(ImagePath.LastIndexOf('.'));
+        //    //string destFileName1 = ImagePath.Remove(ImagePath.LastIndexOf('.'));
 
-            //foreach (var rec in AllRectangles)
-            //{
-            //    string path1 = destFileName1 + @"_Cropped_Images\" + rec.RectangleText + @"\";
+        //    //foreach (var rec in AllRectangles)
+        //    //{
+        //    //    string path1 = destFileName1 + @"_Cropped_Images\" + rec.RectangleText + @"\";
 
-            //    if (!Directory.Exists(path1))
-            //    {
-            //        Directory.CreateDirectory(path1);
-            //    }
+        //    //    if (!Directory.Exists(path1))
+        //    //    {
+        //    //        Directory.CreateDirectory(path1);
+        //    //    }
 
-            //    if (rec.CroppedImage != null)
-            //    {
-            //        BitmapEncoder encoder = new PngBitmapEncoder();
-            //        encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
-            //        string filename = path1 + AllRectangles.IndexOf(rec) + ".png";
-            //        using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
-            //        {
-            //            encoder.Save(fileStream);
-            //        }
-            //    }
-            //}
-        }
+        //    //    if (rec.CroppedImage != null)
+        //    //    {
+        //    //        BitmapEncoder encoder = new PngBitmapEncoder();
+        //    //        encoder.Frames.Add(BitmapFrame.Create(rec.CroppedImage));
+        //    //        string filename = path1 + AllRectangles.IndexOf(rec) + ".png";
+        //    //        using (var fileStream = new System.IO.FileStream(filename, System.IO.FileMode.Create))
+        //    //        {
+        //    //            encoder.Save(fileStream);
+        //    //        }
+        //    //    }
+        //    //}
+        //}
 
 
         private ICommand _addRectangle;
@@ -1800,48 +1943,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        /// <summary>
-        /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
-        /// </summary>
-        private void LoadImage()
-        {
-            OpenFileDialog openFileDialog = new OpenFileDialog();
-            openFileDialog.Filter = "Image Files | *.jpg; *.jpeg; *.png; *.tif";
-
-            if (openFileDialog.ShowDialog() == true)
-            {
-                ImagePath = openFileDialog.FileName;
-
-                //BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-                //Bitmap src;
-
-                //using (MemoryStream outStream = new MemoryStream())
-                //{
-                //    BitmapEncoder enc = new BmpBitmapEncoder();
-                //    enc.Frames.Add(BitmapFrame.Create(bImage));
-                //    enc.Save(outStream);
-                //    Bitmap bitmap = new Bitmap(outStream);
-
-                //    src = new Bitmap(bitmap);
-                //}
-
-                //image = SupportCode.ConvertBmp2Mat(src);
-
-            }
-
-
-
-            if (ImagePath != null)
-            {
-                this.IsEnabled = true;
-                AllRectangles.Clear();
-                clearUndoRedoStack();
-                LoadRectangles();
-                ComboBoxNames();
-                SortList();
-                FilterName();
-            }
-        }
 
         public void clearUndoRedoStack()
         {
@@ -2245,52 +2346,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        
-
-        private ICommand _deleteSelectionRectangle;
-        public ICommand DeleteSelectionRectangle
-        {
-            get
-            {
-                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
-            }
-        }
-
-        /// <summary>
-        /// this method unselect the selected rectangle
-        /// </summary>
-        public void DeleteSelection()
-        {
-            Console.WriteLine("delete");
-            SelectedResizableRectangle = null;
-
-            foreach (var rect in AllRectangles)
-            {
-                rect.RectangleFill = System.Windows.Media.Brushes.Blue;
-                rect.RectangleOpacity = 0.07;
-                rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
-                rect.ThumbSize = 3;
-                rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
-            }
-            Enabled = true;
-            MyCanvas.Cursor = Cursors.Arrow;
-        }
-
-        //private ICommand _enterCommand;
-        //public ICommand EnterCommand
-        //{
-        //    get
-        //    {
-        //        return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
-        //    }
-        //}
-
-        //public void Enter()
-        //{
-        //    FilterName();
-        //    SortList();
-        //}
-        
         private BitmapImage _croppedImage;
         public BitmapImage CroppedImage
         {

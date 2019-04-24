@@ -105,7 +105,6 @@
             Key="Esc"
             Command="{Binding DeleteSelectionRectangle}"
             CommandParameter="Esc" />
-        <KeyBinding Key="LeftCtrl" Command="{Binding TransparentRecCommand}" />
         <KeyBinding
             Key="Return"
             Command="{Binding EnterCommand}"
@@ -727,7 +726,7 @@
                                         Width="{Binding Width}"
                                         Height="{Binding Height}"
                                         Stroke="{Binding Stroke}"
-                                        StrokeThickness="6">
+                                        StrokeThickness="3">
                                         <Rectangle.Fill>
                                             <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
                                         </Rectangle.Fill>
