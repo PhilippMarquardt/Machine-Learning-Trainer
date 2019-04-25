@@ -711,6 +711,7 @@
                             Height="auto"
                             ClipToBounds="True"
                             Source="{Binding ImagePath}" />
+
                         <ItemsControl
                             x:Name="ad"
                             Width="{Binding ActualWidth, ElementName=imgPreview}"
@@ -749,27 +750,51 @@
                                     </Canvas>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            <!--ItemsSource="{Binding AllRectanglesView}">
+                        </ItemsControl>
+                        
+                        <!-- second layer for manipulating Rectangle-->
+                        <!--
+                        <ItemsControl
+                            x:Name="ad_manipulatableRectangle"
+                            Width="{Binding ActualWidth, ElementName=imgPreview}"
+                            Height="{Binding ActualHeight, ElementName=imgPreview}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            ItemsSource="{Binding manipulatedRectangle, UpdateSourceTrigger=PropertyChanged}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}"
+                                        Stroke="{Binding Stroke}"
+                                        StrokeThickness="{Binding StrokeThickness}">
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
+                                        </Rectangle.Fill>
+                                        <Rectangle.RenderTransform>
+                                            <TranslateTransform X="{Binding XLeft}" Y="{Binding YTop}" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>
                                 <ItemsPanelTemplate>
-                                    <Canvas />
+                                    <Canvas 
+                                        Name="DrawCanvas"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Width="{Binding ActualWidth, ElementName=imgPreview}"
+                                        Height="{Binding ActualHeight, ElementName=imgPreview}"
+                                        ClipToBounds="True"
+                                        IsItemsHost="True" 
+                                        Background="Transparent">
+                                    </Canvas>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemContainerStyle>
-                                <Style TargetType="local:ResizableRectangle">
-                                    <Setter Property="Canvas.Left" Value="{Binding X}" />
-                                    <Setter Property="Canvas.Top" Value="{Binding Y}" />
-                                    <Setter Property="RectangleFill" Value="{Binding DataContext.RectangleFill, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                    <Setter Property="RectangleOpacity" Value="{Binding DataContext.RectangleOpacity, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                    <Setter Property="ThumbColor" Value="{Binding DataContext.ThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                    <Setter Property="RectangleBorderThickness" Value="{Binding DataContext.RectangleBorderThickness, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                    <Setter Property="ThumbSize" Value="{Binding DataContext.ThumbSize, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                    <Setter Property="ResizeThumbColor" Value="{Binding DataContext.ResizeThumbColor, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                    --><!--<Setter Property="VisibilityChanged" Value="{Binding DataContext.VisibilityChanged, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}"/>--><!--
-                                    <Setter Property="RectangleText" Value="{Binding DataContext.RectangleText, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type UserControl}}}" />
-                                </Style>
-                            </ItemsControl.ItemContainerStyle>-->
                         </ItemsControl>
+                        -->
+                        <!-- -->
                     </Canvas>
                 </local:ZoomBorder>
             </Border>

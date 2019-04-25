@@ -40,10 +40,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        /// <summary>
-        /// old stuff
-        /// </summary>
-
         #region Property changed area
         public event PropertyChangedEventHandler PropertyChanged;
         protected void OnPropertyChanged(string name)
@@ -86,29 +82,6 @@ namespace MachineLearningTrainer.DrawerTool
             //    element.CaptureMouse();
             //    e.Handled = true;
             //}
-
-            //if ((this.DataContext as DrawerViewModel).Enabled == false)
-            //{
-            //    startPoint = e.GetPosition(cnvImage);
-            //    rectSelectArea = new ResizableRectangle();
-
-            //    if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem == "All Labels")
-            //    {
-            //        (this.DataContext as DrawerViewModel).AllRectanglesView.Insert(0, rectSelectArea);
-            //    }
-
-            //    else
-            //    {
-            //        (this.DataContext as DrawerViewModel).AllRectanglesView.Insert(0, rectSelectArea);
-            //        (this.DataContext as DrawerViewModel).AllRectangles.Insert(0, rectSelectArea);
-            //    }
-
-            //    Canvas.SetLeft(rectSelectArea, startPoint.X);
-            //    Canvas.SetTop(rectSelectArea, startPoint.Y);
-            //    //cnvImage.Children.Add(rectSelectArea);
-            //    (this.DataContext as DrawerViewModel).undoRectangles.Push(rectSelectArea);
-            //    (this.DataContext as DrawerViewModel).undoInformation.Push("Add");
-            //}
         }
 
 
@@ -123,7 +96,7 @@ namespace MachineLearningTrainer.DrawerTool
             if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
             {
                 cnvImage.Cursor = Cursors.Cross;
-                (this.DataContext as DrawerViewModel).CreateRectangle(e.GetPosition(cnvImage));
+                (this.DataContext as DrawerViewModel).CreateRectangle(mousePosition);
             }
             else
             {
@@ -163,8 +136,8 @@ namespace MachineLearningTrainer.DrawerTool
 
             //if ((this.DataContext as DrawerViewModel).Enabled == false && rectSelectArea != null)
             //{
-            //    foreach (var q in (this.DataContext as DrawerViewModel).AllRectanglesView)
-            //        q.RectangleMovable = true;
+            //    //foreach (var q in (this.DataContext as DrawerViewModel).RectanglesView)
+            //    //    q.RectangleMovable = true;
             //    (this.DataContext as DrawerViewModel).Enabled = true;
             //    var w = (int)rectSelectArea.RectangleWidth;
             //    var h = (int)rectSelectArea.RectangleHeight;
@@ -197,16 +170,7 @@ namespace MachineLearningTrainer.DrawerTool
             ////    await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
             ////}
 
-            //if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
-            //{
-            //    (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectanglesView.Count.ToString();
-            //}
-            //else
-            //{
-            //    (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).AllRectangles.Count.ToString();
-            //}
-
-            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count != 0)
+            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count != 1)
             {
                 (this.DataContext as DrawerViewModel).UndoEnabled = true;
             }

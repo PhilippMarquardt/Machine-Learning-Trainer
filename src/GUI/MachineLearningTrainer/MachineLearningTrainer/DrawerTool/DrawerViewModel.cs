@@ -72,7 +72,6 @@ namespace MachineLearningTrainer.DrawerTool
             DuplicateCommand = new MyICommand(OnDuplicate, CanDuplicate);
             RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
-            AllRectanglesView = AllRectangles;
             SelectedComboBoxItem = "All Labels";
 
             RectanglesView = new ObservableCollection<CustomShape>();
@@ -83,7 +82,8 @@ namespace MachineLearningTrainer.DrawerTool
             redoCustomShapes.Push(new CustomShape(0, 0));
             redoInformation.Push("Dummy");
 
-            
+
+            //Only for debugging            
 
             //RectanglesView.Add(new CustomShape(100, 50, 200, 100, 0));
             //Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
@@ -92,6 +92,7 @@ namespace MachineLearningTrainer.DrawerTool
             //id++;
             //indexRectangles++;
             //indexRectanglesView++;
+            //
         }
 
         public ObservableCollection<CustomShape> RectanglesView { get; set; }
@@ -345,17 +346,9 @@ namespace MachineLearningTrainer.DrawerTool
                                 RectanglesView[indexRectanglesView].Label = "";
                         }
 
-                        int columnX1 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].X1 / fieldWidth));
-                        int columnX2 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].X2 / fieldWidth));
-                        int rowY1 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].Y1 / fieldHeight));
-                        int rowY2 = Convert.ToInt32(Math.Floor(RectanglesView[indexRectanglesView].Y2 / fieldHeight));
-
-                        //SaveShapeToField(columnX1, rowY1, RectanglesView[indexRectanglesView]));
-
-
-
                         Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
 
+                        SaveShapeToField(Rectangles[indexRectangles]);
 
 
                         undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
@@ -380,45 +373,107 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void SaveShapeToField(int column, int row, CustomShape customShape)
+        #endregion
+
+
+        #region Divide img into fields for better perfomance
+
+        /// <summary>
+        /// Saves Shape to according fields in image-grid
+        /// </summary>
+        /// <param name="customShape"></param>
+        private void SaveShapeToField(CustomShape customShape)
         {
-            //if (column == 0)
-            //{
-            //    if (row == 0) { field00.Add(new CustomShape(customShape));  }
-            //    else if (row == 1) { field01.Add(new CustomShape(customShape)); }
-            //    else if (row == 2) { field02.Add(new CustomShape(customShape)); }
-            //    else if (row == 3) { field03.Add(new CustomShape(customShape)); }
-            //}
-            //else if (column == 1)
-            //{
-            //    if (row == 0) { field10.Add(new CustomShape(customShape)); }
-            //    else if (row == 1) { field11.Add(new CustomShape(customShape)); }
-            //    else if (row == 2) { field12.Add(new CustomShape(customShape)); }
-            //    else if (row == 3) { field13.Add(new CustomShape(customShape)); }
-            //}
-            //else if (column == 2)
-            //{
-            //    if (row == 0) { field20.Add(new CustomShape(customShape)); }
-            //    else if (row == 1) { field21.Add(new CustomShape(customShape)); }
-            //    else if (row == 2) { field22.Add(new CustomShape(customShape)); }
-            //    else if (row == 3) { field23.Add(new CustomShape(customShape)); }
-            //}
-            //else if (column == 3)
-            //{
-            //    if (row == 0) { field30.Add(new CustomShape(customShape)); }
-            //    else if (row == 1) { field31.Add(new CustomShape(customShape)); }
-            //    else if (row == 2) { field32.Add(new CustomShape(customShape)); }
-            //    else if (row == 3) { field33.Add(new CustomShape(customShape)); }
-            //}
-            //else if (column == 4)
-            //{
-            //    if (row == 0) { field40.Add(new CustomShape(customShape)); }
-            //    else if (row == 1) { field41.Add(new CustomShape(customShape)); }
-            //    else if (row == 2) { field42.Add(new CustomShape(customShape)); }
-            //    else if (row == 3) { field43.Add(new CustomShape(customShape)); }
-            //}
+            int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
+            int columnX2 = Convert.ToInt32(Math.Floor(customShape.X2 / fieldWidth));
+            int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
+            int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
+
+            if (columnX1 == columnX2)
+            {
+                if (rowY1 == rowY2)
+                {
+                    ShapeToField(columnX1, rowY1, customShape);
+                }
+                else
+                {
+                    ShapeToField(columnX1, rowY1, customShape);
+                    ShapeToField(columnX1, rowY2, customShape);
+                }
+            }
+            else
+            {
+                if (rowY1 == rowY2)
+                {
+                    ShapeToField(columnX1, rowY1, customShape);
+                    ShapeToField(columnX2, rowY1, customShape);
+                }
+                else
+                {
+                    ShapeToField(columnX1, rowY1, customShape);
+                    ShapeToField(columnX2, rowY1, customShape);
+                    ShapeToField(columnX1, rowY2, customShape);
+                    ShapeToField(columnX2, rowY2, customShape);
+                }
+            }
         }
 
+        private void ShapeToField(int column, int row, CustomShape customShape)
+        {
+            int fieldNumber = column + row * meshColumnNumber;
+            fields[fieldNumber].Add(new CustomShape(customShape));
+            int indexRectField = fields[fieldNumber].Count() - 1;
+            fields[fieldNumber][indexRectField] = customShape;
+        }
+
+        private void RemoveShapeFromField(CustomShape customShape)
+        {
+            int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
+            int columnX2 = Convert.ToInt32(Math.Floor(customShape.X2 / fieldWidth));
+            int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
+            int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
+
+            if (columnX1 == columnX2)
+            {
+                if (rowY1 == rowY2)
+                {
+                    ShapeFromField(columnX1, rowY1, customShape);
+                }
+                else
+                {
+                    ShapeFromField(columnX1, rowY1, customShape);
+                    ShapeFromField(columnX1, rowY2, customShape);
+                }
+            }
+            else
+            {
+                if (rowY1 == rowY2)
+                {
+                    ShapeFromField(columnX1, rowY1, customShape);
+                    ShapeFromField(columnX2, rowY1, customShape);
+                }
+                else
+                {
+                    ShapeFromField(columnX1, rowY1, customShape);
+                    ShapeFromField(columnX2, rowY1, customShape);
+                    ShapeFromField(columnX1, rowY2, customShape);
+                    ShapeFromField(columnX2, rowY2, customShape);
+                }
+            }
+        }
+
+        private void ShapeFromField(int column, int row, CustomShape customShape)
+        {
+            int fieldNumber = column + row * meshColumnNumber;
+            foreach (CustomShape r in fields[fieldNumber])
+            {
+                if (r.Id == customShape.Id)
+                {
+                    fields[fieldNumber].Remove(r);
+                    break;
+                }
+            }
+        }
 
         #endregion
 
@@ -553,6 +608,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
@@ -561,6 +617,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeWE;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
@@ -569,6 +626,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeNESW;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
             }
@@ -580,6 +638,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeNESW;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 - borderWidth)
@@ -588,6 +647,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeWE;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
@@ -596,6 +656,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeNWSE;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
             }
@@ -607,6 +668,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeNS;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
                 else if (selectedCustomShape.Y2 - borderWidth < mousePosition.Y && mousePosition.Y < selectedCustomShape.Y2 + borderWidth)
@@ -615,6 +677,7 @@ namespace MachineLearningTrainer.DrawerTool
                     Mouse.OverrideCursor = Cursors.SizeNS;
                     mouseHandlingState = MouseState.Resize;
                     selectedCustomShape.Resize = true;
+                    RemoveShapeFromField(selectedCustomShape);
                     CopyForUndo("Resize");
                 }
             }
@@ -784,6 +847,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     Rectangles.RemoveAt(tmpIndex);
                     Rectangles.Insert(tmpIndex, selectedCustomShape);
+                    SaveShapeToField(selectedCustomShape);
                     break;
                 }
                 tmpIndex++;
@@ -856,6 +920,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                 selectedCustomShape.Move = true;
                 CopyForUndo("Move");
+
+                RemoveShapeFromField(selectedCustomShape);
             }
         }
 
@@ -884,6 +950,8 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     Rectangles.RemoveAt(tmpIndex);
                     Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                    SaveShapeToField(selectedCustomShape);
                     break;
                 }
                 tmpIndex++;
@@ -920,7 +988,17 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (detectedCustomShape == null)
             {
-                foreach (CustomShape r in RectanglesView)
+                int column = Convert.ToInt32(Math.Floor(mousePosition.X / fieldWidth));
+                int row = Convert.ToInt32(Math.Floor(mousePosition.Y / fieldHeight));
+                int fieldNumber = column + row * meshColumnNumber;
+
+                //only for debugging
+
+                Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
+                //
+
+
+                foreach (CustomShape r in fields[fieldNumber])
                 {
                     if ((r.X1 < mousePosition.X && mousePosition.X < r.X2) && (r.Y1 < mousePosition.Y && mousePosition.Y < r.Y2))
                     {
@@ -944,6 +1022,30 @@ namespace MachineLearningTrainer.DrawerTool
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
                 detectedCustomShape.Fill = "Gray";
+
+                //only for debugging
+
+                //foreach (CustomShape r in Rectangles)
+                //{
+                //    if (r.Id == detectedCustomShape.Id)
+                //    {
+                //        Console.WriteLine("rectangleView Fill: " + r.Fill);
+                //        break;
+                //    }
+                //}
+
+                //foreach (CustomShape r in RectanglesView)
+                //{
+                //    if (r.Id == detectedCustomShape.Id)
+                //    {
+                //        Console.WriteLine("rectangle Fill: " + r.Fill);
+                //        break;
+                //    }
+                //}
+
+
+                //Console.WriteLine("detectedCustomShape Fill: " + detectedCustomShape.Fill);
+                //
             }
         }
 
@@ -1568,7 +1670,7 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region ListBox             #ToDo!!!
+        #region ListBox             #TBD!!!
 
         /// <summary>
         /// compare rectangle text to each other
@@ -1667,6 +1769,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
+                                //RectanglesView[indexRectanglesView] = Rectangles[indexRectangles];
+                                SaveShapeToField(Rectangles[indexRectangles]);
                                 indexRectangles++;
                                 indexRectanglesView++;
                             }
@@ -1720,6 +1824,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
+                                SaveShapeToField(loadedRect);
                                 indexRectangles++;
                                 indexRectanglesView++;
                                 OnPropertyChanged("");
@@ -1771,25 +1876,52 @@ namespace MachineLearningTrainer.DrawerTool
                 RectanglesView.Clear();
                 indexRectangles = Rectangles.Count();
                 indexRectanglesView = RectanglesView.Count();
+                id = 0;
                 ClearUndoRedoStack();
-                //LoadRectangles();
                 ComboBoxNames();
                 SortList();
                 FilterName();
+
                 System.Drawing.Image img = System.Drawing.Image.FromFile(ImagePath);
                 imgWidth=img.Width;
                 imgHeight=img.Height;
-                fieldWidth = imgWidth / meshColumnNumber;
-                fieldHeight = imgHeight / meshRowNumber;
-                fields = Enumerable.Repeat(new ObservableCollection<CustomShape>(), meshColumnNumber * meshRowNumber).ToArray();
+                meshColumnNumber = Convert.ToInt32(Math.Ceiling(imgWidth / fieldWidth));
+                meshRowNumber = Convert.ToInt32(Math.Ceiling(imgHeight / fieldHeight));
+                fields = new ObservableCollection<CustomShape>[meshColumnNumber * meshRowNumber];
+                for(int i=0; i< fields.Length; i++)
+                {
+                    fields[i] = new ObservableCollection<CustomShape>();
+                }
+                LoadRectangles();
+
+
+                //Only for debugging
+                //for (int i = 0; i < 10; i++)
+                //{
+                //    Rectangles.Add(new CustomShape(i * fieldWidth + 100, 50, 100, 100, 0));
+                //    RectanglesView.Add(new CustomShape(i * fieldWidth + 100, 50, 100, 100, 0));
+                //    indexRectangles++;
+                //    indexRectanglesView++;
+
+                //    fields[i].Add(new CustomShape(i * fieldWidth + 100, 50, 00, 100, 0));
+
+                //    Console.WriteLine(fields[i].Count());
+                //}
+
+                //fields[0].Add(new CustomShape(100, 50, 100, 100, 0));
+                //fields[3].Add(new CustomShape(700, 50, 100, 100, 1));
+
+                Console.WriteLine(meshColumnNumber);
+                Console.WriteLine(meshRowNumber);
+                //
             }
         }
 
 
-        private int meshColumnNumber = 5;
-        private int meshRowNumber = 4;
-        private double fieldWidth;
-        private double fieldHeight;
+        private int meshColumnNumber;
+        private int meshRowNumber;
+        private double fieldWidth = 200;
+        private double fieldHeight = 200;
 
         private double imgWidth;
         private double imgHeight;
