@@ -77,6 +77,7 @@ namespace MachineLearningTrainer.DrawerTool
             RectanglesView = new ObservableCollection<CustomShape>();
             Rectangles = new ObservableCollection<CustomShape>();
             RectanglesView.CollectionChanged += ShapeCollectionChanged;
+            manipulatableShape.PropertyChanged += ManipulatableShape_PropertyChanged;
             undoCustomShapes.Push(new CustomShape(0, 0));
             undoInformation.Push("Dummy");
             redoCustomShapes.Push(new CustomShape(0, 0));
@@ -95,15 +96,20 @@ namespace MachineLearningTrainer.DrawerTool
             //
         }
 
+        
         public ObservableCollection<CustomShape> RectanglesView { get; set; }
         public ObservableCollection<CustomShape> Rectangles { get; set; }
         public Stack<CustomShape> undoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> undoInformation { get; set; } = new Stack<string>();
         public Stack<CustomShape> redoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> redoInformation { get; set; } = new Stack<string>();
+        public CustomShape manipulatableShape { get; set; } = new CustomShape(100, 100, 200, 100, 0);
+
 
         private readonly int borderWidth = 10;                   //used when detecting, moving & resizing shapes
         private readonly double minShapeSize = 20;
+        private readonly double fieldWidth = 200;
+        private readonly double fieldHeight = 200;
 
         /// <summary>
         /// declares a string that stores the IconPath to differentiate between active and not active
@@ -354,13 +360,15 @@ namespace MachineLearningTrainer.DrawerTool
                         undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
                         undoInformation.Push("Add");
 
-                        Console.WriteLine(RectanglesView[indexRectanglesView].Id);
                         id++;
                         indexRectangles++;
                         indexRectanglesView++;
 
+
+                        //Only for debugging
                         Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
                         Console.WriteLine("Rectangles count: " + Rectangles.Count);
+                        //
 
                         RectangleCount = "#" + RectanglesView.Count.ToString();
                         ComboBoxNames();
@@ -506,6 +514,11 @@ namespace MachineLearningTrainer.DrawerTool
         private void Shape_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
+        }
+
+        private void ManipulatableShape_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            CollectionViewSource.GetDefaultView(manipulatableShape).Refresh();
         }
         #endregion
 
@@ -1101,6 +1114,7 @@ namespace MachineLearningTrainer.DrawerTool
                 duplicatedCustomShape.Label = selectedCustomShape.Label;
                 RectanglesView.Add(duplicatedCustomShape);
                 Rectangles.Add(duplicatedCustomShape);
+                SaveShapeToField(duplicatedCustomShape);
                 indexRectanglesView++;
                 indexRectangles++;
                 id++;
@@ -1125,6 +1139,7 @@ namespace MachineLearningTrainer.DrawerTool
                 CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
                 RectanglesView.Add(duplicatedCustomShape);
                 Rectangles.Add(duplicatedCustomShape);
+                SaveShapeToField(duplicatedCustomShape);
                 indexRectanglesView++;
                 indexRectangles++;
                 id++;
@@ -1282,6 +1297,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                             RectanglesView.Remove(top);
                             Rectangles.Remove(top);
+                            RemoveShapeFromField(top);
+
                             indexRectanglesView--;
                             indexRectangles--;
                             break;
@@ -1297,6 +1314,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                             RectanglesView.Add(top);
                             Rectangles.Add(top);
+                            SaveShapeToField(top);
+
                             indexRectanglesView++;
                             indexRectangles++;
                             break;
@@ -1373,6 +1392,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                             RectanglesView.Add(top);
                             Rectangles.Add(top);
+                            SaveShapeToField(top);
+
                             indexRectanglesView++;
                             indexRectangles++;
                             break;
@@ -1389,6 +1410,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                             RectanglesView.Remove(top);
                             Rectangles.Remove(top);
+                            RemoveShapeFromField(top);
+
                             indexRectanglesView--;
                             indexRectangles--;
                             break;
@@ -1857,6 +1880,12 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
+        private int meshColumnNumber;
+        private int meshRowNumber;
+        private double imgWidth;
+        private double imgHeight;
+        private ObservableCollection<CustomShape>[] fields;
+
         private void LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -1893,6 +1922,7 @@ namespace MachineLearningTrainer.DrawerTool
                     fields[i] = new ObservableCollection<CustomShape>();
                 }
                 LoadRectangles();
+                RectangleCount = "#" + RectanglesView.Count.ToString();
 
 
                 //Only for debugging
@@ -1916,40 +1946,6 @@ namespace MachineLearningTrainer.DrawerTool
                 //
             }
         }
-
-
-        private int meshColumnNumber;
-        private int meshRowNumber;
-        private double fieldWidth = 200;
-        private double fieldHeight = 200;
-
-        private double imgWidth;
-        private double imgHeight;
-
-        private ObservableCollection<CustomShape>[] fields;
-
-
-        //private ObservableCollection<CustomShape> field00;
-        //private ObservableCollection<CustomShape> field01;
-        //private ObservableCollection<CustomShape> field02;
-        //private ObservableCollection<CustomShape> field03;
-        //private ObservableCollection<CustomShape> field10;
-        //private ObservableCollection<CustomShape> field11;
-        //private ObservableCollection<CustomShape> field12;
-        //private ObservableCollection<CustomShape> field13;
-        //private ObservableCollection<CustomShape> field20;
-        //private ObservableCollection<CustomShape> field21;
-        //private ObservableCollection<CustomShape> field22;
-        //private ObservableCollection<CustomShape> field23;
-        //private ObservableCollection<CustomShape> field30;
-        //private ObservableCollection<CustomShape> field31;
-        //private ObservableCollection<CustomShape> field32;
-        //private ObservableCollection<CustomShape> field33;
-        //private ObservableCollection<CustomShape> field40;
-        //private ObservableCollection<CustomShape> field41;
-        //private ObservableCollection<CustomShape> field42;
-        //private ObservableCollection<CustomShape> field43;
-
 
         #endregion
 
