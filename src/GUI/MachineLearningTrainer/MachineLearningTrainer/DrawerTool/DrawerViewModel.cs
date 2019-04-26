@@ -42,8 +42,8 @@ namespace MachineLearningTrainer.DrawerTool
         protected void OnPropertyChanged(string name)
         {
             //For debugging only
-            Console.WriteLine("OnPropertyChanged: #" + test);
-            test++;
+            //Console.WriteLine("OnPropertyChanged: #" + test);
+            //test++;
             //
 
             PropertyChangedEventHandler handler = PropertyChanged;
@@ -586,7 +586,7 @@ namespace MachineLearningTrainer.DrawerTool
                         ComboBoxNames();
 
 
-                        OnPropertyChanged("Rectangles");
+                        //OnPropertyChanged("Rectangles");
                         OnPropertyChanged("RectanglesView");
                     }
                 }
@@ -683,7 +683,6 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 _duplicateVar = value;
-                OnPropertyChanged("DuplicateVar");
             }
         }
 
@@ -833,7 +832,6 @@ namespace MachineLearningTrainer.DrawerTool
                     else
                     {
                         DeactivateMove(mousePosition);
-                        OnPropertyChanged("RectanglesView");
                     }
                 }
             }
@@ -876,7 +874,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.Center = tmpRelativPosition;
                 selectedCustomShape.YTop = selectedCustomShape.Y1;
                 selectedCustomShape.XLeft = selectedCustomShape.X1;
-                Mouse.OverrideCursor = Cursors.SizeAll;
+                Mouse.OverrideCursor = Cursors.SizeAll; 
             }
         }
 
@@ -934,7 +932,6 @@ namespace MachineLearningTrainer.DrawerTool
                     else if (selectedCustomShape.Resize == true)
                     {
                         ResizeCustomShape(mousePosition);
-                        OnPropertyChanged("RectanglesView");
                     }
                 }
             }
@@ -1388,7 +1385,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeNE)
+            else if (resizeDirection == ResizeDirection.SizeNE)
             {
                 if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
                 {
@@ -1410,7 +1407,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeE)
+            else if (resizeDirection == ResizeDirection.SizeE)
             {
                 if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
                 {
@@ -1421,7 +1418,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeSE)
+            else if (resizeDirection == ResizeDirection.SizeSE)
             {
                 if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
                 {
@@ -1441,7 +1438,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeS)
+            else if (resizeDirection == ResizeDirection.SizeS)
             {
                 if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
                 {
@@ -1452,7 +1449,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeSW)
+            else if (resizeDirection == ResizeDirection.SizeSW)
             {
                 if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
                 {
@@ -1474,7 +1471,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeW)
+            else if (resizeDirection == ResizeDirection.SizeW)
             {
                 if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
                 {
@@ -1487,7 +1484,7 @@ namespace MachineLearningTrainer.DrawerTool
                     selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
                 }
             }
-            if (resizeDirection == ResizeDirection.SizeNW)
+            else if (resizeDirection == ResizeDirection.SizeNW)
             {
                 if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
                 {
@@ -2261,7 +2258,6 @@ namespace MachineLearningTrainer.DrawerTool
 
                 foreach (XmlNode node in doc.DocumentElement)
                 {
-
                     if (node.Name == "object")
                     {
                         foreach (XmlNode objectChild in node)
@@ -2278,7 +2274,6 @@ namespace MachineLearningTrainer.DrawerTool
                                 int ymin = int.Parse(objectChild["ymin"].InnerText);
                                 int xmax = int.Parse(objectChild["xmax"].InnerText);
                                 int ymax = int.Parse(objectChild["ymax"].InnerText);
-
                                 CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
                                 id++;
                                 loadedRect.Label = name;
