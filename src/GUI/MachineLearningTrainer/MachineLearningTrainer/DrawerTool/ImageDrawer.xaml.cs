@@ -75,6 +75,13 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).SelectCustomShape();
 
+            //mousePosition = e.GetPosition(cnvImage);
+
+            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
+            //{
+            //    (this.DataContext as DrawerViewModel).CreateRectangle_MouseDown(mousePosition);
+            //}
+
             //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize 
             //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
             //{
@@ -96,6 +103,8 @@ namespace MachineLearningTrainer.DrawerTool
             if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
             {
                 cnvImage.Cursor = Cursors.Cross;
+                //if(e.LeftButton == MouseButtonState.Pressed)
+                //    (this.DataContext as DrawerViewModel).CreateRectangle_MouseMove(mousePosition);
                 (this.DataContext as DrawerViewModel).CreateRectangle(mousePosition);
             }
             else
@@ -121,6 +130,13 @@ namespace MachineLearningTrainer.DrawerTool
 
         private async void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
+            //{
+            //    (this.DataContext as DrawerViewModel).CreateRectangle_MouseUp();
+            //}
+
+
+
             //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
             //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
             //{

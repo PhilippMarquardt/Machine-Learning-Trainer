@@ -50,6 +50,8 @@ namespace MachineLearningTrainer.DrawerTool
             this.fill = "Transparent";
             this.isMouseOver = false;
             this.stroke = "LawnGreen";
+            this.width = 0;
+            this.height = 0;
 
         }
         public CustomShape(double x, double y)
@@ -66,12 +68,16 @@ namespace MachineLearningTrainer.DrawerTool
             this.fill = "Transparent";
             this.isMouseOver = false;
             this.stroke = "LawnGreen";
+            this.width = 0;
+            this.height = 0;
         }
 
         public CustomShape(double x1, double y1, double width, double height, int id)
         {
             this.x1 = x1;
             this.y1 = y1;
+            this.width = width;
+            this.height = height;
             this.id = id;
             this.label = "";
 
@@ -99,6 +105,8 @@ namespace MachineLearningTrainer.DrawerTool
             this.id = tmp.Id;
             this.label = tmp.Label;
 
+            this.width = tmp.width;
+            this.height = tmp.height;
 
             this.opacity = 1;
             this.fill = "Transparent";
@@ -122,19 +130,21 @@ namespace MachineLearningTrainer.DrawerTool
 
         public double Width
         {
-            get
+            get => width;
+            set
             {
-                width = Math.Abs(this.X1 - this.X2);
-                return width;
+                width = value;
+                this.NotifyPropertyChanged("Width");
             }
         }
 
         public double Height
         {
-            get
+            get => height;
+            set
             {
-                height = Math.Abs(this.Y1 - this.Y2);
-                return height;
+                height = value;
+                this.NotifyPropertyChanged("Height");
             }
         }
 

@@ -25,14 +25,26 @@ using System.Windows.Ink;
 using System.Collections.Specialized;
 using Brushes = System.Drawing.Brushes;
 
+
+using System.Diagnostics;
+
 namespace MachineLearningTrainer.DrawerTool 
 {
     public class DrawerViewModel : INotifyPropertyChanged, IComparable
     {
         #region PropertyChangedArea
         public event PropertyChangedEventHandler PropertyChanged;
+
+        /// <summary>
+        /// Raise Property changed event for INotifyPropertyChanged => dynamlically updating bindings for UI element)
+        /// </summary>
+        /// <param name="name"></param>
         protected void OnPropertyChanged(string name)
         {
+            //For debugging only
+            Console.WriteLine("OnPropertyChanged: #" + test);
+            test++;
+            //
 
             PropertyChangedEventHandler handler = PropertyChanged;
 
@@ -40,11 +52,27 @@ namespace MachineLearningTrainer.DrawerTool
             {
 
                 handler(this, new PropertyChangedEventArgs(name));
+                CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
 
             }
 
         }
+
+
+        protected void OnPropertyChanged2(string name)
+        {
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+
+                handler(this, new PropertyChangedEventArgs(name));
+                CollectionViewSource.GetDefaultView(selectedCustomShape).Refresh();
+
+            }
+        }
         #endregion
+
 
         #region RaisePropertChanged Area
         private void RaisePropertyChanged([CallerMemberName] string caller = "")
@@ -55,6 +83,57 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
         #endregion
+
+
+        #region ShapeCollectionChangedHandler
+
+        /// <summary>
+        /// gets called when Element is added or deleted to ShapeCollection / RectanglesView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        //private void ShapeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        //{
+        //    if (e.NewItems != null)
+        //    {
+        //        {
+        //            //foreach (object item in e.NewItems)
+        //            //{
+        //            //    if (item is CustomShape)
+        //            //        ((CustomShape)item).PropertyChanged += Shape_PropertyChanged;
+        //            //}
+        //        }
+
+        //        if (e.OldItems != null)
+        //        {
+        //            //foreach (object item in e.OldItems)
+        //            //{
+        //            //    if (item is CustomShape)
+        //            //        ((CustomShape)item).PropertyChanged -= Shape_PropertyChanged;
+        //            //}
+        //        }
+        //    }
+        //}
+
+        ///// <summary>
+        ///// gets called every time a Property in an RectangleView-Object is changed
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e"></param>
+        ////private void Shape_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        //private void Shape_PropertyChanged(object sender)
+        //{
+        //    CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
+        //}
+
+
+
+        //private void ManipulatableShape_PropertyChanged(object sender)
+        //{
+        //    CollectionViewSource.GetDefaultView(manipulatableShape).Refresh();
+        //}
+        #endregion
+
 
         private DrawerModel _drawerModel;
         private bool _canExecute = true;
@@ -76,8 +155,8 @@ namespace MachineLearningTrainer.DrawerTool
 
             RectanglesView = new ObservableCollection<CustomShape>();
             Rectangles = new ObservableCollection<CustomShape>();
-            RectanglesView.CollectionChanged += ShapeCollectionChanged;
-            manipulatableShape.PropertyChanged += ManipulatableShape_PropertyChanged;
+            //RectanglesView.CollectionChanged += ShapeCollectionChanged;
+            //manipulatableShape.PropertyChanged += ManipulatableShape_PropertyChanged;
             undoCustomShapes.Push(new CustomShape(0, 0));
             undoInformation.Push("Dummy");
             redoCustomShapes.Push(new CustomShape(0, 0));
@@ -111,6 +190,12 @@ namespace MachineLearningTrainer.DrawerTool
         private readonly double fieldWidth = 200;
         private readonly double fieldHeight = 200;
 
+        //for debugging only
+        int test = 0;
+        //
+
+
+
         /// <summary>
         /// declares a string that stores the IconPath to differentiate between active and not active
         /// </summary>
@@ -139,22 +224,6 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.mouseHandlingState = value;
                     OnPropertyChanged("MouseHandlingState");
-                }
-            }
-        }
-
-
-        private bool shapeSelected = false;
-        private CustomShape selectedCustomShape = new CustomShape(-1, -1);
-        public bool ShapeSelected
-        {
-            get => shapeDetected;
-            set
-            {
-                if (shapeSelected != value)
-                {
-                    this.shapeSelected = value;
-                    OnPropertyChanged("ShapeSelected");
                 }
             }
         }
@@ -228,6 +297,28 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.Y2 = MyCanvas.ActualHeight;
             }
         }
+
+        /// <summary>
+        /// Checks if Object is on Canvas and if not, sets Borders right
+        /// </summary>
+        private void CheckIfObjectOnCanvas()
+        {
+            if (selectedCustomShape.X1 < 0)
+            {
+                selectedCustomShape.X1 = 0;
+                selectedCustomShape.XLeft = 0;
+            }
+            else if (selectedCustomShape.X2 > MyCanvas.ActualWidth)
+                selectedCustomShape.X2 = MyCanvas.ActualWidth;
+
+            if (selectedCustomShape.Y1 < 0)
+            {
+                selectedCustomShape.Y1 = 0;
+                selectedCustomShape.YTop = 0;
+            }
+            else if (selectedCustomShape.Y2 > MyCanvas.ActualHeight)
+                selectedCustomShape.Y2 = MyCanvas.ActualHeight;
+        }
         #endregion
 
 
@@ -269,6 +360,115 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
+
+        public void CreateRectangle_MouseDown(System.Windows.Point mousePosition)
+        {
+            tmpX = mousePosition.X;
+            tmpY = mousePosition.Y;
+            CheckCanvas(mousePosition);
+
+            RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
+        }
+
+        public void CreateRectangle_MouseMove(System.Windows.Point mousePosition)
+        {
+            tmpX = mousePosition.X;
+            tmpY = mousePosition.Y;
+            CheckCanvas(mousePosition);
+
+            if (RectanglesView[indexRectanglesView].X1 == -1 && RectanglesView[indexRectanglesView].Y1 == -1)
+            {
+                RectanglesView[indexRectanglesView].X1 = tmpX;
+                RectanglesView[indexRectanglesView].Y1 = tmpY;
+            }
+            RectanglesView[indexRectanglesView].X2 = tmpX;
+            RectanglesView[indexRectanglesView].Y2 = tmpY;
+
+            if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
+            {
+                RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X2;
+            }
+            else
+            {
+                RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X1;
+            }
+            if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
+            {
+                RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y2;
+            }
+            else
+            {
+                RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
+            }
+        }
+
+        public void CreateRectangle_MouseUp()
+        {
+            double tmp;
+            if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
+                || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
+            {
+                RectanglesView.Remove(RectanglesView[indexRectanglesView]);
+                indexRectanglesView = RectanglesView.Count();
+                return;
+            }
+            else
+            {
+                if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
+                {
+                    tmp = RectanglesView[indexRectanglesView].X1;
+                    RectanglesView[indexRectanglesView].X1 = RectanglesView[indexRectanglesView].X2;
+                    RectanglesView[indexRectanglesView].X2 = tmp;
+                }
+                if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
+                {
+                    tmp = RectanglesView[indexRectanglesView].Y1;
+                    RectanglesView[indexRectanglesView].Y1 = RectanglesView[indexRectanglesView].Y2;
+                    RectanglesView[indexRectanglesView].Y2 = tmp;
+                }
+
+                if (SelectedComboBoxItem != "All Labels")
+                {
+                    Enabled = false;
+                    RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
+                }
+
+                else
+                {
+                    Enabled = false;
+                    if (IsChecked == true && DefaultLabel.Length > 0)
+                        RectanglesView[indexRectanglesView].Label = _defaultLabel;
+                    else
+                        RectanglesView[indexRectanglesView].Label = "";
+                }
+
+                Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
+
+                SaveShapeToField(Rectangles[indexRectangles]);
+
+
+                undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
+                undoInformation.Push("Add");
+
+                id++;
+                indexRectangles++;
+                indexRectanglesView++;
+
+
+                //Only for debugging
+                Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
+                Console.WriteLine("Rectangles count: " + Rectangles.Count);
+                //
+
+                RectangleCount = "#" + RectanglesView.Count.ToString();
+                ComboBoxNames();
+
+
+                OnPropertyChanged("Rectangles");
+                OnPropertyChanged("RectanglesView");
+            }
+        }
+
         public void CreateRectangle(System.Windows.Point mousePosition)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
@@ -307,7 +507,12 @@ namespace MachineLearningTrainer.DrawerTool
                     {
                         RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
                     }
+
+                    RectanglesView[indexRectanglesView].Width = Math.Abs(RectanglesView[indexRectanglesView].X2 - RectanglesView[indexRectanglesView].X1);
+                    RectanglesView[indexRectanglesView].Height = Math.Abs(RectanglesView[indexRectanglesView].Y2 - RectanglesView[indexRectanglesView].Y1);
+
                 }
+                OnPropertyChanged("RectanglesView");
             }
             else if (Mouse.LeftButton == MouseButtonState.Released)
             {
@@ -317,52 +522,59 @@ namespace MachineLearningTrainer.DrawerTool
                     if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
                         || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
                     {
-                        RectanglesView[indexRectanglesView].X1 = -1;
-                        RectanglesView[indexRectanglesView].X2 = -1;
-                        RectanglesView[indexRectanglesView].Y1 = -1;
-                        RectanglesView[indexRectanglesView].Y2 = -1;
+                        //RectanglesView[indexRectanglesView].X1 = -1;
+                        //RectanglesView[indexRectanglesView].X2 = -1;
+                        //RectanglesView[indexRectanglesView].Y1 = -1;
+                        //RectanglesView[indexRectanglesView].Y2 = -1;
+                        RectanglesView.RemoveAt(indexRectanglesView);
+                        indexRectanglesView=RectanglesView.Count();
                     }
                     else
                     {
-                        if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
+                        CustomShape createdRectangle = new CustomShape(RectanglesView[indexRectanglesView]);
+                        RectanglesView.RemoveAt(indexRectanglesView);
+                        indexRectanglesView = RectanglesView.Count();
+
+                        if (createdRectangle.X1 > createdRectangle.X2)
                         {
-                            tmp = RectanglesView[indexRectanglesView].X1;
-                            RectanglesView[indexRectanglesView].X1 = RectanglesView[indexRectanglesView].X2;
-                            RectanglesView[indexRectanglesView].X2 = tmp;
+                            tmp = createdRectangle.X1;
+                            createdRectangle.X1 = createdRectangle.X2;
+                            createdRectangle.X2 = tmp;
                         }
-                        if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
+                        if (createdRectangle.Y1 > createdRectangle.Y2)
                         {
-                            tmp = RectanglesView[indexRectanglesView].Y1;
-                            RectanglesView[indexRectanglesView].Y1 = RectanglesView[indexRectanglesView].Y2;
-                            RectanglesView[indexRectanglesView].Y2 = tmp;
+                            tmp = createdRectangle.Y1;
+                            createdRectangle.Y1 = createdRectangle.Y2;
+                            createdRectangle.Y2 = tmp;
                         }
 
                         if (SelectedComboBoxItem != "All Labels")
                         {
                             Enabled = false;
-                            RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
+                            createdRectangle.Label = SelectedComboBoxItem;
                         }
 
                         else
                         {
                             Enabled = false;
                             if (IsChecked == true && DefaultLabel.Length > 0)
-                                RectanglesView[indexRectanglesView].Label = _defaultLabel;
+                                createdRectangle.Label = _defaultLabel;
                             else
-                                RectanglesView[indexRectanglesView].Label = "";
+                                createdRectangle.Label = "";
                         }
 
-                        Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
-
-                        SaveShapeToField(Rectangles[indexRectangles]);
-
+                        Rectangles.Add(createdRectangle);
+                        RectanglesView.Add(createdRectangle);
+                        SaveShapeToField(createdRectangle);
+                        createdRectangle = null;
 
                         undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
                         undoInformation.Push("Add");
 
-                        id++;
-                        indexRectangles++;
                         indexRectanglesView++;
+                        indexRectangles++;
+                        id++;
+
 
 
                         //Only for debugging
@@ -381,6 +593,107 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #endregion
+
+
+        #region Duplicate-Routine
+        /// <summary>
+        /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
+        /// </summary>
+
+        public MyICommand DuplicateCommand { get; set; }
+
+        private async void OnDuplicate()
+        {
+            if (DuplicateVar == 1)
+            {
+                double tmpHeight = selectedCustomShape.Height;
+                double tmpWidth = selectedCustomShape.Width;
+                double tmpX1 = vmMousePoint.X - selectedCustomShape.Width / 2;
+                double tmpY1 = vmMousePoint.Y - selectedCustomShape.Height / 2;
+
+                if (vmMousePoint.X - selectedCustomShape.Width / 2 < 0)
+                {
+                    tmpX1 = 0;
+                }
+                else if (vmMousePoint.X + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth)
+                {
+                    tmpWidth = MyCanvas.ActualWidth - tmpX1;
+                }
+                if (vmMousePoint.Y - selectedCustomShape.Height / 2 < 0)
+                {
+                    tmpY1 = 0;
+                }
+                else if (vmMousePoint.Y + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight)
+                {
+                    tmpHeight = MyCanvas.ActualHeight - tmpY1;
+                }
+
+                CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+                duplicatedCustomShape.Label = selectedCustomShape.Label;
+                RectanglesView.Add(duplicatedCustomShape);
+                Rectangles.Add(duplicatedCustomShape);
+                SaveShapeToField(duplicatedCustomShape);
+                indexRectanglesView++;
+                indexRectangles++;
+                id++;
+
+                undoCustomShapes.Push(duplicatedCustomShape);
+                undoInformation.Push("Add");
+
+
+                //Only for debugging
+                Console.WriteLine("RectanglesView Count: " + RectanglesView.Count());
+                //
+
+
+                //await cropImageLabelBegin();
+
+                RectangleCount = "#" + RectanglesView.Count.ToString();
+            }
+
+            else if (DuplicateVar == 0)
+            {
+                double tmpHeight = selectedCustomShape.Height;
+                double tmpWidth = selectedCustomShape.Width;
+                double tmpX1 = selectedCustomShape.X1 + 30;
+                double tmpY1 = selectedCustomShape.Y1 + 30;
+
+                CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+                RectanglesView.Add(duplicatedCustomShape);
+                Rectangles.Add(duplicatedCustomShape);
+                SaveShapeToField(duplicatedCustomShape);
+                indexRectanglesView++;
+                indexRectangles++;
+                id++;
+
+                undoCustomShapes.Push(duplicatedCustomShape);
+                undoInformation.Push("Add");
+
+                Console.WriteLine("RectanglesView Count: " + RectanglesView.Count());
+            }
+        }
+
+
+        private int _duplicateVar;
+
+        public int DuplicateVar
+        {
+            get { return _duplicateVar; }
+            set
+            {
+                _duplicateVar = value;
+                OnPropertyChanged("DuplicateVar");
+            }
+        }
+
+        /// <summary>
+        /// says if you can execute the "On Duplicate" method
+        /// </summary>
+        private bool CanDuplicate()
+        {
+            return selectedCustomShape != null;
+        }
         #endregion
 
 
@@ -486,39 +799,106 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region ShapeCollectionChangedHandler
-        private void ShapeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        #region MoveShape
+        //Move-Block:
+        //Routine to move different shapes on canvas
+
+        private double deltaX = 0;
+        private double deltaY = 0;
+        private System.Windows.Point tmpRelativPosition;
+
+
+
+        internal void Move(System.Windows.Point mousePosition)
         {
-            //Console.WriteLine("ShapeCollectionChanged()");
-            if (e.NewItems != null)
+            if (selectedCustomShape != null)
             {
+                if (Mouse.LeftButton == MouseButtonState.Pressed)
                 {
-                    foreach (object item in e.NewItems)
+                    if (selectedCustomShape.Move == false)
                     {
-                        if (item is CustomShape)
-                            ((CustomShape)item).PropertyChanged += Shape_PropertyChanged;
+                        ActivateMove(mousePosition);
+                    }
+                    else
+                    {
+                        MoveCustomShape(mousePosition);
                     }
                 }
-
-                if (e.OldItems != null)
+                else
                 {
-                    foreach (object item in e.OldItems)
+                    if (selectedCustomShape.Move == false)
                     {
-                        if (item is CustomShape)
-                            ((CustomShape)item).PropertyChanged -= Shape_PropertyChanged;
+                        DetectMove(mousePosition);
+                    }
+                    else
+                    {
+                        DeactivateMove(mousePosition);
+                        OnPropertyChanged("RectanglesView");
                     }
                 }
             }
         }
 
-        private void Shape_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void DetectMove(System.Windows.Point mousePosition)
         {
-            CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
+            if (detectedCustomShape != null)
+            {
+                if ((detectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 - borderWidth) &&
+                (detectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 - borderWidth))
+                {
+                    Mouse.OverrideCursor = Cursors.SizeAll;
+                }
+            }
         }
 
-        private void ManipulatableShape_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void ActivateMove(System.Windows.Point mousePosition)
         {
-            CollectionViewSource.GetDefaultView(manipulatableShape).Refresh();
+            if (selectedCustomShape.IsMouseOver == true && selectedCustomShape.Resize == false)
+            {
+                deltaX = mousePosition.X - selectedCustomShape.Center.X;
+                deltaY = mousePosition.Y - selectedCustomShape.Center.Y;
+                mouseHandlingState = MouseState.Move;
+
+                selectedCustomShape.Move = true;
+                CopyForUndo("Move");
+
+                RemoveShapeFromField(selectedCustomShape);
+            }
+        }
+
+        private void MoveCustomShape(System.Windows.Point mousePosition)
+        {
+            if (selectedCustomShape.Move == true)
+            {
+                selectedCustomShape.Resize = false;
+                tmpRelativPosition.X = mousePosition.X - deltaX;
+                tmpRelativPosition.Y = mousePosition.Y - deltaY;
+                selectedCustomShape.Center = tmpRelativPosition;
+                selectedCustomShape.YTop = selectedCustomShape.Y1;
+                selectedCustomShape.XLeft = selectedCustomShape.X1;
+                Mouse.OverrideCursor = Cursors.SizeAll;
+            }
+        }
+
+        private void DeactivateMove(System.Windows.Point mousePosition)
+        {
+            CheckIfObjectOnCanvas();
+
+            int tmpIndex = 0;
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r.Id == selectedCustomShape.Id)
+                {
+                    Rectangles.RemoveAt(tmpIndex);
+                    Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                    SaveShapeToField(selectedCustomShape);
+                    break;
+                }
+                tmpIndex++;
+            }
+
+            selectedCustomShape.Move = false;
         }
         #endregion
 
@@ -529,7 +909,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         enum ResizeDirection { SizeN, SizeNE, SizeE, SizeSE, SizeS, SizeSW, SizeW, SizeNW }
         ResizeDirection resizeDirection;
-
+        
         internal void Resize(System.Windows.Point mousePosition)
         {
             if (selectedCustomShape != null)
@@ -554,6 +934,7 @@ namespace MachineLearningTrainer.DrawerTool
                     else if (selectedCustomShape.Resize == true)
                     {
                         ResizeCustomShape(mousePosition);
+                        OnPropertyChanged("RectanglesView");
                     }
                 }
             }
@@ -696,159 +1077,451 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        //Only for debugging
+        //private void IfMethod()
+        //{
+        //    if (resizeDirection == ResizeDirection.SizeN)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+        //        {
+        //            selectedCustomShape.Y1 = tmpY;
+        //            selectedCustomShape.YTop = tmpY;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+        //            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeNE)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+        //        {
+        //            selectedCustomShape.Y1 = tmpY;
+        //            selectedCustomShape.YTop = tmpY;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+        //            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+        //        }
+
+        //        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+        //        {
+        //            selectedCustomShape.X2 = tmpX;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeE)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+        //        {
+        //            selectedCustomShape.X2 = tmpX;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeSE)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+        //        {
+        //            selectedCustomShape.X2 = tmpX;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+        //        }
+
+        //        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+        //        {
+        //            selectedCustomShape.Y2 = tmpY;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeS)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+        //        {
+        //            selectedCustomShape.Y2 = tmpY;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeSW)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+        //        {
+        //            selectedCustomShape.X1 = tmpX;
+        //            selectedCustomShape.XLeft = tmpX;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+        //            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+        //        }
+
+        //        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+        //        {
+        //            selectedCustomShape.Y2 = tmpY;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeW)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+        //        {
+        //            selectedCustomShape.X1 = tmpX;
+        //            selectedCustomShape.XLeft = tmpX;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+        //            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+        //        }
+        //    }
+        //    if (resizeDirection == ResizeDirection.SizeNW)
+        //    {
+        //        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+        //        {
+        //            selectedCustomShape.X1 = tmpX;
+        //            selectedCustomShape.XLeft = tmpX;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+        //            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+        //        }
+
+        //        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+        //        {
+        //            selectedCustomShape.Y1 = tmpY;
+        //            selectedCustomShape.YTop = tmpY;
+        //        }
+        //        else
+        //        {
+        //            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+        //            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+        //        }
+        //    }
+        //}
+
+        //private void SwitchMethod()
+        //{
+        //    switch (resizeDirection)
+        //    {
+        //        case ResizeDirection.SizeN:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+        //                {
+        //                    selectedCustomShape.Y1 = tmpY;
+        //                    selectedCustomShape.YTop = tmpY;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+        //                    selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeNE:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+        //                {
+        //                    selectedCustomShape.Y1 = tmpY;
+        //                    selectedCustomShape.YTop = tmpY;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+        //                    selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+        //                }
+
+        //                if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+        //                {
+        //                    selectedCustomShape.X2 = tmpX;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeE:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+        //                {
+        //                    selectedCustomShape.X2 = tmpX;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeSE:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+        //                {
+        //                    selectedCustomShape.X2 = tmpX;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+        //                }
+
+        //                if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+        //                {
+        //                    selectedCustomShape.Y2 = tmpY;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeS:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+        //                {
+        //                    selectedCustomShape.Y2 = tmpY;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeSW:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+        //                {
+        //                    selectedCustomShape.X1 = tmpX;
+        //                    selectedCustomShape.XLeft = tmpX;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+        //                    selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+        //                }
+
+        //                if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+        //                {
+        //                    selectedCustomShape.Y2 = tmpY;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeW:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+        //                {
+        //                    selectedCustomShape.X1 = tmpX;
+        //                    selectedCustomShape.XLeft = tmpX;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+        //                    selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //        case ResizeDirection.SizeNW:
+        //            {
+        //                if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+        //                {
+        //                    selectedCustomShape.X1 = tmpX;
+        //                    selectedCustomShape.XLeft = tmpX;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+        //                    selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+        //                }
+
+        //                if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+        //                {
+        //                    selectedCustomShape.Y1 = tmpY;
+        //                    selectedCustomShape.YTop = tmpY;
+        //                }
+        //                else
+        //                {
+        //                    selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+        //                    selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+        //                }
+        //                break;
+        //            }
+        //    }
+        //}
+
         private void ResizeCustomShape(System.Windows.Point mousePosition)
         {
             tmpX = mousePosition.X;
             tmpY = mousePosition.Y;
             CheckCanvas(mousePosition);
 
-            switch (resizeDirection)
+            if (resizeDirection == ResizeDirection.SizeN)
             {
-                case ResizeDirection.SizeN:
-                    {
-                        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
-                        {
-                            selectedCustomShape.Y1 = tmpY;
-                            selectedCustomShape.YTop = tmpY;
-                        }
-                        else
-                        {
-                            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
-                            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeNE:
-                    {
-                        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
-                        {
-                            selectedCustomShape.Y1 = tmpY;
-                            selectedCustomShape.YTop = tmpY;
-                        }
-                        else
-                        {
-                            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
-                            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
-                        }
-
-                        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
-                        {
-                            selectedCustomShape.X2 = tmpX;
-                        }
-                        else
-                        {
-                            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeE:
-                    {
-                        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
-                        {
-                            selectedCustomShape.X2 = tmpX;
-                        }
-                        else
-                        {
-                            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeSE:
-                    {
-                        if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
-                        {
-                            selectedCustomShape.X2 = tmpX;
-                        }
-                        else
-                        {
-                            selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
-                        }
-
-                        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
-                        {
-                            selectedCustomShape.Y2 = tmpY;
-                        }
-                        else
-                        {
-                            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeS:
-                    {
-                        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
-                        {
-                            selectedCustomShape.Y2 = tmpY;
-                        }
-                        else
-                        {
-                            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeSW:
-                    {
-                        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 -tmpX))
-                        {
-                            selectedCustomShape.X1 = tmpX;
-                            selectedCustomShape.XLeft = tmpX;
-                        }
-                        else
-                        {
-                            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
-                            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
-                        }
-
-                        if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
-                        {
-                            selectedCustomShape.Y2 = tmpY;
-                        }
-                        else
-                        {
-                            selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeW:
-                    {
-                        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
-                        {
-                            selectedCustomShape.X1 = tmpX;
-                            selectedCustomShape.XLeft = tmpX;
-                        }
-                        else
-                        {
-                            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
-                            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
-                        }
-                        break;
-                    }
-                case ResizeDirection.SizeNW:
-                    {
-                        if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
-                        {
-                            selectedCustomShape.X1 = tmpX;
-                            selectedCustomShape.XLeft = tmpX;
-                        }
-                        else
-                        {
-                            selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
-                            selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
-                        }
-
-                        if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
-                        {
-                            selectedCustomShape.Y1 = tmpY;
-                            selectedCustomShape.YTop = tmpY;
-                        }
-                        else
-                        {
-                            selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
-                            selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
-                        }
-                        break;
-                    }
+                if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+                {
+                    selectedCustomShape.Y1 = tmpY;
+                    selectedCustomShape.YTop = tmpY;
+                }
+                else
+                {
+                    selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+                    selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                }
             }
+            if (resizeDirection == ResizeDirection.SizeNE)
+            {
+                if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+                {
+                    selectedCustomShape.Y1 = tmpY;
+                    selectedCustomShape.YTop = tmpY;
+                }
+                else
+                {
+                    selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+                    selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                }
+
+                if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+                {
+                    selectedCustomShape.X2 = tmpX;
+                }
+                else
+                {
+                    selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+                }
+            }
+            if (resizeDirection == ResizeDirection.SizeE)
+            {
+                if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+                {
+                    selectedCustomShape.X2 = tmpX;
+                }
+                else
+                {
+                    selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+                }
+            }
+            if (resizeDirection == ResizeDirection.SizeSE)
+            {
+                if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
+                {
+                    selectedCustomShape.X2 = tmpX;
+                }
+                else
+                {
+                    selectedCustomShape.X2 = selectedCustomShape.X1 + minShapeSize;
+                }
+
+                if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+                {
+                    selectedCustomShape.Y2 = tmpY;
+                }
+                else
+                {
+                    selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+                }
+            }
+            if (resizeDirection == ResizeDirection.SizeS)
+            {
+                if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+                {
+                    selectedCustomShape.Y2 = tmpY;
+                }
+                else
+                {
+                    selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+                }
+            }
+            if (resizeDirection == ResizeDirection.SizeSW)
+            {
+                if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+                {
+                    selectedCustomShape.X1 = tmpX;
+                    selectedCustomShape.XLeft = tmpX;
+                }
+                else
+                {
+                    selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+                    selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                }
+
+                if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
+                {
+                    selectedCustomShape.Y2 = tmpY;
+                }
+                else
+                {
+                    selectedCustomShape.Y2 = selectedCustomShape.Y1 + minShapeSize;
+                }
+            }
+            if (resizeDirection == ResizeDirection.SizeW)
+            {
+                if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+                {
+                    selectedCustomShape.X1 = tmpX;
+                    selectedCustomShape.XLeft = tmpX;
+                }
+                else
+                {
+                    selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+                    selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                }
+            }
+            if (resizeDirection == ResizeDirection.SizeNW)
+            {
+                if (minShapeSize < selectedCustomShape.Width + (selectedCustomShape.X1 - tmpX))
+                {
+                    selectedCustomShape.X1 = tmpX;
+                    selectedCustomShape.XLeft = tmpX;
+                }
+                else
+                {
+                    selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
+                    selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                }
+
+                if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
+                {
+                    selectedCustomShape.Y1 = tmpY;
+                    selectedCustomShape.YTop = tmpY;
+                }
+                else
+                {
+                    selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
+                    selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                }
+            }
+
+            selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+            selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
+
+            ////Only for debugging
+            //var s = Stopwatch.StartNew();
+            ////IfMethod();
+            ////SwitchMethod();
+            //s.Stop();
+            //Console.WriteLine(((double)(s.Elapsed.TotalMilliseconds*1000)).ToString("0.00 ns"));
+            ////
         }
 
         private void DeactivateResize()
@@ -872,115 +1545,15 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region MoveShape
-        //Move-Block:
-        //Routine to move different shapes on canvas
-
-        private double deltaX = 0;
-        private double deltaY = 0;
-        private System.Windows.Point tmpRelativPosition;
-
-
-
-        internal void Move(System.Windows.Point mousePosition)
-        {
-            if (selectedCustomShape != null)
-            {
-                if (Mouse.LeftButton == MouseButtonState.Pressed)
-                {
-                    if (selectedCustomShape.Move == false)
-                    {
-                        ActivateMove(mousePosition);
-                    }
-                    else
-                    {
-                        MoveCustomShape(mousePosition);
-                    }
-                }
-                else
-                {
-                    if (selectedCustomShape.Move == false)
-                    {
-                        DetectMove(mousePosition);
-                    }
-                    else
-                    {
-                        DeactivateMove(mousePosition);
-                    }
-                }
-            }
-        }
-
-        private void DetectMove(System.Windows.Point mousePosition)
-        {
-            if (detectedCustomShape != null)
-            {
-                if ((detectedCustomShape.X1 + borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 - borderWidth) &&
-                (detectedCustomShape.Y1 + borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 - borderWidth))
-                {
-                    Mouse.OverrideCursor = Cursors.SizeAll;
-                }
-            }
-        }
-
-        private void ActivateMove(System.Windows.Point mousePosition)
-        {
-            if (selectedCustomShape.IsMouseOver == true && selectedCustomShape.Resize == false)
-            {
-                deltaX = mousePosition.X - selectedCustomShape.Center.X;
-                deltaY = mousePosition.Y - selectedCustomShape.Center.Y;
-                mouseHandlingState = MouseState.Move;
-
-                selectedCustomShape.Move = true;
-                CopyForUndo("Move");
-
-                RemoveShapeFromField(selectedCustomShape);
-            }
-        }
-
-        private void MoveCustomShape(System.Windows.Point mousePosition)
-        {
-            if (selectedCustomShape.Move == true)
-            {
-                selectedCustomShape.Resize = false;
-                tmpRelativPosition.X = mousePosition.X - deltaX;
-                tmpRelativPosition.Y = mousePosition.Y - deltaY;
-                selectedCustomShape.Center = tmpRelativPosition;
-                selectedCustomShape.YTop = selectedCustomShape.Y1;
-                selectedCustomShape.XLeft = selectedCustomShape.X1;
-                Mouse.OverrideCursor = Cursors.SizeAll;
-            }
-        }
-
-        private void DeactivateMove(System.Windows.Point mousePosition)
-        {
-            CheckCanvas(mousePosition, deltaX, deltaY);
-
-            int tmpIndex = 0;
-            foreach (CustomShape r in Rectangles)
-            {
-                if (r.Id == selectedCustomShape.Id)
-                {
-                    Rectangles.RemoveAt(tmpIndex);
-                    Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                    SaveShapeToField(selectedCustomShape);
-                    break;
-                }
-                tmpIndex++;
-            }
-
-            selectedCustomShape.Move = false;
-        }
-        #endregion
-
-
         #region Detect & Select Shape
         //DetectShape:
         //routines to detect different Shapes on Canvas
         private bool shapeDetected = false;
         private CustomShape detectedCustomShape = new CustomShape(-1, -1);
 
+        /// <summary>
+        /// raise OnPropertyChanged-Event when shape is detected
+        /// </summary>
         public bool ShapeDetected
         {
             get => shapeDetected;
@@ -994,8 +1567,25 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private bool shapeSelected = false;
+        private CustomShape selectedCustomShape = new CustomShape(-1, -1);
 
-        
+        /// <summary>
+        /// raise OnPropertyChanged-Event when shape is selected
+        /// </summary>
+        public bool ShapeSelected
+        {
+            get => shapeDetected;
+            set
+            {
+                if (shapeSelected != value)
+                {
+                    this.shapeSelected = value;
+                    OnPropertyChanged("ShapeSelected");
+                }
+            }
+        }
+
 
         internal void DetectCustomShape(System.Windows.Point mousePosition)
         {
@@ -1007,7 +1597,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 //only for debugging
 
-                Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
+                //Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
                 //
 
 
@@ -1029,12 +1619,12 @@ namespace MachineLearningTrainer.DrawerTool
                 shapeDetected = false;
                 detectedCustomShape = null;
             }
-            else
+            else if (detectedCustomShape.Fill != "Gray")
             {
                 detectedCustomShape.Opacity = 0.3;
+                detectedCustomShape.Fill = "Gray";
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
-                detectedCustomShape.Fill = "Gray";
 
                 //only for debugging
 
@@ -1066,110 +1656,13 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (selectedCustomShape != null)
             {
-                selectedCustomShape.Stroke = "LawnGreen";   
+                selectedCustomShape.Stroke = "LawnGreen";
             }
             if (detectedCustomShape != null)
             {
                 selectedCustomShape = this.detectedCustomShape;
                 selectedCustomShape.Stroke = "Red";
             }
-        }
-        #endregion
-
-
-        #region Duplicate-Routine
-        /// <summary>
-        /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
-        /// </summary>
-
-        public MyICommand DuplicateCommand { get; set; }
-
-        private async void OnDuplicate()
-        {
-            if (DuplicateVar == 1)
-            {
-                double tmpHeight = selectedCustomShape.Height;
-                double tmpWidth = selectedCustomShape.Width;
-                double tmpX1 = vmMousePoint.X - selectedCustomShape.Width / 2;
-                double tmpY1 = vmMousePoint.Y - selectedCustomShape.Height / 2;
-
-                if (vmMousePoint.X - selectedCustomShape.Width / 2 < 0)
-                {
-                    tmpX1 = 0;
-                }
-                else if (vmMousePoint.X + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth)
-                {
-                    tmpWidth = MyCanvas.ActualWidth - tmpX1;
-                }
-                if (vmMousePoint.Y - selectedCustomShape.Height / 2 < 0)
-                {
-                    tmpY1 = 0;
-                }
-                else if (vmMousePoint.Y + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight)
-                {
-                    tmpHeight = MyCanvas.ActualHeight - tmpY1;
-                }
-
-                CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
-                duplicatedCustomShape.Label = selectedCustomShape.Label;
-                RectanglesView.Add(duplicatedCustomShape);
-                Rectangles.Add(duplicatedCustomShape);
-                SaveShapeToField(duplicatedCustomShape);
-                indexRectanglesView++;
-                indexRectangles++;
-                id++;
-
-                undoCustomShapes.Push(duplicatedCustomShape);
-                undoInformation.Push("Add");
-
-                Console.WriteLine("RectanglesView Count: " + RectanglesView.Count());
-
-                //await cropImageLabelBegin();
-
-                RectangleCount = "#" + RectanglesView.Count.ToString();
-            }
-
-            else if (DuplicateVar == 0)
-            {
-                double tmpHeight = selectedCustomShape.Height;
-                double tmpWidth = selectedCustomShape.Width;
-                double tmpX1 = selectedCustomShape.X1 + 30;
-                double tmpY1 = selectedCustomShape.Y1 + 30;
-
-                CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
-                RectanglesView.Add(duplicatedCustomShape);
-                Rectangles.Add(duplicatedCustomShape);
-                SaveShapeToField(duplicatedCustomShape);
-                indexRectanglesView++;
-                indexRectangles++;
-                id++;
-
-                undoCustomShapes.Push(duplicatedCustomShape);
-                undoInformation.Push("Add");
-
-                Console.WriteLine("RectanglesView Count: " + RectanglesView.Count());
-            }
-        }
-
-
-        private int _duplicateVar;
-
-        public int DuplicateVar
-        {
-            get { return _duplicateVar; }
-            set
-            {
-                _duplicateVar = value;
-                OnPropertyChanged("DuplicateVar");
-            }
-        }
-
-        /// <summary>
-        /// says if you can execute the "On Duplicate" method
-        /// </summary>
-        private bool CanDuplicate()
-        {
-            return selectedCustomShape != null;
         }
         #endregion
 
@@ -1885,6 +2378,7 @@ namespace MachineLearningTrainer.DrawerTool
         private double imgWidth;
         private double imgHeight;
         private ObservableCollection<CustomShape>[] fields;
+
 
         private void LoadImage()
         {
