@@ -307,17 +307,26 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.X1 = 0;
                 selectedCustomShape.XLeft = 0;
+                selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
             else if (selectedCustomShape.X2 > MyCanvas.ActualWidth)
+            {
                 selectedCustomShape.X2 = MyCanvas.ActualWidth;
+                selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+            }
+
 
             if (selectedCustomShape.Y1 < 0)
             {
                 selectedCustomShape.Y1 = 0;
                 selectedCustomShape.YTop = 0;
+                selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
             else if (selectedCustomShape.Y2 > MyCanvas.ActualHeight)
+            {
                 selectedCustomShape.Y2 = MyCanvas.ActualHeight;
+                selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
+            }
         }
         #endregion
 
@@ -360,115 +369,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-
-        public void CreateRectangle_MouseDown(System.Windows.Point mousePosition)
-        {
-            tmpX = mousePosition.X;
-            tmpY = mousePosition.Y;
-            CheckCanvas(mousePosition);
-
-            RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
-        }
-
-        public void CreateRectangle_MouseMove(System.Windows.Point mousePosition)
-        {
-            tmpX = mousePosition.X;
-            tmpY = mousePosition.Y;
-            CheckCanvas(mousePosition);
-
-            if (RectanglesView[indexRectanglesView].X1 == -1 && RectanglesView[indexRectanglesView].Y1 == -1)
-            {
-                RectanglesView[indexRectanglesView].X1 = tmpX;
-                RectanglesView[indexRectanglesView].Y1 = tmpY;
-            }
-            RectanglesView[indexRectanglesView].X2 = tmpX;
-            RectanglesView[indexRectanglesView].Y2 = tmpY;
-
-            if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
-            {
-                RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X2;
-            }
-            else
-            {
-                RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X1;
-            }
-            if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
-            {
-                RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y2;
-            }
-            else
-            {
-                RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
-            }
-        }
-
-        public void CreateRectangle_MouseUp()
-        {
-            double tmp;
-            if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
-                || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
-            {
-                RectanglesView.Remove(RectanglesView[indexRectanglesView]);
-                indexRectanglesView = RectanglesView.Count();
-                return;
-            }
-            else
-            {
-                if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
-                {
-                    tmp = RectanglesView[indexRectanglesView].X1;
-                    RectanglesView[indexRectanglesView].X1 = RectanglesView[indexRectanglesView].X2;
-                    RectanglesView[indexRectanglesView].X2 = tmp;
-                }
-                if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
-                {
-                    tmp = RectanglesView[indexRectanglesView].Y1;
-                    RectanglesView[indexRectanglesView].Y1 = RectanglesView[indexRectanglesView].Y2;
-                    RectanglesView[indexRectanglesView].Y2 = tmp;
-                }
-
-                if (SelectedComboBoxItem != "All Labels")
-                {
-                    Enabled = false;
-                    RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
-                }
-
-                else
-                {
-                    Enabled = false;
-                    if (IsChecked == true && DefaultLabel.Length > 0)
-                        RectanglesView[indexRectanglesView].Label = _defaultLabel;
-                    else
-                        RectanglesView[indexRectanglesView].Label = "";
-                }
-
-                Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
-
-                SaveShapeToField(Rectangles[indexRectangles]);
-
-
-                undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
-                undoInformation.Push("Add");
-
-                id++;
-                indexRectangles++;
-                indexRectanglesView++;
-
-
-                //Only for debugging
-                Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
-                Console.WriteLine("Rectangles count: " + Rectangles.Count);
-                //
-
-                RectangleCount = "#" + RectanglesView.Count.ToString();
-                ComboBoxNames();
-
-
-                OnPropertyChanged("Rectangles");
-                OnPropertyChanged("RectanglesView");
-            }
-        }
-
         public void CreateRectangle(System.Windows.Point mousePosition)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
@@ -510,9 +410,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                     RectanglesView[indexRectanglesView].Width = Math.Abs(RectanglesView[indexRectanglesView].X2 - RectanglesView[indexRectanglesView].X1);
                     RectanglesView[indexRectanglesView].Height = Math.Abs(RectanglesView[indexRectanglesView].Y2 - RectanglesView[indexRectanglesView].Y1);
-
                 }
-                OnPropertyChanged("RectanglesView");
             }
             else if (Mouse.LeftButton == MouseButtonState.Released)
             {
@@ -522,10 +420,6 @@ namespace MachineLearningTrainer.DrawerTool
                     if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
                         || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
                     {
-                        //RectanglesView[indexRectanglesView].X1 = -1;
-                        //RectanglesView[indexRectanglesView].X2 = -1;
-                        //RectanglesView[indexRectanglesView].Y1 = -1;
-                        //RectanglesView[indexRectanglesView].Y2 = -1;
                         RectanglesView.RemoveAt(indexRectanglesView);
                         indexRectanglesView=RectanglesView.Count();
                     }
@@ -696,7 +590,7 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region Divide img into fields for better perfomance
+        #region Divide img into fields for better performance
 
         /// <summary>
         /// Saves Shape to according fields in image-grid
@@ -709,31 +603,14 @@ namespace MachineLearningTrainer.DrawerTool
             int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
             int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
 
-            if (columnX1 == columnX2)
+            int numberColumns = Math.Abs(columnX2 - columnX1)+1;
+            int numberRows = Math.Abs(rowY2 - rowY1)+1;
+
+            for (int i = 0; i < numberColumns; i++)
             {
-                if (rowY1 == rowY2)
+                for (int j = 0; j < numberRows; j++)
                 {
-                    ShapeToField(columnX1, rowY1, customShape);
-                }
-                else
-                {
-                    ShapeToField(columnX1, rowY1, customShape);
-                    ShapeToField(columnX1, rowY2, customShape);
-                }
-            }
-            else
-            {
-                if (rowY1 == rowY2)
-                {
-                    ShapeToField(columnX1, rowY1, customShape);
-                    ShapeToField(columnX2, rowY1, customShape);
-                }
-                else
-                {
-                    ShapeToField(columnX1, rowY1, customShape);
-                    ShapeToField(columnX2, rowY1, customShape);
-                    ShapeToField(columnX1, rowY2, customShape);
-                    ShapeToField(columnX2, rowY2, customShape);
+                    ShapeToField(Math.Min(columnX1, columnX2) + i, Math.Min(rowY1, rowY2) + j, customShape);
                 }
             }
         }
@@ -753,31 +630,14 @@ namespace MachineLearningTrainer.DrawerTool
             int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
             int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
 
-            if (columnX1 == columnX2)
+            int numberColumns = Math.Abs(columnX2 - columnX1) + 1;
+            int numberRows = Math.Abs(rowY2 - rowY1) + 1;
+
+            for (int i = 0; i < numberColumns; i++)
             {
-                if (rowY1 == rowY2)
+                for (int j = 0; j < numberRows; j++)
                 {
-                    ShapeFromField(columnX1, rowY1, customShape);
-                }
-                else
-                {
-                    ShapeFromField(columnX1, rowY1, customShape);
-                    ShapeFromField(columnX1, rowY2, customShape);
-                }
-            }
-            else
-            {
-                if (rowY1 == rowY2)
-                {
-                    ShapeFromField(columnX1, rowY1, customShape);
-                    ShapeFromField(columnX2, rowY1, customShape);
-                }
-                else
-                {
-                    ShapeFromField(columnX1, rowY1, customShape);
-                    ShapeFromField(columnX2, rowY1, customShape);
-                    ShapeFromField(columnX1, rowY2, customShape);
-                    ShapeFromField(columnX2, rowY2, customShape);
+                    ShapeFromField(Math.Min(columnX1, columnX2) + i, Math.Min(rowY1, rowY2) + j, customShape);
                 }
             }
         }
@@ -785,6 +645,10 @@ namespace MachineLearningTrainer.DrawerTool
         private void ShapeFromField(int column, int row, CustomShape customShape)
         {
             int fieldNumber = column + row * meshColumnNumber;
+            if (fieldNumber < 0)
+            {
+                return;
+            }
             foreach (CustomShape r in fields[fieldNumber])
             {
                 if (r.Id == customShape.Id)
@@ -1594,10 +1458,13 @@ namespace MachineLearningTrainer.DrawerTool
 
                 //only for debugging
 
-                //Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
+                Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
                 //
 
-
+                if (fieldNumber < 0)
+                {
+                    return;
+                }
                 foreach (CustomShape r in fields[fieldNumber])
                 {
                     if ((r.X1 < mousePosition.X && mousePosition.X < r.X2) && (r.Y1 < mousePosition.Y && mousePosition.Y < r.Y2))
@@ -1675,24 +1542,28 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (CustomShape rv in RectanglesView)
             {
-                if (rv == selectedCustomShape)
+                if (rv.Id == selectedCustomShape.Id)
                 {
                     undoCustomShapes.Push(rv);
                     undoInformation.Push("Delete");
                     RectanglesView.Remove(rv);
-                    int tmpIndex = 0;
                     indexRectanglesView--;
-                    indexRectangles--;
+                    RemoveShapeFromField(rv);
+
                     foreach (CustomShape r in Rectangles) 
                     {
                         if (r.Id == selectedCustomShape.Id)
                         {
-                            Rectangles.RemoveAt(tmpIndex);
+                            Rectangles.Remove(r);
+                            indexRectangles--;
 
+                            //Only for debugging
                             Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
                             Console.WriteLine("Rectangles count: " + Rectangles.Count);
+                            //
 
-                            ComboBoxNames();
+
+                            //ComboBoxNames();
                             foreach (string name in ComboBoxItems)
                             {
                                 if (name == SelectedComboBoxItem)
@@ -1710,12 +1581,11 @@ namespace MachineLearningTrainer.DrawerTool
                                 }
                             }
 
-                            SelectedComboBoxItem = "All Labels";
-                            FilterName();
+                            //SelectedComboBoxItem = "All Labels";
+                            //FilterName();
                             
                             break;
                         }
-                        tmpIndex++;
                     }
                     break;
                 }

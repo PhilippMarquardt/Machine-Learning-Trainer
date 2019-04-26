@@ -28,7 +28,7 @@ namespace MachineLearningTrainer.DrawerTool
         private double opacity;
         private string fill;
         private string stroke;
-        private readonly int strokeThickness = 3;
+        private readonly int strokeThickness = 4;
         private Boolean isMouseOver;
         private Boolean move;
         private Boolean resize;
