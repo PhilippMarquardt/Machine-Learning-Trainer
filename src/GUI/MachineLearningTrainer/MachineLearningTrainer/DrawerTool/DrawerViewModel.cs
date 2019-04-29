@@ -30,7 +30,7 @@ using System.Diagnostics;
 
 namespace MachineLearningTrainer.DrawerTool 
 {
-    public class DrawerViewModel : INotifyPropertyChanged, IComparable
+    public class DrawerViewModel : INotifyPropertyChanged
     {
         #region PropertyChangedArea
         public event PropertyChangedEventHandler PropertyChanged;
@@ -346,6 +346,24 @@ namespace MachineLearningTrainer.DrawerTool
             get
             {
                 return _addRectangle ?? (_addRectangle = new CommandHandler(() => AddNewRectangle(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// boolean, which tells if checkbox from default label is checked, which means that something was written into the box manually
+        /// </summary>
+        private bool _isChecked = true;
+
+        public bool IsChecked
+        {
+            get
+            {
+                return _isChecked;
+            }
+            set
+            {
+                _isChecked = value;
+                OnPropertyChanged("IsChecked");
             }
         }
 
@@ -1430,6 +1448,22 @@ namespace MachineLearningTrainer.DrawerTool
 
         private bool shapeSelected = false;
         private CustomShape selectedCustomShape = new CustomShape(-1, -1);
+        public CustomShape SelectedCustomShape
+        {
+            get
+            {
+                return selectedCustomShape;
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    selectedCustomShape = new CustomShape(value);
+                }
+
+            }
+        }
 
         /// <summary>
         /// raise OnPropertyChanged-Event when shape is selected
@@ -1458,7 +1492,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 //only for debugging
 
-                Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
+                //Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
                 //
 
                 if (fieldNumber < 0)
@@ -1526,7 +1560,40 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape = this.detectedCustomShape;
                 selectedCustomShape.Stroke = "Red";
+                DefaultLabel = selectedCustomShape.Label;                
             }
+        }
+
+        internal void SelectCustomShape(int indexView)
+        {
+            foreach(CustomShape r in RectanglesView)
+            {
+                r.Stroke = "LawnGreen";
+            }
+            if (-1 < indexView && indexView < RectanglesView.Count())
+            {
+                selectedCustomShape = RectanglesView[indexView];
+                selectedCustomShape.Stroke = "Red";
+                DefaultLabel = selectedCustomShape.Label;
+            }
+        }
+
+        internal int GetSelectedItemIndex()
+        {
+            int itemIndex = 0;
+            if (selectedCustomShape != null)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        return itemIndex;
+                    }
+                    itemIndex++;
+                }
+            }
+
+            return 0;
         }
         #endregion
 
@@ -1827,7 +1894,7 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region ComboBox for ItemLabels
+        #region ComboBox with ItemLabels
 
 
         private bool _isOpen = false;
@@ -1844,18 +1911,6 @@ namespace MachineLearningTrainer.DrawerTool
                 this._isOpen = value;
                 OnPropertyChanged("IsOpen");
             }
-        }
-
-        /// <summary>
-        /// sorts the list of rectangles in ascending order of their name
-        /// </summary>
-        public void SortList()
-        {
-            //ObservableCollection<CustomShape> sortedRectangles = new ObservableCollection<CustomShape>
-            //    (RectanglesView.OrderBy(resizable => resizable.Label));
-
-            //RectanglesView = sortedRectangles;
-            //OnPropertyChanged("RectanglesView");
         }
 
         /// <summary>
@@ -1882,21 +1937,21 @@ namespace MachineLearningTrainer.DrawerTool
                 }
 
                 RectanglesView.Clear();
+                if (fields != null)
+                {
+                    for (int i = 0; i < fields.Length; i++)
+                    {
+                        fields[i].Clear();
+                    }
+                }
                 foreach (CustomShape r in Rectangles)
                 {
-                    RectanglesView.Add(new CustomShape(r));
+                    RectanglesView.Add(r);
+                    SaveShapeToField(r);
                 }
                 indexRectanglesView = RectanglesView.Count();
 
                 RectangleCount = "#" + Rectangles.Count.ToString();
-                OnPropertyChanged("Rectangles");
-                OnPropertyChanged("RectanglesView");
-                OnPropertyChanged("FilteredRectangles");
-                OnPropertyChanged("RectangleCount");
-                OnPropertyChanged("FilterVisibilitySelected");
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-                OnPropertyChanged("FilterVisibilityAllLabels");
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
 
             }
 
@@ -1917,29 +1972,29 @@ namespace MachineLearningTrainer.DrawerTool
                     FilterVisibilityAllLabelsGallery = false;
                     FilterVisibilitySelected = false;
                 }
-
                 DefaultLabel = SelectedComboBoxItem;
-                RectangleCount = "#" + RectanglesView.Count.ToString();
 
                 RectanglesView.Clear();
+                if (fields != null)
+                {
+                    for (int i = 0; i < fields.Length; i++)
+                    {
+                        fields[i].Clear();
+                    }
+                }
+
                 foreach (CustomShape r in Rectangles)
                 {
                     if(r.Label == SelectedComboBoxItem)
                     {
-                        RectanglesView.Add(new CustomShape(r));
+                        RectanglesView.Add(r);
+                        SaveShapeToField(r);
                     }
                 }
+
                 indexRectanglesView = RectanglesView.Count();
 
-                OnPropertyChanged("Rectangles");
-                OnPropertyChanged("RectanglesView");
-                OnPropertyChanged("FilteredRectangles");
-                OnPropertyChanged("DefaultLabel");
-                OnPropertyChanged("RectangleCount");
-                OnPropertyChanged("FilterVisibilitySelected");
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-                OnPropertyChanged("FilterVisibilityAllLabels");
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+                RectangleCount = "#" + RectanglesView.Count.ToString();
             }
         }
 
@@ -1958,7 +2013,7 @@ namespace MachineLearningTrainer.DrawerTool
                 if (!ComboBoxItems.Contains(rec.Label))
                 {
                     ComboBoxItems.Add(rec.Label);
-                    OnPropertyChanged("ComboBoxItems");
+                    //OnPropertyChanged("ComboBoxItems");
                 }
             }
         }
@@ -2038,36 +2093,46 @@ namespace MachineLearningTrainer.DrawerTool
                 OnPropertyChanged("FilterVisibilityAllLabelsGallery");
             }
         }
+        #endregion
 
-        private ICommand _loadXMLCommand;
-        public ICommand LoadXMLCommand
+
+        #endregion
+
+        #region TextBox: txtDefaultLabel
+
+        
+
+
+
+
+        /// <summary>
+        /// this method rename all files in the listox
+        /// </summary>
+        private void OnRename()
         {
-            get
+            foreach (var rec in RectanglesView)
             {
-                return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
+                rec.Label = DefaultLabel;
             }
         }
-        #endregion
-
 
         #endregion
-
 
         #region ListBox             #TBD!!!
 
         /// <summary>
-        /// compare rectangle text to each other
-        /// 
-        /// without function
+        /// sorts the list of rectangles in ascending order of their name
         /// </summary>
-        public int CompareTo(object obj)
+        public void SortList()
         {
-            CustomShape resizable = obj as CustomShape;
-            if (resizable == null)
-            {
-                throw new ArgumentException("Object is not Rectangle");
-            }
-            return this.Label.CompareTo(resizable.Label);
+            //ObservableCollection<CustomShape> sortedRectangles = new ObservableCollection<CustomShape>
+            //    (RectanglesView.OrderBy(resizable => resizable.Label));
+
+            //RectanglesView.Clear();
+            //foreach (CustomShape r in sortedRectangles)
+            //{
+            //    RectanglesView.Add(r);
+            //}
         }
 
 
@@ -2094,6 +2159,15 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         #region Import/Export Rectangles <=> XML
+
+        private ICommand _loadXMLCommand;
+        public ICommand LoadXMLCommand
+        {
+            get
+            {
+                return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
+            }
+        }
 
         private ICommand _exportPascalVoc;
         public ICommand ExportPascalVoc
@@ -2151,7 +2225,7 @@ namespace MachineLearningTrainer.DrawerTool
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
                                 //RectanglesView[indexRectanglesView] = Rectangles[indexRectangles];
-                                SaveShapeToField(Rectangles[indexRectangles]);
+                                SaveShapeToField(loadedRect);
                                 indexRectangles++;
                                 indexRectanglesView++;
                             }
@@ -2266,9 +2340,6 @@ namespace MachineLearningTrainer.DrawerTool
                 indexRectanglesView = RectanglesView.Count();
                 id = 0;
                 ClearUndoRedoStack();
-                ComboBoxNames();
-                SortList();
-                FilterName();
 
                 System.Drawing.Image img = System.Drawing.Image.FromFile(ImagePath);
                 imgWidth=img.Width;
@@ -2282,6 +2353,11 @@ namespace MachineLearningTrainer.DrawerTool
                 }
                 LoadRectangles();
                 RectangleCount = "#" + RectanglesView.Count.ToString();
+
+
+                ComboBoxNames();
+                SortList();
+                FilterName();
 
 
                 //Only for debugging
@@ -2330,6 +2406,7 @@ namespace MachineLearningTrainer.DrawerTool
             Console.WriteLine("delete");
             selectedCustomShape = null;
 
+
             foreach (var rect in Rectangles)
             {
                 rect.Fill = "Transparent";
@@ -2338,7 +2415,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             }
             Enabled = true;
-            MyCanvas.Cursor = Cursors.Arrow;
+            mouseHandlingState = MouseState.Normal;
         }
         #endregion
 
@@ -2355,13 +2432,92 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void Enter()
         {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Label = DefaultLabel;
+            }
+
             FilterName();
             SortList();
+
         }
 
         #endregion
 
         #region KeyArrowCommands
+
+        private ICommand _rightButtonCommand_Move;
+        public ICommand RightButtonCommand_Move
+        {
+            get
+            {
+                return _rightButtonCommand_Move ?? (_rightButtonCommand_Move = new CommandHandler(() => RightButton_Move(), _canExecute));
+            }
+        }
+
+        public void RightButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.X1 += 2;
+                selectedCustomShape.XLeft += 2;
+            }
+        }
+
+        private ICommand _leftButtonCommand_Move;
+        public ICommand LeftButtonCommand_Move
+        {
+            get
+            {
+                return _leftButtonCommand_Move ?? (_leftButtonCommand_Move = new CommandHandler(() => LeftButton_Move(), _canExecute));
+            }
+        }
+
+        public void LeftButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.X1 -= 2;
+                selectedCustomShape.XLeft -= 2;
+            }
+        }
+
+        private ICommand _upButtonCommand_Move;
+        public ICommand UpButtonCommand_Move
+        {
+            get
+            {
+                return _upButtonCommand_Move ?? (_upButtonCommand_Move = new CommandHandler(() => UpButton_Move(), _canExecute));
+            }
+        }
+
+        public void UpButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Y2 -= 2;
+                selectedCustomShape.YTop -= 2;
+            }
+        }
+
+        private ICommand _downButtonCommand_Move;
+        public ICommand DownButtonCommand_Move
+        {
+            get
+            {
+                return _downButtonCommand_Move ?? (_downButtonCommand_Move = new CommandHandler(() => DownButton_Move(), _canExecute));
+            }
+        }
+
+        public void DownButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Y2 += 2;
+                selectedCustomShape.YTop += 2;
+            }
+        }
+
 
         private ICommand _rightButtonCommand;
         public ICommand RightButtonCommand
@@ -2378,18 +2534,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.X1 += 2;
                 selectedCustomShape.XLeft += 2;
-                //foreach (var r in )
-            }
-
-
-            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleWidth > 5)
-            {
-                SelectedResizableRectangle.X = SelectedResizableRectangle.X + 2;
-                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
-                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-                OnPropertyChanged("SelectedResizableRectangle");
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.Width -= 2;
             }
         }
 
@@ -2404,12 +2549,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void LeftButton()
         {
-            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleWidth > 5)
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
             {
-                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth - 2;
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.X2 -= 2;
+                selectedCustomShape.Width -= 2;
             }
-
         }
 
         private ICommand _upButtonCommand;
@@ -2422,12 +2566,11 @@ namespace MachineLearningTrainer.DrawerTool
         }
         public void UpButton()
         {
-            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleHeight > 5)
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
             {
-                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.Y2 -= 2;
+                selectedCustomShape.Height -= 2;
             }
-
         }
 
         private ICommand _downButtonCommand;
@@ -2441,16 +2584,12 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DownButton()
         {
-            if (SelectedResizableRectangle != null && SelectedResizableRectangle.RectangleHeight > 5)
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
             {
-                SelectedResizableRectangle.Y = SelectedResizableRectangle.Y + 2;
-                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight - 2;
-                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-                OnPropertyChanged("SelectedResizableRectangle");
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.Y1 += 2;
+                selectedCustomShape.YTop += 2;
+                selectedCustomShape.Height -= 2;
             }
-
         }
 
         private ICommand _rightButtonCommand1;
@@ -2464,15 +2603,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void RightButton1()
         {
-            if (SelectedResizableRectangle != null)
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
             {
-                SelectedResizableRectangle.X = SelectedResizableRectangle.X - 2;
-                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 2;
-                SelectedResizableRectangle = validateResizableRect(SelectedResizableRectangle);
-                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-                OnPropertyChanged("SelectedResizableRectangle");
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.X1 -= 2;
+                selectedCustomShape.XLeft -= 2;
+                selectedCustomShape.Width += 2;
             }
         }
 
@@ -2487,11 +2622,10 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void LeftButton1()
         {
-            if (SelectedResizableRectangle != null)
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
             {
-                SelectedResizableRectangle.RectangleWidth = SelectedResizableRectangle.RectangleWidth + 2;
-                SelectedResizableRectangle = validateResizableRect(SelectedResizableRectangle);
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.X2 += 2;
+                selectedCustomShape.Width += 2;
             }
         }
 
@@ -2505,11 +2639,10 @@ namespace MachineLearningTrainer.DrawerTool
         }
         public void UpButton1()
         {
-            if (SelectedResizableRectangle != null)
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
             {
-                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 2;
-                SelectedResizableRectangle = validateResizableRect(SelectedResizableRectangle);
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.Y2 += 2;
+                selectedCustomShape.Height += 2;
             }
         }
 
@@ -2524,15 +2657,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DownButton1()
         {
-            if (SelectedResizableRectangle != null)
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
             {
-                SelectedResizableRectangle.Y = SelectedResizableRectangle.Y - 2;
-                SelectedResizableRectangle.RectangleHeight = SelectedResizableRectangle.RectangleHeight + 2;
-                SelectedResizableRectangle = validateResizableRect(SelectedResizableRectangle);
-                Canvas.SetLeft(SelectedResizableRectangle, SelectedResizableRectangle.X);
-                Canvas.SetTop(SelectedResizableRectangle, SelectedResizableRectangle.Y);
-                OnPropertyChanged("SelectedResizableRectangle");
-                UpdateCropedImage(SelectedResizableRectangle);
+                selectedCustomShape.Y1 -= 2;
+                selectedCustomShape.YTop -= 2;
+                selectedCustomShape.Height += 2;
             }
         }
 
@@ -2551,9 +2680,9 @@ namespace MachineLearningTrainer.DrawerTool
         public bool Enabled { get; set; } = true;
 
 
-        public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+        //public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
 
-        public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
+        //public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<Polygon> polygonsCollection { get; set; } = new ObservableCollection<Polygon>();
         public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
         public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
@@ -2635,37 +2764,39 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainGrid.Children.Add(usc);
         }
 
-        private ResizableRectangle _selectedResizableRectangle;
-        public ResizableRectangle SelectedResizableRectangle
-        {
-            get
-            {
-                return _selectedResizableRectangle;
-            }
 
-            set
-            {
-                if(value != null)
-                {
-                    _selectedResizableRectangle = value;
-                    if (value.X < 0)
-                    {
-                        _selectedResizableRectangle.X += value.X;
-                        _selectedResizableRectangle.X = 0;
-                    }
-                    if (value.Y < 0)
-                    {
-                        _selectedResizableRectangle.Y += value.Y;
-                        _selectedResizableRectangle.Y = 0;
-                    }
-                    SelectedRectangleFill();
-                    DeleteCommand.RaiseCanExecuteChanged();
-                    DuplicateCommand.RaiseCanExecuteChanged();
-                    RenameCommand.RaiseCanExecuteChanged();
-                }
+
+        //private ResizableRectangle _selectedResizableRectangle;
+        //public ResizableRectangle SelectedResizableRectangle
+        //{
+        //    get
+        //    {
+        //        return _selectedResizableRectangle;
+        //    }
+
+        //    set
+        //    {
+        //        if(value != null)
+        //        {
+        //            _selectedResizableRectangle = value;
+        //            if (value.X < 0)
+        //            {
+        //                _selectedResizableRectangle.X += value.X;
+        //                _selectedResizableRectangle.X = 0;
+        //            }
+        //            if (value.Y < 0)
+        //            {
+        //                _selectedResizableRectangle.Y += value.Y;
+        //                _selectedResizableRectangle.Y = 0;
+        //            }
+        //            SelectedRectangleFill();
+        //            DeleteCommand.RaiseCanExecuteChanged();
+        //            DuplicateCommand.RaiseCanExecuteChanged();
+        //            RenameCommand.RaiseCanExecuteChanged();
+        //        }
                 
-            }
-        }
+        //    }
+        //}
 
 
 
@@ -2676,23 +2807,14 @@ namespace MachineLearningTrainer.DrawerTool
 
 
 
-        /// <summary>
-        /// this method rename all files in the listox
-        /// </summary>
-        private void OnRename()
-        {
-            foreach(var rec in AllRectangles)
-            {
-                rec.RectangleText = DefaultLabel;
-            }
-        }
+        
 
         /// <summary>
         /// says if you can execute "Can Rename" method
         /// </summary>
         private bool CanRename()
         {
-            return SelectedResizableRectangle != null;
+            return SelectedCustomShape != null;
         }
 
         private ICommand _deleteRectanglesCommand;
@@ -2709,7 +2831,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void DeleteAll()
         {
-            AllRectangles.Clear();
+            Rectangles.Clear();
             FilterName();
         }
 
@@ -2731,23 +2853,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        /// <summary>
-        /// boolean, which tells if checkbox from default label is checked
-        /// </summary>
-        private bool _isChecked = true;
-
-        public bool IsChecked
-        {
-            get
-            {
-                return _isChecked;
-            }
-            set
-            {
-                _isChecked = value;
-                OnPropertyChanged("IsChecked");
-            }
-        }
 
         private bool _cropModeChecked = false;
 
@@ -2760,7 +2865,7 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 _cropModeChecked = value;
-                SelectedRectangleFill();
+                //SelectedRectangleFill();
                 OnPropertyChanged("CropModeChecked");
             }
         }
@@ -2903,67 +3008,67 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
         
-        /// <summary>
-        /// this method colors the selected rectangle and increases the opacity
-        /// </summary>
-        public void SelectedRectangleFill()
-        {
-            if (SelectedResizableRectangle != null && AnnoToolMode == "Object")
-            {
-                if(CropModeChecked == false)
-                {
-                    foreach (var rect in AllRectangles)
-                    {
-                        rect.RectangleFill = System.Windows.Media.Brushes.Blue;
-                        rect.RectangleOpacity = 0.07;
-                        rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
-                        rect.ThumbSize = 3;
-                        rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
-                        rect.Visibility = Visibility.Visible;
-                    }
-                    SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
-                    SelectedResizableRectangle.RectangleOpacity = 0.0;
-                    SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
-                    SelectedResizableRectangle.ThumbSize = 3;
-                    SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
-                    SelectedResizableRectangle.Visibility = Visibility.Visible;
-                }
+        ///// <summary>
+        ///// this method colors the selected rectangle and increases the opacity
+        ///// </summary>
+        //public void SelectedRectangleFill()
+        //{
+        //    if (SelectedResizableRectangle != null && AnnoToolMode == "Object")
+        //    {
+        //        if(CropModeChecked == false)
+        //        {
+        //            foreach (var rect in AllRectangles)
+        //            {
+        //                rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+        //                rect.RectangleOpacity = 0.07;
+        //                rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+        //                rect.ThumbSize = 3;
+        //                rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
+        //                rect.Visibility = Visibility.Visible;
+        //            }
+        //            SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
+        //            SelectedResizableRectangle.RectangleOpacity = 0.0;
+        //            SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
+        //            SelectedResizableRectangle.ThumbSize = 3;
+        //            SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
+        //            SelectedResizableRectangle.Visibility = Visibility.Visible;
+        //        }
 
-                if(CropModeChecked == true)
-                {
-                    foreach (var rect in AllRectangles)
-                    {
-                        rect.RectangleFill = null;
-                        rect.RectangleOpacity = 0.0;
-                        rect.ThumbColor = System.Windows.Media.Brushes.Transparent;
-                        rect.ThumbSize = 3;
-                        rect.ResizeThumbColor = System.Windows.Media.Brushes.Transparent;
-                        rect.Visibility = Visibility.Collapsed;
+        //        if(CropModeChecked == true)
+        //        {
+        //            foreach (var rect in AllRectangles)
+        //            {
+        //                rect.RectangleFill = null;
+        //                rect.RectangleOpacity = 0.0;
+        //                rect.ThumbColor = System.Windows.Media.Brushes.Transparent;
+        //                rect.ThumbSize = 3;
+        //                rect.ResizeThumbColor = System.Windows.Media.Brushes.Transparent;
+        //                rect.Visibility = Visibility.Collapsed;
 
-                    }
+        //            }
 
-                    SelectedResizableRectangle.Visibility = Visibility.Visible;
-                    SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
-                    SelectedResizableRectangle.RectangleOpacity = 0.0;
-                    SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
-                    SelectedResizableRectangle.ThumbSize = 3;
-                    SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
-                }
-            }
+        //            SelectedResizableRectangle.Visibility = Visibility.Visible;
+        //            SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
+        //            SelectedResizableRectangle.RectangleOpacity = 0.0;
+        //            SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
+        //            SelectedResizableRectangle.ThumbSize = 3;
+        //            SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
+        //        }
+        //    }
             
-            if(SelectedResizableRectangle == null && CropModeChecked == false)
-            {
-                foreach (var rect in AllRectangles)
-                {
-                    rect.RectangleFill = System.Windows.Media.Brushes.Blue;
-                    rect.RectangleOpacity = 0.07;
-                    rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
-                    rect.ThumbSize = 3;
-                    rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
-                    rect.Visibility = Visibility.Visible;
-                }
-            }
-        }
+        //    if(SelectedResizableRectangle == null && CropModeChecked == false)
+        //    {
+        //        foreach (var rect in AllRectangles)
+        //        {
+        //            rect.RectangleFill = System.Windows.Media.Brushes.Blue;
+        //            rect.RectangleOpacity = 0.07;
+        //            rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
+        //            rect.ThumbSize = 3;
+        //            rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
+        //            rect.Visibility = Visibility.Visible;
+        //        }
+        //    }
+        //}
 
         private BitmapImage _croppedImage;
         public BitmapImage CroppedImage
@@ -3431,12 +3536,12 @@ namespace MachineLearningTrainer.DrawerTool
                 
         }
 
-        public void SelectClickedRectangle(ResizableRectangle resizableRectangle)
-        {
-            resizableRectangle = validateResizableRect(resizableRectangle);
-            SelectedResizableRectangle = resizableRectangle;
-            OnPropertyChanged("SelectedResizableRectangle");
-        }
+        //public void SelectClickedRectangle(ResizableRectangle resizableRectangle)
+        //{
+        //    resizableRectangle = validateResizableRect(resizableRectangle);
+        //    SelectedResizableRectangle = resizableRectangle;
+        //    OnPropertyChanged("SelectedResizableRectangle");
+        //}
 
         private BitmapImage _recI;
 

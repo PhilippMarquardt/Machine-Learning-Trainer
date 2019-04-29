@@ -120,7 +120,7 @@
                     this.Reset();
                 }
 
-                if ((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
+                if ((this.DataContext as DrawerViewModel).SelectedCustomShape != null)
                 {
                     var viewmodel = this.DataContext as DrawerViewModel;
                     var st = GetScaleTransform(child);
@@ -130,8 +130,8 @@
                     double devisionValueY = 2 * (viewmodel.MyPreview.ActualHeight / viewmodel.ZoomBorderHeight);
                     if (devisionValueX < 2) devisionValueX = 2;
                     if (devisionValueY < 2) devisionValueY = 2;
-                    tt.X = (viewmodel.MyPreview.ActualWidth / devisionValueX) - viewmodel.SelectedResizableRectangle.X * st.ScaleX - viewmodel.SelectedResizableRectangle.RectangleWidth * st.ScaleX / 2;
-                    tt.Y = (viewmodel.MyPreview.ActualHeight / devisionValueY) - viewmodel.SelectedResizableRectangle.Y * st.ScaleY - viewmodel.SelectedResizableRectangle.RectangleHeight * st.ScaleY / 2;
+                    tt.X = (viewmodel.MyPreview.ActualWidth / devisionValueX) - viewmodel.SelectedCustomShape.X1 * st.ScaleX - viewmodel.SelectedCustomShape.Width * st.ScaleX / 2;
+                    tt.Y = (viewmodel.MyPreview.ActualHeight / devisionValueY) - viewmodel.SelectedCustomShape.Y1 * st.ScaleY - viewmodel.SelectedCustomShape.Height * st.ScaleY / 2;
                 }
             }
         }

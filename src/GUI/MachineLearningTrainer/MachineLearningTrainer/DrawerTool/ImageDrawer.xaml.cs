@@ -74,17 +74,17 @@ namespace MachineLearningTrainer.DrawerTool
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             (this.DataContext as DrawerViewModel).SelectCustomShape();
-
+            int selectedIndex = (this.DataContext as DrawerViewModel).GetSelectedItemIndex();
+            listBoxLabels.SelectedIndex = selectedIndex;
 
             //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
             //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
             //{
             //    UIElement element = (UIElement)sender;
             //    element.CaptureMouse();
-            //    e.Handled = true;
+            //    //e.Handled = true;
             //}
         }
-
 
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
@@ -128,7 +128,7 @@ namespace MachineLearningTrainer.DrawerTool
             //{
             //    UIElement element = (UIElement)sender;
             //    element.ReleaseMouseCapture();
-            //    e.Handled = true;
+            //    //e.Handled = true;
             //    (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
             //}
 
@@ -465,7 +465,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).ImagePath = fullFileName;
 
                     (this.DataContext as DrawerViewModel).IsEnabled = true;
-                    (this.DataContext as DrawerViewModel).AllRectangles.Clear();
+                    (this.DataContext as DrawerViewModel).Rectangles.Clear();
 
                     (this.DataContext as DrawerViewModel).LoadRectangles();
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
@@ -475,7 +475,6 @@ namespace MachineLearningTrainer.DrawerTool
                     zoomBorder.Reset();
 
                 }
-
             }
         }
 
@@ -499,7 +498,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void listBoxLabels_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
-            if ((this.DataContext as DrawerViewModel).SelectedResizableRectangle != null)
+            if ((this.DataContext as DrawerViewModel).SelectedCustomShape != null)
             {
                 zoomBorder.ZoomToRectangle();
             }
@@ -533,16 +532,24 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            var newSelectedItem = (this.DataContext as DrawerViewModel).SelectedResizableRectangle;
+            if (listBoxLabels.SelectedItem != null)
+            {
+                int indexView = listBoxLabels.SelectedIndex;
+                (this.DataContext as DrawerViewModel).SelectCustomShape(indexView);
+            }
+
+            var newSelectedItem = (this.DataContext as DrawerViewModel).SelectedCustomShape;
+
+
             if (newSelectedItem != null)
             {
                 (sender as ListBox).ScrollIntoView(newSelectedItem);
             }
-            if((this.DataContext as DrawerViewModel).DuplicateVar == 0 || (this.DataContext as DrawerViewModel).CropModeChecked == true)
+            if ((this.DataContext as DrawerViewModel).DuplicateVar == 0 || (this.DataContext as DrawerViewModel).CropModeChecked == true)
             {
                 zoomBorder.ZoomToRectangle();
             }
-            
+
         }
 
 

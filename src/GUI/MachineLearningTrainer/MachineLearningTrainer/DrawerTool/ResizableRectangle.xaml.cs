@@ -266,7 +266,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 if (rec != null)
                 {
-                    drawerviewmodel.SelectClickedRectangle(rec);
+                    //drawerviewmodel.SelectClickedRectangle(rec);
                 }
             }
         }

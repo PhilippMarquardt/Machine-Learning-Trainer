@@ -146,6 +146,18 @@
             Modifiers="Ctrl" />
         <KeyBinding
             Key="Left"
+            Command="{Binding LeftButtonCommand_Move}" />
+        <KeyBinding
+            Key="Right"
+            Command="{Binding RightButtonCommand_Move}" />
+        <KeyBinding
+            Key="Up"
+            Command="{Binding UpButtonCommand_Move}" />
+        <KeyBinding
+            Key="Down"
+            Command="{Binding DownButtonCommand_Move}" />
+        <KeyBinding
+            Key="Left"
             Command="{Binding LeftButtonCommand}"
             Modifiers="Ctrl+Shift" />
         <KeyBinding
@@ -884,15 +896,27 @@
                 Background="White"
                 Foreground="Black"
                 ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding AllRectanglesView}"
+                ItemsSource="{Binding RectanglesView}"
                 MouseDoubleClick="listBoxLabels_MouseDoubleClick"
                 MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedItem="{Binding SelectedResizableRectangle}"
+                SelectedItem="{Binding SelectedCustomShape}"
                 SelectionChanged="listBoxLabels_SelectionChanged"
                 SelectionMode="Extended"
                 Style="{StaticResource MyListBoxStyle}"
                 Visibility="{Binding FilterVisibilitySelected, Converter={StaticResource booleanToVisibiliy}}">
                 <ListBox.InputBindings>
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand_Move}" />
                     <KeyBinding
                         Key="Left"
                         Command="{Binding LeftButtonCommand}"
@@ -939,7 +963,7 @@
                                 AcceptsReturn="False"
                                 FontSize="12"
                                 Foreground="Black"
-                                Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Left"
                                 TextChanged="ListBoxTextBox_TextChanged"
                                 TextWrapping="Wrap"
@@ -988,15 +1012,27 @@
                 Background="White"
                 Foreground="Black"
                 ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding AllRectanglesView}"
+                ItemsSource="{Binding RectanglesView}"
                 MouseDoubleClick="listBoxLabels_MouseDoubleClick"
                 MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedItem="{Binding SelectedResizableRectangle}"
+                SelectedItem="{Binding SelectedCustomShape}"
                 SelectionChanged="listBoxLabels_SelectionChanged"
                 SelectionMode="Extended"
                 Style="{StaticResource MyListBoxStyle}"
                 Visibility="{Binding FilterVisibilitySelectedGallery, Converter={StaticResource booleanToVisibiliy}}">
                 <ListBox.InputBindings>
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand_Move}" />
                     <KeyBinding
                         Key="Left"
                         Command="{Binding LeftButtonCommand}"
@@ -1032,13 +1068,13 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <WrapPanel>
+                        <!--<WrapPanel>
                             <Image
                                 Width="60"
                                 Height="60"
                                 Margin="10"
                                 Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
-                        </WrapPanel>
+                        </WrapPanel>-->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
@@ -1090,15 +1126,27 @@
                 Panel.ZIndex="1"
                 Foreground="Black"
                 ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding AllRectangles}"
+                ItemsSource="{Binding RectanglesView}"
                 MouseDoubleClick="listBoxLabels_MouseDoubleClick"
                 MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedItem="{Binding SelectedResizableRectangle}"
+                SelectedItem="{Binding SelectedCustomShape}"
                 SelectionChanged="listBoxLabels_SelectionChanged"
                 SelectionMode="Extended"
                 Style="{StaticResource MyListBoxStyle}"
                 Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}">
                 <ListBox.InputBindings>
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand_Move}" />
                     <KeyBinding
                         Key="Left"
                         Command="{Binding LeftButtonCommand}"
@@ -1145,7 +1193,7 @@
                                 AcceptsReturn="False"
                                 FontSize="12"
                                 Foreground="Black"
-                                Text="{Binding RectangleText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Left"
                                 TextChanged="ListBoxTextBox_TextChanged"
                                 TextWrapping="Wrap"
@@ -1193,15 +1241,27 @@
                 Panel.ZIndex="1"
                 Foreground="Black"
                 ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding AllRectangles}"
+                ItemsSource="{Binding RectanglesView}"
                 MouseDoubleClick="listBoxLabels_MouseDoubleClick"
                 MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedItem="{Binding SelectedResizableRectangle}"
+                SelectedItem="{Binding SelectedCustomShape}"
                 SelectionChanged="listBoxLabels_SelectionChanged"
                 SelectionMode="Extended"
                 Style="{StaticResource MyListBoxStyle}"
                 Visibility="{Binding FilterVisibilityAllLabelsGallery, Converter={StaticResource booleanToVisibiliy}}">
                 <ListBox.InputBindings>
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand_Move}" />
                     <KeyBinding
                         Key="Left"
                         Command="{Binding LeftButtonCommand}"
@@ -1237,6 +1297,7 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
+                        <!--
                         <WrapPanel>
                             <Image
                                 Width="60"
@@ -1244,6 +1305,7 @@
                                 Margin="10"
                                 Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
                         </WrapPanel>
+                        -->
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
