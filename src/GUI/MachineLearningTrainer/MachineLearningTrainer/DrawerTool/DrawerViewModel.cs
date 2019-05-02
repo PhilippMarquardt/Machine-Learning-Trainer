@@ -2403,7 +2403,6 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void DeleteSelection()
         {
-            Console.WriteLine("delete");
             selectedCustomShape = null;
 
 
@@ -2416,6 +2415,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
             Enabled = true;
             mouseHandlingState = MouseState.Normal;
+        }
+
+        public void DeleteSelectionForRename()
+        {
+            selectedCustomShape = null;
         }
         #endregion
 

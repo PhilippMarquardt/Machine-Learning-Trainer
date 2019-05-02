@@ -85,14 +85,12 @@ namespace MachineLearningTrainer.DrawerTool
             //    //e.Handled = true;
             //}
         }
-
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
             mousePosition = e.GetPosition(cnvImage);
             (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
             txtBox.Content = "X: " + (int)mousePosition.X + "; Y: " + (int)mousePosition.Y;
             txtBox1.Content = (this.DataContext as DrawerViewModel).ImagePath;
-
 
             if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
             {
@@ -181,11 +179,28 @@ namespace MachineLearningTrainer.DrawerTool
         private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 0;
+
+            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
+            //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
+            //{
+            //    UIElement element = (UIElement)sender;
+            //    element.CaptureMouse();
+            //    //e.Handled = true;
+            //}
         }
 
         private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 1;
+
+            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
+            //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
+            //{
+            //    UIElement element = (UIElement)sender;
+            //    element.ReleaseMouseCapture();
+            //    //e.Handled = true;
+            //    (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
+            //}
         }
 
         #endregion
@@ -210,11 +225,6 @@ namespace MachineLearningTrainer.DrawerTool
         //    var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
         //    binding.UpdateSource();
         //}
-
-        public void ListBoxTextBox_TextChanged(object sender, TextChangedEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).ComboBoxNames();
-        }
 
         void Zoom_In(object sender, KeyEventArgs e)
         {
@@ -500,7 +510,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if ((this.DataContext as DrawerViewModel).SelectedCustomShape != null)
             {
-                zoomBorder.ZoomToRectangle();
+                //zoomBorder.ZoomToRectangle();
             }
         }
 
@@ -550,6 +560,30 @@ namespace MachineLearningTrainer.DrawerTool
                 zoomBorder.ZoomToRectangle();
             }
 
+        }
+
+        private void LblTextBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem item = (ListBoxItem)sender;
+            item.IsSelected = true;
+        }
+
+        private void LblTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = false;
+            textBox.SelectAll();
+            (this.DataContext as DrawerViewModel).DeleteSelectionForRename();
+        }
+
+        private void LblTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if(textBox != null)
+            {
+                textBox.IsReadOnly = true;
+                (this.DataContext as DrawerViewModel).ComboBoxNames();
+            }
         }
 
 

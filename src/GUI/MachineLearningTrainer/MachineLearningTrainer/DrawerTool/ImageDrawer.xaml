@@ -72,6 +72,7 @@
         </Style>
 
         <Style x:Key="myLBStyle" TargetType="{x:Type ListBoxItem}">
+            <EventSetter Event="PreviewMouseDown" Handler="LblTextBox_MouseDown" />
             <Style.Resources>
                 <SolidColorBrush
                     x:Key="{x:Static SystemColors.HighlightBrushKey}"
@@ -901,7 +902,7 @@
                 MouseRightButtonUp="ListBox_RightButtonUp"
                 SelectedItem="{Binding SelectedCustomShape}"
                 SelectionChanged="listBoxLabels_SelectionChanged"
-                SelectionMode="Extended"
+                SelectionMode="Single"
                 Style="{StaticResource MyListBoxStyle}"
                 Visibility="{Binding FilterVisibilitySelected, Converter={StaticResource booleanToVisibiliy}}">
                 <ListBox.InputBindings>
@@ -949,6 +950,10 @@
                         Key="Down"
                         Command="{Binding UpButtonCommand1}"
                         Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="Return"
+                        Command="{Binding EnterCommand}"
+                        CommandParameter="Return" />
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -965,7 +970,9 @@
                                 Foreground="Black"
                                 Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Left"
-                                TextChanged="ListBoxTextBox_TextChanged"
+                                IsReadOnly="True"
+                                MouseDoubleClick="LblTextBox_MouseDoubleClick"
+                                LostFocus="LblTextBox_LostFocus"
                                 TextWrapping="Wrap"
                                 Margin="20"
                                 Padding="5"/>
@@ -1131,7 +1138,7 @@
                 MouseRightButtonUp="ListBox_RightButtonUp"
                 SelectedItem="{Binding SelectedCustomShape}"
                 SelectionChanged="listBoxLabels_SelectionChanged"
-                SelectionMode="Extended"
+                SelectionMode="Single"
                 Style="{StaticResource MyListBoxStyle}"
                 Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}">
                 <ListBox.InputBindings>
@@ -1179,6 +1186,10 @@
                         Key="Down"
                         Command="{Binding UpButtonCommand1}"
                         Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="Return"
+                        Command="{Binding EnterCommand}"
+                        CommandParameter="Return" />
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -1195,7 +1206,9 @@
                                 Foreground="Black"
                                 Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 TextAlignment="Left"
-                                TextChanged="ListBoxTextBox_TextChanged"
+                                IsReadOnly="True"
+                                MouseDoubleClick="LblTextBox_MouseDoubleClick"
+                                LostFocus="LblTextBox_LostFocus"
                                 TextWrapping="Wrap"
                                 Margin="20"
                                 Padding="5"/>
