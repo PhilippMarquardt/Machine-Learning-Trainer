@@ -175,7 +175,7 @@ namespace MachineLearningTrainer.DrawerTool
             //
         }
 
-        
+
         public ObservableCollection<CustomShape> RectanglesView { get; set; }
         public ObservableCollection<CustomShape> Rectangles { get; set; }
         public Stack<CustomShape> undoCustomShapes { get; set; } = new Stack<CustomShape>();
@@ -236,7 +236,7 @@ namespace MachineLearningTrainer.DrawerTool
             set { _vmMousePoint = value; }
         }
 
-        
+
 
 
 
@@ -439,7 +439,7 @@ namespace MachineLearningTrainer.DrawerTool
                         || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
                     {
                         RectanglesView.RemoveAt(indexRectanglesView);
-                        indexRectanglesView=RectanglesView.Count();
+                        indexRectanglesView = RectanglesView.Count();
                     }
                     else
                     {
@@ -621,8 +621,8 @@ namespace MachineLearningTrainer.DrawerTool
             int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
             int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
 
-            int numberColumns = Math.Abs(columnX2 - columnX1)+1;
-            int numberRows = Math.Abs(rowY2 - rowY1)+1;
+            int numberColumns = Math.Abs(columnX2 - columnX1) + 1;
+            int numberRows = Math.Abs(rowY2 - rowY1) + 1;
 
             for (int i = 0; i < numberColumns; i++)
             {
@@ -756,7 +756,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.Center = tmpRelativPosition;
                 selectedCustomShape.YTop = selectedCustomShape.Y1;
                 selectedCustomShape.XLeft = selectedCustomShape.X1;
-                Mouse.OverrideCursor = Cursors.SizeAll; 
+                Mouse.OverrideCursor = Cursors.SizeAll;
             }
         }
 
@@ -789,7 +789,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         enum ResizeDirection { SizeN, SizeNE, SizeE, SizeSE, SizeS, SizeSW, SizeW, SizeNW }
         ResizeDirection resizeDirection;
-        
+
         internal void Resize(System.Windows.Point mousePosition)
         {
             if (selectedCustomShape != null)
@@ -1428,7 +1428,7 @@ namespace MachineLearningTrainer.DrawerTool
         //DetectShape:
         //routines to detect different Shapes on Canvas
         private bool shapeDetected = false;
-        private CustomShape detectedCustomShape = new CustomShape(-1, -1);
+        private CustomShape detectedCustomShape = null;
 
         /// <summary>
         /// raise OnPropertyChanged-Event when shape is detected
@@ -1447,7 +1447,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private bool shapeSelected = false;
-        private CustomShape selectedCustomShape = new CustomShape(-1, -1);
+        private CustomShape selectedCustomShape = null;
         public CustomShape SelectedCustomShape
         {
             get
@@ -1560,13 +1560,13 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape = this.detectedCustomShape;
                 selectedCustomShape.Stroke = "Red";
-                DefaultLabel = selectedCustomShape.Label;                
+                DefaultLabel = selectedCustomShape.Label;
             }
         }
 
         internal void SelectCustomShape(int indexView)
         {
-            foreach(CustomShape r in RectanglesView)
+            foreach (CustomShape r in RectanglesView)
             {
                 r.Stroke = "LawnGreen";
             }
@@ -1593,7 +1593,62 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
 
-            return 0;
+            return -1;
+        }
+        #endregion
+
+
+        #region Crop-Mode
+        private bool _cropModeChecked = false;
+
+        public bool CropModeChecked
+        {
+            get
+            {
+                return _cropModeChecked;
+            }
+            set
+            {
+                _cropModeChecked = value;
+                if (_cropModeChecked == true)
+                {
+                    ActivateCropMode();
+                }
+                else
+                {
+                    DeactivateCropMode();
+                }
+                OnPropertyChanged("CropModeChecked");
+            }
+        }
+
+        public void ActivateCropMode()
+        {
+            if(selectedCustomShape != null)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    r.Stroke = "Transparent";
+                }
+
+                ClearFields();
+                selectedCustomShape.Stroke = "Red";
+                SaveShapeToField(selectedCustomShape);
+            }
+            else
+            {
+                _cropModeChecked = false;
+            }
+        }
+
+        public void DeactivateCropMode()
+        {
+            foreach (CustomShape r in RectanglesView)
+            {
+                r.Stroke = "LawnGreen";
+            }
+            selectedCustomShape.Stroke = "Red";
+            FilterName();
         }
         #endregion
 
@@ -1617,7 +1672,7 @@ namespace MachineLearningTrainer.DrawerTool
                     indexRectanglesView--;
                     RemoveShapeFromField(rv);
 
-                    foreach (CustomShape r in Rectangles) 
+                    foreach (CustomShape r in Rectangles)
                     {
                         if (r.Id == selectedCustomShape.Id)
                         {
@@ -1650,7 +1705,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                             //SelectedComboBoxItem = "All Labels";
                             //FilterName();
-                            
+
                             break;
                         }
                     }
@@ -1888,7 +1943,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     RectangleCount = "#" + RectanglesView.Count.ToString();
                 }
-            }   
+            }
             OnPropertyChanged("");
         }
         #endregion
@@ -1937,13 +1992,7 @@ namespace MachineLearningTrainer.DrawerTool
                 }
 
                 RectanglesView.Clear();
-                if (fields != null)
-                {
-                    for (int i = 0; i < fields.Length; i++)
-                    {
-                        fields[i].Clear();
-                    }
-                }
+                ClearFields();
                 foreach (CustomShape r in Rectangles)
                 {
                     RectanglesView.Add(r);
@@ -1975,17 +2024,11 @@ namespace MachineLearningTrainer.DrawerTool
                 DefaultLabel = SelectedComboBoxItem;
 
                 RectanglesView.Clear();
-                if (fields != null)
-                {
-                    for (int i = 0; i < fields.Length; i++)
-                    {
-                        fields[i].Clear();
-                    }
-                }
+                ClearFields();
 
                 foreach (CustomShape r in Rectangles)
                 {
-                    if(r.Label == SelectedComboBoxItem)
+                    if (r.Label == SelectedComboBoxItem)
                     {
                         RectanglesView.Add(r);
                         SaveShapeToField(r);
@@ -2100,7 +2143,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region TextBox: txtDefaultLabel
 
-        
+
 
 
 
@@ -2318,6 +2361,19 @@ namespace MachineLearningTrainer.DrawerTool
         private double imgHeight;
         private ObservableCollection<CustomShape>[] fields;
 
+        /// <summary>
+        /// Clears all fields of the ObservableCollection Array
+        /// </summary>
+        private void ClearFields()
+        {
+            if (fields != null)
+            {
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    fields[i].Clear();
+                }
+            }
+        }
 
         private void LoadImage()
         {
@@ -2342,12 +2398,12 @@ namespace MachineLearningTrainer.DrawerTool
                 ClearUndoRedoStack();
 
                 System.Drawing.Image img = System.Drawing.Image.FromFile(ImagePath);
-                imgWidth=img.Width;
-                imgHeight=img.Height;
+                imgWidth = img.Width;
+                imgHeight = img.Height;
                 meshColumnNumber = Convert.ToInt32(Math.Ceiling(imgWidth / fieldWidth));
                 meshRowNumber = Convert.ToInt32(Math.Ceiling(imgHeight / fieldHeight));
                 fields = new ObservableCollection<CustomShape>[meshColumnNumber * meshRowNumber];
-                for(int i=0; i< fields.Length; i++)
+                for (int i = 0; i < fields.Length; i++)
                 {
                     fields[i] = new ObservableCollection<CustomShape>();
                 }
@@ -2404,6 +2460,7 @@ namespace MachineLearningTrainer.DrawerTool
         public void DeleteSelection()
         {
             selectedCustomShape = null;
+            detectedCustomShape = null;
 
 
             foreach (var rect in Rectangles)
@@ -2671,6 +2728,99 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
+        #region Tab => next/previous Rectangle
+        private ICommand _tabNextShape;
+        public ICommand TabNextShape
+        {
+            get
+            {
+                return _tabNextShape ?? (_tabNextShape = new CommandHandler(() => NextShape(), _canExecute));
+            }
+        }
+
+        private ICommand _tabPreviousShape;
+        public ICommand TabPreviousShape
+        {
+            get
+            {
+                return _tabPreviousShape ?? (_tabPreviousShape = new CommandHandler(() => PreviousShape(), _canExecute));
+            }
+        }
+
+        enum ChangeMode {next, previous }
+
+        public void NextShape()
+        {
+            if (selectedCustomShape != null)
+            {
+                ChangeShape(ChangeMode.next);
+                GetSelectedItemIndex();
+
+            }
+        }
+
+        private void PreviousShape()
+        {
+            if (selectedCustomShape != null)
+            {
+                ChangeShape(ChangeMode.previous);
+                GetSelectedItemIndex();
+
+            }
+        }
+
+        private void ChangeShape(ChangeMode mode)
+        {
+            int modifier = 1;
+            if (mode == ChangeMode.next)
+            {
+                modifier = 1;
+            }
+            else if (mode == ChangeMode.previous)
+            {
+                modifier = -1;
+            }
+            CustomShape tmpCustomShape = selectedCustomShape;
+            int tmpIndex = 0;
+            DeleteSelection();
+
+            if (_cropModeChecked == true)
+            {
+                ClearFields();
+                foreach (CustomShape r in RectanglesView)
+                {
+                    r.Stroke = "Transparent";
+                }
+            }
+
+            foreach(CustomShape r in RectanglesView)
+            {
+                if (r.Id == tmpCustomShape.Id)
+                {
+                    tmpIndex = RectanglesView.IndexOf(r) + modifier;
+                    if (tmpIndex >= RectanglesView.Count())
+                    {
+                        tmpIndex = 0;
+                    }
+                    else if (tmpIndex < 0)
+                    {
+                        tmpIndex = RectanglesView.Count() - 1;
+                    }
+                    selectedCustomShape = RectanglesView[tmpIndex];
+                    break;
+                }
+            }
+
+            if (_cropModeChecked == true)
+            {
+                SaveShapeToField(selectedCustomShape);
+            }
+
+            selectedCustomShape.Stroke = "Red";
+            DefaultLabel = selectedCustomShape.Label;
+        }
+        #endregion
+
         #endregion
 
 
@@ -2854,23 +3004,6 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 _rectangleText = value;
                 OnPropertyChanged("RectangleText");
-            }
-        }
-
-
-        private bool _cropModeChecked = false;
-
-        public bool CropModeChecked
-        {
-            get
-            {
-                return _cropModeChecked;
-            }
-            set
-            {
-                _cropModeChecked = value;
-                //SelectedRectangleFill();
-                OnPropertyChanged("CropModeChecked");
             }
         }
 

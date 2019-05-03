@@ -41,7 +41,7 @@
             <Setter Property="Margin" Value="10" />
         </Style>
 
-        <Style
+        <!--<Style
             x:Key="IncreaseOpacityOnHover"
             BasedOn="{StaticResource {x:Type Button}}"
             TargetType="Button">
@@ -69,7 +69,7 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </Style.Triggers>
-        </Style>
+        </Style>-->
 
         <Style x:Key="myLBStyle" TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="PreviewMouseDown" Handler="LblTextBox_MouseDown" />
@@ -79,6 +79,7 @@
                     Opacity="0.8"
                     Color="DodgerBlue" />
             </Style.Resources>
+            
         </Style>
 
         <Style x:Key="MyListBoxStyle" TargetType="{x:Type ListBox}">
@@ -188,6 +189,13 @@
         <KeyBinding
             Key="Down"
             Command="{Binding UpButtonCommand1}"
+            Modifiers="Ctrl" />
+        <KeyBinding
+            Key="Tab"
+            Command="{Binding TabNextShape}" />
+        <KeyBinding
+            Key="Tab"
+            Command="{Binding TabPreviousShape}"
             Modifiers="Ctrl" />
 
         <KeyBinding
@@ -759,7 +767,9 @@
                                         Height="{Binding ActualHeight, ElementName=imgPreview}"
                                         ClipToBounds="True"
                                         IsItemsHost="True" 
-                                        Background="Transparent">
+                                        Background="Transparent"
+                                        MouseDown="DrawCanvas_MouseDown"
+                                        MouseUp="DrawCanvas_MouseUp">
                                     </Canvas>
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
@@ -954,6 +964,14 @@
                         Key="Return"
                         Command="{Binding EnterCommand}"
                         CommandParameter="Return" />
+                    <KeyBinding
+                        Key="Tab"
+                        Command="{Binding TabNextShape}" />
+                    <KeyBinding
+                        Key="Tab"
+                        Command="{Binding TabPreviousShape}"
+                        Modifiers="Ctrl" />
+
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -1190,6 +1208,14 @@
                         Key="Return"
                         Command="{Binding EnterCommand}"
                         CommandParameter="Return" />
+                    <KeyBinding
+                        Key="Tab"
+                        Command="{Binding TabNextShape}" />
+                    <KeyBinding
+                        Key="Tab"
+                        Command="{Binding TabPreviousShape}"
+                        Modifiers="Ctrl" />
+
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
