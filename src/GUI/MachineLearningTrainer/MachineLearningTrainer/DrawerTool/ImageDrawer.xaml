@@ -378,12 +378,12 @@
                 x:Name="ColorPicker_Panel"
                 Width="auto"
                 MinWidth="160"
-                Visibility="Visible"
+                Visibility="Collapsed"
                 Background="Transparent"
                 Grid.Row="0"
                 Grid.RowSpan="5"
                 Grid.Column="4"
-                Panel.ZIndex="4">
+                Panel.ZIndex="3">
                 <Grid
                         Width="auto"
                         MinWidth="120"
@@ -606,14 +606,15 @@
                     Height="22"
                     Margin="5,10,5,10"
                     BorderBrush="Transparent"
-                    Click="ColorPicker_Open">
+                    Click="ColorPicker_Open"
+                    IsEnabled="{Binding IsEnabled}">
                     <Button.Template>
                         <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/fit.png" />
+                            <Image Margin="2" Source="/Icons/colorpicker.png" />
                         </ControlTemplate>
                     </Button.Template>
                     <Button.ToolTip>
-                        <TextBlock Text="Fit to width (Ctrl + 0)" />
+                        <TextBlock Text="Change Color for different Labels" />
                     </Button.ToolTip>
                 </Button>
             </StackPanel>

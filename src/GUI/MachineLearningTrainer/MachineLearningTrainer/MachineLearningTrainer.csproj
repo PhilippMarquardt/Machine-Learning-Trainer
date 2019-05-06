@@ -336,6 +336,9 @@
   <ItemGroup>
     <Resource Include="Icons\new_activated.png" />
   </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Icons\colorpicker.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
