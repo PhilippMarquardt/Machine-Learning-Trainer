@@ -74,8 +74,6 @@ namespace MachineLearningTrainer.DrawerTool
         private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
         {
             (this.DataContext as DrawerViewModel).SelectCustomShape();
-            int selectedIndex = (this.DataContext as DrawerViewModel).GetSelectedItemIndex();
-            listBoxLabels.SelectedIndex = selectedIndex;
         }
 
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
@@ -161,43 +159,14 @@ namespace MachineLearningTrainer.DrawerTool
         private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 0;
-
-            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
-            //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
-            //{
-            //    UIElement element = (UIElement)sender;
-            //    element.CaptureMouse();
-            //    //e.Handled = true;
-            //}
         }
 
         private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 1;
-
-            //if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Resize
-            //    || (this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.Move)
-            //{
-            //    UIElement element = (UIElement)sender;
-            //    element.ReleaseMouseCapture();
-            //    //e.Handled = true;
-            //    (this.DataContext as DrawerViewModel).MouseHandlingState = DrawerViewModel.MouseState.Normal;
-            //}
         }
 
         #endregion
-
-        private void PreviewKeyDown(object sender, KeyEventArgs e)
-        {
-            Console.WriteLine(e.Key);
-
-            if (e.Key == Key.Tab)
-            {
-                (this.DataContext as DrawerViewModel).NextShape();
-                int selectedIndex = (this.DataContext as DrawerViewModel).GetSelectedItemIndex();
-                listBoxLabels.SelectedIndex = selectedIndex;
-            }
-        }
 
 
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
@@ -537,7 +506,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (listBoxLabels.SelectedItem != null)
+            if (listBoxLabels.SelectedItem != null && (this.DataContext as DrawerViewModel).CropModeChecked == false)
             {
                 int indexView = listBoxLabels.SelectedIndex;
                 (this.DataContext as DrawerViewModel).SelectCustomShape(indexView);
@@ -592,7 +561,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             UIElement element = (UIElement)sender;
             element.CaptureMouse();
-            e.Handled = true;
+            //e.Handled = true;
         }
 
         private void DrawCanvas_MouseUp(object sender, MouseButtonEventArgs e)

@@ -52,8 +52,10 @@ namespace MachineLearningTrainer.DrawerTool
             {
 
                 handler(this, new PropertyChangedEventArgs(name));
-                CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
-
+                if (name != "SelectedIndex")
+                {
+                    CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
+                }
             }
 
         }
@@ -252,26 +254,21 @@ namespace MachineLearningTrainer.DrawerTool
             if (mousePosition.X < 0)
             {
                 tmpX = 0;
-                selectedCustomShape.X1 = 0;
-                selectedCustomShape.XLeft = 0;
             }
             else if (mousePosition.X > MyCanvas.ActualWidth)
             {
                 tmpX = MyCanvas.ActualWidth;
-                selectedCustomShape.X2 = MyCanvas.ActualWidth;
             }
             if (mousePosition.Y < 0)
             {
                 tmpY = 0;
-                selectedCustomShape.Y1 = 0;
-                selectedCustomShape.YTop = 0;
             }
             else if (mousePosition.Y > MyCanvas.ActualHeight)
             {
                 tmpY = MyCanvas.ActualHeight;
-                selectedCustomShape.Y2 = MyCanvas.ActualHeight;
             }
         }
+
         private void CheckCanvas(System.Windows.Point mousePosition, double deltaX, double deltaY)
         {
             if (mousePosition.X - deltaX - selectedCustomShape.Width / 2 < 0)
@@ -1561,6 +1558,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape = this.detectedCustomShape;
                 selectedCustomShape.Stroke = "Red";
                 DefaultLabel = selectedCustomShape.Label;
+                SelectListItem();
             }
         }
 
@@ -1577,6 +1575,43 @@ namespace MachineLearningTrainer.DrawerTool
                 DefaultLabel = selectedCustomShape.Label;
             }
         }
+
+
+        private int selectedIndex = -1;
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set
+            {
+                if (selectedIndex != value)
+                {
+                    selectedIndex = value;
+                    OnPropertyChanged("SelectedIndex");
+                }
+            }
+        }
+
+        internal void SelectListItem()
+        {
+            int tmpIndex = 0;
+            if (selectedCustomShape != null)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        SelectedIndex = tmpIndex;
+                        return;
+                    }
+                    tmpIndex++;
+                }
+            }
+            else
+            {
+                SelectedIndex = -1;
+            }
+        }
+
 
         internal int GetSelectedItemIndex()
         {
@@ -2461,6 +2496,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             selectedCustomShape = null;
             detectedCustomShape = null;
+            SelectedIndex = -1;
 
 
             foreach (var rect in Rectangles)
@@ -2754,8 +2790,9 @@ namespace MachineLearningTrainer.DrawerTool
             if (selectedCustomShape != null)
             {
                 ChangeShape(ChangeMode.next);
-                GetSelectedItemIndex();
-
+                _duplicateVar = 0;
+                SelectListItem();
+                _duplicateVar = 1;
             }
         }
 
@@ -2764,8 +2801,9 @@ namespace MachineLearningTrainer.DrawerTool
             if (selectedCustomShape != null)
             {
                 ChangeShape(ChangeMode.previous);
-                GetSelectedItemIndex();
-
+                _duplicateVar = 0;
+                SelectListItem();
+                _duplicateVar = 1;
             }
         }
 
@@ -2786,11 +2824,11 @@ namespace MachineLearningTrainer.DrawerTool
 
             if (_cropModeChecked == true)
             {
-                ClearFields();
                 foreach (CustomShape r in RectanglesView)
                 {
                     r.Stroke = "Transparent";
                 }
+                ClearFields();
             }
 
             foreach(CustomShape r in RectanglesView)
