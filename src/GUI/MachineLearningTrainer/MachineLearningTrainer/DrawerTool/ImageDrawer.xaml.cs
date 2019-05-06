@@ -172,15 +172,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void ComboBox_DropDownClosed(object sender, EventArgs e)
         {
             (this.DataContext as DrawerViewModel).FilterName();
-
-            if ((this.DataContext as DrawerViewModel).SelectedComboBoxItem != "All Labels")
-            {
-                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).RectanglesView.Count.ToString();
-            }
-            else
-            {
-                (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).Rectangles.Count.ToString();
-            }
+            (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).RectanglesView.Count.ToString();
         }
 
 
@@ -390,7 +382,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
-        private void Button_Click_2(object sender, RoutedEventArgs e)
+        private void Button_Click_FolderView_Panel(object sender, RoutedEventArgs e)
         {
             if (FolderView_Panel.Visibility == Visibility.Visible)
             {
@@ -570,6 +562,40 @@ namespace MachineLearningTrainer.DrawerTool
             UIElement element = (UIElement)sender;
             element.ReleaseMouseCapture();
             e.Handled = true;
+        }
+
+        private void ColorPicker_Open(object sender, RoutedEventArgs e)
+        {
+            //var newWindow = new ColorPicker();
+            //newWindow.Show();
+            ColorPicker_Panel.Visibility = Visibility.Visible;
+            Functions_Panel.Visibility = Visibility.Collapsed;
+        }
+
+        private void _colorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            _colorPicker.SelectedColor = _colorCanvas.SelectedColor;
+        }
+
+        private void _applyColorChange_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).ChangeFillColor();
+        }
+
+        private void _closeColorChange_Click(object sender, RoutedEventArgs e)
+        {
+            ColorPicker_Panel.Visibility = Visibility.Collapsed;
+            Functions_Panel.Visibility = Visibility.Visible;
+        }
+
+        private void _colorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            _colorCanvas.SelectedColor = _colorPicker.SelectedColor;
+        }
+
+        private void ComboBoxColor_DropDownClosed(object sender, EventArgs e)
+        {
+
         }
     }
 }

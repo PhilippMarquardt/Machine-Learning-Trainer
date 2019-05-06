@@ -1478,6 +1478,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private string tmpFill = "Transparent";
 
         internal void DetectCustomShape(System.Windows.Point mousePosition)
         {
@@ -1509,7 +1510,7 @@ namespace MachineLearningTrainer.DrawerTool
                 && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
                 detectedCustomShape.Opacity = 1;
-                detectedCustomShape.Fill = "Transparent";
+                detectedCustomShape.Fill = tmpFill;
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
                 detectedCustomShape = null;
@@ -1517,6 +1518,7 @@ namespace MachineLearningTrainer.DrawerTool
             else if (detectedCustomShape.Fill != "Gray")
             {
                 detectedCustomShape.Opacity = 0.3;
+                tmpFill = detectedCustomShape.Fill;
                 detectedCustomShape.Fill = "Gray";
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
@@ -2112,6 +2114,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
         private bool _filterVisibilitySelected = false;
 
         public bool FilterVisibilitySelected
@@ -2196,7 +2199,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
-        #region ListBox             #TBD!!!
+        #region ListBox
 
         /// <summary>
         /// sorts the list of rectangles in ascending order of their name
@@ -2232,6 +2235,69 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        #endregion
+
+
+        #region Colorpicker
+
+        private string _selectedColor = "Red";
+        public string SelectedColor
+        {
+            get
+            {
+                return _selectedColor;
+            }
+            set
+            {
+                _selectedColor = value;
+            }
+        }
+
+
+        private string _selectedColorLabel = "All Labels";
+        public string SelectedColorLabel
+        {
+            get
+            {
+                return _selectedColorLabel;
+            }
+            set
+            {
+                _selectedColorLabel = value;
+            }
+        }
+
+        public void ChangeFillColor()
+        {
+            if (SelectedColorLabel != null)
+            {
+                if (SelectedComboBoxItem != SelectedColorLabel)
+                {
+                    SelectedComboBoxItem = "All Labels";
+                    FilterName();
+                }
+
+                if (SelectedColorLabel == "All Labels")
+                {
+                    foreach (var r in Rectangles)
+                    {
+                        r.Fill = SelectedColor;
+                    }
+                }
+                else
+                {
+                    foreach (var r in Rectangles)
+                    {
+                        if (SelectedColorLabel == r.Label)
+                        {
+                            r.Fill = SelectedColor;
+                        }
+                    }
+                }
+            }
+            OnPropertyChanged("ChangeFillColor");
+        }
 
         #endregion
 

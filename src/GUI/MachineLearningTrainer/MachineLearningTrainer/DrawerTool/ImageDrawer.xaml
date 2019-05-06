@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    
     d:DesignHeight="1080"
     d:DesignWidth="1920"
     Background="{DynamicResource MaterialDesignPaper}"
@@ -372,7 +373,102 @@
                 <RowDefinition x:Name="gridY2" Height="auto" />
             </Grid.RowDefinitions>
 
+
             <StackPanel
+                x:Name="ColorPicker_Panel"
+                Width="auto"
+                MinWidth="160"
+                Visibility="Visible"
+                Background="Transparent"
+                Grid.Row="0"
+                Grid.RowSpan="5"
+                Grid.Column="4"
+                Panel.ZIndex="4">
+                <Grid
+                        Width="auto"
+                        MinWidth="120"
+                        Margin="10">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Background="#FF2196F3"
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="ColorPicker" 
+                        TextAlignment="Center"
+                        Grid.Row="0"/>
+                    <ComboBox
+                        Grid.Row="1"
+                        Width="auto"
+                        Height="30"
+                        Margin="5"
+                        Padding="3"
+                        HorizontalAlignment="Center"
+                        HorizontalContentAlignment="Center"
+                        VerticalContentAlignment="Center"
+                        DropDownClosed="ComboBox_DropDownClosed"
+                        FontSize="14"
+                        Foreground="Black"
+                        ItemsSource="{Binding ComboBoxItems}"
+                        MouseUp="ImgCamera_MouseUp"
+                        SelectedIndex="0"
+                        SelectedItem="{Binding SelectedColorLabel}" />
+                    <xctk:ColorCanvas
+                        Background="Transparent"
+                        Foreground="Black"
+                        Margin="10"
+                        x:Name="_colorCanvas"
+                        Grid.Row="2"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Stretch" 
+                        UsingAlphaChannel="False"
+                        SelectedColorChanged="_colorCanvas_SelectedColorChanged" 
+                        SelectedColor="{Binding SelectedColor}"/>
+                    <xctk:ColorPicker
+                        x:Name="_colorPicker"
+                        Margin="5"
+                        Grid.Row="3"
+                        VerticalAlignment="Top"
+                        SelectedColorChanged="_colorPicker_SelectedColorChanged" 
+                        ShowTabHeaders="False" 
+                        ShowRecentColors="True"
+                        ShowAvailableColors="True"
+                        ShowStandardColors="True"/>
+
+                    <Grid
+                        Margin="5"
+                        Grid.Row="4"
+                        VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <Button
+                            x:Name="_applyColorChange"
+                            Grid.Column="0"
+                            Content="Apply"
+                            Click="_applyColorChange_Click" />
+                        <Button
+                            x:Name="_cancelColorChange"
+                            Grid.Column="2"
+                            Content="Close"
+                            Click="_closeColorChange_Click" />
+                    </Grid>
+                </Grid>
+            </StackPanel>
+
+            <StackPanel
+                x:Name="Functions_Panel"
+                Visibility="Visible"
                 Grid.Row="0"
                 Grid.RowSpan="3"
                 Grid.Column="4"
@@ -505,6 +601,21 @@
                         <TextBlock Text="Fit to width (Ctrl + 0)" />
                     </Button.ToolTip>
                 </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Click="ColorPicker_Open">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/fit.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Fit to width (Ctrl + 0)" />
+                    </Button.ToolTip>
+                </Button>
             </StackPanel>
 
 
@@ -535,7 +646,7 @@
                             Background="Transparent"
                             BorderBrush="White"
                             BorderThickness="0"
-                            Click="Button_Click_2"
+                            Click="Button_Click_FolderView_Panel"
                             Content="File Explorer"
                             Foreground="Black"
                             Style="{StaticResource BasicButtonStyle}"
@@ -553,7 +664,10 @@
                             </Button.LayoutTransform>
                         </Button>
                     </WrapPanel>-->
+                    
                 </StackPanel>
+
+
 
                 <!--<Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
                     <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
