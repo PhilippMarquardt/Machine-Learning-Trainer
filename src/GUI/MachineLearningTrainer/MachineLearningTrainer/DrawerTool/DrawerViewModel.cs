@@ -61,7 +61,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        protected void OnPropertyChanged2(string name)
+        protected void OnPropertyChangedRedrawCanvas(string name)
         {
             PropertyChangedEventHandler handler = PropertyChanged;
 
@@ -383,7 +383,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
+        /// <summary>
+        /// Create Rectangle depending from MouseState+Position
+        /// </summary>
+        /// <param name="mousePosition"></param>
         public void CreateRectangle(System.Windows.Point mousePosition)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
@@ -395,6 +398,7 @@ namespace MachineLearningTrainer.DrawerTool
                 if (RectanglesView.Count < indexRectanglesView + 1)
                 {
                     RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
+                    CheckFormat(RectanglesView[indexRectanglesView]);
                 }
                 else
                 {
@@ -472,6 +476,7 @@ namespace MachineLearningTrainer.DrawerTool
                                 createdRectangle.Label = "";
                         }
 
+                        CheckFormat(createdRectangle);
                         Rectangles.Add(createdRectangle);
                         RectanglesView.Add(createdRectangle);
                         SaveShapeToField(createdRectangle);
@@ -497,6 +502,35 @@ namespace MachineLearningTrainer.DrawerTool
 
                         //OnPropertyChanged("Rectangles");
                         OnPropertyChanged("RectanglesView");
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Checks Label and if allready exists, copys Color-Format
+        /// </summary>
+        private void CheckFormat(CustomShape Rectangle)
+        {
+            if (_defaultLabel != null || _defaultLabel != "All Labels")
+            {
+                foreach(var itemLabel in ComboBoxItems)
+                {
+                    if(_defaultLabel == itemLabel)
+                    {
+                        foreach(var r in Rectangles)
+                        {
+                            if (r.Label == _defaultLabel)
+                            {
+                                Rectangle.Stroke = r.Stroke;
+                                Rectangle.TmpStroke = r.TmpStroke;
+                                Rectangle.Fill = r.Fill;
+                                Rectangle.TmpFill = r.TmpFill;
+                                Rectangle.Opacity = r.Opacity;
+                                Rectangle.TmpOpacity = r.TmpOpacity;
+
+                            }
+                        }
                     }
                 }
             }
@@ -540,6 +574,7 @@ namespace MachineLearningTrainer.DrawerTool
 
                 CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
                 duplicatedCustomShape.Label = selectedCustomShape.Label;
+                CheckFormat(duplicatedCustomShape);
                 RectanglesView.Add(duplicatedCustomShape);
                 Rectangles.Add(duplicatedCustomShape);
                 SaveShapeToField(duplicatedCustomShape);
@@ -1479,6 +1514,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private string tmpFill = "Transparent";
+        private double tmpOpacity = 1;
 
         internal void DetectCustomShape(System.Windows.Point mousePosition)
         {
@@ -1509,16 +1545,17 @@ namespace MachineLearningTrainer.DrawerTool
             else if (!((detectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 + borderWidth)
                 && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
-                detectedCustomShape.Opacity = 1;
-                detectedCustomShape.Fill = tmpFill;
+                detectedCustomShape.Opacity = detectedCustomShape.TmpOpacity;
+                detectedCustomShape.Fill = detectedCustomShape.TmpFill;
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
                 detectedCustomShape = null;
             }
             else if (detectedCustomShape.Fill != "Gray")
             {
-                detectedCustomShape.Opacity = 0.3;
-                tmpFill = detectedCustomShape.Fill;
+                detectedCustomShape.TmpOpacity = detectedCustomShape.Opacity;
+                detectedCustomShape.TmpFill = detectedCustomShape.Fill;
+                detectedCustomShape.Opacity = 0.5;
                 detectedCustomShape.Fill = "Gray";
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
@@ -1553,13 +1590,14 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (selectedCustomShape != null)
             {
-                selectedCustomShape.Stroke = "LawnGreen";
+                selectedCustomShape.Stroke = selectedCustomShape.TmpStroke;
             }
             if (detectedCustomShape != null)
             {
                 selectedCustomShape = this.detectedCustomShape;
                 selectedCustomShape.Stroke = "Red";
                 DefaultLabel = selectedCustomShape.Label;
+                SelectedColorLabel = selectedCustomShape.Label;
                 SelectListItem();
             }
         }
@@ -1568,13 +1606,14 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (CustomShape r in RectanglesView)
             {
-                r.Stroke = "LawnGreen";
+                r.Stroke = r.TmpStroke;
             }
             if (-1 < indexView && indexView < RectanglesView.Count())
             {
                 selectedCustomShape = RectanglesView[indexView];
                 selectedCustomShape.Stroke = "Red";
                 DefaultLabel = selectedCustomShape.Label;
+                SelectedColorLabel = selectedCustomShape.Label;
             }
         }
 
@@ -1682,7 +1721,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (CustomShape r in RectanglesView)
             {
-                r.Stroke = "LawnGreen";
+                r.Stroke = r.TmpStroke;
             }
             selectedCustomShape.Stroke = "Red";
             FilterName();
@@ -2010,72 +2049,41 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void FilterName()
         {
+            //if (ListViewImage.Contains("grid"))
+            //{
+            //    FilterVisibilitySelectedGallery = false;
+            //    FilterVisibilityAllLabels = false;
+            //    FilterVisibilityAllLabelsGallery = false;
+            //    FilterVisibilitySelected = true;
+            //}
+            //else if (ListViewImage.Contains("list"))
+            //{
+            //    FilterVisibilitySelectedGallery = true;
+            //    FilterVisibilityAllLabels = false;
+            //    FilterVisibilityAllLabelsGallery = false;
+            //    FilterVisibilitySelected = false;
+            //}
+
             if (SelectedComboBoxItem == "All Labels")
             {
-                if (ListViewImage.Contains("grid"))
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = true;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = false;
-                }
+                DefaultLabel = SelectedComboBoxItem;
+            }
 
-                else if (ListViewImage.Contains("list"))
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = true;
-                    FilterVisibilitySelected = false;
-                }
+            RectanglesView.Clear();
+            ClearFields();
 
-                RectanglesView.Clear();
-                ClearFields();
-                foreach (CustomShape r in Rectangles)
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r.Label == SelectedComboBoxItem || "All Labels" == SelectedComboBoxItem)
                 {
                     RectanglesView.Add(r);
                     SaveShapeToField(r);
                 }
-                indexRectanglesView = RectanglesView.Count();
-
-                RectangleCount = "#" + Rectangles.Count.ToString();
-
             }
 
-            else if (SelectedComboBoxItem != "All Labels")
-            {
-                if (ListViewImage.Contains("grid"))
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = true;
-                }
+            indexRectanglesView = RectanglesView.Count();
 
-                else if (ListViewImage.Contains("list"))
-                {
-                    FilterVisibilitySelectedGallery = true;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = false;
-                }
-                DefaultLabel = SelectedComboBoxItem;
-
-                RectanglesView.Clear();
-                ClearFields();
-
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Label == SelectedComboBoxItem)
-                    {
-                        RectanglesView.Add(r);
-                        SaveShapeToField(r);
-                    }
-                }
-
-                indexRectanglesView = RectanglesView.Count();
-
-                RectangleCount = "#" + RectanglesView.Count.ToString();
-            }
+            RectangleCount = "#" + RectanglesView.Count.ToString();
         }
 
         /// <summary>
@@ -2087,6 +2095,7 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxItems.Clear();
             ComboBoxItems.Add("All Labels");
             SelectedComboBoxItem = temp;
+            SelectedColorLabel = temp;
 
             foreach (var rec in Rectangles)
             {
@@ -2111,6 +2120,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 _selectedComboBoxItem = value;
                 OnPropertyChanged("SelectedComboBoxItem");
+
             }
         }
 
@@ -2241,6 +2251,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region Colorpicker
 
+        #region public Variables with Getter/Setter-Method
+
         private string _selectedColor = "Red";
         public string SelectedColor
         {
@@ -2265,10 +2277,46 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 _selectedColorLabel = value;
+                OnPropertyChanged("SelectedColorLabel");
             }
         }
 
-        public void ChangeFillColor()
+        private double _selectedOpacity = 1;
+        public double SelectedOpacity
+        {
+            get
+            {
+                return _selectedOpacity;
+            }
+            set
+            {
+                _selectedOpacity = value;
+            }
+        }
+
+        public ObservableCollection<string> ModeItems { get; } = new ObservableCollection<string>() { "Fill", "Border", "Both" };
+
+        private string _selectedModeItem = "Fill";
+        public string SelectedModeItem
+        {
+            get
+            {
+                return _selectedModeItem;
+            }
+            set
+            {
+                _selectedModeItem = value;
+                OnPropertyChanged("SelectedModeItem");
+            }
+        }
+
+        private enum ColorMode { Fill, Border, Both };
+        private ColorMode _colorMode = ColorMode.Fill;
+
+        #endregion
+
+        //Determine which Shapes have to be changed
+        public void ChangeColor()
         {
             if (SelectedColorLabel != null)
             {
@@ -2282,7 +2330,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     foreach (var r in Rectangles)
                     {
-                        r.Fill = SelectedColor;
+                        ChangeColorRoutine(r);
                     }
                 }
                 else
@@ -2291,12 +2339,70 @@ namespace MachineLearningTrainer.DrawerTool
                     {
                         if (SelectedColorLabel == r.Label)
                         {
-                            r.Fill = SelectedColor;
+                            ChangeColorRoutine(r);
                         }
                     }
                 }
             }
-            OnPropertyChanged("ChangeFillColor");
+            OnPropertyChanged("ChangeColor");
+        }
+
+        //Change color of selected Part (Fill, Border, Both)
+        public void ChangeColorRoutine(CustomShape r)
+        {
+            switch (_selectedModeItem)
+            {
+                case "Fill":
+                    r.Fill = SelectedColor;
+                    r.TmpFill = SelectedColor;
+                    r.Opacity = SelectedOpacity;
+                    r.TmpOpacity = SelectedOpacity;
+                    break;
+                case "Border":
+                    r.Stroke = SelectedColor;
+                    r.TmpStroke = SelectedColor;
+                    break;
+                case "Both":
+                    r.Fill = SelectedColor;
+                    r.TmpFill = SelectedColor;
+                    r.Opacity = SelectedOpacity;
+                    r.TmpOpacity = SelectedOpacity;
+                    r.Stroke = SelectedColor;
+                    r.TmpStroke = SelectedColor;
+                    break;
+            }
+        }
+
+        //Realtime Opacity change
+        internal void ChangeOpacity()
+        {
+            if (SelectedColorLabel != null)
+            {
+                if (SelectedComboBoxItem != SelectedColorLabel)
+                {
+                    SelectedComboBoxItem = "All Labels";
+                    FilterName();
+                }
+
+                if (SelectedColorLabel == "All Labels")
+                {
+                    foreach (var r in Rectangles)
+                    {
+                        r.Opacity = SelectedOpacity;
+                    }
+                }
+                else
+                {
+                    foreach (var r in Rectangles)
+                    {
+                        if (SelectedColorLabel == r.Label)
+                        {
+                            r.Opacity = SelectedOpacity;
+                        }
+                    }
+                }
+            }
+            OnPropertyChanged("ChangeOpacity");
         }
 
         #endregion
@@ -2344,16 +2450,24 @@ namespace MachineLearningTrainer.DrawerTool
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
+                string stroke = "LawnGreen";
+                string fill = "Transparent";
+                double opacity = 1;
+
                 foreach (XmlNode node in doc.DocumentElement)
                 {
                     if (node.Name == "object")
                     {
                         foreach (XmlNode objectChild in node)
                         {
-                            if (objectChild.Name == "name")
+                            if (objectChild.Name == "Format")
                             {
-                                name = objectChild.InnerText;
-                                RectangleText = name;
+                                name = objectChild["label"].InnerText;
+                                stroke = objectChild["stroke"].InnerText;
+                                fill = objectChild["fill"].InnerText;
+                                opacity = double.Parse(objectChild["opacity"].InnerText);
+
+                                //RectangleText = name;
                             }
 
                             if (objectChild.Name == "bndbox")
@@ -2365,6 +2479,12 @@ namespace MachineLearningTrainer.DrawerTool
                                 CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
                                 id++;
                                 loadedRect.Label = name;
+                                loadedRect.Stroke = stroke;
+                                loadedRect.TmpStroke = stroke;
+                                loadedRect.Fill = fill;
+                                loadedRect.TmpFill = fill;
+                                loadedRect.Opacity = opacity;
+                                loadedRect.TmpOpacity = opacity;
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
@@ -2389,6 +2509,7 @@ namespace MachineLearningTrainer.DrawerTool
             OpenFileDialog openFileDialog = new OpenFileDialog();
             openFileDialog.Filter = "XML Files | *.xml";
 
+
             if (openFileDialog.ShowDialog() == true)
                 dst = openFileDialog.FileName;
 
@@ -2397,6 +2518,10 @@ namespace MachineLearningTrainer.DrawerTool
                 XmlDocument doc = new XmlDocument();
                 doc.Load(dst);
 
+                string stroke = "Black";
+                string fill = "Black";
+                double opacity = 1;
+
                 foreach (XmlNode node in doc.DocumentElement)
                 {
 
@@ -2404,10 +2529,15 @@ namespace MachineLearningTrainer.DrawerTool
                     {
                         foreach (XmlNode objectChild in node)
                         {
-                            if (objectChild.Name == "name")
+
+                            if (objectChild.Name == "Format")
                             {
-                                name = objectChild.InnerText;
-                                RectangleText = name;
+                                name = objectChild["label"].InnerText;
+                                stroke = objectChild["stroke"].InnerText;
+                                fill = objectChild["fill"].InnerText;
+                                opacity = double.Parse(objectChild["opacity"].InnerText);
+
+                                //RectangleText = name;
                             }
 
                             if (objectChild.Name == "bndbox")
@@ -2420,6 +2550,12 @@ namespace MachineLearningTrainer.DrawerTool
                                 CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
                                 id++;
                                 loadedRect.Label = name;
+                                loadedRect.Stroke = stroke;
+                                loadedRect.TmpStroke = stroke;
+                                loadedRect.Fill = fill;
+                                loadedRect.TmpFill = fill;
+                                loadedRect.Opacity = opacity;
+                                loadedRect.TmpOpacity = opacity;
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
@@ -2515,6 +2651,8 @@ namespace MachineLearningTrainer.DrawerTool
                 ComboBoxNames();
                 SortList();
                 FilterName();
+                SelectedColorLabel = "All Labels";
+
 
 
                 //Only for debugging
@@ -2533,8 +2671,8 @@ namespace MachineLearningTrainer.DrawerTool
                 //fields[0].Add(new CustomShape(100, 50, 100, 100, 0));
                 //fields[3].Add(new CustomShape(700, 50, 100, 100, 1));
 
-                Console.WriteLine(meshColumnNumber);
-                Console.WriteLine(meshRowNumber);
+                //Console.WriteLine(meshColumnNumber);
+                //Console.WriteLine(meshRowNumber);
                 //
             }
         }
@@ -2567,13 +2705,14 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var rect in Rectangles)
             {
-                rect.Fill = "Transparent";
-                rect.Stroke = "LawnGreen";
-                rect.Opacity = 1;
+                rect.Fill = rect.TmpFill;
+                rect.Stroke = rect.TmpStroke;
+                rect.Opacity = rect.TmpOpacity;
 
             }
             Enabled = true;
             mouseHandlingState = MouseState.Normal;
+            IconPath = "\\Icons\\new.png";
         }
 
         public void DeleteSelectionForRename()

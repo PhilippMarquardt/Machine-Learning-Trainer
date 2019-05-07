@@ -25,9 +25,15 @@ namespace MachineLearningTrainer.DrawerTool
         private double y2;
         private double yTop;
         private int id;
+
         private double opacity;
         private string fill;
         private string stroke;
+        private double tmpOpacity = 1;
+        private string tmpFill = "Transparent";
+        private string tmpStroke = "LawnGreen";
+
+
         private readonly int strokeThickness = 4;
         private Boolean isMouseOver;
         private Boolean move;
@@ -237,6 +243,9 @@ namespace MachineLearningTrainer.DrawerTool
             get { return this.id; }
         }
 
+
+        #region Colorinformations for Drawing
+
         public double Opacity
         {
             get { return this.opacity; }
@@ -275,6 +284,51 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
         }
+
+        #region tmpInformations while detection/selection
+
+        public double TmpOpacity
+        {
+            get => tmpOpacity;
+            set
+            {
+                if (tmpOpacity != value)
+                {
+                    this.tmpOpacity = value;
+                    this.NotifyPropertyChanged("TmpOpacity");
+                }
+            }
+        }
+
+        public string TmpFill
+        {
+            get { return this.tmpFill; }
+            set
+            {
+                if (tmpFill != value)
+                {
+                    this.tmpFill = value;
+                    this.NotifyPropertyChanged("TmpFill");
+                }
+            }
+        }
+
+        public string TmpStroke
+        {
+            get => tmpStroke;
+            set
+            {
+                if (tmpStroke != value)
+                {
+                    this.tmpStroke = value;
+                    this.NotifyPropertyChanged("TmpStroke");
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
 
         public bool IsMouseOver
         {

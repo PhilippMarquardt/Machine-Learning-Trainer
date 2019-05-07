@@ -160,8 +160,24 @@ namespace MachineLearningTrainer
                 {
                     writer.WriteStartElement("object");
 
-                    writer.WriteStartElement("name");
+                    writer.WriteStartElement("Format");
+
+                    writer.WriteStartElement("label");
                     writer.WriteString(rec.Label);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("stroke");
+                    writer.WriteString(rec.Stroke);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("fill");
+                    writer.WriteString(rec.Fill);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("opacity");
+                    writer.WriteString(Convert.ToString(rec.Opacity));
+                    writer.WriteEndElement();
+
                     writer.WriteEndElement();
 
                     writer.WriteStartElement("pose");

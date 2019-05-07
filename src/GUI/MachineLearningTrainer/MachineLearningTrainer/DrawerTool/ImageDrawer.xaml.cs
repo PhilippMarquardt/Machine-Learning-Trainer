@@ -579,7 +579,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void _applyColorChange_Click(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as DrawerViewModel).ChangeFillColor();
+            (this.DataContext as DrawerViewModel).ChangeColor();
         }
 
         private void _closeColorChange_Click(object sender, RoutedEventArgs e)
@@ -593,9 +593,10 @@ namespace MachineLearningTrainer.DrawerTool
             _colorCanvas.SelectedColor = _colorPicker.SelectedColor;
         }
 
-        private void ComboBoxColor_DropDownClosed(object sender, EventArgs e)
+        private void _sliderOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-
+            _opacityTextBox.Text = Convert.ToString(_sliderOpacity.Value);
+            (this.DataContext as DrawerViewModel).ChangeOpacity();
         }
     }
 }

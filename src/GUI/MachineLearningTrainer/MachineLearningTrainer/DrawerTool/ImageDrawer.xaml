@@ -80,14 +80,14 @@
                     x:Key="{x:Static SystemColors.HighlightBrushKey}"
                     Opacity="0.8"
                     Color="DodgerBlue" />
-                <!--<SolidColorBrush
+                <SolidColorBrush
                     x:Key="{x:Static SystemColors.ControlBrushKey}"
                     Opacity="0.8"
-                    Color="DodgerBlue" />-->
-                <!--<SolidColorBrush
+                    Color="DodgerBlue" />
+                <SolidColorBrush
                     x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                     Opacity="0.8"
-                    Color="DodgerBlue" />-->
+                    Color="DodgerBlue" />
             </Style.Resources>
             
         </Style>
@@ -385,10 +385,11 @@
                 Grid.Column="4"
                 Panel.ZIndex="3">
                 <Grid
-                        Width="auto"
-                        MinWidth="120"
-                        Margin="10">
+                    Width="auto"
+                    MinWidth="120"
+                    Margin="10">
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
@@ -405,22 +406,62 @@
                         Text="ColorPicker" 
                         TextAlignment="Center"
                         Grid.Row="0"/>
-                    <ComboBox
+                    <Grid
                         Grid.Row="1"
                         Width="auto"
-                        Height="30"
+                        MinWidth="120"
+                        Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <DockPanel
+                        VerticalAlignment="Center" 
                         Margin="5"
-                        Padding="3"
-                        HorizontalAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        DropDownClosed="ComboBox_DropDownClosed"
-                        FontSize="14"
-                        Foreground="Black"
-                        ItemsSource="{Binding ComboBoxItems}"
-                        MouseUp="ImgCamera_MouseUp"
-                        SelectedIndex="0"
-                        SelectedItem="{Binding SelectedColorLabel}" />
+                        Grid.Row="0">
+                            <Label
+                                Foreground="Black"
+                                DockPanel.Dock="Left"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">Mode:</Label>
+                            <ComboBox
+                                DockPanel.Dock="Right"
+                                Width="auto"
+                                Height="30"
+                                Margin="5"
+                                Padding="3"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                FontSize="14"
+                                Foreground="Black"
+                                ItemsSource="{Binding ModeItems}"
+                                SelectedIndex="0"
+                                SelectedItem="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                        <DockPanel
+                        VerticalAlignment="Center" 
+                        Margin="5"
+                        Grid.Row="1">
+                            <Label
+                            Foreground="Black"
+                            DockPanel.Dock="Left"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center">Selected Label:</Label>
+                            <ComboBox
+                                DockPanel.Dock="Right"
+                            Width="auto"
+                            Height="30"
+                            Margin="5"
+                            Padding="3"
+                            HorizontalAlignment="Right"
+                            VerticalContentAlignment="Center"
+                            FontSize="14"
+                            Foreground="Black"
+                            ItemsSource="{Binding ComboBoxItems}"
+                            SelectedIndex="0"
+                            SelectedItem="{Binding SelectedColorLabel}" />
+                        </DockPanel>
+                    </Grid>
                     <xctk:ColorCanvas
                         Background="Transparent"
                         Foreground="Black"
@@ -432,10 +473,31 @@
                         UsingAlphaChannel="False"
                         SelectedColorChanged="_colorCanvas_SelectedColorChanged" 
                         SelectedColor="{Binding SelectedColor}"/>
+                    <DockPanel 
+                        VerticalAlignment="Center" 
+                        Margin="5"
+                        Grid.Row="3">
+                        <Label DockPanel.Dock="Left" Foreground="Black">O:</Label>
+                        <TextBox 
+                            x:Name="_opacityTextBox"
+                            DockPanel.Dock="Right"
+                            TextAlignment="Right"
+                            Foreground="Black"
+                            Width="40" 
+                            Text="1"
+                            IsReadOnly="True" />
+                        <Slider 
+                            Maximum="1" 
+                            Name="_sliderOpacity" 
+                            TickFrequency="0.05"
+                            IsSnapToTickEnabled="True"
+                            ValueChanged="_sliderOpacity_ValueChanged" 
+                            Value="{Binding SelectedOpacity, Mode=TwoWay}"/>
+                    </DockPanel>
                     <xctk:ColorPicker
                         x:Name="_colorPicker"
                         Margin="5"
-                        Grid.Row="3"
+                        Grid.Row="4"
                         VerticalAlignment="Top"
                         SelectedColorChanged="_colorPicker_SelectedColorChanged" 
                         ShowTabHeaders="False" 
@@ -445,7 +507,7 @@
 
                     <Grid
                         Margin="5"
-                        Grid.Row="4"
+                        Grid.Row="5"
                         VerticalAlignment="Bottom">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="100" />
@@ -898,50 +960,6 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
-                        
-                        <!-- second layer for manipulating Rectangle-->
-                        <!--
-                        <ItemsControl
-                            x:Name="ad_manipulatableRectangle"
-                            Width="{Binding ActualWidth, ElementName=imgPreview}"
-                            Height="{Binding ActualHeight, ElementName=imgPreview}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            ItemsSource="{Binding manipulatedRectangle, UpdateSourceTrigger=PropertyChanged}">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Rectangle
-                                        Width="{Binding Width}"
-                                        Height="{Binding Height}"
-                                        Stroke="{Binding Stroke}"
-                                        StrokeThickness="{Binding StrokeThickness}">
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
-                                        </Rectangle.Fill>
-                                        <Rectangle.RenderTransform>
-                                            <TranslateTransform X="{Binding XLeft}" Y="{Binding YTop}" />
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas 
-                                        Name="DrawCanvas"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Width="{Binding ActualWidth, ElementName=imgPreview}"
-                                        Height="{Binding ActualHeight, ElementName=imgPreview}"
-                                        ClipToBounds="True"
-                                        IsItemsHost="True" 
-                                        Background="Transparent">
-                                    </Canvas>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-                        -->
-                        <!-- -->
                     </Canvas>
                 </local:ZoomBorder>
             </Border>
@@ -1022,7 +1040,7 @@
             </StackPanel>
 
             <!--  ListBox with SelectedLabels and Text  -->
-            <ListBox
+            <!--<ListBox
                 x:Name="listBoxLabels1"
                 Grid.Row="1"
                 Grid.Column="6"
@@ -1150,10 +1168,10 @@
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>
-            </ListBox>
+            </ListBox>-->
 
             <!--  ListBox with SelectedLabels, gallery format  -->
-            <ListBox
+            <!--<ListBox
                 Grid.Row="1"
                 Grid.Column="6"
                 Margin="5"
@@ -1217,13 +1235,13 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <!--<WrapPanel>
+                        --><!--<WrapPanel>
                             <Image
                                 Width="60"
                                 Height="60"
                                 Margin="10"
                                 Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
-                        </WrapPanel>-->
+                        </WrapPanel>--><!--
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
@@ -1264,7 +1282,7 @@
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>
-            </ListBox>
+            </ListBox>-->
 
             <!--  ListBox with All Labels and Text  -->
             <ListBox
@@ -1397,7 +1415,7 @@
             </ListBox>
 
             <!--  ListBox with All Labels, gallery format  -->
-            <ListBox
+            <!--<ListBox
                 Grid.Row="1"
                 Grid.Column="6"
                 Margin="5"
@@ -1460,7 +1478,7 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        <!--
+                        --><!--
                         <WrapPanel>
                             <Image
                                 Width="60"
@@ -1468,7 +1486,7 @@
                                 Margin="10"
                                 Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
                         </WrapPanel>
-                        -->
+                        --><!--
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
@@ -1509,7 +1527,7 @@
                         </MenuItem>
                     </ContextMenu>
                 </ListBox.ContextMenu>
-            </ListBox>
+            </ListBox>-->
         </Grid>
     </DockPanel>
 </UserControl>
