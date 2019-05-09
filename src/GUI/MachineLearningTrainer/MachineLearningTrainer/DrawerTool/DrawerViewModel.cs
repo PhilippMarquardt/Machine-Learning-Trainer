@@ -1311,7 +1311,6 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape = this.detectedCustomShape;
                 selectedCustomShape.Stroke = "Red";
                 DefaultLabel = selectedCustomShape.Label;
-                SelectedColor = selectedCustomShape.Fill;
                 SelectListItem();
             }
         }
@@ -1327,7 +1326,6 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape = RectanglesView[indexView];
                 selectedCustomShape.Stroke = "Red";
                 DefaultLabel = selectedCustomShape.Label;
-                SelectedColor = selectedCustomShape.Fill;
             }
         }
 
@@ -2134,6 +2132,33 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
             OnPropertyChanged("ChangeOpacity");
+        }
+        /// <summary>
+        /// Sets SelectedColor according to selected Label when opening ColorPicker
+        /// </summary>
+        internal void SetSelectedColor()
+        {
+            foreach(var r in Rectangles)
+            {
+                if (r.Label == SelectedComboBoxItem)
+                {
+                    if (SelectedModeItem == "Fill")
+                    {
+                        SelectedColor = r.Fill;
+                        return;
+                    }
+                    else if (SelectedModeItem == "Border")
+                    {
+                        SelectedColor = r.Stroke;
+                        return;
+                    }
+                    else
+                    {
+                        SelectedColor = "Red";
+                        return;
+                    }
+                }
+            }
         }
 
         #endregion

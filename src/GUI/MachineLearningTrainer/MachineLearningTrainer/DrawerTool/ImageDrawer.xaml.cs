@@ -174,6 +174,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).FilterName();
             (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).RectanglesView.Count.ToString();
+            (this.DataContext as DrawerViewModel).SetSelectedColor();
         }
 
 
@@ -567,8 +568,6 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void ColorPicker_Open(object sender, RoutedEventArgs e)
         {
-            //var newWindow = new ColorPicker();
-            //newWindow.Show();
             ColorPicker_Panel.Visibility = Visibility.Visible;
             Functions_Panel.Visibility = Visibility.Collapsed;
         }
