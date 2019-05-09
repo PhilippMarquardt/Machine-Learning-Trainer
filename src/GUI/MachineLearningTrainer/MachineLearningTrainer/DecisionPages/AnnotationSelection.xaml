@@ -71,5 +71,19 @@
 
 
         </Button>
+
+        <Button 
+            Grid.Column="0"
+            Grid.Row="1"
+            Canvas.Bottom="0"
+            HorizontalAlignment="Left"
+            Height="Auto"
+            Background="Transparent"
+            Command="{Binding PreviousPage}"
+            Foreground="#FF2196F3"
+            Opacity="0.3"
+            Style="{StaticResource IncreaseOpacityOnHover}">
+            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline"  HorizontalAlignment="Center" />
+        </Button>
     </Grid>
 </UserControl>

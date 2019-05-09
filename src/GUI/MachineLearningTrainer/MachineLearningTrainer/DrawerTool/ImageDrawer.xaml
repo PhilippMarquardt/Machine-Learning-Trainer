@@ -43,7 +43,7 @@
             <Setter Property="Margin" Value="10" />
         </Style>
 
-        <!--<Style
+        <Style
             x:Key="IncreaseOpacityOnHover"
             BasedOn="{StaticResource {x:Type Button}}"
             TargetType="Button">
@@ -71,7 +71,7 @@
                     </BeginStoryboard>
                 </EventTrigger>
             </Style.Triggers>
-        </Style>-->
+        </Style>
 
         <Style x:Key="myLBStyle" TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="PreviewMouseDown" Handler="LblTextBox_MouseDown" />
@@ -373,7 +373,7 @@
                 <RowDefinition x:Name="gridY2" Height="auto" />
             </Grid.RowDefinitions>
 
-
+            <!-- StackPanel with ColorPicker -->
             <StackPanel
                 x:Name="ColorPicker_Panel"
                 Width="auto"
@@ -438,29 +438,6 @@
                                 SelectedIndex="0"
                                 SelectedItem="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" />
                         </DockPanel>
-                        <DockPanel
-                        VerticalAlignment="Center" 
-                        Margin="5"
-                        Grid.Row="1">
-                            <Label
-                            Foreground="Black"
-                            DockPanel.Dock="Left"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center">Selected Label:</Label>
-                            <ComboBox
-                                DockPanel.Dock="Right"
-                            Width="auto"
-                            Height="30"
-                            Margin="5"
-                            Padding="3"
-                            HorizontalAlignment="Right"
-                            VerticalContentAlignment="Center"
-                            FontSize="14"
-                            Foreground="Black"
-                            ItemsSource="{Binding ComboBoxItems}"
-                            SelectedIndex="0"
-                            SelectedItem="{Binding SelectedColorLabel}" />
-                        </DockPanel>
                     </Grid>
                     <xctk:ColorCanvas
                         Background="Transparent"
@@ -472,7 +449,7 @@
                         HorizontalAlignment="Stretch" 
                         UsingAlphaChannel="False"
                         SelectedColorChanged="_colorCanvas_SelectedColorChanged" 
-                        SelectedColor="{Binding SelectedColor}"/>
+                        SelectedColor="{Binding SelectedColor, Mode=TwoWay}"/>
                     <DockPanel 
                         VerticalAlignment="Center" 
                         Margin="5"
@@ -527,7 +504,8 @@
                     </Grid>
                 </Grid>
             </StackPanel>
-
+            
+            <!-- StackPanel with Buttons -->
             <StackPanel
                 x:Name="Functions_Panel"
                 Visibility="Visible"
@@ -605,14 +583,15 @@
                     Height="22"
                     Margin="5,10,5,10"
                     BorderBrush="Transparent"
-                    Command="{Binding DeleteCommand}">
+                    Command="{Binding DeleteCommand}" 
+                    IsEnabled="{Binding IsEnabled}">
                     <Button.Template>
                         <ControlTemplate>
                             <Image Margin="2" Source="/Icons/delete.png" />
                         </ControlTemplate>
                     </Button.Template>
                     <Button.ToolTip>
-                        <TextBlock Text="Delete Rectangle" />
+                        <TextBlock Text="Delete Rectangle (Del)" />
                     </Button.ToolTip>
                 </Button>
                 <Button
@@ -663,25 +642,8 @@
                         <TextBlock Text="Fit to width (Ctrl + 0)" />
                     </Button.ToolTip>
                 </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Click="ColorPicker_Open"
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/colorpicker.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Change Color for different Labels" />
-                    </Button.ToolTip>
-                </Button>
             </StackPanel>
-
-
+            
             <Canvas
                 Grid.Row="0"
                 Grid.RowSpan="4"
@@ -719,24 +681,25 @@
                             </Button.LayoutTransform>
                         </Button>
                     </WrapPanel>
-                    <!--<WrapPanel x:Name="WrapPanel_Folder" Width="auto" MouseEnter="WrapPanel_Folder_MouseEnter" MouseLeave="WrapPanel_Folder_MouseLeave">
-                        <Rectangle x:Name="Rectangle_Folder" Margin="1" Width="3" Height="{Binding ActualWidth, ElementName=FileExplorer_Button}" Fill="Gray"/>
-                        <Button x:Name="Button_Folder" Style="{StaticResource BasicButtonStyle}" Content="Folder" HorizontalAlignment="Center" Margin="1" Height="25" BorderBrush="White" BorderThickness="0" Foreground="Black" Background="Transparent" Click="Button_Folder_Click">
-                            <Button.LayoutTransform>
-                                <RotateTransform Angle="90"/>
-                            </Button.LayoutTransform>
-                        </Button>
-                    </WrapPanel>-->
-                    
                 </StackPanel>
 
-
-
-                <!--<Button Canvas.Bottom="0" Margin="1" Background="White" Command="{Binding PreviousPage}" Height="25" Width="25" Style="{StaticResource IncreaseOpacityOnHover}" Opacity="0.3">
-                    <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
-                </Button>-->
+                
 
             </Canvas>
+
+            <Button 
+                Grid.Column="0"
+                Grid.Row="5"
+                Width="Auto"
+                Height="Auto"
+                HorizontalAlignment="Left"
+                Background="Transparent"
+                Command="{Binding PreviousPage}"
+                Foreground="#FF2196F3"
+                Opacity="0.3"
+                Style="{StaticResource IncreaseOpacityOnHover}">
+            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline"  HorizontalAlignment="Center" />
+            </Button>
 
             <Grid
                 x:Name="gridcolumn1"
@@ -747,13 +710,6 @@
                 HorizontalAlignment="Left"
                 Panel.ZIndex="3"
                 Background="White">
-
-                <!--<StackPanel local:VisibilityAnimation.AnimationType="Fade" x:Name="Folder_Panel" Visibility="Collapsed" Width="180" HorizontalAlignment="Left">
-                    <Grid Background="#FF2196F3" Margin="10" Width="auto" MinWidth="120">
-                        <TextBlock Text="Files" Foreground="White" Margin="5" FontWeight="Bold" VerticalAlignment="Center" HorizontalAlignment="Stretch"/>
-                    </Grid>
-                    <ListBox HorizontalAlignment="Center" Width="150" ScrollViewer.HorizontalScrollBarVisibility="Auto"/>
-                </StackPanel>-->
 
                 <StackPanel
                     x:Name="FolderView_Panel"
@@ -839,7 +795,6 @@
                         Minimum="0" />
                 </StackPanel>
             </Grid>
-            <!--<GridSplitter Grid.Column="2" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" Panel.ZIndex="2"/>-->
 
             <StackPanel
                 Grid.Row="2"
@@ -926,7 +881,8 @@
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Background="Transparent"
-                            ItemsSource="{Binding RectanglesView, UpdateSourceTrigger=PropertyChanged}">
+                            ItemsSource="{Binding RectanglesView, UpdateSourceTrigger=PropertyChanged}"
+                            Panel.ZIndex="1">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <Rectangle
@@ -960,11 +916,51 @@
                                 </ItemsPanelTemplate>
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
+
+                        <ItemsControl
+                            Width="{Binding ActualWidth, ElementName=imgPreview}"
+                            Height="{Binding ActualHeight, ElementName=imgPreview}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            Panel.ZIndex="0">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Rectangle
+                                        Width="200"
+                                        Height="200"
+                                        Stroke="Red"
+                                        StrokeThickness="10">
+                                        <Rectangle.Effect>
+                                            <BlurEffect Radius="10" />
+                                            <!--<DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Yellow"/>-->
+                                        </Rectangle.Effect>
+                                        <Rectangle.Fill>
+                                            <SolidColorBrush Color="Transparent" Opacity="1" />
+                                        </Rectangle.Fill>
+                                        <Rectangle.RenderTransform>
+                                            <TranslateTransform X="20" Y="20" />
+                                        </Rectangle.RenderTransform>
+                                    </Rectangle>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas 
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Width="{Binding ActualWidth, ElementName=imgPreview}"
+                                        Height="{Binding ActualHeight, ElementName=imgPreview}"
+                                        ClipToBounds="True"
+                                        IsItemsHost="True" 
+                                        Background="Transparent">
+                                    </Canvas>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
                     </Canvas>
                 </local:ZoomBorder>
             </Border>
-
-            <!--<GridSplitter Grid.Column="4" Grid.RowSpan="4" Width="4" HorizontalAlignment="Stretch" />-->
 
             <StackPanel Grid.Row="0" Grid.Column="6">
                 <WrapPanel Margin="10" VerticalAlignment="Center">
@@ -1005,6 +1001,23 @@
                     <Grid.Resources>
                         <ImageBrush x:Key="AddButtonImageBrush" ImageSource="{Binding ListViewImage}" />
                     </Grid.Resources>
+                    <Button
+                        Width="26"
+                        Height="26"
+                        Margin="5"
+                        HorizontalAlignment="Left"
+                        BorderBrush="Transparent"
+                        Click="ColorPicker_Open"
+                        IsEnabled="{Binding ColorPickerEnabled}">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Margin="2" Source="{Binding ColorPickerIconPath}" />
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.ToolTip>
+                            <TextBlock Text="Change Color of selected Label" />
+                        </Button.ToolTip>
+                    </Button>
                     <!--<Button
                         Width="26"
                         Height="26"
@@ -1039,136 +1052,6 @@
                 </Grid>
             </StackPanel>
 
-            <!--  ListBox with SelectedLabels and Text  -->
-            <!--<ListBox
-                x:Name="listBoxLabels1"
-                Grid.Row="1"
-                Grid.Column="6"
-                Margin="5"
-                Panel.ZIndex="1"
-                Background="White"
-                Foreground="Black"
-                ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding RectanglesView}"
-                MouseDoubleClick="listBoxLabels_MouseDoubleClick"
-                MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectionChanged="listBoxLabels_SelectionChanged"
-                SelectionMode="Single"
-                Style="{StaticResource MyListBoxStyle}"
-                Visibility="{Binding FilterVisibilitySelected, Converter={StaticResource booleanToVisibiliy}}">
-                <ListBox.InputBindings>
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding RightButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding LeftButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding DownButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding UpButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Return"
-                        Command="{Binding EnterCommand}"
-                        CommandParameter="Return" />
-                    <KeyBinding
-                        Key="Tab"
-                        Command="{Binding TabNextShape}" />
-                    <KeyBinding
-                        Key="Tab"
-                        Command="{Binding TabPreviousShape}"
-                        Modifiers="Ctrl" />
-
-                </ListBox.InputBindings>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <WrapPanel Width="auto" HorizontalAlignment="Center">
-                            <TextBox
-                                Height="auto"
-                                x:Name="lblTextBox"
-                                Width="auto"
-                                MinWidth="70"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                AcceptsReturn="False"
-                                FontSize="12"
-                                Foreground="Black"
-                                Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Left"
-                                IsReadOnly="True"
-                                MouseDoubleClick="LblTextBox_MouseDoubleClick"
-                                LostFocus="LblTextBox_LostFocus"
-                                TextWrapping="Wrap"
-                                Margin="20"
-                                Padding="5"/>
-                        </WrapPanel>
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ContextMenu>
-                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem
-                            Width="300"
-                            Command="{Binding DuplicateCommand}"
-                            Header="Duplicate"
-                            InputGestureText="Ctrl + D">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/duplicate.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding RenameCommand}"
-                            Header="Rename All"
-                            InputGestureText="Ctrl + U">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/rename.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding DeleteCommand}"
-                            Header="Delete"
-                            InputGestureText="Del">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/delete.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>-->
 
             <!--  ListBox with SelectedLabels, gallery format  -->
             <!--<ListBox
@@ -1365,15 +1248,14 @@
                             <TextBox
                                 Height="auto"
                                 x:Name="lblTextBox"
-                                Width="auto"
-                                MinWidth="70"
+                                Width="160"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
+                                TextAlignment="Left"
                                 AcceptsReturn="False"
                                 FontSize="12"
                                 Foreground="Black"
                                 Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                TextAlignment="Left"
                                 IsReadOnly="True"
                                 MouseDoubleClick="LblTextBox_MouseDoubleClick"
                                 LostFocus="LblTextBox_LostFocus"
@@ -1413,121 +1295,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-
-            <!--  ListBox with All Labels, gallery format  -->
-            <!--<ListBox
-                Grid.Row="1"
-                Grid.Column="6"
-                Margin="5"
-                Panel.ZIndex="1"
-                Foreground="Black"
-                ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding RectanglesView}"
-                MouseDoubleClick="listBoxLabels_MouseDoubleClick"
-                MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectionChanged="listBoxLabels_SelectionChanged"
-                SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectionMode="Extended"
-                Style="{StaticResource MyListBoxStyle}"
-                Visibility="{Binding FilterVisibilityAllLabelsGallery, Converter={StaticResource booleanToVisibiliy}}">
-                <ListBox.InputBindings>
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding RightButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding LeftButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding DownButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding UpButtonCommand1}"
-                        Modifiers="Ctrl" />
-                </ListBox.InputBindings>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        --><!--
-                        <WrapPanel>
-                            <Image
-                                Width="60"
-                                Height="60"
-                                Margin="10"
-                                Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
-                        </WrapPanel>
-                        --><!--
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid
-                            Height="auto"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Columns="3" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ContextMenu>
-                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem
-                            Width="300"
-                            Command="{Binding DuplicateCommand}"
-                            Header="Duplicate"
-                            InputGestureText="Ctrl + D">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/duplicate.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding RenameCommand}"
-                            Header="Rename All"
-                            InputGestureText="Ctrl + U">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/rename.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding DeleteCommand}"
-                            Header="Delete"
-                            InputGestureText="Del">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/delete.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>-->
+            
         </Grid>
     </DockPanel>
 </UserControl>

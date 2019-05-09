@@ -33,7 +33,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ImageDrawer()
         {
             InitializeComponent();
-            cnvImage.Cursor = Cursors.Arrow;
+            //cnvImage.Cursor = Cursors.Arrow;
             DriveInfo[] drives = DriveInfo.GetDrives();
             //foreach (DriveInfo driveInfo in drives)
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
@@ -85,7 +85,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
             {
-                cnvImage.Cursor = Cursors.Cross;
+                Mouse.OverrideCursor = Cursors.Cross;
                 (this.DataContext as DrawerViewModel).CreateRectangle(mousePosition);
             }
             else
@@ -150,7 +150,7 @@ namespace MachineLearningTrainer.DrawerTool
             ////    await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
             ////}
 
-            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count != 1)
+            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count > 0)
             {
                 (this.DataContext as DrawerViewModel).UndoEnabled = true;
             }
@@ -159,6 +159,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
         {
             (this.DataContext as DrawerViewModel).DuplicateVar = 0;
+            Mouse.OverrideCursor = Cursors.Arrow;
         }
 
         private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
