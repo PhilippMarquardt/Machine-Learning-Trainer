@@ -885,18 +885,20 @@
                             Panel.ZIndex="1">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Rectangle
+                                    <Border 
+                                        BorderBrush="{Binding Stroke}" 
+                                        BorderThickness="{Binding StrokeThickness}">
+                                        <Border.RenderTransform>
+                                            <TranslateTransform X="{Binding XLeftBorder}" Y="{Binding YTopBorder}"  />
+                                        </Border.RenderTransform>
+                                        <Rectangle
                                         Width="{Binding Width}"
-                                        Height="{Binding Height}"
-                                        Stroke="{Binding Stroke}"
-                                        StrokeThickness="{Binding StrokeThickness}">
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
-                                        </Rectangle.Fill>
-                                        <Rectangle.RenderTransform>
-                                            <TranslateTransform X="{Binding XLeft}" Y="{Binding YTop}" />
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
+                                        Height="{Binding Height}">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Border>
                                 </DataTemplate>
                             </ItemsControl.ItemTemplate>
                             <ItemsControl.ItemsPanel>

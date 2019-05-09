@@ -180,6 +180,8 @@ namespace MachineLearningTrainer.DrawerTool
         private readonly double minShapeSize = 20;
         private readonly double fieldWidth = 200;
         private readonly double fieldHeight = 200;
+        private readonly int strokeThickness = 2;
+        private readonly double distanceToBorder = 1;
 
 
 
@@ -237,69 +239,73 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void CheckOnCanvas(System.Windows.Point mousePosition)
         {
-            if (mousePosition.X < 0)
+            if (mousePosition.X < distanceToBorder)
             {
-                tmpX = 0;
+                tmpX = distanceToBorder;
             }
-            else if (mousePosition.X > MyCanvas.ActualWidth)
+            else if (mousePosition.X > MyCanvas.ActualWidth-distanceToBorder)
             {
-                tmpX = MyCanvas.ActualWidth;
+                tmpX = MyCanvas.ActualWidth-distanceToBorder;
             }
-            if (mousePosition.Y < 0)
+            if (mousePosition.Y < distanceToBorder)
             {
-                tmpY = 0;
+                tmpY = distanceToBorder;
             }
-            else if (mousePosition.Y > MyCanvas.ActualHeight)
+            else if (mousePosition.Y > MyCanvas.ActualHeight-distanceToBorder)
             {
-                tmpY = MyCanvas.ActualHeight;
+                tmpY = MyCanvas.ActualHeight-distanceToBorder;
             }
         }
 
         private void CheckOnCanvas(System.Windows.Point mousePosition, double deltaX, double deltaY)
         {
-            if (mousePosition.X - deltaX - selectedCustomShape.Width / 2 < 0)
+            if (mousePosition.X - deltaX - selectedCustomShape.Width / 2 < distanceToBorder)
             {
-                tmpX = 0;
-                selectedCustomShape.X1 = 0;
-                selectedCustomShape.XLeft = 0;
+                tmpX = distanceToBorder;
+                selectedCustomShape.X1 = distanceToBorder;
+                selectedCustomShape.XLeft = distanceToBorder;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
             }
-            else if (mousePosition.X - deltaX + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth)
+            else if (mousePosition.X - deltaX + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth - distanceToBorder)
             {
-                tmpX = MyCanvas.ActualWidth;
-                selectedCustomShape.X2 = MyCanvas.ActualWidth;
+                tmpX = MyCanvas.ActualWidth - distanceToBorder;
+                selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
             }
-            if (mousePosition.Y - deltaY - selectedCustomShape.Height / 2 < 0)
+            if (mousePosition.Y - deltaY - selectedCustomShape.Height / 2 < distanceToBorder)
             {
-                tmpY = 0;
-                selectedCustomShape.Y1 = 0;
-                selectedCustomShape.YTop = 0;
+                tmpY = distanceToBorder;
+                selectedCustomShape.Y1 = distanceToBorder;
+                selectedCustomShape.YTop = distanceToBorder;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
             }
-            else if (mousePosition.Y - deltaY + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight)
+            else if (mousePosition.Y - deltaY + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight - distanceToBorder)
             {
-                tmpY = MyCanvas.ActualHeight;
-                selectedCustomShape.Y2 = MyCanvas.ActualHeight;
+                tmpY = MyCanvas.ActualHeight - distanceToBorder;
+                selectedCustomShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
             }
         }
 
         private CustomShape CheckOnCanvas(CustomShape customShape)
         {
-            if (customShape.X1 < 0)
+            if (customShape.X1 < distanceToBorder)
             {
-                customShape.X1 = 0;
-                customShape.XLeft = 0;
+                customShape.X1 = distanceToBorder;
+                customShape.XLeft = distanceToBorder;
+                customShape.XLeftBorder = customShape.XLeft - customShape.StrokeThickness;
             }
-            if (customShape.X2 > MyCanvas.ActualWidth)
+            if (customShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
             {
-                customShape.X2 = MyCanvas.ActualWidth;
+                customShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
             }
-            if (customShape.Y1 < 0)
+            if (customShape.Y1 < distanceToBorder)
             {
-                customShape.Y1 = 0;
-                customShape.YTop = 0;
+                customShape.Y1 = distanceToBorder;
+                customShape.YTop = distanceToBorder;
+                customShape.YTopBorder = customShape.YTop - customShape.StrokeThickness;
             }
-            if (customShape.Y2 > MyCanvas.ActualHeight)
+            if (customShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
             {
-                customShape.Y2 = MyCanvas.ActualHeight;
+                customShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
             }
             customShape.Width = customShape.X2 - customShape.X1;
             customShape.Height = customShape.Y2 - customShape.Y1;
@@ -314,28 +320,30 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void CheckIfObjectOnCanvas()
         {
-            if (selectedCustomShape.X1 < 0)
+            if (selectedCustomShape.X1 < distanceToBorder)
             {
-                selectedCustomShape.X1 = 0;
-                selectedCustomShape.XLeft = 0;
+                selectedCustomShape.X1 = distanceToBorder;
+                selectedCustomShape.XLeft = distanceToBorder;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
-            else if (selectedCustomShape.X2 > MyCanvas.ActualWidth)
+            else if (selectedCustomShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
             {
-                selectedCustomShape.X2 = MyCanvas.ActualWidth;
+                selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
                 selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
 
 
-            if (selectedCustomShape.Y1 < 0)
+            if (selectedCustomShape.Y1 < distanceToBorder)
             {
-                selectedCustomShape.Y1 = 0;
-                selectedCustomShape.YTop = 0;
+                selectedCustomShape.Y1 = distanceToBorder;
+                selectedCustomShape.YTop = distanceToBorder;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
-            else if (selectedCustomShape.Y2 > MyCanvas.ActualHeight)
+            else if (selectedCustomShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
             {
-                selectedCustomShape.Y2 = MyCanvas.ActualHeight;
+                selectedCustomShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
                 selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
         }
@@ -416,7 +424,7 @@ namespace MachineLearningTrainer.DrawerTool
                 }
                 else
                 {
-                    if (RectanglesView[indexRectanglesView].X1 == -1 && RectanglesView[indexRectanglesView].Y1 == -1)
+                    if (RectanglesView[indexRectanglesView].X1 < distanceToBorder && RectanglesView[indexRectanglesView].Y1 < distanceToBorder)
                     {
                         RectanglesView[indexRectanglesView].X1 = tmpX;
                         RectanglesView[indexRectanglesView].Y1 = tmpY;
@@ -432,6 +440,8 @@ namespace MachineLearningTrainer.DrawerTool
                     {
                         RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X1;
                     }
+                    RectanglesView[indexRectanglesView].XLeftBorder = RectanglesView[indexRectanglesView].XLeft - RectanglesView[indexRectanglesView].StrokeThickness;
+
                     if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
                     {
                         RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y2;
@@ -440,6 +450,7 @@ namespace MachineLearningTrainer.DrawerTool
                     {
                         RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
                     }
+                    RectanglesView[indexRectanglesView].YTopBorder = RectanglesView[indexRectanglesView].YTop - RectanglesView[indexRectanglesView].StrokeThickness;
 
                     RectanglesView[indexRectanglesView].Width = Math.Abs(RectanglesView[indexRectanglesView].X2 - RectanglesView[indexRectanglesView].X1);
                     RectanglesView[indexRectanglesView].Height = Math.Abs(RectanglesView[indexRectanglesView].Y2 - RectanglesView[indexRectanglesView].Y1);
@@ -786,7 +797,9 @@ namespace MachineLearningTrainer.DrawerTool
                 tmpRelativPosition.Y = mousePosition.Y - deltaY;
                 selectedCustomShape.Center = tmpRelativPosition;
                 selectedCustomShape.YTop = selectedCustomShape.Y1;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.XLeft = selectedCustomShape.X1;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 Mouse.OverrideCursor = Cursors.SizeAll;
             }
         }
@@ -996,11 +1009,13 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     selectedCustomShape.Y1 = tmpY;
                     selectedCustomShape.YTop = tmpY;
+                    selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 }
                 else
                 {
                     selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
                     selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                    selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 }
             }
             else if (resizeDirection == ResizeDirection.SizeNE)
@@ -1009,11 +1024,13 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     selectedCustomShape.Y1 = tmpY;
                     selectedCustomShape.YTop = tmpY;
+                    selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 }
                 else
                 {
                     selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
                     selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                    selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 }
 
                 if (minShapeSize < selectedCustomShape.Width + (tmpX - selectedCustomShape.X2))
@@ -1073,11 +1090,13 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     selectedCustomShape.X1 = tmpX;
                     selectedCustomShape.XLeft = tmpX;
+                    selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 }
                 else
                 {
                     selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
                     selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                    selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 }
 
                 if (minShapeSize < selectedCustomShape.Height + (tmpY - selectedCustomShape.Y2))
@@ -1095,11 +1114,13 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     selectedCustomShape.X1 = tmpX;
                     selectedCustomShape.XLeft = tmpX;
+                    selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 }
                 else
                 {
                     selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
                     selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                    selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 }
             }
             else if (resizeDirection == ResizeDirection.SizeNW)
@@ -1108,22 +1129,26 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     selectedCustomShape.X1 = tmpX;
                     selectedCustomShape.XLeft = tmpX;
+                    selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 }
                 else
                 {
                     selectedCustomShape.X1 = selectedCustomShape.X2 - minShapeSize;
                     selectedCustomShape.XLeft = selectedCustomShape.X2 - minShapeSize;
+                    selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 }
 
                 if (minShapeSize < selectedCustomShape.Height + (selectedCustomShape.Y1 - tmpY))
                 {
                     selectedCustomShape.Y1 = tmpY;
                     selectedCustomShape.YTop = tmpY;
+                    selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 }
                 else
                 {
                     selectedCustomShape.Y1 = selectedCustomShape.Y2 - minShapeSize;
                     selectedCustomShape.YTop = selectedCustomShape.Y2 - minShapeSize;
+                    selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 }
             }
 
@@ -2298,6 +2323,10 @@ namespace MachineLearningTrainer.DrawerTool
                 string fill = "Black";
                 double opacity = 1;
 
+                Rectangles.Clear();
+                RectanglesView.Clear();
+                ClearFields();
+
                 foreach (XmlNode node in doc.DocumentElement)
                 {
 
@@ -2543,6 +2572,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.X1 += 2;
                 selectedCustomShape.XLeft += 2;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
             }
         }
 
@@ -2561,6 +2591,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.X1 -= 2;
                 selectedCustomShape.XLeft -= 2;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
             }
         }
 
@@ -2579,6 +2610,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.Y2 -= 2;
                 selectedCustomShape.YTop -= 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
             }
         }
 
@@ -2597,6 +2629,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.Y2 += 2;
                 selectedCustomShape.YTop += 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
             }
         }
 
@@ -2616,6 +2649,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.X1 += 2;
                 selectedCustomShape.XLeft += 2;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Width -= 2;
             }
         }
@@ -2651,6 +2685,7 @@ namespace MachineLearningTrainer.DrawerTool
             if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
             {
                 selectedCustomShape.Y2 -= 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Height -= 2;
             }
         }
@@ -2670,6 +2705,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.Y1 += 2;
                 selectedCustomShape.YTop += 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Height -= 2;
             }
         }
@@ -2689,6 +2725,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.X1 -= 2;
                 selectedCustomShape.XLeft -= 2;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Width += 2;
             }
         }
@@ -2743,6 +2780,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 selectedCustomShape.Y1 -= 2;
                 selectedCustomShape.YTop -= 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Height += 2;
             }
         }
@@ -3647,54 +3685,54 @@ namespace MachineLearningTrainer.DrawerTool
             set { _zoomBorderHeight = value; }
         }
 
-        public ResizableRectangle validateResizableRect(ResizableRectangle resizable)
-        {
-            if (resizable.X < 0)
-            {
-                resizable.RectangleWidth += resizable.X;
-                resizable.X = 0;
-            }
-            if (resizable.Y < 0)
-            {
-                resizable.RectangleHeight += resizable.Y;
-                resizable.Y = 0;
-            }
-            if (resizable.X + resizable.RectangleWidth > MyCanvas.ActualWidth) resizable.RectangleWidth = MyCanvas.ActualWidth - resizable.X;
-            if (resizable.Y + resizable.RectangleHeight > MyCanvas.ActualHeight) resizable.RectangleHeight = MyCanvas.ActualHeight - resizable.Y;
-            return resizable;
-        }
+        //public ResizableRectangle validateResizableRect(ResizableRectangle resizable)
+        //{
+        //    if (resizable.X < 0)
+        //    {
+        //        resizable.RectangleWidth += resizable.X;
+        //        resizable.X = 0;
+        //    }
+        //    if (resizable.Y < 0)
+        //    {
+        //        resizable.RectangleHeight += resizable.Y;
+        //        resizable.Y = 0;
+        //    }
+        //    if (resizable.X + resizable.RectangleWidth > MyCanvas.ActualWidth) resizable.RectangleWidth = MyCanvas.ActualWidth - resizable.X;
+        //    if (resizable.Y + resizable.RectangleHeight > MyCanvas.ActualHeight) resizable.RectangleHeight = MyCanvas.ActualHeight - resizable.Y;
+        //    return resizable;
+        //}
 
 
-        /// <summary>
-        /// update only the cropped image of the selected rectangle
-        /// </summary>
-        /// <param name="resizable"></param>
-        public void UpdateCropedImage(ResizableRectangle resizable)
-        {
-            resizable = validateResizableRect(resizable);
-            if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5)
-            {
-                BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-                Bitmap src;
-                using (MemoryStream outStream = new MemoryStream())
-                {
-                    BitmapEncoder enc = new BmpBitmapEncoder();
-                    enc.Frames.Add(BitmapFrame.Create(bImage));
-                    enc.Save(outStream);
-                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+        ///// <summary>
+        ///// update only the cropped image of the selected rectangle
+        ///// </summary>
+        ///// <param name="resizable"></param>
+        //public void UpdateCropedImage(ResizableRectangle resizable)
+        //{
+        //    resizable = validateResizableRect(resizable);
+        //    if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5)
+        //    {
+        //        BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+        //        Bitmap src;
+        //        using (MemoryStream outStream = new MemoryStream())
+        //        {
+        //            BitmapEncoder enc = new BmpBitmapEncoder();
+        //            enc.Frames.Add(BitmapFrame.Create(bImage));
+        //            enc.Save(outStream);
+        //            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
 
-                    src = new Bitmap(bitmap);
-                }
+        //            src = new Bitmap(bitmap);
+        //        }
 
 
-                Mat mat = SupportCode.ConvertBmp2Mat(src);
-                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
+        //        Mat mat = SupportCode.ConvertBmp2Mat(src);
+        //        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
 
-                Mat croppedImage = new Mat(mat, rectCrop);
-                resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-            }
+        //        Mat croppedImage = new Mat(mat, rectCrop);
+        //        resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+        //    }
                 
-        }
+        //}
 
         //public void SelectClickedRectangle(ResizableRectangle resizableRectangle)
         //{

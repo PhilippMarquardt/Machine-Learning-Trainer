@@ -21,9 +21,11 @@ namespace MachineLearningTrainer.DrawerTool
         private double x1;
         private double x2;
         private double xLeft;
+        private double xLeftBorder;
         private double y1;
         private double y2;
         private double yTop;
+        private double yTopBorder;
         private int id;
 
         private double opacity;
@@ -34,13 +36,18 @@ namespace MachineLearningTrainer.DrawerTool
         private string tmpStroke = "LawnGreen";
 
 
-        private readonly int strokeThickness = 4;
+        private readonly int strokeThickness = 2;
         private Boolean isMouseOver;
         private Boolean move;
         private Boolean resize;
         private Point center;
 
-
+        /// <summary>
+        /// Needed for CustomShape creation init
+        /// </summary>
+        /// <param name="x"></param>
+        /// <param name="y"></param>
+        /// <param name="id"></param>
         public CustomShape(double x, double y, int id)
         {
             this.x1 = x;
@@ -51,13 +58,15 @@ namespace MachineLearningTrainer.DrawerTool
             this.label = "";
 
             this.xLeft = x1;
-            this.yTop = x2;
+            this.xLeftBorder = x1 - strokeThickness;
+            this.yTop = y1;
+            this.yTopBorder = y1 - strokeThickness;
             this.opacity = 1;
             this.fill = "Transparent";
             this.isMouseOver = false;
             this.stroke = "LawnGreen";
-            this.width = 0;
-            this.height = 0;
+            this.width = 2*StrokeThickness;
+            this.height = 2*StrokeThickness;
 
         }
         public CustomShape(double x, double y)
@@ -69,7 +78,9 @@ namespace MachineLearningTrainer.DrawerTool
             this.label = "";
 
             this.xLeft = x1;
-            this.yTop = x2;
+            this.xLeftBorder = x1 - strokeThickness;
+            this.yTop = y1;
+            this.yTopBorder = y1 - strokeThickness;
             this.opacity = 1;
             this.fill = "Transparent";
             this.isMouseOver = false;
@@ -88,7 +99,9 @@ namespace MachineLearningTrainer.DrawerTool
             this.label = "";
 
             this.xLeft = x1;
+            this.xLeftBorder = x1 - strokeThickness;
             this.yTop = y1;
+            this.yTopBorder = y1 - strokeThickness;
             this.x2 = x1 + width;
             this.y2 = y1 + height;
 
@@ -103,10 +116,12 @@ namespace MachineLearningTrainer.DrawerTool
             this.x1 = tmp.X1;
             this.x2 = tmp.X2;
             this.xLeft = tmp.XLeft;
+            this.xLeftBorder = tmp.XLeftBorder;
 
             this.y1 = tmp.Y1;
             this.y2 = tmp.Y2;
             this.yTop = tmp.YTop;
+            this.yTopBorder = tmp.YTopBorder;
 
             this.id = tmp.Id;
             this.label = tmp.Label;
@@ -196,6 +211,19 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public double XLeftBorder
+        {
+            get { return this.xLeftBorder; }
+            set
+            {
+                if (xLeftBorder != value)
+                {
+                    this.xLeftBorder = value;
+                    this.NotifyPropertyChanged("XLeftBorder");
+                }
+            }
+        }
+
         public double Y1
         {
             get { return this.y1; }
@@ -234,6 +262,19 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.yTop = value;
                     this.NotifyPropertyChanged("YTop");
+                }
+            }
+        }
+
+        public double YTopBorder
+        {
+            get { return yTopBorder; }
+            set
+            {
+                if (yTopBorder != value)
+                {
+                    this.yTopBorder = value;
+                    this.NotifyPropertyChanged("YTopBorder");
                 }
             }
         }

@@ -47,7 +47,7 @@ namespace MachineLearningTrainer.DrawerTool
                         //(this.DataContext as DrawerViewModel).MoveRectangle(rec);               
                         
                         //drawerviewmodel.SelectClickedRectangle(rec);
-                        drawerviewmodel.UpdateCropedImage(rec);
+                        //drawerviewmodel.UpdateCropedImage(rec);
                     }
                 }
             }
