@@ -110,6 +110,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="ConfigClass.cs" />
     <Compile Include="ControlOperations.cs" />
     <Compile Include="ConvolutionalNeuralNetwork\DataSelectionObjectClassification.xaml.cs">
       <DependentUpon>DataSelectionObjectClassification.xaml</DependentUpon>

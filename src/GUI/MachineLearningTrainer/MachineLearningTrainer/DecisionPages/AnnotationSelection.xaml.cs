@@ -27,11 +27,14 @@ namespace MachineLearningTrainer.DecisionPages
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
-            //MainViewModel viewModel = (this.DataContext as MainViewModel);
-            //if (viewModel.NextPage.CanExecute(null))
-            //{
-            //    viewModel.NextPage.Execute(null);
-            //}
+            if(ConfigClass.IsDevModeEnabled == false)
+            {
+                MainViewModel viewModel = (this.DataContext as MainViewModel);
+                if (viewModel.NextPage.CanExecute(null))
+                {
+                    viewModel.NextPage.Execute(null);
+                }
+            }
         }
     }
 }

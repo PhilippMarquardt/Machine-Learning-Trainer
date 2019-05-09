@@ -38,12 +38,15 @@ namespace MachineLearningTrainer
                 page.DataContext = viewModel;
                 MainGrid.Children.Add(page);
 
-                //Uncomment, if you want to use the whole program
-
-                if (viewModel.RightTransition.CanExecute(null))
+                //Set IsDevModeEnabled == true, if you want to use the whole program
+                if (ConfigClass.IsDevModeEnabled == false)
                 {
-                    viewModel.RightTransition.Execute(null);
+                    if (viewModel.RightTransition.CanExecute(null))
+                    {
+                        viewModel.RightTransition.Execute(null);
+                    }
                 }
+
             }
 
         }

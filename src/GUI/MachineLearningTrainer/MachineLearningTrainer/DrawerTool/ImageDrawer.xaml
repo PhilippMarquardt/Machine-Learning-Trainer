@@ -48,6 +48,9 @@
             BasedOn="{StaticResource {x:Type Button}}"
             TargetType="Button">
             <Style.Triggers>
+                <DataTrigger Binding="{Binding IsDevModeEnabled}" Value="false">
+                    <Setter Property="Visibility" Value="Hidden" />
+                </DataTrigger>
                 <EventTrigger RoutedEvent="Button.MouseEnter">
                     <BeginStoryboard>
                         <Storyboard>

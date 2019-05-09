@@ -176,13 +176,22 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<CustomShapeFormat> RectanglesFormat { get; set; } = new ObservableCollection<CustomShapeFormat>();
 
 
-        private readonly int borderWidth = 10;                   //used when detecting, moving & resizing shapes
-        private readonly double minShapeSize = 20;
-        private readonly double fieldWidth = 200;
-        private readonly double fieldHeight = 200;
-        private readonly int strokeThickness = 2;
-        private readonly double distanceToBorder = 1;
+        #region constant values from ConfigClass: (go to ConfigClass for description)
 
+        private readonly int borderWidth = ConfigClass.borderWidth;
+        private readonly double minShapeSize = ConfigClass.minShapeSize;
+        private readonly double fieldWidth = ConfigClass.fieldHeight;
+        private readonly double fieldHeight = ConfigClass.fieldHeight;
+        private readonly double distanceToBorder = ConfigClass.distanceToBorder;
+
+        private readonly bool _isDevModeEnabled = ConfigClass.IsDevModeEnabled;
+        public bool IsDevModeEnabled
+        {
+            get => _isDevModeEnabled;
+        } 
+
+
+        #endregion
 
 
 
