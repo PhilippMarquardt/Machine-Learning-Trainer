@@ -173,6 +173,7 @@ namespace MachineLearningTrainer.DrawerTool
         public Stack<CustomShape> redoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> redoInformation { get; set; } = new Stack<string>();
         public CustomShape manipulatableShape { get; set; } = new CustomShape(100, 100, 200, 100, 0);
+        public ObservableCollection<CustomShapeFormat> RectanglesFormat { get; set; } = new ObservableCollection<CustomShapeFormat>();
 
 
         private readonly int borderWidth = 10;                   //used when detecting, moving & resizing shapes
@@ -529,25 +530,33 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 Rectangle.Label = DefaultLabel;
 
-                foreach (var itemLabel in ComboBoxItems)
-                {
-                    if(DefaultLabel == itemLabel)
-                    {
-                        foreach(var r in Rectangles)
-                        {
-                            if (r.Label == DefaultLabel)
-                            {
-                                Rectangle.Stroke = r.Stroke;
-                                Rectangle.TmpStroke = r.TmpStroke;
-                                Rectangle.Fill = r.Fill;
-                                Rectangle.TmpFill = r.TmpFill;
-                                Rectangle.Opacity = r.Opacity;
-                                Rectangle.TmpOpacity = r.TmpOpacity;
+                string tmpStroke = "LawnGreen";
+                string tmpFill = "White";
+                double tmpOpacity = 0.5;
+                bool addNewFormat = true;
 
-                            }
-                        }
+                foreach (var r in RectanglesFormat)
+                {
+                    if (r.Label == DefaultLabel)
+                    {
+                        addNewFormat = false;
+                        tmpStroke = r.Stroke;
+                        tmpFill = r.Fill;
+                        tmpOpacity = r.Opacity;
+                        break;
                     }
                 }
+                if (addNewFormat == true)
+                {
+                    RectanglesFormat.Add(new CustomShapeFormat(DefaultLabel, tmpFill, tmpStroke, tmpOpacity));
+                }
+
+                Rectangle.Stroke = tmpStroke;
+                Rectangle.TmpStroke = tmpStroke;
+                Rectangle.Fill = tmpFill;
+                Rectangle.TmpFill = tmpFill;
+                Rectangle.Opacity = tmpOpacity;
+                Rectangle.TmpOpacity = tmpOpacity;
             }
         }
 
@@ -1481,33 +1490,25 @@ namespace MachineLearningTrainer.DrawerTool
                                 Console.WriteLine("Rectangles count: " + Rectangles.Count);
                                 //
 
-
-                                //ComboBoxNames();
-                                foreach (string name in ComboBoxItems)
+                                string tmpFilterName = SelectedComboBoxItem;
+                                ComboBoxNames();
+                                SelectedComboBoxItem = tmpFilterName;
+                                if (RectanglesView.Count() == 0)
                                 {
-                                    if (name == SelectedComboBoxItem)
-                                    {
-                                        if (SelectedComboBoxItem == "All Labels")
-                                        {
-                                            RectangleCount = "#" + Rectangles.Count.ToString();
-                                        }
-
-                                        else if (SelectedComboBoxItem != "All Labels")
-                                        {
-                                            RectangleCount = "#" + RectanglesView.Count.ToString();
-                                        }
-                                        break;
-                                    }
+                                    SelectedComboBoxItem = "All Labels";
                                 }
-
-                                //SelectedComboBoxItem = "All Labels";
-                                //FilterName();
+                                FilterName();
+                                RectangleCount = "#" + RectanglesView.Count.ToString();
 
                                 break;
                             }
                         }
                         break;
                     }
+                }
+                if (SelectedComboBoxItem == "All Labels")
+                {
+                    DefaultLabel = "";
                 }
             }
 
@@ -1815,7 +1816,10 @@ namespace MachineLearningTrainer.DrawerTool
 
             if (SelectedComboBoxItem == "All Labels")
             {
-                DefaultLabel = "";
+                if (SelectedCustomShape == null)
+                {
+                    DefaultLabel = "";
+                }
                 ColorPickerEnabled = false;
                 ColorPickerIconPath = "\\Icons\\colorpicker_grayedout.jpg";
             }
@@ -2244,6 +2248,21 @@ namespace MachineLearningTrainer.DrawerTool
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
+
+                                bool addNewFormat = true;
+                                foreach (var r in RectanglesFormat)
+                                {
+                                    if (r.Label == name)
+                                    {
+                                        addNewFormat = false;
+                                        break;
+                                    }
+                                }
+                                if (addNewFormat == true)
+                                {
+                                    RectanglesFormat.Add(new CustomShapeFormat(name, fill, stroke, opacity));
+                                }
+
                                 //RectanglesView[indexRectanglesView] = Rectangles[indexRectangles];
                                 SaveShapeToField(loadedRect);
                                 indexRectangles++;
@@ -2253,6 +2272,7 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
+            Console.WriteLine("NumberOfFormats: " + RectanglesFormat.Count());
         }
 
 
@@ -2385,6 +2405,7 @@ namespace MachineLearningTrainer.DrawerTool
                 this.IsEnabled = true;
                 Rectangles.Clear();
                 RectanglesView.Clear();
+                RectanglesFormat.Clear();
                 indexRectangles = Rectangles.Count();
                 indexRectanglesView = RectanglesView.Count();
                 id = 0;
@@ -2432,6 +2453,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+
         #endregion
 
 
@@ -2453,17 +2476,19 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void DeleteSelection()
         {
-            selectedCustomShape = null;
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Fill = selectedCustomShape.TmpFill;
+                selectedCustomShape.Stroke = selectedCustomShape.TmpStroke;
+                selectedCustomShape.Opacity = selectedCustomShape.TmpOpacity;
+                selectedCustomShape = null;
+            }
+
             detectedCustomShape = null;
             SelectedIndex = -1;
-
-
-            foreach (var rect in Rectangles)
+            if (SelectedComboBoxItem == "All Labels")
             {
-                rect.Fill = rect.TmpFill;
-                rect.Stroke = rect.TmpStroke;
-                rect.Opacity = rect.TmpOpacity;
-
+                DefaultLabel = "";
             }
             Enabled = true;
             mouseHandlingState = MouseState.Normal;
@@ -2489,14 +2514,14 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void Enter()
         {
+            ComboBoxNames();
+            FilterName();
             if (selectedCustomShape != null)
             {
-                selectedCustomShape.Label = DefaultLabel;
+                CheckFormat(selectedCustomShape);
             }
-
-            FilterName();
             SortList();
-
+            Keyboard.ClearFocus();
         }
 
         #endregion

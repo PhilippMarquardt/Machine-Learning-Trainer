@@ -139,6 +139,7 @@
     <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
       <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DrawerTool\CustomShapeFormat.cs" />
     <Compile Include="DrawerTool\CustomThumb.xaml.cs">
       <DependentUpon>CustomThumb.xaml</DependentUpon>
     </Compile>
