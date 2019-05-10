@@ -36,7 +36,7 @@ namespace MachineLearningTrainer.DrawerTool
         private string tmpStroke = "LawnGreen";
 
 
-        private readonly int strokeThickness = 2;
+        private readonly int strokeThickness = ConfigClass.strokeThickness;
         private Boolean isMouseOver;
         private Boolean move;
         private Boolean resize;
@@ -65,8 +65,8 @@ namespace MachineLearningTrainer.DrawerTool
             this.fill = "Transparent";
             this.isMouseOver = false;
             this.stroke = "LawnGreen";
-            this.width = 2*StrokeThickness;
-            this.height = 2*StrokeThickness;
+            this.width = 0;
+            this.height = 0;
 
         }
         public CustomShape(double x, double y)
