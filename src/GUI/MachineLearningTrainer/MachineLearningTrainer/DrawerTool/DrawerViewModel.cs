@@ -2361,11 +2361,13 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     if (node.Name == "object")
                     {
+                        name = node["name"].InnerText;
+
                         foreach (XmlNode objectChild in node)
                         {
                             if (objectChild.Name == "Format")
                             {
-                                name = objectChild["label"].InnerText;
+                                
                                 stroke = objectChild["stroke"].InnerText;
                                 fill = objectChild["fill"].InnerText;
                                 opacity = double.Parse(objectChild["opacity"].InnerText);

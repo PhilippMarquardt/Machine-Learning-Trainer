@@ -160,11 +160,11 @@ namespace MachineLearningTrainer
                 {
                     writer.WriteStartElement("object");
 
-                    writer.WriteStartElement("Format");
-
-                    writer.WriteStartElement("label");
+                    writer.WriteStartElement("name");
                     writer.WriteString(rec.Label);
                     writer.WriteEndElement();
+
+                    writer.WriteStartElement("Format");
 
                     writer.WriteStartElement("stroke");
                     writer.WriteString(rec.Stroke);
