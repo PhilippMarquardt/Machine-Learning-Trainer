@@ -2332,9 +2332,9 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     if (r.Label == SelectedLabel.Label)
                     {
-                        if(!LabelColorFormat.Any(x => x.Label == "null"))
+                        if(!LabelColorFormat.Any(x => x.Label == "default"))
                         {
-                            LabelColorFormat.Add(new CustomShapeFormat("null", "White", "LawnGreen", 0));
+                            LabelColorFormat.Add(new CustomShapeFormat("default", "White", "LawnGreen", 0));
                         }
                         RemoveLabel();
                         ComboBoxNames();
@@ -2356,7 +2356,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach(var lcf in LabelColorFormat)
             {
-                if (lcf.Label == "null")
+                if (lcf.Label == "default")
                 {
                     foreach (var r in Rectangles)
                     {

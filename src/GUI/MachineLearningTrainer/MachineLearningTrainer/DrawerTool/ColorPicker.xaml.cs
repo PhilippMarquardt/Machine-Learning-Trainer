@@ -84,7 +84,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void AddLabelColorFormat_Click(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
+            //(this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
             (this.DataContext as DrawerViewModel).AddLabelColorFormat();
         }
 
