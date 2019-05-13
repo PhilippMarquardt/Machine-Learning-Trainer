@@ -1292,6 +1292,13 @@ namespace MachineLearningTrainer.DrawerTool
                 && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
                 CheckFormat(detectedCustomShape);
+                if(selectedCustomShape != null)
+                {
+                    if(selectedCustomShape.Id == detectedCustomShape.Id)
+                    {
+                        detectedCustomShape.Stroke = "Red";
+                    }
+                }
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
                 detectedCustomShape = null;
@@ -1334,6 +1341,10 @@ namespace MachineLearningTrainer.DrawerTool
             if (selectedCustomShape != null)
             {
                 CheckFormat(selectedCustomShape);
+                if (detectedCustomShape == null)
+                {
+                    selectedCustomShape.Stroke = "Red";
+                }
             }
             if (detectedCustomShape != null)
             {
