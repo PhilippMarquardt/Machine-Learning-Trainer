@@ -2277,9 +2277,16 @@ namespace MachineLearningTrainer.DrawerTool
 
         internal void AddLabelColorFormat()
         {
-            if (LabelColorFormat[LabelColorFormat.Count() - 1].Label != "")
+            if (LabelColorFormat.Count() > 0)
             {
-                LabelColorFormat.Add(new CustomShapeFormat("", "White", "White", 0));
+                if (LabelColorFormat[LabelColorFormat.Count() - 1].Label != "default")
+                {
+                    LabelColorFormat.Add(new CustomShapeFormat("default", "White", "White", 0));
+                }
+            }
+            else
+            {
+                LabelColorFormat.Add(new CustomShapeFormat("default", "White", "White", 0));
             }
             SelectedLabel = LabelColorFormat[LabelColorFormat.Count() - 1];
             RefreshLabelList();
