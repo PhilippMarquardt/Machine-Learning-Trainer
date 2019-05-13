@@ -1456,9 +1456,11 @@ namespace MachineLearningTrainer.DrawerTool
                 foreach (CustomShape r in RectanglesView)
                 {
                     r.Stroke = "Transparent";
+                    r.Opacity = 0;
                 }
 
                 ClearFields();
+                CheckFormat(selectedCustomShape);
                 selectedCustomShape.Stroke = "Red";
                 SaveShapeToField(selectedCustomShape);
             }
@@ -1477,11 +1479,108 @@ namespace MachineLearningTrainer.DrawerTool
             selectedCustomShape.Stroke = "Red";
             FilterName();
         }
+
+        #region Tab => next/previous Rectangle
+        private ICommand _tabNextShape;
+        public ICommand TabNextShape
+        {
+            get
+            {
+                return _tabNextShape ?? (_tabNextShape = new CommandHandler(() => NextShape(), _canExecute));
+            }
+        }
+
+        private ICommand _tabPreviousShape;
+        public ICommand TabPreviousShape
+        {
+            get
+            {
+                return _tabPreviousShape ?? (_tabPreviousShape = new CommandHandler(() => PreviousShape(), _canExecute));
+            }
+        }
+
+        enum ChangeMode { next, previous }
+
+        public void NextShape()
+        {
+            if (selectedCustomShape != null)
+            {
+                ChangeShape(ChangeMode.next);
+                _duplicateVar = 0;
+                SelectListItem();
+                _duplicateVar = 1;
+            }
+        }
+
+        private void PreviousShape()
+        {
+            if (selectedCustomShape != null)
+            {
+                ChangeShape(ChangeMode.previous);
+                _duplicateVar = 0;
+                SelectListItem();
+                _duplicateVar = 1;
+            }
+        }
+
+        private void ChangeShape(ChangeMode mode)
+        {
+            int modifier = 1;
+            if (mode == ChangeMode.next)
+            {
+                modifier = 1;
+            }
+            else if (mode == ChangeMode.previous)
+            {
+                modifier = -1;
+            }
+            CustomShape tmpCustomShape = selectedCustomShape;
+            int tmpIndex = 0;
+            DeleteSelection();
+
+            if (_cropModeChecked == true)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    r.Stroke = "Transparent";
+                    r.Opacity = 0;
+                }
+                ClearFields();
+            }
+
+            foreach (CustomShape r in RectanglesView)
+            {
+                if (r.Id == tmpCustomShape.Id)
+                {
+                    tmpIndex = RectanglesView.IndexOf(r) + modifier;
+                    if (tmpIndex >= RectanglesView.Count())
+                    {
+                        tmpIndex = 0;
+                    }
+                    else if (tmpIndex < 0)
+                    {
+                        tmpIndex = RectanglesView.Count() - 1;
+                    }
+                    selectedCustomShape = RectanglesView[tmpIndex];
+                    break;
+                }
+            }
+
+            if (_cropModeChecked == true)
+            {
+                SaveShapeToField(selectedCustomShape);
+                CheckFormat(selectedCustomShape);
+            }
+
+            selectedCustomShape.Stroke = "Red";
+        }
+        #endregion
+
         #endregion
 
 
         #region Delete Routine
-        
+
         private ICommand _deleteCommand;
         public ICommand DeleteCommand
         {
@@ -2918,100 +3017,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        #endregion
-
-        #region Tab => next/previous Rectangle
-        private ICommand _tabNextShape;
-        public ICommand TabNextShape
-        {
-            get
-            {
-                return _tabNextShape ?? (_tabNextShape = new CommandHandler(() => NextShape(), _canExecute));
-            }
-        }
-
-        private ICommand _tabPreviousShape;
-        public ICommand TabPreviousShape
-        {
-            get
-            {
-                return _tabPreviousShape ?? (_tabPreviousShape = new CommandHandler(() => PreviousShape(), _canExecute));
-            }
-        }
-
-        enum ChangeMode {next, previous }
-
-        public void NextShape()
-        {
-            if (selectedCustomShape != null)
-            {
-                ChangeShape(ChangeMode.next);
-                _duplicateVar = 0;
-                SelectListItem();
-                _duplicateVar = 1;
-            }
-        }
-
-        private void PreviousShape()
-        {
-            if (selectedCustomShape != null)
-            {
-                ChangeShape(ChangeMode.previous);
-                _duplicateVar = 0;
-                SelectListItem();
-                _duplicateVar = 1;
-            }
-        }
-
-        private void ChangeShape(ChangeMode mode)
-        {
-            int modifier = 1;
-            if (mode == ChangeMode.next)
-            {
-                modifier = 1;
-            }
-            else if (mode == ChangeMode.previous)
-            {
-                modifier = -1;
-            }
-            CustomShape tmpCustomShape = selectedCustomShape;
-            int tmpIndex = 0;
-            DeleteSelection();
-
-            if (_cropModeChecked == true)
-            {
-                foreach (CustomShape r in RectanglesView)
-                {
-                    r.Stroke = "Transparent";
-                }
-                ClearFields();
-            }
-
-            foreach(CustomShape r in RectanglesView)
-            {
-                if (r.Id == tmpCustomShape.Id)
-                {
-                    tmpIndex = RectanglesView.IndexOf(r) + modifier;
-                    if (tmpIndex >= RectanglesView.Count())
-                    {
-                        tmpIndex = 0;
-                    }
-                    else if (tmpIndex < 0)
-                    {
-                        tmpIndex = RectanglesView.Count() - 1;
-                    }
-                    selectedCustomShape = RectanglesView[tmpIndex];
-                    break;
-                }
-            }
-
-            if (_cropModeChecked == true)
-            {
-                SaveShapeToField(selectedCustomShape);
-            }
-
-            selectedCustomShape.Stroke = "Red";
-        }
         #endregion
 
         #endregion
