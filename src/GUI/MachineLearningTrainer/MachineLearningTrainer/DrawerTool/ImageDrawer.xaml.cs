@@ -174,7 +174,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).FilterName();
             (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).RectanglesView.Count.ToString();
-            (this.DataContext as DrawerViewModel).SetSelectedColor();
         }
 
 
@@ -540,7 +539,7 @@ namespace MachineLearningTrainer.DrawerTool
             if(textBox != null)
             {
                 textBox.IsReadOnly = true;
-                (this.DataContext as DrawerViewModel).ComboBoxNames();
+                //(this.DataContext as DrawerViewModel).ComboBoxNames();
             }
         }
 
@@ -597,6 +596,30 @@ namespace MachineLearningTrainer.DrawerTool
         {
             _opacityTextBox.Text = Convert.ToString(_sliderOpacity.Value);
             (this.DataContext as DrawerViewModel).ChangeOpacity();
+        }
+
+        private void EditLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).SetSelectedColor();
+            (this.DataContext as DrawerViewModel).ColorPickerEnabled = true;
+            ColorPicker newColorPicker = new ColorPicker();
+            newColorPicker.DataContext = this.DataContext;
+            newColorPicker.ShowDialog();
+        }
+
+        private void CbItemLabel_DropDownClosed(object sender, EventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).CbItemLabel_DropDownClosed();
+        }
+
+        private void CbItemLabel_DropDownOpened(object sender, EventArgs e)
+        {
+
+        }
+
+        private void LblTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).TestLabelName();
         }
     }
 }

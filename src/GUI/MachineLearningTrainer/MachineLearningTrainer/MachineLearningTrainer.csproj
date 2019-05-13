@@ -140,6 +140,9 @@
     <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
       <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DrawerTool\ColorPicker.xaml.cs">
+      <DependentUpon>ColorPicker.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DrawerTool\CustomShapeFormat.cs" />
     <Compile Include="DrawerTool\CustomThumb.xaml.cs">
       <DependentUpon>CustomThumb.xaml</DependentUpon>
@@ -222,6 +225,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DecisionPages\TabularDataDecision.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawerTool\ColorPicker.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

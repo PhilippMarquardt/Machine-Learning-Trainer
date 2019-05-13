@@ -41,5 +41,6 @@ namespace MachineLearningTrainer
         public static int strokeThickness = 2;
         #endregion
 
+
     }
 }

@@ -76,6 +76,36 @@
             </Style.Triggers>
         </Style>
 
+        <Style
+            x:Key="IncreaseOpacityOnHover2"
+            BasedOn="{StaticResource {x:Type Button}}"
+            TargetType="Button">
+            <Style.Triggers>
+                <EventTrigger RoutedEvent="Button.MouseEnter">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="0.3"
+                                To="1.0"
+                                Duration="0:0:0.5" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+                <EventTrigger RoutedEvent="Button.MouseLeave">
+                    <BeginStoryboard>
+                        <Storyboard>
+                            <DoubleAnimation
+                                Storyboard.TargetProperty="Opacity"
+                                From="1.0"
+                                To="0.3"
+                                Duration="0:0:1" />
+                        </Storyboard>
+                    </BeginStoryboard>
+                </EventTrigger>
+            </Style.Triggers>
+        </Style>
+
         <Style x:Key="myLBStyle" TargetType="{x:Type ListBoxItem}">
             <EventSetter Event="PreviewMouseDown" Handler="LblTextBox_MouseDown" />
             <Style.Resources>
@@ -92,7 +122,7 @@
                     Opacity="0.8"
                     Color="DodgerBlue" />
             </Style.Resources>
-            
+
         </Style>
 
         <Style x:Key="MyListBoxStyle" TargetType="{x:Type ListBox}">
@@ -139,11 +169,11 @@
             Command="{Binding DuplicateCommand}"
             CommandParameter="D"
             Modifiers="Ctrl" />
-        <KeyBinding
+        <!--<KeyBinding
             Key="U"
             Command="{Binding RenameCommand}"
             CommandParameter="U"
-            Modifiers="Ctrl" />
+            Modifiers="Ctrl" />-->
         <KeyBinding
             Key="Z"
             Command="{Binding UndoCommand}"
@@ -507,7 +537,7 @@
                     </Grid>
                 </Grid>
             </StackPanel>
-            
+
             <!-- StackPanel with Buttons -->
             <StackPanel
                 x:Name="Functions_Panel"
@@ -646,7 +676,7 @@
                     </Button.ToolTip>
                 </Button>
             </StackPanel>
-            
+
             <Canvas
                 Grid.Row="0"
                 Grid.RowSpan="4"
@@ -686,7 +716,7 @@
                     </WrapPanel>
                 </StackPanel>
 
-                
+
 
             </Canvas>
 
@@ -701,7 +731,7 @@
                 Foreground="#FF2196F3"
                 Opacity="0.3"
                 Style="{StaticResource IncreaseOpacityOnHover}">
-            <materialDesign:PackIcon Kind="SkipPreviousCircleOutline"  HorizontalAlignment="Center" />
+                <materialDesign:PackIcon Kind="SkipPreviousCircleOutline"  HorizontalAlignment="Center" />
             </Button>
 
             <Grid
@@ -988,25 +1018,19 @@
                         Text="Crop Mode" />
                 </WrapPanel>
 
-                <TextBox
-                    x:Name="txtDefaultLabel"
-                    Width="200"
-                    Height="auto"
-                    Margin="10"
-                    Padding="2"
-                    HorizontalAlignment="Center"
-                    materialDesign:HintAssist.Hint="Default Label"
-                    materialDesign:HintAssist.IsFloating="True"
-                    FontSize="14"
-                    Foreground="Black"
-                    IsEnabled="{Binding IsChecked}"
-                    Text="{Binding DefaultLabel, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                    TextAlignment="Left" />
                 <Grid Margin="15">
                     <Grid.Resources>
                         <ImageBrush x:Key="AddButtonImageBrush" ImageSource="{Binding ListViewImage}" />
                     </Grid.Resources>
-                    <Button
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="auto" />
+                        <ColumnDefinition Width="auto" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="auto" />
+                    </Grid.RowDefinitions>
+                    <!--<Button
                         Width="26"
                         Height="26"
                         Margin="5"
@@ -1022,7 +1046,51 @@
                         <Button.ToolTip>
                             <TextBlock Text="Change Color of selected Label" />
                         </Button.ToolTip>
+                    </Button>-->
+                    <ComboBox
+                        Width="150"
+                        Height="30"
+                        Margin="5"
+                        Padding="3"
+                        Grid.Column="0"
+                        Grid.RowSpan="2"
+                        HorizontalAlignment="Center"
+                        HorizontalContentAlignment="Left"
+                        VerticalContentAlignment="Center"
+                        DropDownClosed="ComboBox_DropDownClosed"
+                        FontSize="14"
+                        Foreground="Black"
+                        ItemsSource="{Binding ComboBoxItems}"
+                        MouseUp="ImgCamera_MouseUp"
+                        SelectedIndex="0"
+                        SelectedItem="{Binding SelectedComboBoxItem}" />
+                    <Button 
+                        x:Name="editLabelColorFormat"
+                        Margin="5"
+                        Grid.Column="1"
+                        Grid.Row="0"
+                        Width="auto"
+                        Height="auto"
+                        HorizontalAlignment="Right"
+                        Background="Transparent"
+                        Click="EditLabelColorFormat_Click"
+                        Foreground="#FF2196F3"
+                        Opacity="0.3"
+                        IsEnabled="{Binding IsEnabled}"
+                        Style="{StaticResource IncreaseOpacityOnHover2}">
+                        <materialDesign:PackIcon Kind="Pencil" />
                     </Button>
+                    <TextBlock
+                        Grid.Column="1"
+                        Grid.Row="1"
+                        Margin="0,0,5,0"
+                        HorizontalAlignment="Right"
+                        VerticalAlignment="Center"
+                        FontStyle="Italic"
+                        Foreground="Gray"
+                        Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+
+
                     <!--<Button
                         Width="26"
                         Height="26"
@@ -1032,28 +1100,7 @@
                         Background="{StaticResource AddButtonImageBrush}"
                         BorderBrush="Transparent"
                         Command="{Binding ListViewCommand}" />-->
-                    <ComboBox
-                        Width="auto"
-                        Height="30"
-                        Margin="5"
-                        Padding="3"
-                        HorizontalAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        VerticalContentAlignment="Center"
-                        DropDownClosed="ComboBox_DropDownClosed"
-                        FontSize="14"
-                        Foreground="Black"
-                        ItemsSource="{Binding ComboBoxItems}"
-                        MouseUp="ImgCamera_MouseUp"
-                        SelectedIndex="0"
-                        SelectedItem="{Binding SelectedComboBoxItem}" />
-                    <TextBlock
-                        Margin="5"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="Gray"
-                        Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+
                 </Grid>
             </StackPanel>
 
@@ -1123,13 +1170,15 @@
                 </ListBox.InputBindings>
                 <ListBox.ItemTemplate>
                     <DataTemplate>
-                        --><!--<WrapPanel>
+                        -->
+            <!--<WrapPanel>
                             <Image
                                 Width="60"
                                 Height="60"
                                 Margin="10"
                                 Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
-                        </WrapPanel>--><!--
+                        </WrapPanel>-->
+            <!--
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ItemsPanel>
@@ -1253,21 +1302,40 @@
                             <TextBox
                                 Height="auto"
                                 x:Name="lblTextBox"
-                                Width="160"
+                                Width="120"
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center"
                                 TextAlignment="Left"
                                 AcceptsReturn="False"
                                 FontSize="12"
-                                Foreground="Black"
+                                Foreground="{Binding lblTextBox_Color}"
                                 Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                                 IsReadOnly="True"
+                                TextChanged="LblTextBox_TextChanged"
                                 MouseDoubleClick="LblTextBox_MouseDoubleClick"
                                 LostFocus="LblTextBox_LostFocus"
                                 TextWrapping="Wrap"
                                 Margin="20"
                                 Padding="5"/>
+                            <!--<ComboBox
+                               Height="auto"
+                                x:Name="cbItemLabel"
+                                Width="20"
+                                HorizontalAlignment="Right"
+                                VerticalAlignment="Center"
+                                HorizontalContentAlignment="Left"
+                                SelectedItem="{Binding Label}"
+                                ItemsSource="{Binding DataContext.LabelList, RelativeSource={RelativeSource AncestorType=ListView}}"
+                                FontSize="12"
+                                Foreground="Black"
+                                DropDownClosed="CbItemLabel_DropDownClosed"
+                                DropDownOpened="CbItemLabel_DropDownOpened"
+                                IsReadOnly="True"
+                                Margin="20"
+                                Padding="5" >
+                            </ComboBox>-->
                         </WrapPanel>
+                        
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
@@ -1282,14 +1350,6 @@
                             </MenuItem.Icon>
                         </MenuItem>
                         <MenuItem
-                            Command="{Binding RenameCommand}"
-                            Header="Rename All"
-                            InputGestureText="Ctrl + U">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/rename.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
                             Command="{Binding DeleteCommand}"
                             Header="Delete"
                             InputGestureText="Del">
@@ -1300,7 +1360,7 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>
-            
+
         </Grid>
     </DockPanel>
 </UserControl>

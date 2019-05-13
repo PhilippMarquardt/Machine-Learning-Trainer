@@ -34,6 +34,7 @@ namespace MachineLearningTrainer.DrawerTool
         private double tmpOpacity = 1;
         private string tmpFill = "Transparent";
         private string tmpStroke = "LawnGreen";
+        private string _lblTextBox_Color = "Black";
 
 
         private readonly int strokeThickness = ConfigClass.strokeThickness;
@@ -439,6 +440,19 @@ namespace MachineLearningTrainer.DrawerTool
         public int StrokeThickness
         {
             get => strokeThickness;
+        }
+
+        public string lblTextBox_Color
+        {
+            get
+            {
+                return _lblTextBox_Color;
+            }
+            set
+            {
+                _lblTextBox_Color = value;
+                NotifyPropertyChanged("lblTextBox_Color");
+            }
         }
 
 
