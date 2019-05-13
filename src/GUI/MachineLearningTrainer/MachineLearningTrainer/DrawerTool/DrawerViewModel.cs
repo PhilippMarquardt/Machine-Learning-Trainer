@@ -566,11 +566,8 @@ namespace MachineLearningTrainer.DrawerTool
                 }
 
                 Rectangle.Stroke = tmpStroke;
-                Rectangle.TmpStroke = tmpStroke;
                 Rectangle.Fill = tmpFill;
-                Rectangle.TmpFill = tmpFill;
                 Rectangle.Opacity = tmpOpacity;
-                Rectangle.TmpOpacity = tmpOpacity;
             }
         }
 
@@ -1265,9 +1262,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private string tmpFill = "Transparent";
-        private double tmpOpacity = 1;
-
         internal void DetectCustomShape(System.Windows.Point mousePosition)
         {
             if (detectedCustomShape == null)
@@ -1297,16 +1291,13 @@ namespace MachineLearningTrainer.DrawerTool
             else if (!((detectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < detectedCustomShape.X2 + borderWidth)
                 && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
-                detectedCustomShape.Opacity = detectedCustomShape.TmpOpacity;
-                detectedCustomShape.Fill = detectedCustomShape.TmpFill;
+                CheckFormat(detectedCustomShape);
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
                 detectedCustomShape = null;
             }
             else if (detectedCustomShape.Fill != "Gray")
             {
-                detectedCustomShape.TmpOpacity = detectedCustomShape.Opacity;
-                detectedCustomShape.TmpFill = detectedCustomShape.Fill;
                 detectedCustomShape.Opacity = 0.5;
                 detectedCustomShape.Fill = "Gray";
                 detectedCustomShape.IsMouseOver = true;
@@ -1342,7 +1333,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (selectedCustomShape != null)
             {
-                selectedCustomShape.Stroke = selectedCustomShape.TmpStroke;
+                CheckFormat(selectedCustomShape);
             }
             if (detectedCustomShape != null)
             {
@@ -1356,7 +1347,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (CustomShape r in RectanglesView)
             {
-                r.Stroke = r.TmpStroke;
+                CheckFormat(r);
             }
             if (-1 < indexView && indexView < RectanglesView.Count())
             {
@@ -1470,7 +1461,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach (CustomShape r in RectanglesView)
             {
-                r.Stroke = r.TmpStroke;
+                CheckFormat(r);
             }
             selectedCustomShape.Stroke = "Red";
             FilterName();
@@ -2170,18 +2161,14 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 case "Fill":
                     r.Fill = SelectedLabel.Fill;
-                    r.TmpFill = SelectedLabel.Fill;
                     break;
                 case "Border":
                     r.Stroke = SelectedLabel.Stroke;
-                    r.TmpStroke = SelectedLabel.Stroke;
                     break;
                 case "Both":
                     SelectedLabel.Stroke = SelectedLabel.Fill;
                     r.Fill = SelectedLabel.Fill;
-                    r.TmpFill = SelectedLabel.Fill;
                     r.Stroke = SelectedLabel.Stroke;
-                    r.TmpStroke = SelectedLabel.Stroke;
                     break;
             }
         }
@@ -2307,11 +2294,8 @@ namespace MachineLearningTrainer.DrawerTool
             foreach (var lcf in LabelColorFormat)
             {
                 SelectedCustomShape.Fill = lcf.Fill;
-                SelectedCustomShape.TmpFill = lcf.Fill;
                 SelectedCustomShape.Stroke = lcf.Stroke;
-                SelectedCustomShape.TmpStroke = lcf.Stroke;
                 SelectedCustomShape.Opacity = lcf.Opacity;
-                SelectedCustomShape.TmpOpacity = lcf.Opacity;
             }
             
         }
@@ -2393,11 +2377,8 @@ namespace MachineLearningTrainer.DrawerTool
                                 id++;
                                 loadedRect.Label = name;
                                 loadedRect.Stroke = stroke;
-                                loadedRect.TmpStroke = stroke;
                                 loadedRect.Fill = fill;
-                                loadedRect.TmpFill = fill;
                                 loadedRect.Opacity = opacity;
-                                loadedRect.TmpOpacity = opacity;
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
@@ -2484,11 +2465,8 @@ namespace MachineLearningTrainer.DrawerTool
                                 id++;
                                 loadedRect.Label = name;
                                 loadedRect.Stroke = stroke;
-                                loadedRect.TmpStroke = stroke;
                                 loadedRect.Fill = fill;
-                                loadedRect.TmpFill = fill;
                                 loadedRect.Opacity = opacity;
-                                loadedRect.TmpOpacity = opacity;
 
                                 Rectangles.Add(loadedRect);
                                 RectanglesView.Add(loadedRect);
@@ -2637,9 +2615,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (selectedCustomShape != null)
             {
-                selectedCustomShape.Fill = selectedCustomShape.TmpFill;
-                selectedCustomShape.Stroke = selectedCustomShape.TmpStroke;
-                selectedCustomShape.Opacity = selectedCustomShape.TmpOpacity;
+                CheckFormat(selectedCustomShape);
                 selectedCustomShape = null;
             }
 

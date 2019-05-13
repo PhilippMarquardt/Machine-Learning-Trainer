@@ -31,9 +31,6 @@ namespace MachineLearningTrainer.DrawerTool
         private double opacity;
         private string fill;
         private string stroke;
-        private double tmpOpacity = 1;
-        private string tmpFill = "Transparent";
-        private string tmpStroke = "LawnGreen";
         private string _lblTextBox_Color = "Black";
 
 
@@ -326,49 +323,6 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
         }
-
-        #region tmpInformations while detection/selection
-
-        public double TmpOpacity
-        {
-            get => tmpOpacity;
-            set
-            {
-                if (tmpOpacity != value)
-                {
-                    this.tmpOpacity = value;
-                    this.NotifyPropertyChanged("TmpOpacity");
-                }
-            }
-        }
-
-        public string TmpFill
-        {
-            get { return this.tmpFill; }
-            set
-            {
-                if (tmpFill != value)
-                {
-                    this.tmpFill = value;
-                    this.NotifyPropertyChanged("TmpFill");
-                }
-            }
-        }
-
-        public string TmpStroke
-        {
-            get => tmpStroke;
-            set
-            {
-                if (tmpStroke != value)
-                {
-                    this.tmpStroke = value;
-                    this.NotifyPropertyChanged("TmpStroke");
-                }
-            }
-        }
-
-        #endregion
 
         #endregion
 
