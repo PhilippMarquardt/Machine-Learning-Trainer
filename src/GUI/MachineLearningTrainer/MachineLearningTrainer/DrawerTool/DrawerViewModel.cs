@@ -624,6 +624,7 @@ namespace MachineLearningTrainer.DrawerTool
         private void DuplicateShape(double tmpX1, double tmpY1, double tmpWidth, double tmpHeight)
         {
             CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+            duplicatedCustomShape.Label = selectedCustomShape.Label;
             duplicatedCustomShape = CheckOnCanvas(duplicatedCustomShape);
             CheckFormat(duplicatedCustomShape);
             RectanglesView.Add(duplicatedCustomShape);
