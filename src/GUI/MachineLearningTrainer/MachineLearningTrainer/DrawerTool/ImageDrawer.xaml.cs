@@ -499,7 +499,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (listBoxLabels.SelectedItem != null && (this.DataContext as DrawerViewModel).CropModeChecked == false)
+            if (listBoxLabels.SelectedItem != null)
             {
                 int indexView = listBoxLabels.SelectedIndex;
                 (this.DataContext as DrawerViewModel).SelectCustomShape(indexView);

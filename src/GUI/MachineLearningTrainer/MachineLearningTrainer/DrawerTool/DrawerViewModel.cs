@@ -1361,11 +1361,29 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 CheckFormat(r);
             }
+
+            if (_cropModeChecked == true)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    r.Stroke = "Transparent";
+                    r.Opacity = 0;
+                }
+                ClearFields();
+            }
+
+
             if (-1 < indexView && indexView < RectanglesView.Count())
             {
                 selectedCustomShape = RectanglesView[indexView];
+
+                if (_cropModeChecked == true)
+                {
+                    SaveShapeToField(selectedCustomShape);
+                    CheckFormat(selectedCustomShape);
+                }
+
                 selectedCustomShape.Stroke = "Red";
-                //DefaultLabel = selectedCustomShape.Label;
             }
         }
 
