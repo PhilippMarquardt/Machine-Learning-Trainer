@@ -217,6 +217,7 @@
         </Button>
 
         <TextBox
+            x:Name="RenameTxtBox"
             Grid.Row="1"
             Grid.ColumnSpan="3"
             Margin="20,0,20,0"
@@ -224,6 +225,7 @@
             HorizontalContentAlignment="Left"
             IsReadOnly="True"
             MouseDoubleClick="TextBox_MouseDoubleClick"  
+            LostFocus="TextBox_LostFocus"
             materialDesign:HintAssist.IsFloating="True"
             Foreground="Black"
             Background="White"
@@ -242,7 +244,8 @@
             Grid.ColumnSpan="3"
             Grid.Column="0"
             HorizontalAlignment="Stretch"
-            VerticalAlignment="Center">
+            VerticalAlignment="Center"
+            MouseDown="ColorPicker_MouseDown">
             <Grid
                     HorizontalAlignment="Center"
                     MinWidth="120"
@@ -308,6 +311,7 @@
                     VerticalAlignment="Top"
                     HorizontalAlignment="Center" 
                     UsingAlphaChannel="False"
+                    MouseDown="ColorPicker_MouseDown"
                     SelectedColorChanged="_colorCanvas_SelectedColorChanged">
                 </xctk:ColorCanvas>
                 <DockPanel 

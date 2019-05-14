@@ -35,6 +35,10 @@ namespace MachineLearningTrainer.DrawerTool
         private void _colorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
             _colorPicker.SelectedColor = _colorCanvas.SelectedColor;
+            if (RenameTxtBox.IsFocused == true)
+            {
+                (this.DataContext as DrawerViewModel).Enter();
+            }
             (this.DataContext as DrawerViewModel).ChangeColor();
             (this.DataContext as DrawerViewModel).ChangeOpacity();
         }
@@ -86,6 +90,10 @@ namespace MachineLearningTrainer.DrawerTool
         {
             //(this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
             (this.DataContext as DrawerViewModel).AddLabelColorFormat();
+            if (RenameTxtBox.IsFocused == true)
+            {
+                (this.DataContext as DrawerViewModel).Enter();
+            }
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
@@ -98,6 +106,20 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 (this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
                 
+            }
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = true;
+        }
+
+        private void ColorPicker_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if(RenameTxtBox.IsFocused == true)
+            {
+                (this.DataContext as DrawerViewModel).Enter();
             }
         }
     }

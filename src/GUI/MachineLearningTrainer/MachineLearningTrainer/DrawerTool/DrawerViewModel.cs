@@ -433,6 +433,18 @@ namespace MachineLearningTrainer.DrawerTool
                 if (RectanglesView.Count < indexRectanglesView + 1)
                 {
                     RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
+
+                    if (SelectedComboBoxItem != "All Labels")
+                    {
+                        RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
+                    }
+
+                    else
+                    {
+                        AddLabelColorFormat(RectanglesView[indexRectanglesView]);
+                    }
+
+
                     CheckFormat(RectanglesView[indexRectanglesView]);
                 }
                 else
@@ -498,18 +510,7 @@ namespace MachineLearningTrainer.DrawerTool
                             createdRectangle.Y1 = createdRectangle.Y2;
                             createdRectangle.Y2 = tmp;
                         }
-
-                        if (SelectedComboBoxItem != "All Labels")
-                        {
-                            Enabled = false;
-                            createdRectangle.Label = SelectedComboBoxItem;
-                        }
-
-                        else
-                        {
-                            Enabled = false;
-                            createdRectangle.Label = "default";
-                        }
+                        Enabled = false;
 
                         CheckFormat(createdRectangle);
                         Rectangles.Add(createdRectangle);
@@ -1992,7 +1993,7 @@ namespace MachineLearningTrainer.DrawerTool
                     //OnPropertyChanged("ComboBoxItems");
                 }
             }
-            if (SelectedComboBoxItem != null)
+            if (temp != null)
             {
                 SelectedComboBoxItem = temp;
             }
@@ -2218,6 +2219,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
+
         #endregion
 
         internal void TestLabelName()
@@ -2332,9 +2334,9 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     if (r.Label == SelectedLabel.Label)
                     {
-                        if(!LabelColorFormat.Any(x => x.Label == "default"))
+                        if(!LabelColorFormat.Any(x => x.Label == "default0"))
                         {
-                            LabelColorFormat.Add(new CustomShapeFormat("default", "White", "LawnGreen", 0));
+                            LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.3));
                         }
                         RemoveLabel();
                         ComboBoxNames();
@@ -2356,7 +2358,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             foreach(var lcf in LabelColorFormat)
             {
-                if (lcf.Label == "default")
+                if (lcf.Label == "default0")
                 {
                     foreach (var r in Rectangles)
                     {
@@ -2376,17 +2378,101 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (LabelColorFormat.Count() > 0)
             {
-                if (LabelColorFormat[LabelColorFormat.Count() - 1].Label != "default")
+                int i = -1;
+                bool tmpBool = false;
+                while (tmpBool == false)
                 {
-                    LabelColorFormat.Add(new CustomShapeFormat("default", "White", "White", 0));
+                    tmpBool = true;
+                    i++;
+                    foreach (var r in LabelColorFormat)
+                    {
+                        if (r.Label == "default" + Convert.ToString(i))
+                        {
+                            tmpBool = false;
+                            break;
+                        }
+                    }
                 }
+
+                string tmpLabel = "default" + Convert.ToString(i);
+                Random random = new System.Random(i);
+
+                string[] rand = new string[6];
+
+                for (int j = 0; j < 6; j++)
+                {
+                    int randNum = random.Next(0, 255);
+                    if (randNum < 16)
+                    {
+                        rand[j] = "0";
+                    }
+                    rand[j] += randNum.ToString("X");
+                }
+
+                string tmpColor1 = "#" + rand[0] + rand[1] + rand[2];
+                string tmpColor2 = "#" + rand[3] + rand[4] + rand[5];
+
+                LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpColor1, tmpColor2, 0.3));
+
             }
             else
             {
-                LabelColorFormat.Add(new CustomShapeFormat("default", "White", "White", 0));
+                LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.3));
             }
             SelectedLabel = LabelColorFormat[LabelColorFormat.Count() - 1];
             RefreshLabelList();
+        }
+
+        private CustomShape AddLabelColorFormat(CustomShape customShape)
+        {
+            if (LabelColorFormat.Count() > 0)
+            {
+                int i = -1;
+                bool tmpBool = false;
+                while(tmpBool == false)
+                {
+                    tmpBool = true;
+                    i++;
+                    foreach (var r in LabelColorFormat)
+                    {
+                        if (r.Label == "default" + Convert.ToString(i))
+                        {
+                            tmpBool = false;
+                            break;
+                        }
+                    }
+                }
+
+                string tmpLabel = "default" + Convert.ToString(i);
+                Random random = new System.Random(i);
+
+                string[] rand = new string[6];
+
+                for (int j = 0; j < 6; j++)
+                {
+                    int randNum = random.Next(0, 255);
+                    if (randNum < 16)
+                    {
+                        rand[j] = "0";
+                    }
+                    rand[j] += randNum.ToString("X");
+                }
+
+                string tmpColor1 = "#" + rand[0] + rand[1] + rand[2];
+                string tmpColor2 = "#" + rand[3] + rand[4] + rand[5];
+
+                LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpColor1, tmpColor2, 0.3));
+
+            }
+            else
+            {
+                LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.3));
+            }
+            SelectedLabel = LabelColorFormat[LabelColorFormat.Count() - 1];
+            customShape.Label = SelectedLabel.Label;
+            RefreshLabelList();
+
+            return customShape;
         }
 
         private void RefreshLabelList()
