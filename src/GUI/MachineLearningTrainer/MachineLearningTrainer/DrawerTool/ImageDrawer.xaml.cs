@@ -84,11 +84,21 @@ namespace MachineLearningTrainer.DrawerTool
 
             if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
             {
+                horizontalLine.Y1 = mousePosition.Y;
+                horizontalLine.Y2 = mousePosition.Y;
+                verticalLine.X1 = mousePosition.X;
+                verticalLine.X2 = mousePosition.X;
+
                 Mouse.OverrideCursor = Cursors.Cross;
                 (this.DataContext as DrawerViewModel).CreateRectangle(mousePosition);
             }
             else
             {
+                horizontalLine.Y1 = -1;
+                horizontalLine.Y2 = -1;
+                verticalLine.X1 = -1;
+                verticalLine.X2 = -1;
+
                 if (e.LeftButton == MouseButtonState.Released)
                 {
                     (this.DataContext as DrawerViewModel).DetectCustomShape(mousePosition);
