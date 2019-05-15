@@ -382,24 +382,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         /// <summary>
-        /// boolean, which tells if checkbox from default label is checked, which means that something was written into the box manually
-        /// </summary>
-        private bool _isChecked = true;
-
-        public bool IsChecked
-        {
-            get
-            {
-                return _isChecked;
-            }
-            set
-            {
-                _isChecked = value;
-                OnPropertyChanged("IsChecked");
-            }
-        }
-
-        /// <summary>
         /// this method switches between draw/not draw state for rectangle 
         /// </summary>
         public void AddNewRectangle()

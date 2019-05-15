@@ -1013,17 +1013,6 @@
             </Border>
 
             <StackPanel Grid.Row="0" Grid.Column="6">
-                <WrapPanel Margin="10" VerticalAlignment="Center">
-                    <ToggleButton
-                        Margin="10"
-                        Content=""
-                        IsChecked="{Binding IsChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                    <TextBlock
-                        Margin="10"
-                        VerticalAlignment="Center"
-                        Foreground="Black"
-                        Text="Use Default Label" />
-                </WrapPanel>
 
                 <WrapPanel Margin="10,0,10,0">
                     <ToggleButton Margin="10" IsChecked="{Binding CropModeChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
