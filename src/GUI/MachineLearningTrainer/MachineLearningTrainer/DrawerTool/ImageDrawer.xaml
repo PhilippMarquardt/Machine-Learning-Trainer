@@ -899,7 +899,7 @@
                             Y2="-1"
                             Stroke="Black"
                             StrokeThickness="1"
-                            />
+                            Panel.ZIndex="2" />
                         <Line
                             x:Name="verticalLine"
                             X1="-1"
@@ -907,7 +907,8 @@
                             Y1="0"
                             Y2="{Binding ActualHeight, ElementName=imgPreview}"
                             Stroke="Black"
-                            StrokeThickness="1"/>
+                            StrokeThickness="1"
+                            Panel.ZIndex="2" />
 
                         <ItemsControl
                             x:Name="ad"
