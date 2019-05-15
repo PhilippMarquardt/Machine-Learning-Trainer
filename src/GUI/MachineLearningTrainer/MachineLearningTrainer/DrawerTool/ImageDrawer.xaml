@@ -301,14 +301,14 @@
                     </MenuItem.Icon>
                 </MenuItem>
                 <Separator />
-                <MenuItem
+                <!--<MenuItem
                     Command="{Binding UpdatePreviewsCommand}"
                     Header="Update Previews"
                     IsEnabled="{Binding OnDelete}">
                     <MenuItem.Icon>
                         <Image Source="/Icons/update.png" />
                     </MenuItem.Icon>
-                </MenuItem>
+                </MenuItem>-->
             </MenuItem>
             <MenuItem
                 Height="25"
