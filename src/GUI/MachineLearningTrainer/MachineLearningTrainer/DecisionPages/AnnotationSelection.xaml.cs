@@ -22,7 +22,8 @@ namespace MachineLearningTrainer.DecisionPages
     {
         public AnnotationSelection()
         {
-            InitializeComponent();            
+            InitializeComponent();
+            Application.Current.MainWindow.Title = "Annotation Tool";
         }
 
         private void UserControl_Loaded(object sender, RoutedEventArgs e)

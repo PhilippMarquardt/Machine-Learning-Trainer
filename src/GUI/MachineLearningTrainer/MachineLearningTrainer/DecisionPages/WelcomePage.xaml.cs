@@ -23,6 +23,7 @@ namespace MachineLearningTrainer
         public WelcomePage()
         {
             InitializeComponent();
+            Application.Current.MainWindow.Title = "Machine Learning Trainer";
         }
 
         private void btnNextPage_Click(object sender, RoutedEventArgs e)

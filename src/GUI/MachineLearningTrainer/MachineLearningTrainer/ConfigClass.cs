@@ -9,7 +9,7 @@ namespace MachineLearningTrainer
     public static class ConfigClass
     {
         //Set to True, if you want to use the whole program
-        public static bool IsDevModeEnabled = false;
+        public static bool IsDevModeEnabled = true;
 
         #region ConfigData for DrawerViewModel
         //ConfigData for DrawerViewModel:

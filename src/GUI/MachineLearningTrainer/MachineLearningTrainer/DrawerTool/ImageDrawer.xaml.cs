@@ -33,7 +33,6 @@ namespace MachineLearningTrainer.DrawerTool
         public ImageDrawer()
         {
             InitializeComponent();
-            //cnvImage.Cursor = Cursors.Arrow;
             DriveInfo[] drives = DriveInfo.GetDrives();
             //foreach (DriveInfo driveInfo in drives)
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
