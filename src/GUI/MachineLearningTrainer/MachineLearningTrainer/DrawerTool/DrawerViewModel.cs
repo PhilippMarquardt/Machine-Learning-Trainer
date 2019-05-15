@@ -1297,7 +1297,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     if(selectedCustomShape.Id == detectedCustomShape.Id)
                     {
-                        detectedCustomShape.Stroke = "Red";
+                        //detectedCustomShape.Stroke = "Red";
                     }
                 }
                 detectedCustomShape.IsMouseOver = false;
@@ -1339,27 +1339,26 @@ namespace MachineLearningTrainer.DrawerTool
 
         internal void SelectCustomShape()
         {
-            if (selectedCustomShape != null)
+            if(selectedCustomShape != null && detectedCustomShape != null)
             {
-                CheckFormat(selectedCustomShape);
-                if (detectedCustomShape == null)
-                {
-                    selectedCustomShape.Stroke = "Red";
-                }
+                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
+                selectedCustomShape.Viewport = ConfigClass.viewportTileModeUnSelected;
             }
             if (detectedCustomShape != null)
             {
                 selectedCustomShape = this.detectedCustomShape;
-                selectedCustomShape.Stroke = "Red";
+                selectedCustomShape.Viewport = ConfigClass.viewportSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
                 SelectListItem();
             }
         }
 
         internal void SelectCustomShape(int indexView)
         {
-            foreach (CustomShape r in RectanglesView)
+            if (selectedCustomShape != null)
             {
-                CheckFormat(r);
+                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
+                selectedCustomShape.Viewport = ConfigClass.viewportTileModeUnSelected;
             }
 
             if (_cropModeChecked == true)
@@ -1383,7 +1382,8 @@ namespace MachineLearningTrainer.DrawerTool
                     CheckFormat(selectedCustomShape);
                 }
 
-                selectedCustomShape.Stroke = "Red";
+                selectedCustomShape.Viewport = ConfigClass.viewportSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
             }
         }
 
@@ -1480,7 +1480,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                 ClearFields();
                 CheckFormat(selectedCustomShape);
-                selectedCustomShape.Stroke = "Red";
+                selectedCustomShape.Viewport = ConfigClass.viewportSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
                 SaveShapeToField(selectedCustomShape);
             }
             else
@@ -1495,7 +1496,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 CheckFormat(r);
             }
-            selectedCustomShape.Stroke = "Red";
+            //selectedCustomShape.Stroke = "Red";
             FilterName();
         }
 
@@ -1591,7 +1592,9 @@ namespace MachineLearningTrainer.DrawerTool
                 CheckFormat(selectedCustomShape);
             }
 
-            selectedCustomShape.Stroke = "Red";
+
+            selectedCustomShape.Viewport = ConfigClass.viewportSelected;
+            selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
         }
         #endregion
 
@@ -2831,6 +2834,8 @@ namespace MachineLearningTrainer.DrawerTool
             if (selectedCustomShape != null)
             {
                 CheckFormat(selectedCustomShape);
+                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
                 selectedCustomShape = null;
             }
 

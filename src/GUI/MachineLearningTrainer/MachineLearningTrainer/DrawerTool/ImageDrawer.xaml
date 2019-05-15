@@ -133,7 +133,7 @@
                     Color="DodgerBlue" />
             </Style.Resources>
         </Style>
-
+        
     </UserControl.Resources>
 
     <UserControl.InputBindings>
@@ -918,9 +918,24 @@
                             Panel.ZIndex="1">
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
-                                    <Border 
-                                        BorderBrush="{Binding Stroke}" 
+                                    <Border
                                         BorderThickness="{Binding StrokeThickness}">
+                                        <Border.BorderBrush>
+                                            <DrawingBrush Viewport="{Binding Viewport}" ViewportUnits="Absolute" TileMode="{Binding ViewportTileMode}">
+                                                <DrawingBrush.Drawing>
+                                                    <DrawingGroup>
+                                                        <GeometryDrawing Brush="{Binding Stroke}">
+                                                            <GeometryDrawing.Geometry>
+                                                                <GeometryGroup>
+                                                                    <RectangleGeometry Rect="0,0,50,50" />
+                                                                    <RectangleGeometry Rect="50,50,50,50" />
+                                                                </GeometryGroup>
+                                                            </GeometryDrawing.Geometry>
+                                                        </GeometryDrawing>
+                                                    </DrawingGroup>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Border.BorderBrush>
                                         <Border.RenderTransform>
                                             <TranslateTransform X="{Binding XLeftBorder}" Y="{Binding YTopBorder}"  />
                                         </Border.RenderTransform>

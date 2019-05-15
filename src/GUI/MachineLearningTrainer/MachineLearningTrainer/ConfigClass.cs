@@ -30,6 +30,12 @@ namespace MachineLearningTrainer
         //sets min distance between imgBorder and nearest Shape
         //needed to see Shape-Border even in the corner
         public static double distanceToBorder = 1;
+
+        //sets format of dotted line for selected Rectangle
+        public static string viewportUnSelected = "0,0,2000,2000";
+        public static string viewportSelected = "0,0,10,10";
+        public static string viewportTileModeUnSelected = "None";
+        public static string viewportTileModeSelected = "Tile";
         #endregion
 
 
@@ -39,6 +45,7 @@ namespace MachineLearningTrainer
 
         //Defines BorderThickness of drawn Rectangles
         public static int strokeThickness = 2;
+        //public static int strokeThicknessWhenSelected = 4;
         #endregion
 
 

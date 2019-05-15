@@ -33,6 +33,9 @@ namespace MachineLearningTrainer.DrawerTool
         private string stroke;
         private string _lblTextBox_Color = "Black";
 
+        private string viewport = ConfigClass.viewportUnSelected;
+        private string viewportTileMode = "None";
+
 
         private readonly int strokeThickness = ConfigClass.strokeThickness;
         private Boolean isMouseOver;
@@ -406,6 +409,32 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 _lblTextBox_Color = value;
                 NotifyPropertyChanged("lblTextBox_Color");
+            }
+        }
+
+        public string Viewport
+        {
+            get
+            {
+                return viewport;
+            }
+            set
+            {
+                viewport = value;
+                NotifyPropertyChanged("Viewport");
+            }
+        }
+
+        public string ViewportTileMode
+        {
+            get
+            {
+                return viewportTileMode;
+            }
+            set
+            {
+                viewportTileMode = value;
+                NotifyPropertyChanged("ViewportTileMode");
             }
         }
 
