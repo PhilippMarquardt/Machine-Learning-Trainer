@@ -331,7 +331,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// Checks if Object is on Canvas and if not, sets Borders right
         /// </summary>
-        private void CheckIfObjectOnCanvas()
+        private bool CheckIfObjectOnCanvas()
         {
             if (selectedCustomShape.X1 < distanceToBorder)
             {
@@ -340,10 +340,20 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
-            else if (selectedCustomShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
+            else if (selectedCustomShape.X1 > MyCanvas.ActualWidth - distanceToBorder)
+            {
+                OnDelete(false);
+                return false;
+            }
+            if (selectedCustomShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
             {
                 selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
                 selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+            }
+            else if (selectedCustomShape.X1 < distanceToBorder)
+            {
+                OnDelete(false);
+                return false;
             }
 
 
@@ -354,11 +364,23 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
                 selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
-            else if (selectedCustomShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
+            else if (selectedCustomShape.Y1 > MyCanvas.ActualHeight - distanceToBorder)
+            {
+                OnDelete(false);
+                return false;
+            }
+            if (selectedCustomShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
             {
                 selectedCustomShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
                 selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
+            else if (selectedCustomShape.Y2 < distanceToBorder)
+            {
+                OnDelete(false);
+                return false;
+            }
+
+            return true;
         }
         #endregion
 
@@ -506,7 +528,6 @@ namespace MachineLearningTrainer.DrawerTool
                         indexRectanglesView++;
                         indexRectangles++;
                         id++;
-
 
 
                         //Only for debugging
@@ -790,23 +811,25 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void DeactivateMove(System.Windows.Point mousePosition)
         {
-            CheckIfObjectOnCanvas();
-
-            int tmpIndex = 0;
-            foreach (CustomShape r in Rectangles)
+            bool isOnCanvas = CheckIfObjectOnCanvas();
+            if (isOnCanvas)
             {
-                if (r.Id == selectedCustomShape.Id)
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
                 {
-                    Rectangles.RemoveAt(tmpIndex);
-                    Rectangles.Insert(tmpIndex, selectedCustomShape);
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
 
-                    SaveShapeToField(selectedCustomShape);
-                    break;
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
                 }
-                tmpIndex++;
-            }
 
-            selectedCustomShape.Move = false;
+                selectedCustomShape.Move = false;
+            }
         }
         #endregion
 
@@ -1191,6 +1214,23 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public CustomShape DetectedCustomShape
+        {
+            get
+            {
+                return detectedCustomShape;
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    detectedCustomShape = new CustomShape(value);
+                }
+
+            }
+        }
+
         private bool shapeSelected = false;
         private CustomShape selectedCustomShape = null;
         public CustomShape SelectedCustomShape
@@ -1209,24 +1249,6 @@ namespace MachineLearningTrainer.DrawerTool
 
             }
         }
-
-        //Only for debugging
-        private CustomShape _test = new CustomShape(10,10,200,300,0);
-        public CustomShape Test
-        {
-            get
-            {
-                return _test;
-            }
-            set
-            {
-                if(value != null)
-                {
-                    _test = new CustomShape(value);
-                }
-            }
-        }
-        //
 
 
         /// <summary>
@@ -1275,13 +1297,13 @@ namespace MachineLearningTrainer.DrawerTool
                 && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
                 CheckFormat(detectedCustomShape);
-                if(selectedCustomShape != null)
-                {
-                    if(selectedCustomShape.Id == detectedCustomShape.Id)
-                    {
-                        //detectedCustomShape.Stroke = "Red";
-                    }
-                }
+                //if(selectedCustomShape != null)
+                //{
+                //    if(selectedCustomShape.Id == detectedCustomShape.Id)
+                //    {
+                //        //detectedCustomShape.Stroke = "Red";
+                //    }
+                //}
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
                 detectedCustomShape = null;
@@ -1292,30 +1314,6 @@ namespace MachineLearningTrainer.DrawerTool
                 detectedCustomShape.Fill = "Gray";
                 detectedCustomShape.IsMouseOver = true;
                 shapeDetected = true;
-
-                //only for debugging
-
-                //foreach (CustomShape r in Rectangles)
-                //{
-                //    if (r.Id == detectedCustomShape.Id)
-                //    {
-                //        Console.WriteLine("rectangleView Fill: " + r.Fill);
-                //        break;
-                //    }
-                //}
-
-                //foreach (CustomShape r in RectanglesView)
-                //{
-                //    if (r.Id == detectedCustomShape.Id)
-                //    {
-                //        Console.WriteLine("rectangle Fill: " + r.Fill);
-                //        break;
-                //    }
-                //}
-
-
-                //Console.WriteLine("detectedCustomShape Fill: " + detectedCustomShape.Fill);
-                //
             }
         }
 
@@ -1590,14 +1588,14 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _deleteCommand ?? (_deleteCommand = new CommandHandler(() => OnDelete(), true));
+                return _deleteCommand ?? (_deleteCommand = new CommandHandler(() => OnDelete(true), true));
             }
         }
 
         /// <summary>
         /// Delete the selected shape
         /// </summary>
-        private void OnDelete()
+        private void OnDelete(bool isOnCanvas)
         {
             if (selectedCustomShape != null)
             {
@@ -1605,8 +1603,11 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     if (rv.Id == selectedCustomShape.Id)
                     {
-                        undoCustomShapes.Push(rv);
-                        undoInformation.Push("Delete");
+                        if (isOnCanvas == true)
+                        {
+                            undoCustomShapes.Push(rv);
+                            undoInformation.Push("Delete");
+                        }
                         RectanglesView.Remove(rv);
                         indexRectanglesView--;
                         RemoveShapeFromField(rv);

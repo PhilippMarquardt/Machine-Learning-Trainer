@@ -75,6 +75,9 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).SelectCustomShape();
         }
 
+        private int tmpRVCount = 0;
+        private int tmpZIndex = 0;
+
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
             mousePosition = e.GetPosition(cnvImage);
@@ -84,20 +87,37 @@ namespace MachineLearningTrainer.DrawerTool
 
             if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
             {
+
+                if (tmpRVCount != (this.DataContext as DrawerViewModel).RectanglesView.Count())
+                {
+                    tmpRVCount = (this.DataContext as DrawerViewModel).RectanglesView.Count();
+                    int zIndex = tmpRVCount + 2;
+
+                    Panel.SetZIndex(horizontalLine, zIndex);
+                    Panel.SetZIndex(verticalLine, zIndex);
+                }
+
                 horizontalLine.Y1 = mousePosition.Y;
                 horizontalLine.Y2 = mousePosition.Y;
+                horizontalLine.StrokeThickness = 1;
                 verticalLine.X1 = mousePosition.X;
                 verticalLine.X2 = mousePosition.X;
+                verticalLine.StrokeThickness = 1;
 
                 Mouse.OverrideCursor = Cursors.Cross;
                 (this.DataContext as DrawerViewModel).CreateRectangle(mousePosition);
             }
             else
             {
-                horizontalLine.Y1 = -1;
-                horizontalLine.Y2 = -1;
-                verticalLine.X1 = -1;
-                verticalLine.X2 = -1;
+                if(horizontalLine.Y1 != -1)
+                { 
+                    horizontalLine.Y1 = -1;
+                    horizontalLine.Y2 = -1;
+                    horizontalLine.StrokeThickness = 0;
+                    verticalLine.X1 = -1;
+                    verticalLine.X2 = -1;
+                    verticalLine.StrokeThickness = 0;
+                }
 
                 if (e.LeftButton == MouseButtonState.Released)
                 {
@@ -158,7 +178,6 @@ namespace MachineLearningTrainer.DrawerTool
             ////{
             ////    await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
             ////}
-
             if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count > 0)
             {
                 (this.DataContext as DrawerViewModel).UndoEnabled = true;
@@ -561,18 +580,24 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void DrawCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            UIElement element = (UIElement)sender;
-            element.CaptureMouse();
-            //e.Handled = true;
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
+            {
+                UIElement element = (UIElement)sender;
+                element.CaptureMouse();
+                e.Handled = true;
+            }
         }
 
         private void DrawCanvas_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            // Release the mouse capture, if this element held the capture.
+            //Release the mouse capture, if this element held the capture.
             UIElement element = (UIElement)sender;
             element.ReleaseMouseCapture();
             e.Handled = true;
         }
+
+
+        #region ColorPicker
 
         private void ColorPicker_Open(object sender, RoutedEventArgs e)
         {
@@ -615,6 +640,9 @@ namespace MachineLearningTrainer.DrawerTool
             newColorPicker.DataContext = this.DataContext;
             newColorPicker.ShowDialog();
         }
+
+        #endregion
+
 
         private void CbItemLabel_DropDownClosed(object sender, EventArgs e)
         {

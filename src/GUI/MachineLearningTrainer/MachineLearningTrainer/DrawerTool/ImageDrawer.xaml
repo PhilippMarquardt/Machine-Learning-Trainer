@@ -891,24 +891,6 @@
                             Height="auto"
                             ClipToBounds="True"
                             Source="{Binding ImagePath}" />
-                        <Line
-                            x:Name="horizontalLine"
-                            X1="0"
-                            X2="{Binding ActualWidth, ElementName=imgPreview}"
-                            Y1="-1"
-                            Y2="-1"
-                            Stroke="Black"
-                            StrokeThickness="1"
-                            Panel.ZIndex="2" />
-                        <Line
-                            x:Name="verticalLine"
-                            X1="-1"
-                            X2="-1"
-                            Y1="0"
-                            Y2="{Binding ActualHeight, ElementName=imgPreview}"
-                            Stroke="Black"
-                            StrokeThickness="1"
-                            Panel.ZIndex="2" />
 
                         <ItemsControl
                             x:Name="ad"
@@ -970,47 +952,22 @@
                             </ItemsControl.ItemsPanel>
                         </ItemsControl>
 
-                        <ItemsControl
-                            Width="{Binding ActualWidth, ElementName=imgPreview}"
-                            Height="{Binding ActualHeight, ElementName=imgPreview}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            Panel.ZIndex="0">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Rectangle
-                                        Width="200"
-                                        Height="200"
-                                        Stroke="Red"
-                                        StrokeThickness="10">
-                                        <Rectangle.Effect>
-                                            <BlurEffect Radius="10" />
-                                            <!--<DropShadowEffect BlurRadius="10" ShadowDepth="0" Color="Yellow"/>-->
-                                        </Rectangle.Effect>
-                                        <Rectangle.Fill>
-                                            <SolidColorBrush Color="Transparent" Opacity="1" />
-                                        </Rectangle.Fill>
-                                        <Rectangle.RenderTransform>
-                                            <TranslateTransform X="20" Y="20" />
-                                        </Rectangle.RenderTransform>
-                                    </Rectangle>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas 
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Width="{Binding ActualWidth, ElementName=imgPreview}"
-                                        Height="{Binding ActualHeight, ElementName=imgPreview}"
-                                        ClipToBounds="True"
-                                        IsItemsHost="True" 
-                                        Background="Transparent">
-                                    </Canvas>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
+                        <Line
+                            x:Name="horizontalLine"
+                            X1="0"
+                            X2="{Binding ActualWidth, ElementName=imgPreview}"
+                            Y1="-1"
+                            Y2="-1"
+                            Stroke="Black"
+                            StrokeThickness="0"/>
+                        <Line
+                            x:Name="verticalLine"
+                            X1="-1"
+                            X2="-1"
+                            Y1="0"
+                            Y2="{Binding ActualHeight, ElementName=imgPreview}"
+                            Stroke="Black"
+                            StrokeThickness="1"/>
                     </Canvas>
                 </local:ZoomBorder>
             </Border>
