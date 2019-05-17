@@ -201,7 +201,7 @@
         <KeyBinding
             Key="Down"
             Command="{Binding DownButtonCommand_Move}" />
-        <KeyBinding
+        <!--<KeyBinding
             Key="Left"
             Command="{Binding LeftButtonCommand}"
             Modifiers="Ctrl+Shift" />
@@ -216,21 +216,21 @@
         <KeyBinding
             Key="Down"
             Command="{Binding DownButtonCommand}"
-            Modifiers="Ctrl+Shift" />
+            Modifiers="Ctrl+Shift" />-->
         <KeyBinding
-            Key="Left"
+            Key="Right"
             Command="{Binding RightButtonCommand1}"
             Modifiers="Ctrl" />
         <KeyBinding
-            Key="Right"
+            Key="Left"
             Command="{Binding LeftButtonCommand1}"
             Modifiers="Ctrl" />
         <KeyBinding
-            Key="Up"
+            Key="Down"
             Command="{Binding DownButtonCommand1}"
             Modifiers="Ctrl" />
         <KeyBinding
-            Key="Down"
+            Key="Up"
             Command="{Binding UpButtonCommand1}"
             Modifiers="Ctrl" />
         <KeyBinding
@@ -405,138 +405,6 @@
                 <RowDefinition x:Name="gridY1" Height="*" />
                 <RowDefinition x:Name="gridY2" Height="auto" />
             </Grid.RowDefinitions>
-
-            <!-- StackPanel with ColorPicker -->
-            <StackPanel
-                x:Name="ColorPicker_Panel"
-                Width="auto"
-                MinWidth="160"
-                Visibility="Collapsed"
-                Background="Transparent"
-                Grid.Row="0"
-                Grid.RowSpan="5"
-                Grid.Column="4"
-                Panel.ZIndex="3">
-                <Grid
-                    Width="auto"
-                    MinWidth="120"
-                    Margin="10">
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="Auto" />
-                        <RowDefinition Height="*" />
-                    </Grid.RowDefinitions>
-                    <TextBlock
-                        Background="#FF2196F3"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Center"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="ColorPicker" 
-                        TextAlignment="Center"
-                        Grid.Row="0"/>
-                    <Grid
-                        Grid.Row="1"
-                        Width="auto"
-                        MinWidth="120"
-                        Margin="10">
-                        <Grid.RowDefinitions>
-                            <RowDefinition Height="Auto" />
-                            <RowDefinition Height="Auto" />
-                        </Grid.RowDefinitions>
-                        <DockPanel
-                        VerticalAlignment="Center" 
-                        Margin="5"
-                        Grid.Row="0">
-                            <Label
-                                Foreground="Black"
-                                DockPanel.Dock="Left"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center">Mode:</Label>
-                            <ComboBox
-                                DockPanel.Dock="Right"
-                                Width="auto"
-                                Height="30"
-                                Margin="5"
-                                Padding="3"
-                                HorizontalAlignment="Right"
-                                VerticalContentAlignment="Center"
-                                FontSize="14"
-                                Foreground="Black"
-                                ItemsSource="{Binding ModeItems}"
-                                SelectedIndex="0"
-                                SelectedItem="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" />
-                        </DockPanel>
-                    </Grid>
-                    <xctk:ColorCanvas
-                        Background="Transparent"
-                        Foreground="Black"
-                        Margin="10"
-                        x:Name="_colorCanvas"
-                        Grid.Row="2"
-                        VerticalAlignment="Top"
-                        HorizontalAlignment="Stretch" 
-                        UsingAlphaChannel="False"
-                        SelectedColorChanged="_colorCanvas_SelectedColorChanged" 
-                        SelectedColor="{Binding SelectedColor, Mode=TwoWay}"/>
-                    <DockPanel 
-                        VerticalAlignment="Center" 
-                        Margin="5"
-                        Grid.Row="3">
-                        <Label DockPanel.Dock="Left" Foreground="Black">O:</Label>
-                        <TextBox 
-                            x:Name="_opacityTextBox"
-                            DockPanel.Dock="Right"
-                            TextAlignment="Right"
-                            Foreground="Black"
-                            Width="40" 
-                            Text="1"
-                            IsReadOnly="True" />
-                        <Slider 
-                            Maximum="1" 
-                            Name="_sliderOpacity" 
-                            TickFrequency="0.05"
-                            IsSnapToTickEnabled="True"
-                            ValueChanged="_sliderOpacity_ValueChanged" 
-                            Value="{Binding SelectedOpacity, Mode=TwoWay}"/>
-                    </DockPanel>
-                    <xctk:ColorPicker
-                        x:Name="_colorPicker"
-                        Margin="5"
-                        Grid.Row="4"
-                        VerticalAlignment="Top"
-                        SelectedColorChanged="_colorPicker_SelectedColorChanged" 
-                        ShowTabHeaders="False" 
-                        ShowRecentColors="True"
-                        ShowAvailableColors="True"
-                        ShowStandardColors="True"/>
-
-                    <Grid
-                        Margin="5"
-                        Grid.Row="5"
-                        VerticalAlignment="Bottom">
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="100" />
-                            <ColumnDefinition Width="*" />
-                            <ColumnDefinition Width="100" />
-                        </Grid.ColumnDefinitions>
-                        <Button
-                            x:Name="_applyColorChange"
-                            Grid.Column="0"
-                            Content="Apply"
-                            Click="_applyColorChange_Click" />
-                        <Button
-                            x:Name="_cancelColorChange"
-                            Grid.Column="2"
-                            Content="Close"
-                            Click="_closeColorChange_Click" />
-                    </Grid>
-                </Grid>
-            </StackPanel>
 
             <!-- StackPanel with Buttons -->
             <StackPanel
@@ -1116,19 +984,19 @@
                         Command="{Binding DownButtonCommand}"
                         Modifiers="Ctrl+Shift" />
                     <KeyBinding
-                        Key="Left"
+                        Key="Right"
                         Command="{Binding RightButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding
-                        Key="Right"
+                        Key="Left"
                         Command="{Binding LeftButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding
-                        Key="Up"
+                        Key="Down"
                         Command="{Binding DownButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding
-                        Key="Down"
+                        Key="Up"
                         Command="{Binding UpButtonCommand1}"
                         Modifiers="Ctrl" />
                 </ListBox.InputBindings>
@@ -1215,7 +1083,7 @@
                     <KeyBinding
                         Key="Down"
                         Command="{Binding DownButtonCommand_Move}" />
-                    <KeyBinding
+                    <!--<KeyBinding
                         Key="Left"
                         Command="{Binding LeftButtonCommand}"
                         Modifiers="Ctrl+Shift" />
@@ -1230,21 +1098,21 @@
                     <KeyBinding
                         Key="Down"
                         Command="{Binding DownButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
+                        Modifiers="Ctrl+Shift" />-->
                     <KeyBinding
-                        Key="Left"
+                        Key="Right"
                         Command="{Binding RightButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding
-                        Key="Right"
+                        Key="Left"
                         Command="{Binding LeftButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding
-                        Key="Up"
+                        Key="Down"
                         Command="{Binding DownButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding
-                        Key="Down"
+                        Key="Up"
                         Command="{Binding UpButtonCommand1}"
                         Modifiers="Ctrl" />
                     <KeyBinding

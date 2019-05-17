@@ -76,7 +76,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private int tmpRVCount = 0;
-        private int tmpZIndex = 0;
 
         private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
         {
@@ -129,10 +128,15 @@ namespace MachineLearningTrainer.DrawerTool
                     else
                     {
                         (this.DataContext as DrawerViewModel).Enabled = true;
+                        Mouse.OverrideCursor = Cursors.Arrow;
                     }
-
-                    Mouse.OverrideCursor = Cursors.Arrow;
                 }
+                //Uncommented, because it overrides Resize-MouseCursor
+                //else
+                //{
+                //    Mouse.OverrideCursor = Cursors.Hand;
+                //}
+
                 (this.DataContext as DrawerViewModel).Resize(mousePosition);
                 (this.DataContext as DrawerViewModel).Move(mousePosition);
             }
@@ -598,39 +602,6 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         #region ColorPicker
-
-        private void ColorPicker_Open(object sender, RoutedEventArgs e)
-        {
-            ColorPicker_Panel.Visibility = Visibility.Visible;
-            Functions_Panel.Visibility = Visibility.Collapsed;
-        }
-
-        private void _colorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
-        {
-            _colorPicker.SelectedColor = _colorCanvas.SelectedColor;
-        }
-
-        private void _applyColorChange_Click(object sender, RoutedEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).ChangeColor();
-        }
-
-        private void _closeColorChange_Click(object sender, RoutedEventArgs e)
-        {
-            ColorPicker_Panel.Visibility = Visibility.Collapsed;
-            Functions_Panel.Visibility = Visibility.Visible;
-        }
-
-        private void _colorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
-        {
-            _colorCanvas.SelectedColor = _colorPicker.SelectedColor;
-        }
-
-        private void _sliderOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
-        {
-            _opacityTextBox.Text = Convert.ToString(_sliderOpacity.Value);
-            (this.DataContext as DrawerViewModel).ChangeOpacity();
-        }
 
         private void EditLabelColorFormat_Click(object sender, RoutedEventArgs e)
         {

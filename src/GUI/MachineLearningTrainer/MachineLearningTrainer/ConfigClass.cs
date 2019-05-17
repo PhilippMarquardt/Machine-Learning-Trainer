@@ -34,8 +34,8 @@ namespace MachineLearningTrainer
         //sets format of dotted line for selected Rectangle
         public static string viewportUnSelected = "0,0,2000,2000";
         public static string viewportSelected = "0,0,10,10";
-        public static string viewportTileModeUnSelected = "None";
-        public static string viewportTileModeSelected = "Tile";
+        public static System.Windows.Media.TileMode viewportTileModeUnSelected = System.Windows.Media.TileMode.None;
+        public static System.Windows.Media.TileMode viewportTileModeSelected = System.Windows.Media.TileMode.Tile;
         #endregion
 
 

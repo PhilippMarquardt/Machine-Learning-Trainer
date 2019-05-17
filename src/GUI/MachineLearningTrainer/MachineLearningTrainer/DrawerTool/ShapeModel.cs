@@ -34,7 +34,7 @@ namespace MachineLearningTrainer.DrawerTool
         private string _lblTextBox_Color = "Black";
 
         private string viewport = ConfigClass.viewportUnSelected;
-        private string viewportTileMode = "None";
+        private System.Windows.Media.TileMode viewportTileMode = System.Windows.Media.TileMode.None;
 
 
         private readonly int strokeThickness = ConfigClass.strokeThickness;
@@ -425,7 +425,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        public string ViewportTileMode
+        public System.Windows.Media.TileMode ViewportTileMode
         {
             get
             {

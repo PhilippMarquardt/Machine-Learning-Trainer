@@ -139,7 +139,6 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainGrid = mainGrid;
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
-            //RenameCommand = new MyICommand(OnRename, CanRename);
             ComboBoxItems.Add("All Labels");
             SelectedComboBoxItem = "All Labels";
 
@@ -147,10 +146,10 @@ namespace MachineLearningTrainer.DrawerTool
             Rectangles = new ObservableCollection<CustomShape>();
             LabelColorFormat = new ObservableCollection<CustomShapeFormat>();
             Random _rand = new Random();
+
             LabelColorFormat.Add(new CustomShapeFormat("test 1", "Red", "Blue", 0.3));
             LabelColorFormat.Add(new CustomShapeFormat("test 2", "Blue", "Red", 0.3));
-            //RectanglesView.CollectionChanged += ShapeCollectionChanged;
-            //manipulatableShape.PropertyChanged += ManipulatableShape_PropertyChanged;
+
             undoCustomShapes.Push(new CustomShape(0, 0));
             undoInformation.Push("Dummy");
             redoCustomShapes.Push(new CustomShape(0, 0));
@@ -176,8 +175,9 @@ namespace MachineLearningTrainer.DrawerTool
         public Stack<string> undoInformation { get; set; } = new Stack<string>();
         public Stack<CustomShape> redoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> redoInformation { get; set; } = new Stack<string>();
-        public CustomShape manipulatableShape { get; set; } = new CustomShape(100, 100, 200, 100, 0);
         public ObservableCollection<CustomShapeFormat> LabelColorFormat { get; set; }
+        public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
+        public bool Enabled { get; set; } = true;
 
 
         #region constant values from ConfigClass: (go to ConfigClass for description)
@@ -199,22 +199,6 @@ namespace MachineLearningTrainer.DrawerTool
 
 
 
-        /// <summary>
-        /// declares a string that stores the IconPath to differentiate between active and not active
-        /// </summary>
-        private string _iconPath = "\\Icons\\new.png";
-        public string IconPath
-        {
-            get
-            {
-                return this._iconPath;
-            }
-            set
-            {
-                this._iconPath = value;
-                OnPropertyChanged("IconPath");
-            }
-        }
 
         public enum MouseState { Normal, CreateRectangle, CreateEllipse, Move, Resize }
         private MouseState mouseHandlingState;
@@ -231,25 +215,57 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
+        
         private System.Windows.Point _vmMousePoint;
+        /// <summary>
+        /// Stores mouse position
+        /// </summary>
         public System.Windows.Point vmMousePoint
         {
             get { return _vmMousePoint; }
             set { _vmMousePoint = value; }
         }
 
+        private string _rectangleCount;
+        public string RectangleCount
+        {
+            get
+            {
+                return _rectangleCount;
+            }
+            set
+            {
+                _rectangleCount = value;
+                OnPropertyChanged("RectangleCount");
+            }
+        }
 
 
 
-
-        #region Check If Mouse || Shape On Canvas
+        #region Check If Mouse/Shape On Canvas
         //CheckCanvas:
         //makes sure that you only draw on canvas
+
+        #region Variables
 
         private double tmpX;
         private double tmpY;
 
+        private Canvas _myCanvas;
+        public Canvas MyCanvas
+        {
+            get { return _myCanvas; }
+            set { _myCanvas = value; }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Checks if Mouse is on img and if not sets X/Y to BorderPoint on img
+        /// 
+        /// #CreateRectangle #ResizeRectangle
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void CheckOnCanvas(System.Windows.Point mousePosition)
         {
             if (mousePosition.X < distanceToBorder)
@@ -270,34 +286,13 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void CheckOnCanvas(System.Windows.Point mousePosition, double deltaX, double deltaY)
-        {
-            if (mousePosition.X - deltaX - selectedCustomShape.Width / 2 < distanceToBorder)
-            {
-                tmpX = distanceToBorder;
-                selectedCustomShape.X1 = distanceToBorder;
-                selectedCustomShape.XLeft = distanceToBorder;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-            }
-            else if (mousePosition.X - deltaX + selectedCustomShape.Width / 2 > MyCanvas.ActualWidth - distanceToBorder)
-            {
-                tmpX = MyCanvas.ActualWidth - distanceToBorder;
-                selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
-            }
-            if (mousePosition.Y - deltaY - selectedCustomShape.Height / 2 < distanceToBorder)
-            {
-                tmpY = distanceToBorder;
-                selectedCustomShape.Y1 = distanceToBorder;
-                selectedCustomShape.YTop = distanceToBorder;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-            }
-            else if (mousePosition.Y - deltaY + selectedCustomShape.Height / 2 > MyCanvas.ActualHeight - distanceToBorder)
-            {
-                tmpY = MyCanvas.ActualHeight - distanceToBorder;
-                selectedCustomShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
-            }
-        }
-
+        /// <summary>
+        /// Checks if Duplicated Shape is still on img and if not, sets border to imgBorder
+        /// 
+        /// #DuplicateRectangle
+        /// </summary>
+        /// <param name="customShape"></param>
+        /// <returns></returns>
         private CustomShape CheckOnCanvas(CustomShape customShape)
         {
             if (customShape.X1 < distanceToBorder)
@@ -329,9 +324,11 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         /// <summary>
-        /// Checks if Object is on Canvas and if not, sets Borders right
+        /// Checks if moved SelectedCustomShape is on Canvas(img) and if not, sets border to imgBorder
+        /// 
+        /// #MoveRectangle
         /// </summary>
-        private bool CheckIfObjectOnCanvas()
+        private bool CheckIfSelectedCustomShapeOnCanvas()
         {
             if (selectedCustomShape.X1 < distanceToBorder)
             {
@@ -342,18 +339,31 @@ namespace MachineLearningTrainer.DrawerTool
             }
             else if (selectedCustomShape.X1 > MyCanvas.ActualWidth - distanceToBorder)
             {
+                //Comment if Rectangles outside of img should be fitted on img again
                 OnDelete(false);
                 return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.X1 = MyCanvas.ActualWidth - distanceToBorder - minShapeSize;
+                //selectedCustomShape.XLeft = MyCanvas.ActualWidth - distanceToBorder - minShapeSize;
+                //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+
             }
             if (selectedCustomShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
             {
                 selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
                 selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
-            else if (selectedCustomShape.X1 < distanceToBorder)
+            else if (selectedCustomShape.X2 < distanceToBorder)
             {
+                //Comment if Rectangles outside of img should be fitted on img again
                 OnDelete(false);
                 return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.X2 = distanceToBorder + minShapeSize;
+                //selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
 
 
@@ -366,8 +376,15 @@ namespace MachineLearningTrainer.DrawerTool
             }
             else if (selectedCustomShape.Y1 > MyCanvas.ActualHeight - distanceToBorder)
             {
+                //Comment if Rectangles outside of img should be fitted on img again
                 OnDelete(false);
                 return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.Y1 = MyCanvas.ActualHeight - distanceToBorder - minShapeSize;
+                //selectedCustomShape.YTop = MyCanvas.ActualHeight - distanceToBorder - minShapeSize;
+                //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
             if (selectedCustomShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
             {
@@ -376,8 +393,13 @@ namespace MachineLearningTrainer.DrawerTool
             }
             else if (selectedCustomShape.Y2 < distanceToBorder)
             {
+                //Comment if Rectangles outside of img should be fitted on img again
                 OnDelete(false);
                 return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.Y2 = distanceToBorder + minShapeSize;
+                //selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
             }
 
             return true;
@@ -385,9 +407,11 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region Create ShapeRectangles
+        #region Create Rectangles : CustomShape
         //Create Rectangles:
         //routine to create rectangles
+
+        #region Variables for Create ShapeRectangles
 
         private int indexRectangles;
         private int indexRectanglesView;
@@ -395,6 +419,9 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         private ICommand _addRectangle;
+        /// <summary>
+        /// Command is triggered when clicking on AddRectangle (ALT+R)
+        /// </summary>
         public ICommand AddRectangle
         {
             get
@@ -402,6 +429,24 @@ namespace MachineLearningTrainer.DrawerTool
                 return _addRectangle ?? (_addRectangle = new CommandHandler(() => AddNewRectangle(), _canExecute));
             }
         }
+
+        /// <summary>
+        /// declares a string that stores the IconPath to differentiate between active and not active
+        /// </summary>
+        private string _iconPath = "\\Icons\\new.png";
+        public string IconPath
+        {
+            get
+            {
+                return this._iconPath;
+            }
+            set
+            {
+                this._iconPath = value;
+                OnPropertyChanged("IconPath");
+            }
+        }
+
 
         /// <summary>
         /// this method switches between draw/not draw state for rectangle 
@@ -422,156 +467,139 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #endregion
+
         /// <summary>
-        /// Create Rectangle depending from MouseState+Position
+        /// Create a Rectangle
         /// </summary>
         /// <param name="mousePosition"></param>
-        public void CreateRectangle(System.Windows.Point mousePosition)
+        internal void CreateRectangle(System.Windows.Point mousePosition)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed)
             {
-                tmpX = mousePosition.X;
-                tmpY = mousePosition.Y;
-                CheckOnCanvas(mousePosition);
-
-                if (RectanglesView.Count < indexRectanglesView + 1)
-                {
-                    RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
-
-                    if (SelectedComboBoxItem != "All Labels")
-                    {
-                        RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
-                    }
-
-                    else
-                    {
-                        AddLabelColorFormat(RectanglesView[indexRectanglesView]);
-                    }
-
-
-                    CheckFormat(RectanglesView[indexRectanglesView]);
-                }
-                else
-                {
-                    if (RectanglesView[indexRectanglesView].X1 < distanceToBorder && RectanglesView[indexRectanglesView].Y1 < distanceToBorder)
-                    {
-                        RectanglesView[indexRectanglesView].X1 = tmpX;
-                        RectanglesView[indexRectanglesView].Y1 = tmpY;
-                    }
-                    RectanglesView[indexRectanglesView].X2 = tmpX;
-                    RectanglesView[indexRectanglesView].Y2 = tmpY;
-
-                    if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
-                    {
-                        RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X2;
-                    }
-                    else
-                    {
-                        RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X1;
-                    }
-                    RectanglesView[indexRectanglesView].XLeftBorder = RectanglesView[indexRectanglesView].XLeft - RectanglesView[indexRectanglesView].StrokeThickness;
-
-                    if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
-                    {
-                        RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y2;
-                    }
-                    else
-                    {
-                        RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
-                    }
-                    RectanglesView[indexRectanglesView].YTopBorder = RectanglesView[indexRectanglesView].YTop - RectanglesView[indexRectanglesView].StrokeThickness;
-
-                    RectanglesView[indexRectanglesView].Width = Math.Abs(RectanglesView[indexRectanglesView].X2 - RectanglesView[indexRectanglesView].X1);
-                    RectanglesView[indexRectanglesView].Height = Math.Abs(RectanglesView[indexRectanglesView].Y2 - RectanglesView[indexRectanglesView].Y1);
-                }
+                DrawRectangle(mousePosition);
             }
             else if (Mouse.LeftButton == MouseButtonState.Released)
             {
-                double tmp;
-                if (RectanglesView.Count == indexRectanglesView + 1)
-                {
-                    if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
-                        || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
-                    {
-                        RectanglesView.RemoveAt(indexRectanglesView);
-                        indexRectanglesView = RectanglesView.Count();
-                    }
-                    else
-                    {
-                        CustomShape createdRectangle = new CustomShape(RectanglesView[indexRectanglesView]);
-                        RectanglesView.RemoveAt(indexRectanglesView);
-                        indexRectanglesView = RectanglesView.Count();
-
-                        if (createdRectangle.X1 > createdRectangle.X2)
-                        {
-                            tmp = createdRectangle.X1;
-                            createdRectangle.X1 = createdRectangle.X2;
-                            createdRectangle.X2 = tmp;
-                        }
-                        if (createdRectangle.Y1 > createdRectangle.Y2)
-                        {
-                            tmp = createdRectangle.Y1;
-                            createdRectangle.Y1 = createdRectangle.Y2;
-                            createdRectangle.Y2 = tmp;
-                        }
-                        Enabled = false;
-
-                        CheckFormat(createdRectangle);
-                        Rectangles.Add(createdRectangle);
-                        RectanglesView.Add(createdRectangle);
-                        SaveShapeToField(createdRectangle);
-                        createdRectangle = null;
-
-                        undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
-                        undoInformation.Push("Add");
-
-                        indexRectanglesView++;
-                        indexRectangles++;
-                        id++;
-
-
-                        //Only for debugging
-                        Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
-                        Console.WriteLine("Rectangles count: " + Rectangles.Count);
-                        //
-
-                        RectangleCount = "#" + RectanglesView.Count.ToString();
-                        ComboBoxNames();
-
-
-                        //OnPropertyChanged("Rectangles");
-                        OnPropertyChanged("RectanglesView");
-                    }
-                }
+                FinalizeRectangle(mousePosition);
             }
         }
 
         /// <summary>
-        /// Checks Label and if allready exists, copys Color-Format
+        /// Initialize and draws Rectangle while LeftMouseButton is pressed
         /// </summary>
-        private void CheckFormat(CustomShape Rectangle)
+        /// <param name="mousePosition"></param>
+        private void DrawRectangle(System.Windows.Point mousePosition)
         {
-            if (SelectedComboBoxItem != null || SelectedComboBoxItem != "All Labels")
+            tmpX = mousePosition.X;
+            tmpY = mousePosition.Y;
+            CheckOnCanvas(mousePosition);
+
+            if (RectanglesView.Count < indexRectanglesView + 1)
             {
+                RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
 
-                string tmpStroke = "LawnGreen";
-                string tmpFill = "White";
-                double tmpOpacity = 0.5;
-
-                foreach (var r in LabelColorFormat)
+                if (SelectedComboBoxItem != "All Labels")
                 {
-                    if (r.Label == Rectangle.Label)
-                    {
-                        tmpStroke = r.Stroke;
-                        tmpFill = r.Fill;
-                        tmpOpacity = r.Opacity;
-                        break;
-                    }
+                    RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
                 }
 
-                Rectangle.Stroke = tmpStroke;
-                Rectangle.Fill = tmpFill;
-                Rectangle.Opacity = tmpOpacity;
+                else
+                {
+                    AddLabelColorFormat(RectanglesView[indexRectanglesView]);
+                }
+
+
+                CheckFormat(RectanglesView[indexRectanglesView]);
+            }
+            else
+            {
+                if (RectanglesView[indexRectanglesView].X1 < distanceToBorder && RectanglesView[indexRectanglesView].Y1 < distanceToBorder)
+                {
+                    RectanglesView[indexRectanglesView].X1 = tmpX;
+                    RectanglesView[indexRectanglesView].Y1 = tmpY;
+                }
+                RectanglesView[indexRectanglesView].X2 = tmpX;
+                RectanglesView[indexRectanglesView].Y2 = tmpY;
+
+                if (RectanglesView[indexRectanglesView].X1 > RectanglesView[indexRectanglesView].X2)
+                {
+                    RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X2;
+                }
+                else
+                {
+                    RectanglesView[indexRectanglesView].XLeft = RectanglesView[indexRectanglesView].X1;
+                }
+                RectanglesView[indexRectanglesView].XLeftBorder = RectanglesView[indexRectanglesView].XLeft - RectanglesView[indexRectanglesView].StrokeThickness;
+
+                if (RectanglesView[indexRectanglesView].Y1 > RectanglesView[indexRectanglesView].Y2)
+                {
+                    RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y2;
+                }
+                else
+                {
+                    RectanglesView[indexRectanglesView].YTop = RectanglesView[indexRectanglesView].Y1;
+                }
+                RectanglesView[indexRectanglesView].YTopBorder = RectanglesView[indexRectanglesView].YTop - RectanglesView[indexRectanglesView].StrokeThickness;
+
+                RectanglesView[indexRectanglesView].Width = Math.Abs(RectanglesView[indexRectanglesView].X2 - RectanglesView[indexRectanglesView].X1);
+                RectanglesView[indexRectanglesView].Height = Math.Abs(RectanglesView[indexRectanglesView].Y2 - RectanglesView[indexRectanglesView].Y1);
+            }
+        }
+
+        /// <summary>
+        /// Finalizes Rectangle by deleting if to small and else adding it to List of all Rectangles
+        /// </summary>
+        /// <param name="mousePosition"></param>
+        private void FinalizeRectangle(System.Windows.Point mousePosition)
+        {
+            double tmp;
+            if (RectanglesView.Count == indexRectanglesView + 1)
+            {
+                if (Math.Abs(RectanglesView[indexRectanglesView].X1 - RectanglesView[indexRectanglesView].X2) < minShapeSize
+                    || Math.Abs(RectanglesView[indexRectanglesView].Y1 - RectanglesView[indexRectanglesView].Y2) < minShapeSize)
+                {
+                    RectanglesView.RemoveAt(indexRectanglesView);
+                    indexRectanglesView = RectanglesView.Count();
+                }
+                else
+                {
+                    CustomShape createdRectangle = new CustomShape(RectanglesView[indexRectanglesView]);
+                    RectanglesView.RemoveAt(indexRectanglesView);
+                    indexRectanglesView = RectanglesView.Count();
+
+                    if (createdRectangle.X1 > createdRectangle.X2)
+                    {
+                        tmp = createdRectangle.X1;
+                        createdRectangle.X1 = createdRectangle.X2;
+                        createdRectangle.X2 = tmp;
+                    }
+                    if (createdRectangle.Y1 > createdRectangle.Y2)
+                    {
+                        tmp = createdRectangle.Y1;
+                        createdRectangle.Y1 = createdRectangle.Y2;
+                        createdRectangle.Y2 = tmp;
+                    }
+                    Enabled = false;
+
+                    CheckFormat(createdRectangle);
+                    Rectangles.Add(createdRectangle);
+                    RectanglesView.Add(createdRectangle);
+                    SaveShapeToField(createdRectangle);
+                    createdRectangle = null;
+
+                    undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
+                    undoInformation.Push("Add");
+
+                    indexRectanglesView++;
+                    indexRectangles++;
+                    id++;
+
+                    RectangleCount = "#" + RectanglesView.Count.ToString();
+                    ComboBoxNames();
+
+                    OnPropertyChanged("RectanglesView");
+                }
             }
         }
 
@@ -579,6 +607,9 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         #region Duplicate-Routine
+
+        #region Variables
+
         private ICommand _duplicateCommand;
         public ICommand DuplicateCommand
         {
@@ -587,6 +618,22 @@ namespace MachineLearningTrainer.DrawerTool
                 return _duplicateCommand ?? (_duplicateCommand = new CommandHandler(() => OnDuplicate(), true));
             }
         }
+
+
+        private int _duplicateVar;
+        /// <summary>
+        /// 1 when MouseEnter / On img, 0 when MouseLeave img
+        /// </summary>
+        public int DuplicateVar
+        {
+            get { return _duplicateVar; }
+            set
+            {
+                _duplicateVar = value;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// this method, let you duplicate the selected rectangle with its text, height, ... to current mouse position
@@ -622,6 +669,13 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// actual Duplication-Algorithm
+        /// </summary>
+        /// <param name="tmpX1"></param>
+        /// <param name="tmpY1"></param>
+        /// <param name="tmpWidth"></param>
+        /// <param name="tmpHeight"></param>
         private void DuplicateShape(double tmpX1, double tmpY1, double tmpWidth, double tmpHeight)
         {
             CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
@@ -641,21 +695,14 @@ namespace MachineLearningTrainer.DrawerTool
             RectangleCount = "#" + RectanglesView.Count.ToString();
         }
 
-
-        private int _duplicateVar;
-
-        public int DuplicateVar
-        {
-            get { return _duplicateVar; }
-            set
-            {
-                _duplicateVar = value;
-            }
-        }
         #endregion
 
 
-        #region Divide img into fields for better performance
+        #region Devide img into fields for better performance
+        //Devide img into rectangles/fields with const Widht and Height
+        //so that the detectShape Algorithm will only search in current
+        //field for Rectangles and wont search the whole List of visible
+        //Rectangles (RectanglesView)
 
         /// <summary>
         /// Saves Shape to according fields in image-grid
@@ -688,6 +735,10 @@ namespace MachineLearningTrainer.DrawerTool
             fields[fieldNumber][indexRectField] = customShape;
         }
 
+        /// <summary>
+        /// Removes Shape from all fields in image-grid
+        /// </summary>
+        /// <param name="customShape"></param>
         private void RemoveShapeFromField(CustomShape customShape)
         {
             int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
@@ -724,6 +775,21 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        /// <summary>
+        /// Clears all fields of the ObservableCollection Array
+        /// </summary>
+        private void ClearFields()
+        {
+            if (fields != null)
+            {
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    fields[i].Clear();
+                }
+            }
+        }
+
         #endregion
 
 
@@ -731,12 +797,18 @@ namespace MachineLearningTrainer.DrawerTool
         //Move-Block:
         //Routine to move different shapes on canvas
 
+        #region Variables
+
         private double deltaX = 0;
         private double deltaY = 0;
         private System.Windows.Point tmpRelativPosition;
 
+        #endregion
 
-
+        /// <summary>
+        /// Move a Shape by clicking on it
+        /// </summary>
+        /// <param name="mousePosition"></param>
         internal void Move(System.Windows.Point mousePosition)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed && selectedCustomShape != null)
@@ -760,12 +832,16 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                     else
                     {
-                        DeactivateMove(mousePosition);
+                        DeactivateMove();
                     }
                 } 
             }
         }
 
+        /// <summary>
+        /// Detects if Move is possible and changes Coursor accordingly
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void DetectMove(System.Windows.Point mousePosition)
         {
             if (detectedCustomShape != null)
@@ -778,6 +854,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Activates Move-Mode
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void ActivateMove(System.Windows.Point mousePosition)
         {
             if (selectedCustomShape.IsMouseOver == true && selectedCustomShape.Resize == false)
@@ -793,6 +873,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Moves Shape
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void MoveCustomShape(System.Windows.Point mousePosition)
         {
             if (selectedCustomShape.Move == true)
@@ -809,9 +893,12 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void DeactivateMove(System.Windows.Point mousePosition)
+        /// <summary>
+        /// Deactivates Move-Mode
+        /// </summary>
+        private void DeactivateMove()
         {
-            bool isOnCanvas = CheckIfObjectOnCanvas();
+            bool isOnCanvas = CheckIfSelectedCustomShapeOnCanvas();
             if (isOnCanvas)
             {
                 int tmpIndex = 0;
@@ -831,6 +918,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.Move = false;
             }
         }
+
         #endregion
 
 
@@ -838,9 +926,16 @@ namespace MachineLearningTrainer.DrawerTool
         //resize-Block:
         //routine to resize different shapes on canvas
 
+        #region Variables
         enum ResizeDirection { SizeN, SizeNE, SizeE, SizeSE, SizeS, SizeSW, SizeW, SizeNW }
         ResizeDirection resizeDirection;
 
+        #endregion
+
+        /// <summary>
+        /// Resize a Shape by dragging the borders/corners
+        /// </summary>
+        /// <param name="mousePosition"></param>
         internal void Resize(System.Windows.Point mousePosition)
         {
             if (Mouse.LeftButton == MouseButtonState.Pressed && selectedCustomShape != null)
@@ -867,6 +962,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Detects if Resize is possible and changes Coursor accordingly
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void DetectResize(System.Windows.Point mousePosition)
         {
             if (detectedCustomShape != null)
@@ -919,6 +1018,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Activates Resize-Mode
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void ActivateResize(System.Windows.Point mousePosition)
         {
             if (selectedCustomShape.X1 - borderWidth < mousePosition.X && mousePosition.X < selectedCustomShape.X1 + borderWidth)
@@ -1004,6 +1107,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Resizes Sahpe
+        /// </summary>
+        /// <param name="mousePosition"></param>
         private void ResizeCustomShape(System.Windows.Point mousePosition)
         {
             tmpX = mousePosition.X;
@@ -1161,16 +1268,11 @@ namespace MachineLearningTrainer.DrawerTool
 
             selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
-
-            ////Only for debugging
-            //var s = Stopwatch.StartNew();
-            ////IfMethod();
-            ////SwitchMethod();
-            //s.Stop();
-            //Console.WriteLine(((double)(s.Elapsed.TotalMilliseconds*1000)).ToString("0.00 ns"));
-            ////
         }
-
+        
+        /// <summary>
+        /// Deactivates Resize-Mode
+        /// </summary>
         private void DeactivateResize()
         {
             int tmpIndex = 0;
@@ -1195,8 +1297,27 @@ namespace MachineLearningTrainer.DrawerTool
         #region Detect & Select Shape
         //DetectShape:
         //routines to detect different Shapes on Canvas
+
+        #region Variables
+
         private bool shapeDetected = false;
         private CustomShape detectedCustomShape = null;
+        public CustomShape DetectedCustomShape
+        {
+            get
+            {
+                return detectedCustomShape;
+            }
+
+            set
+            {
+                if (value != null)
+                {
+                    detectedCustomShape = new CustomShape(value);
+                }
+
+            }
+        }
 
         /// <summary>
         /// raise OnPropertyChanged-Event when shape is detected
@@ -1214,22 +1335,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        public CustomShape DetectedCustomShape
-        {
-            get
-            {
-                return detectedCustomShape;
-            }
-
-            set
-            {
-                if (value != null)
-                {
-                    detectedCustomShape = new CustomShape(value);
-                }
-
-            }
-        }
 
         private bool shapeSelected = false;
         private CustomShape selectedCustomShape = null;
@@ -1250,7 +1355,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
         /// <summary>
         /// raise OnPropertyChanged-Event when shape is selected
         /// </summary>
@@ -1267,6 +1371,12 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #endregion
+
+        /// <summary>
+        /// Detects if Mouse is over a Rectangle
+        /// </summary>
+        /// <param name="mousePosition"></param>
         internal void DetectCustomShape(System.Windows.Point mousePosition)
         {
             if (detectedCustomShape == null)
@@ -1275,11 +1385,8 @@ namespace MachineLearningTrainer.DrawerTool
                 int row = Convert.ToInt32(Math.Floor(mousePosition.Y / fieldHeight));
                 int fieldNumber = column + row * meshColumnNumber;
 
-                //only for debugging
-
-                //Console.WriteLine("CustomShapes in field " + fieldNumber + ": " + fields[fieldNumber].Count() + " \n new Loop");
-                //
-
+                //Search fields for visible Rectangles 
+                //# Devide_img_into_fields_for_better_performance
                 if (fieldNumber < 0)
                 {
                     return;
@@ -1297,13 +1404,7 @@ namespace MachineLearningTrainer.DrawerTool
                 && (detectedCustomShape.Y1 - borderWidth < mousePosition.Y && mousePosition.Y < detectedCustomShape.Y2 + borderWidth)) && shapeSelected == false)
             {
                 CheckFormat(detectedCustomShape);
-                //if(selectedCustomShape != null)
-                //{
-                //    if(selectedCustomShape.Id == detectedCustomShape.Id)
-                //    {
-                //        //detectedCustomShape.Stroke = "Red";
-                //    }
-                //}
+
                 detectedCustomShape.IsMouseOver = false;
                 shapeDetected = false;
                 detectedCustomShape = null;
@@ -1317,12 +1418,15 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Selects current detectedShape
+        /// </summary>
         internal void SelectCustomShape()
         {
             if(selectedCustomShape != null && detectedCustomShape != null)
             {
                 selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
-                selectedCustomShape.Viewport = ConfigClass.viewportTileModeUnSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
             }
             if (detectedCustomShape != null)
             {
@@ -1333,12 +1437,16 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Select Rectangle from List on the right Side
+        /// </summary>
+        /// <param name="indexView"></param>
         internal void SelectCustomShape(int indexView)
         {
             if (selectedCustomShape != null)
             {
                 selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
-                selectedCustomShape.Viewport = ConfigClass.viewportTileModeUnSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
             }
 
             if (_cropModeChecked == true)
@@ -1367,64 +1475,13 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-        private int selectedIndex = -1;
-        public int SelectedIndex
-        {
-            get => selectedIndex;
-            set
-            {
-                if (selectedIndex != value)
-                {
-                    selectedIndex = value;
-                    OnPropertyChanged("SelectedIndex");
-                }
-            }
-        }
-
-        internal void SelectListItem()
-        {
-            int tmpIndex = 0;
-            if (selectedCustomShape != null)
-            {
-                foreach (CustomShape r in RectanglesView)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        SelectedIndex = tmpIndex;
-                        return;
-                    }
-                    tmpIndex++;
-                }
-            }
-            else
-            {
-                SelectedIndex = -1;
-            }
-        }
-
-
-        internal int GetSelectedItemIndex()
-        {
-            int itemIndex = 0;
-            if (selectedCustomShape != null)
-            {
-                foreach (CustomShape r in RectanglesView)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        return itemIndex;
-                    }
-                    itemIndex++;
-                }
-            }
-
-            return -1;
-        }
         #endregion
 
 
         #region Crop-Mode
+
+        #region Variables
+
         private bool _cropModeChecked = false;
 
         public bool CropModeChecked
@@ -1448,39 +1505,14 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        public void ActivateCropMode()
-        {
-            if(selectedCustomShape != null)
-            {
-                foreach (CustomShape r in RectanglesView)
-                {
-                    r.Stroke = "Transparent";
-                    r.Opacity = 0;
-                }
+        enum ChangeMode { next, previous }
 
-                ClearFields();
-                CheckFormat(selectedCustomShape);
-                selectedCustomShape.Viewport = ConfigClass.viewportSelected;
-                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
-                SaveShapeToField(selectedCustomShape);
-            }
-            else
-            {
-                _cropModeChecked = false;
-            }
-        }
+        #endregion
 
-        public void DeactivateCropMode()
-        {
-            foreach (CustomShape r in RectanglesView)
-            {
-                CheckFormat(r);
-            }
-            //selectedCustomShape.Stroke = "Red";
-            FilterName();
-        }
+        #region Key-Bindings : Tab
 
-        #region Tab => next/previous Rectangle
+        #region Commands
+
         private ICommand _tabNextShape;
         public ICommand TabNextShape
         {
@@ -1499,8 +1531,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        enum ChangeMode { next, previous }
+        #endregion
 
+        /// <summary>
+        /// Select next ListItem
+        /// </summary>
         public void NextShape()
         {
             if (selectedCustomShape != null)
@@ -1512,6 +1547,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Select previous ListItem
+        /// </summary>
         private void PreviousShape()
         {
             if (selectedCustomShape != null)
@@ -1523,6 +1561,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        /// <summary>
+        /// Changing algorithm
+        /// </summary>
+        /// <param name="mode"></param>
         private void ChangeShape(ChangeMode mode)
         {
             int modifier = 1;
@@ -1572,11 +1615,50 @@ namespace MachineLearningTrainer.DrawerTool
                 CheckFormat(selectedCustomShape);
             }
 
-
             selectedCustomShape.Viewport = ConfigClass.viewportSelected;
             selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
         }
+
         #endregion
+
+
+        /// <summary>
+        /// Initializes CropMode, by making all Rectangles invisible exept the selected one
+        /// </summary>
+        public void ActivateCropMode()
+        {
+            if(selectedCustomShape != null)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    r.Stroke = "Transparent";
+                    r.Opacity = 0;
+                }
+
+                ClearFields();
+                CheckFormat(selectedCustomShape);
+                selectedCustomShape.Viewport = ConfigClass.viewportSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeSelected;
+                SaveShapeToField(selectedCustomShape);
+            }
+            else
+            {
+                _cropModeChecked = false;
+            }
+        }
+
+        /// <summary>
+        /// Deactivate CropMode, by making all Rectangles visible
+        /// </summary>
+        public void DeactivateCropMode()
+        {
+            foreach (CustomShape r in RectanglesView)
+            {
+                CheckFormat(r);
+            }
+            FilterName();
+        }
+
 
         #endregion
 
@@ -1641,24 +1723,16 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
             }
-
-            //this.IsOpen = false;
-            //temp = SelectedComboBoxItem;
-            //ComboBoxNames();
-            //AllRectanglesView = AllRectangles;
-            //FilteredRectangles = AllRectangles;
-            //OnPropertyChanged("AllRectanglesView");
-            //OnPropertyChanged("FilteredRectangles");
-            //OnPropertyChanged("ComboBoxNames");
-            //SelectedComboBoxItem = temp;
-            //FilterName();
         }
 
-        
+
         #endregion
 
 
+        #region UndoRedo
+
         #region Undo
+
         private ICommand _undoStackCommand;
         public ICommand UndoCommand
         {
@@ -1666,19 +1740,6 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 return _undoStackCommand ?? (_undoStackCommand = new CommandHandler(() => Undo(), _canExecute));
             }
-        }
-
-        private void CopyForUndo(string undoInformation)
-        {
-            //double tmpHeight = selectedCustomShape.Height;
-            //double tmpWidth = selectedCustomShape.Width;
-            //double tmpX1 = selectedCustomShape.X1;
-            //double tmpY1 = selectedCustomShape.Y1;
-            //int tmpId = selectedCustomShape.Id;
-
-            //CustomShape undoShape = new CustomShape(selectedCustomShape);
-            //undoCustomShapes.Push(undoShape);
-            //this.undoInformation.Push(undoInformation);
         }
 
         /// <summary>
@@ -1765,10 +1826,32 @@ namespace MachineLearningTrainer.DrawerTool
             }
             OnPropertyChanged("");
         }
+
+
+        /// <summary>
+        /// Creates Copy of ShapeState before move/resize event for Undo-Stack
+        /// 
+        /// bugged
+        /// </summary>
+        /// <param name="undoInformation"></param>
+        private void CopyForUndo(string undoInformation)
+        {
+            //double tmpHeight = selectedCustomShape.Height;
+            //double tmpWidth = selectedCustomShape.Width;
+            //double tmpX1 = selectedCustomShape.X1;
+            //double tmpY1 = selectedCustomShape.Y1;
+            //int tmpId = selectedCustomShape.Id;
+
+            //CustomShape undoShape = new CustomShape(selectedCustomShape);
+            //undoCustomShapes.Push(undoShape);
+            //this.undoInformation.Push(undoInformation);
+        }
+
         #endregion
 
 
         #region Redo
+
         private ICommand _redoStackCommand;
         public ICommand RedoCommand
         {
@@ -1778,6 +1861,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        /// <summary>
+        /// Restores Changes that where undone
+        /// </summary>
         private void Redo()
         {
             // Undo the undo command :D
@@ -1855,27 +1942,58 @@ namespace MachineLearningTrainer.DrawerTool
                             break;
                         }
                 }
-
-                if (SelectedComboBoxItem == "All Labels")
-                {
-                    RectangleCount = "#" + Rectangles.Count.ToString();
-                }
-
-                else if (SelectedComboBoxItem != "All Labels")
-                {
-                    RectangleCount = "#" + RectanglesView.Count.ToString();
-                }
+                RectangleCount = "#" + RectanglesView.Count.ToString();
             }
             OnPropertyChanged("");
         }
         #endregion
 
 
-        #region ComboBox with ItemLabels
+        /// <summary>
+        /// Clears Undo and Redo Stack
+        /// #Load_XML/Img
+        /// </summary>
+        public void ClearUndoRedoStack()
+        {
+            // Clear Undo and Redo Stack
+            undoCustomShapes.Clear();
+            undoInformation.Clear();
+            redoCustomShapes.Clear();
+            redoInformation.Clear();
 
+            // Add one Dummy item to each Stack
+            undoCustomShapes.Push(new CustomShape(0, 0));
+            undoInformation.Push("Dummy");
+            redoCustomShapes.Push(new CustomShape(0, 0));
+            redoInformation.Push("Dummy");
+        }
+
+        #endregion
+
+
+        #region ComboBox & ItemList
+
+        #region Variables
+
+        public string temp { get; set; }
+
+        private int selectedIndex = -1;
+        // Index of selected ListItem
+        public int SelectedIndex
+        {
+            get => selectedIndex;
+            set
+            {
+                if (selectedIndex != value)
+                {
+                    selectedIndex = value;
+                    OnPropertyChanged("SelectedIndex");
+                }
+            }
+        }
 
         private bool _isOpen = false;
-
+        // Tells if RightClick Menu is opened
         public bool IsOpen
         {
             get
@@ -1890,41 +2008,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private bool _colorPickerEnabled;
-        public bool ColorPickerEnabled
-        {
-            get
-            {
-                return _colorPickerEnabled;
-            }
-            set
-            {
-                if (value != _colorPickerEnabled)
-                {
-                    _colorPickerEnabled = value;
-                    OnPropertyChanged("ColorPickerEnabled");
-                }
-            }
-        }
-
-        private string _colorPickerIconPath = "\\Icons\\colorpicker_grayedout.jpg";
-        public string ColorPickerIconPath
-        {
-            get
-            {
-                return _colorPickerIconPath;
-            }
-            set
-            {
-                if(value != _colorPickerIconPath)
-                {
-                    _colorPickerIconPath = value;
-                    OnPropertyChanged("ColorPickerIconPath");
-                }
-            }
-        }
-
-        private CustomShapeFormat _selectedLabel = new CustomShapeFormat("","","",1);
+        private CustomShapeFormat _selectedLabel = new CustomShapeFormat("", "", "", 1);
+        // Label of selected ListItem
         public CustomShapeFormat SelectedLabel
         {
             get
@@ -1933,21 +2018,121 @@ namespace MachineLearningTrainer.DrawerTool
             }
             set
             {
-                if(value != _selectedLabel)
+                if (value != _selectedLabel)
                 {
                     _selectedLabel = value;
                     OnPropertyChanged("SelectedLabel");
                 }
             }
         }
-        
+
+        private string _selectedComboBoxItem;
+        // Selected ComboBoxItem
+        public string SelectedComboBoxItem
+        {
+            get
+            {
+                return _selectedComboBoxItem;
+            }
+            set
+            {
+                _selectedComboBoxItem = value;
+                OnPropertyChanged("SelectedComboBoxItem");
+
+            }
+        }
+
+
+        private bool _filterVisibilitySelected = false;
+        public bool FilterVisibilitySelected
+        {
+            get
+            {
+                return _filterVisibilitySelected;
+            }
+            set
+            {
+                _filterVisibilitySelected = value;
+                OnPropertyChanged("FilterVisibility1");
+            }
+        }
+
+        private bool _filterVisibilityAllLabels = true;
+        public bool FilterVisibilityAllLabels
+        {
+            get
+            {
+                return _filterVisibilityAllLabels;
+            }
+            set
+            {
+                _filterVisibilityAllLabels = value;
+                OnPropertyChanged("FilterVisibility");
+            }
+        }
+
+        private bool _filterVisibilitySelectedGallery = false;
+        public bool FilterVisibilitySelectedGallery
+        {
+            get
+            {
+                return _filterVisibilitySelectedGallery;
+            }
+            set
+            {
+                _filterVisibilitySelectedGallery = value;
+                OnPropertyChanged("FilterVisibilitySelectedGallery");
+            }
+        }
+
+        private bool _filterVisibilityAllLabelsGallery = false;
+        public bool FilterVisibilityAllLabelsGallery
+        {
+            get
+            {
+                return _filterVisibilityAllLabelsGallery;
+            }
+            set
+            {
+                _filterVisibilityAllLabelsGallery = value;
+                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Selects ListItem according to selectedCustomShape
+        /// </summary>
+        internal void SelectListItem()
+        {
+            int tmpIndex = 0;
+            if (selectedCustomShape != null)
+            {
+                foreach (CustomShape r in RectanglesView)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        SelectedIndex = tmpIndex;
+                        return;
+                    }
+                    tmpIndex++;
+                }
+            }
+            else
+            {
+                SelectedIndex = -1;
+            }
+        }
 
 
         /// <summary>
-        /// this method filters the list, depending on which label is selected in the combobox
+        /// Filter list by Label selected in ComboBox 
         /// </summary>
         public void FilterName()
         {
+            // Uncomment if ListView/GalleryView is working again
+            //
             //if (ListViewImage.Contains("grid"))
             //{
             //    FilterVisibilitySelectedGallery = false;
@@ -1980,6 +2165,7 @@ namespace MachineLearningTrainer.DrawerTool
             RectangleCount = "#" + RectanglesView.Count.ToString();
         }
 
+
         /// <summary>
         /// this method adds all different labels to the combobox
         /// </summary>
@@ -1994,7 +2180,6 @@ namespace MachineLearningTrainer.DrawerTool
                 if (!ComboBoxItems.Contains(rec.Label))
                 {
                     ComboBoxItems.Add(rec.Label);
-                    //OnPropertyChanged("ComboBoxItems");
                 }
             }
             if (temp != null)
@@ -2007,93 +2192,13 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        #region Variablen
-        private string _selectedComboBoxItem;
-
-        public string SelectedComboBoxItem
-        {
-            get
-            {
-                return _selectedComboBoxItem;
-            }
-            set
-            {
-                _selectedComboBoxItem = value;
-                OnPropertyChanged("SelectedComboBoxItem");
-
-            }
-        }
 
 
-        private bool _filterVisibilitySelected = false;
-
-        public bool FilterVisibilitySelected
-        {
-            get
-            {
-                return _filterVisibilitySelected;
-            }
-            set
-            {
-                _filterVisibilitySelected = value;
-                OnPropertyChanged("FilterVisibility1");
-            }
-        }
-
-        private bool _filterVisibilityAllLabels = true;
-
-        public bool FilterVisibilityAllLabels
-        {
-            get
-            {
-                return _filterVisibilityAllLabels;
-            }
-            set
-            {
-                _filterVisibilityAllLabels = value;
-                OnPropertyChanged("FilterVisibility");
-            }
-        }
-
-        private bool _filterVisibilitySelectedGallery = false;
-
-        public bool FilterVisibilitySelectedGallery
-        {
-            get
-            {
-                return _filterVisibilitySelectedGallery;
-            }
-            set
-            {
-                _filterVisibilitySelectedGallery = value;
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-            }
-        }
-
-        private bool _filterVisibilityAllLabelsGallery = false;
-
-        public bool FilterVisibilityAllLabelsGallery
-        {
-            get
-            {
-                return _filterVisibilityAllLabelsGallery;
-            }
-            set
-            {
-                _filterVisibilityAllLabelsGallery = value;
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-            }
-        }
-        #endregion
-
-
-        #endregion
-
-
-        #region ListBox
 
         /// <summary>
         /// sorts the list of rectangles in ascending order of their name
+        /// 
+        /// bugged
         /// </summary>
         public void SortList()
         {
@@ -2107,58 +2212,27 @@ namespace MachineLearningTrainer.DrawerTool
             //}
         }
 
-
-        /// <summary>
-        /// string variabel, which contains the name of rectangle
-        /// </summary>
-        private string _label;
-        public string Label
-        {
-            get
-            {
-                return _label;
-            }
-
-            set
-            {
-                _label = value;
-                OnPropertyChanged("Label");
-            }
-        }
-
-
         #endregion
 
 
         #region Colorpicker
 
-        #region public Variables with Getter/Setter-Method
+        #region Variables
 
-        private string _selectedColor = "Red";
-        public string SelectedColor
+        private bool _colorPickerEnabled;
+        public bool ColorPickerEnabled
         {
             get
             {
-                return _selectedColor;
+                return _colorPickerEnabled;
             }
             set
             {
-                _selectedColor = value;
-                OnPropertyChanged("SelectedColor");
-            }
-        }
-
-
-        private double _selectedOpacity = 1;
-        public double SelectedOpacity
-        {
-            get
-            {
-                return _selectedOpacity;
-            }
-            set
-            {
-                _selectedOpacity = value;
+                if (value != _colorPickerEnabled)
+                {
+                    _colorPickerEnabled = value;
+                    OnPropertyChanged("ColorPickerEnabled");
+                }
             }
         }
 
@@ -2222,10 +2296,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-
         #endregion
 
+        /// <summary>
+        /// Checks if Format with given Label exists
+        /// </summary>
         internal void TestLabelName()
         {
             if (selectedCustomShape != null)
@@ -2252,7 +2327,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        //Determine which Shapes have to be changed
+        /// <summary>
+        /// Determine which Shapes have to be changed
+        /// </summary>
         public void ChangeColor()
         {
             if (SelectedComboBoxItem != null && SelectedLabel != null)
@@ -2270,7 +2347,10 @@ namespace MachineLearningTrainer.DrawerTool
             OnPropertyChanged("ChangeColor");
         }
 
-        //Change color of selected Part (Fill, Border, Both)
+        /// <summary>
+        /// Change color of selected Part (Fill, Border, Both)
+        /// </summary>
+        /// <param name="r"></param>
         public void ChangeColorRoutine(CustomShape r)
         {
             switch (_selectedModeItem)
@@ -2289,7 +2369,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        //Realtime Opacity change
+        /// <summary>
+        /// Change Opacity of Rectangles with selected Label
+        /// </summary>
         internal void ChangeOpacity()
         {
             if (SelectedComboBoxItem != null && SelectedLabel != null)
@@ -2306,6 +2388,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
             OnPropertyChanged("ChangeOpacity");
         }
+
 
         /// <summary>
         /// Sets SelectedColor according to selected Label when opening ColorPicker
@@ -2330,6 +2413,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Deletes Selected ColorFormat
+        /// </summary>
         internal void DeleteSelectedLabel()
         {
             if (LabelColorFormat.Count() > 0)
@@ -2378,6 +2464,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Adds a new ColorFormat with Random Colors for Border and Fill
+        /// </summary>
         internal void AddLabelColorFormat()
         {
             if (LabelColorFormat.Count() > 0)
@@ -2416,17 +2505,22 @@ namespace MachineLearningTrainer.DrawerTool
                 string tmpColor1 = "#" + rand[0] + rand[1] + rand[2];
                 string tmpColor2 = "#" + rand[3] + rand[4] + rand[5];
 
-                LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpColor1, tmpColor2, 0.3));
+                LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpColor1, tmpColor2, 0.1));
 
             }
             else
             {
-                LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.3));
+                LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.1));
             }
             SelectedLabel = LabelColorFormat[LabelColorFormat.Count() - 1];
             RefreshLabelList();
         }
 
+        /// <summary>
+        /// Adds a new ColorFormat with Random Colors for Border and Fill when creating new Rectangle and no Label is Selected in ComboBox
+        /// </summary>
+        /// <param name="customShape"></param>
+        /// <returns></returns>
         private CustomShape AddLabelColorFormat(CustomShape customShape)
         {
             if (LabelColorFormat.Count() > 0)
@@ -2479,6 +2573,9 @@ namespace MachineLearningTrainer.DrawerTool
             return customShape;
         }
 
+        /// <summary>
+        /// Refreshs List of Labels
+        /// </summary>
         private void RefreshLabelList()
         {
             LabelList.Clear();
@@ -2488,6 +2585,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Set Colors of ColorPicker & ColorCanvas according to selected Label
+        /// </summary>
         internal void CbItemLabel_DropDownClosed()
         {
             SelectedCustomShape.Label = SelectedLabelListItem;
@@ -2500,10 +2600,86 @@ namespace MachineLearningTrainer.DrawerTool
             
         }
 
+
+
+        /// <summary>
+        /// Checks Label and if allready exists, copys Color-Format
+        /// </summary>
+        private void CheckFormat(CustomShape Rectangle)
+        {
+            if (SelectedComboBoxItem != null || SelectedComboBoxItem != "All Labels")
+            {
+
+                string tmpStroke = "LawnGreen";
+                string tmpFill = "White";
+                double tmpOpacity = 0.1;
+
+                foreach (var r in LabelColorFormat)
+                {
+                    if (r.Label == Rectangle.Label)
+                    {
+                        tmpStroke = r.Stroke;
+                        tmpFill = r.Fill;
+                        tmpOpacity = r.Opacity;
+                        break;
+                    }
+                }
+
+                Rectangle.Stroke = tmpStroke;
+                Rectangle.Fill = tmpFill;
+                Rectangle.Opacity = tmpOpacity;
+            }
+        }
+
+
         #endregion
 
 
         #region Import/Export Rectangles <=> XML
+
+        #region Variables
+
+        /// <summary>
+        /// declares a boolean activate buttons on right,
+        /// "Load XML" and "Export to XML"
+        /// </summary>
+        private bool _isEnabled = false;
+        public bool IsEnabled
+        {
+            get
+            {
+                return this._isEnabled;
+            }
+            set
+            {
+                this._isEnabled = value;
+                OnPropertyChanged("IsEnabled");
+            }
+        }
+
+        private string _dst;
+        /// <summary>
+        /// saves selected img path
+        /// </summary>
+        public string dst
+        {
+            get { return _dst; }
+            set { _dst = value; }
+        }
+
+        private string _name;
+        /// <summary>
+        /// saves name of Rectangle from file
+        /// </summary>
+        public string name
+        {
+            get { return _name; }
+            set { _name = value; }
+        }
+
+        #endregion
+
+        #region Commands
 
         private ICommand _loadXMLCommand;
         public ICommand LoadXMLCommand
@@ -2522,6 +2698,9 @@ namespace MachineLearningTrainer.DrawerTool
                 return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
             }
         }
+
+        #endregion
+
 
         /// <summary>
         /// export rectangles to xml file
@@ -2691,9 +2870,33 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region LoadImage
 
+        #region Variables
+
+        private int meshColumnNumber;
+        private int meshRowNumber;
+        private double imgWidth;
+        private double imgHeight;
+        private ObservableCollection<CustomShape>[] fields;
+
         /// <summary>
-        /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
+        /// declares a string that stores the file path
         /// </summary>
+        private string _imagePath;
+        public string ImagePath
+        {
+            get
+            {
+                return this._imagePath;
+            }
+            set
+            {
+                this._imagePath = value;
+                OnPropertyChanged("ImagePath");
+            }
+        }
+        #endregion
+
+        #region Commands
 
         private ICommand _loadImageCommand;
         public ICommand LoadImageCommand
@@ -2703,28 +2906,11 @@ namespace MachineLearningTrainer.DrawerTool
                 return _loadImageCommand ?? (_loadImageCommand = new CommandHandler(() => LoadImage(), _canExecute));
             }
         }
-
-
-        private int meshColumnNumber;
-        private int meshRowNumber;
-        private double imgWidth;
-        private double imgHeight;
-        private ObservableCollection<CustomShape>[] fields;
+        #endregion
 
         /// <summary>
-        /// Clears all fields of the ObservableCollection Array
+        /// opens filedialog and let us browse any images which ends with .jpg, .jped, .png and .tiff
         /// </summary>
-        private void ClearFields()
-        {
-            if (fields != null)
-            {
-                for (int i = 0; i < fields.Length; i++)
-                {
-                    fields[i].Clear();
-                }
-            }
-        }
-
         private void LoadImage()
         {
             OpenFileDialog openFileDialog = new OpenFileDialog();
@@ -2791,402 +2977,10 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-
         #endregion
 
 
-        #region ButtonCommands
-
-        #region ESC-Button => deselect Rectangle
-
-        private ICommand _deleteSelectionRectangle;
-        public ICommand DeleteSelectionRectangle
-        {
-            get
-            {
-                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
-            }
-        }
-
-        /// <summary>
-        /// this method unselect the selected rectangle
-        /// </summary>
-        public void DeleteSelection()
-        {
-            if (selectedCustomShape != null)
-            {
-                CheckFormat(selectedCustomShape);
-                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
-                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
-                selectedCustomShape = null;
-            }
-
-            detectedCustomShape = null;
-            SelectedIndex = -1;
-            Enabled = true;
-            mouseHandlingState = MouseState.Normal;
-            IconPath = "\\Icons\\new.png";
-        }
-
-        public void DeleteSelectionForRename()
-        {
-            tmpLabel = SelectedCustomShape.Label;
-        }
-        #endregion
-
-        #region Return-Button => refresh FilterList
-
-        private ICommand _enterCommand;
-        public ICommand EnterCommand
-        {
-            get
-            {
-                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
-            }
-        }
-
-        private string tmpLabel;
-        public void Enter()
-        {
-            if (ColorPickerEnabled == true)
-            {
-                OnRename();
-            }
-            ComboBoxNames();
-            FilterName();
-            if (selectedCustomShape != null)
-            {
-                CheckFormat(selectedCustomShape);
-            }
-            SortList();
-            Keyboard.ClearFocus();
-        }
-
-
-        /// <summary>
-        /// this method rename all files in the listox
-        /// </summary>
-        private void OnRename()
-        {
-            foreach (var r in Rectangles)
-            {
-                if (r.Label == TmpNewLabel.Label)
-                {
-                    r.Label = SelectedLabel.Label;
-                }
-            }
-        }
-
-        #endregion
-
-        #region KeyArrowCommands
-
-        private ICommand _rightButtonCommand_Move;
-        public ICommand RightButtonCommand_Move
-        {
-            get
-            {
-                return _rightButtonCommand_Move ?? (_rightButtonCommand_Move = new CommandHandler(() => RightButton_Move(), _canExecute));
-            }
-        }
-
-        public void RightButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                selectedCustomShape.X1 += 2;
-                selectedCustomShape.XLeft += 2;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-            }
-        }
-
-        private ICommand _leftButtonCommand_Move;
-        public ICommand LeftButtonCommand_Move
-        {
-            get
-            {
-                return _leftButtonCommand_Move ?? (_leftButtonCommand_Move = new CommandHandler(() => LeftButton_Move(), _canExecute));
-            }
-        }
-
-        public void LeftButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                selectedCustomShape.X1 -= 2;
-                selectedCustomShape.XLeft -= 2;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-            }
-        }
-
-        private ICommand _upButtonCommand_Move;
-        public ICommand UpButtonCommand_Move
-        {
-            get
-            {
-                return _upButtonCommand_Move ?? (_upButtonCommand_Move = new CommandHandler(() => UpButton_Move(), _canExecute));
-            }
-        }
-
-        public void UpButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                selectedCustomShape.Y2 -= 2;
-                selectedCustomShape.YTop -= 2;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-            }
-        }
-
-        private ICommand _downButtonCommand_Move;
-        public ICommand DownButtonCommand_Move
-        {
-            get
-            {
-                return _downButtonCommand_Move ?? (_downButtonCommand_Move = new CommandHandler(() => DownButton_Move(), _canExecute));
-            }
-        }
-
-        public void DownButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                selectedCustomShape.Y2 += 2;
-                selectedCustomShape.YTop += 2;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-            }
-        }
-
-
-        private ICommand _rightButtonCommand;
-        public ICommand RightButtonCommand
-        {
-            get
-            {
-                return _rightButtonCommand ?? (_rightButtonCommand = new CommandHandler(() => RightButton(), _canExecute));
-            }
-        }
-
-        public void RightButton()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-            {
-                selectedCustomShape.X1 += 2;
-                selectedCustomShape.XLeft += 2;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Width -= 2;
-            }
-        }
-
-        private ICommand _leftButtonCommand;
-        public ICommand LeftButtonCommand
-        {
-            get
-            {
-                return _leftButtonCommand ?? (_leftButtonCommand = new CommandHandler(() => LeftButton(), _canExecute));
-            }
-        }
-
-        public void LeftButton()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-            {
-                selectedCustomShape.X2 -= 2;
-                selectedCustomShape.Width -= 2;
-            }
-        }
-
-        private ICommand _upButtonCommand;
-        public ICommand UpButtonCommand
-        {
-            get
-            {
-                return _upButtonCommand ?? (_upButtonCommand = new CommandHandler(() => UpButton(), _canExecute));
-            }
-        }
-        public void UpButton()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-            {
-                selectedCustomShape.Y2 -= 2;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Height -= 2;
-            }
-        }
-
-        private ICommand _downButtonCommand;
-        public ICommand DownButtonCommand
-        {
-            get
-            {
-                return _downButtonCommand ?? (_downButtonCommand = new CommandHandler(() => DownButton(), _canExecute));
-            }
-        }
-
-        public void DownButton()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-            {
-                selectedCustomShape.Y1 += 2;
-                selectedCustomShape.YTop += 2;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Height -= 2;
-            }
-        }
-
-        private ICommand _rightButtonCommand1;
-        public ICommand RightButtonCommand1
-        {
-            get
-            {
-                return _rightButtonCommand1 ?? (_rightButtonCommand1 = new CommandHandler(() => RightButton1(), _canExecute));
-            }
-        }
-
-        public void RightButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-            {
-                selectedCustomShape.X1 -= 2;
-                selectedCustomShape.XLeft -= 2;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Width += 2;
-            }
-        }
-
-        private ICommand _leftButtonCommand1;
-        public ICommand LeftButtonCommand1
-        {
-            get
-            {
-                return _leftButtonCommand1 ?? (_leftButtonCommand1 = new CommandHandler(() => LeftButton1(), _canExecute));
-            }
-        }
-
-        public void LeftButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-            {
-                selectedCustomShape.X2 += 2;
-                selectedCustomShape.Width += 2;
-            }
-        }
-
-        private ICommand _upButtonCommand1;
-        public ICommand UpButtonCommand1
-        {
-            get
-            {
-                return _upButtonCommand1 ?? (_upButtonCommand1 = new CommandHandler(() => UpButton1(), _canExecute));
-            }
-        }
-        public void UpButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-            {
-                selectedCustomShape.Y2 += 2;
-                selectedCustomShape.Height += 2;
-            }
-        }
-
-        private ICommand _downButtonCommand1;
-        public ICommand DownButtonCommand1
-        {
-            get
-            {
-                return _downButtonCommand1 ?? (_downButtonCommand1 = new CommandHandler(() => DownButton1(), _canExecute));
-            }
-        }
-
-        public void DownButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-            {
-                selectedCustomShape.Y1 -= 2;
-                selectedCustomShape.YTop -= 2;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Height += 2;
-            }
-        }
-
-        #endregion
-
-        #endregion
-
-
-        /// <summary>
-        /// Old stuff
-        /// </summary>
-
-
-
-        public MyICommand RenameCommand { get; set; }
-        public bool Enabled { get; set; } = true;
-
-
-        //public ObservableCollection<ResizableRectangle> AllRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-
-        //public ObservableCollection<ResizableRectangle> AllRectanglesView { get; set; } = new ObservableCollection<ResizableRectangle>();
-        public ObservableCollection<Polygon> polygonsCollection { get; set; } = new ObservableCollection<Polygon>();
-        public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-        public ObservableCollection<ResizableRectangle> FilteredRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-        public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
-
-
-
-
-
-        public void ClearUndoRedoStack()
-        {
-            // Clear Undo and Redo Stack
-            undoCustomShapes.Clear();
-            undoInformation.Clear();
-            redoCustomShapes.Clear();
-            redoInformation.Clear();
-
-            // Add one Dummy item to each Stack
-            undoCustomShapes.Push(new CustomShape(0,0));
-            undoInformation.Push("Dummy");
-            redoCustomShapes.Push(new CustomShape(0,0));
-            redoInformation.Push("Dummy");
-
-        }
-
-        /// <summary>
-        /// declares a string that stores the file path
-        /// </summary>
-        private string _imagePath;
-        public string ImagePath
-        {
-            get
-            {
-                return this._imagePath;
-            }
-            set
-            {
-                this._imagePath = value;
-                OnPropertyChanged("ImagePath");
-            }
-        }
-
-        /// <summary>
-        /// declares a boolean activate buttons on right,
-        /// "Load XML" and "Export to XML"
-        /// </summary>
-        private bool _isEnabled = false;
-        public bool IsEnabled
-        {
-            get
-            {
-                return this._isEnabled;
-            }
-            set
-            {
-                this._isEnabled = value;
-                OnPropertyChanged("IsEnabled");
-            }
-        }
+        #region PageNavigation
 
         private ICommand _previousPage;
         public ICommand PreviousPage
@@ -3209,294 +3003,553 @@ namespace MachineLearningTrainer.DrawerTool
             this._mainGrid.Children.Add(usc);
         }
 
+        #endregion
 
 
-        //private ResizableRectangle _selectedResizableRectangle;
-        //public ResizableRectangle SelectedResizableRectangle
+        #region Key-Bindings
+
+        #region ESC-Button => deselect Rectangle
+
+        private ICommand _deleteSelectionRectangle;
+        public ICommand DeleteSelectionRectangle
+        {
+            get
+            {
+                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// Unselect rectangle
+        /// </summary>
+        public void DeleteSelection()
+        {
+            if (selectedCustomShape != null)
+            {
+                CheckFormat(selectedCustomShape);
+                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
+                selectedCustomShape = null;
+            }
+
+            detectedCustomShape = null;
+            SelectedIndex = -1;
+            Enabled = true;
+            mouseHandlingState = MouseState.Normal;
+            IconPath = "\\Icons\\new.png";
+        }
+
+        private string tmpLabel;
+        public void DeleteSelectionForRename()
+        {
+            tmpLabel = SelectedCustomShape.Label;
+        }
+        #endregion
+
+
+        #region Return-Button => refresh FilterList
+
+        private ICommand _enterCommand;
+        public ICommand EnterCommand
+        {
+            get
+            {
+                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// Controls every possible action that can occure on return
+        /// </summary>
+        public void Enter()
+        {
+            if (ColorPickerEnabled == true)
+            {
+                OnRename();
+            }
+            ComboBoxNames();
+            FilterName();
+            if (selectedCustomShape != null)
+            {
+                CheckFormat(selectedCustomShape);
+            }
+            SortList();
+            Keyboard.ClearFocus();
+        }
+
+
+        /// <summary>
+        /// this method renames all files in the listox
+        /// </summary>
+        private void OnRename()
+        {
+            foreach (var r in Rectangles)
+            {
+                if (r.Label == TmpNewLabel.Label)
+                {
+                    r.Label = SelectedLabel.Label;
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region KeyArrowCommands
+
+        #region ArrowKey
+
+        private ICommand _rightButtonCommand_Move;
+        public ICommand RightButtonCommand_Move
+        {
+            get
+            {
+                return _rightButtonCommand_Move ?? (_rightButtonCommand_Move = new CommandHandler(() => RightButton_Move(), _canExecute));
+            }
+        }
+
+        public void RightButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.X1 += 2;
+                selectedCustomShape.X2 += 2;
+                selectedCustomShape.XLeft += 2;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        private ICommand _leftButtonCommand_Move;
+        public ICommand LeftButtonCommand_Move
+        {
+            get
+            {
+                return _leftButtonCommand_Move ?? (_leftButtonCommand_Move = new CommandHandler(() => LeftButton_Move(), _canExecute));
+            }
+        }
+
+        public void LeftButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.X1 -= 2;
+                selectedCustomShape.X2 -= 2;
+                selectedCustomShape.XLeft -= 2;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        private ICommand _upButtonCommand_Move;
+        public ICommand UpButtonCommand_Move
+        {
+            get
+            {
+                return _upButtonCommand_Move ?? (_upButtonCommand_Move = new CommandHandler(() => UpButton_Move(), _canExecute));
+            }
+        }
+
+        public void UpButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Y1 -= 2;
+                selectedCustomShape.Y2 -= 2;
+                selectedCustomShape.YTop -= 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        private ICommand _downButtonCommand_Move;
+        public ICommand DownButtonCommand_Move
+        {
+            get
+            {
+                return _downButtonCommand_Move ?? (_downButtonCommand_Move = new CommandHandler(() => DownButton_Move(), _canExecute));
+            }
+        }
+
+        public void DownButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                selectedCustomShape.Y1 += 2;
+                selectedCustomShape.Y2 += 2;
+                selectedCustomShape.YTop += 2;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        #endregion
+
+        //#region ArrowKey+Shift
+
+        //private ICommand _rightButtonCommand;
+        //public ICommand RightButtonCommand
         //{
         //    get
         //    {
-        //        return _selectedResizableRectangle;
-        //    }
-
-        //    set
-        //    {
-        //        if(value != null)
-        //        {
-        //            _selectedResizableRectangle = value;
-        //            if (value.X < 0)
-        //            {
-        //                _selectedResizableRectangle.X += value.X;
-        //                _selectedResizableRectangle.X = 0;
-        //            }
-        //            if (value.Y < 0)
-        //            {
-        //                _selectedResizableRectangle.Y += value.Y;
-        //                _selectedResizableRectangle.Y = 0;
-        //            }
-        //            SelectedRectangleFill();
-        //            DeleteCommand.RaiseCanExecuteChanged();
-        //            DuplicateCommand.RaiseCanExecuteChanged();
-        //            RenameCommand.RaiseCanExecuteChanged();
-        //        }
-
+        //        return _rightButtonCommand ?? (_rightButtonCommand = new CommandHandler(() => RightButton(), _canExecute));
         //    }
         //}
 
-
-
-
-        public string temp { get; set; }
-
-        
-
-
-
-        
-
-        /// <summary>
-        /// says if you can execute "Can Rename" method
-        /// </summary>
-        private bool CanRename()
-        {
-            return SelectedCustomShape != null;
-        }
-
-        private ICommand _deleteRectanglesCommand;
-        public ICommand DeleteRectanglesCommand
-        {
-            get
-            {
-                return _deleteRectanglesCommand ?? (_deleteRectanglesCommand = new CommandHandler(() => DeleteAll(), _canExecute));
-            }
-        }
-
-        /// <summary>
-        /// this method deletes the complete list with all its rectangles
-        /// </summary>
-        private void DeleteAll()
-        {
-            Rectangles.Clear();
-            FilterName();
-        }
-
-        /// <summary>
-        /// string variabel, which contains the name of rectangle
-        /// </summary>
-        private string _rectangleText;
-        public string RectangleText
-        {
-            get
-            {
-                return _rectangleText;
-            }
-
-            set
-            {
-                _rectangleText = value;
-                OnPropertyChanged("RectangleText");
-            }
-        }
-
-        /// <summary>
-        /// this is the default label. if you add multiple rectangles and do not want to manually enter 
-        /// the name each time, the name is stored in default label
-        /// </summary>
-        private string _defaultLabel = "";
-
-        public string DefaultLabel
-        {
-            get
-            {
-                return _defaultLabel;
-            }
-            set
-            {
-                _defaultLabel = value;
-                RaisePropertyChanged("DefaultLabel");
-            }
-
-        }
-
-        /// <summary>
-        /// variable, which includes the opacity of the rectangle
-        /// </summary>
-        private double _rectangleOpacity = 0.07;
-
-        public double RectangleOpacity
-        {
-            get
-            {
-                return _rectangleOpacity;
-            }
-            set
-            {
-                _rectangleOpacity = value;
-                OnPropertyChanged("RectangleOpacity");
-            }
-        }
-
-        /// <summary>
-        /// variable, which includes the thum size of the rectangle
-        /// </summary>
-        private int _thumbSize = 3;
-
-        public int ThumbSize
-        {
-            get
-            {
-                return _thumbSize;
-            }
-            set
-            {
-                _thumbSize = value;
-                OnPropertyChanged("ThumbSize");
-            }
-        }
-
-        /// <summary>
-        /// variable, which contains the color of unselected rectangles
-        /// </summary>
-        public System.Windows.Media.Brush _rectangleFill = System.Windows.Media.Brushes.Blue;
-
-        public System.Windows.Media.Brush RectangleFill
-        {
-            get
-            {
-                return _rectangleFill;
-            }
-            set
-            {
-                _rectangleFill = value;
-                OnPropertyChanged("RectangleFill");
-            }
-        }
-
-        /// <summary>
-        /// variable, which contains the color of the rectangle thumbs
-        /// </summary>
-        public System.Windows.Media.Brush _thumbColor = System.Windows.Media.Brushes.LawnGreen;
-
-        public System.Windows.Media.Brush ThumbColor
-        {
-            get
-            {
-                return _thumbColor;
-            }
-            set
-            {
-                _thumbColor = value;
-                OnPropertyChanged("ThumbColor");
-            }
-        }
-
-        public System.Windows.Media.Brush _resizeThumbColor = System.Windows.Media.Brushes.Gray;
-
-        public System.Windows.Media.Brush ResizeThumbColor
-        {
-            get
-            {
-                return _resizeThumbColor;
-            }
-            set
-            {
-                _resizeThumbColor = value;
-                OnPropertyChanged("ResizeThumbColor");
-            }
-        }
-
-        public System.Windows.Media.Brush _rectangleOverFill = System.Windows.Media.Brushes.Gray;
-
-        public System.Windows.Media.Brush RectangleOverFill
-        {
-            get
-            {
-                return _rectangleOverFill;
-            }
-            set
-            {
-                _rectangleOverFill = value;
-                OnPropertyChanged("RectangleOverFill");
-            }
-        }
-
-        private int _rectangleBorderThickness = 2;
-    
-        public int RectangleBorderThickness
-        {
-            get
-            {
-                return
-                    _rectangleBorderThickness;
-            }
-            set
-            {
-                _rectangleBorderThickness = value;
-                OnPropertyChanged("RectangleBorderThickness");
-            }
-        }
-        
-        ///// <summary>
-        ///// this method colors the selected rectangle and increases the opacity
-        ///// </summary>
-        //public void SelectedRectangleFill()
+        //public void RightButton()
         //{
-        //    if (SelectedResizableRectangle != null && AnnoToolMode == "Object")
+        //    if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
         //    {
-        //        if(CropModeChecked == false)
+        //        selectedCustomShape.X1 += 2;
+        //        selectedCustomShape.XLeft += 2;
+        //        selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+        //        selectedCustomShape.Width -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
         //        {
-        //            foreach (var rect in AllRectangles)
+        //            if (r.Id == selectedCustomShape.Id)
         //            {
-        //                rect.RectangleFill = System.Windows.Media.Brushes.Blue;
-        //                rect.RectangleOpacity = 0.07;
-        //                rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
-        //                rect.ThumbSize = 3;
-        //                rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
-        //                rect.Visibility = Visibility.Visible;
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
         //            }
-        //            SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
-        //            SelectedResizableRectangle.RectangleOpacity = 0.0;
-        //            SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
-        //            SelectedResizableRectangle.ThumbSize = 3;
-        //            SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
-        //            SelectedResizableRectangle.Visibility = Visibility.Visible;
-        //        }
-
-        //        if(CropModeChecked == true)
-        //        {
-        //            foreach (var rect in AllRectangles)
-        //            {
-        //                rect.RectangleFill = null;
-        //                rect.RectangleOpacity = 0.0;
-        //                rect.ThumbColor = System.Windows.Media.Brushes.Transparent;
-        //                rect.ThumbSize = 3;
-        //                rect.ResizeThumbColor = System.Windows.Media.Brushes.Transparent;
-        //                rect.Visibility = Visibility.Collapsed;
-
-        //            }
-
-        //            SelectedResizableRectangle.Visibility = Visibility.Visible;
-        //            SelectedResizableRectangle.RectangleFill = System.Windows.Media.Brushes.LightSalmon;
-        //            SelectedResizableRectangle.RectangleOpacity = 0.0;
-        //            SelectedResizableRectangle.ThumbColor = System.Windows.Media.Brushes.Red;
-        //            SelectedResizableRectangle.ThumbSize = 3;
-        //            SelectedResizableRectangle.ResizeThumbColor = System.Windows.Media.Brushes.Red;
-        //        }
-        //    }
-            
-        //    if(SelectedResizableRectangle == null && CropModeChecked == false)
-        //    {
-        //        foreach (var rect in AllRectangles)
-        //        {
-        //            rect.RectangleFill = System.Windows.Media.Brushes.Blue;
-        //            rect.RectangleOpacity = 0.07;
-        //            rect.ThumbColor = System.Windows.Media.Brushes.LawnGreen;
-        //            rect.ThumbSize = 3;
-        //            rect.ResizeThumbColor = System.Windows.Media.Brushes.Gray;
-        //            rect.Visibility = Visibility.Visible;
+        //            tmpIndex++;
         //        }
         //    }
         //}
+
+        //private ICommand _leftButtonCommand;
+        //public ICommand LeftButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _leftButtonCommand ?? (_leftButtonCommand = new CommandHandler(() => LeftButton(), _canExecute));
+        //    }
+        //}
+
+        //public void LeftButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
+        //    {
+        //        selectedCustomShape.X2 -= 2;
+        //        selectedCustomShape.Width -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //private ICommand _upButtonCommand;
+        //public ICommand UpButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _upButtonCommand ?? (_upButtonCommand = new CommandHandler(() => UpButton(), _canExecute));
+        //    }
+        //}
+        //public void UpButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+        //    {
+        //        selectedCustomShape.Y2 -= 2;
+        //        selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+        //        selectedCustomShape.Height -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //private ICommand _downButtonCommand;
+        //public ICommand DownButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _downButtonCommand ?? (_downButtonCommand = new CommandHandler(() => DownButton(), _canExecute));
+        //    }
+        //}
+
+        //public void DownButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+        //    {
+        //        selectedCustomShape.Y1 += 2;
+        //        selectedCustomShape.YTop += 2;
+        //        selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+        //        selectedCustomShape.Height -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //#endregion
+
+        #region ArrowKey+Ctrl
+
+        private ICommand _rightButtonCommand1;
+        public ICommand RightButtonCommand1
+        {
+            get
+            {
+                return _rightButtonCommand1 ?? (_rightButtonCommand1 = new CommandHandler(() => RightButton1(), _canExecute));
+            }
+        }
+
+        public void RightButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
+            {
+                selectedCustomShape.X2 += 2;
+                selectedCustomShape.Width += 2;
+
+                //selectedCustomShape.X2 += 2;
+                //selectedCustomShape.Width += 2;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+
+        private ICommand _leftButtonCommand1;
+        public ICommand LeftButtonCommand1
+        {
+            get
+            {
+                return _leftButtonCommand1 ?? (_leftButtonCommand1 = new CommandHandler(() => LeftButton1(), _canExecute));
+            }
+        }
+
+        public void LeftButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
+            {
+                //selectedCustomShape.X1 -= 2;
+                //selectedCustomShape.XLeft -= 2;
+                //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Width += 2;
+
+                selectedCustomShape.X2 -= 2;
+                selectedCustomShape.Width -= 2;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        private ICommand _upButtonCommand1;
+        public ICommand UpButtonCommand1
+        {
+            get
+            {
+                return _upButtonCommand1 ?? (_upButtonCommand1 = new CommandHandler(() => UpButton1(), _canExecute));
+            }
+        }
+        public void UpButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+            {
+                //selectedCustomShape.Y1 -= 2;
+                //selectedCustomShape.YTop -= 2;
+                //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Height += 2;
+
+                selectedCustomShape.Y2 -= 2;
+                selectedCustomShape.Height -= 2;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        private ICommand _downButtonCommand1;
+        public ICommand DownButtonCommand1
+        {
+            get
+            {
+                return _downButtonCommand1 ?? (_downButtonCommand1 = new CommandHandler(() => DownButton1(), _canExecute));
+            }
+        }
+
+        public void DownButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+            {
+                //selectedCustomShape.Y2 += 2;
+                //selectedCustomShape.Height += 2;
+
+                selectedCustomShape.Y2 += 2;
+                selectedCustomShape.Height += 2;
+
+                RemoveShapeFromField(selectedCustomShape);
+                int tmpIndex = 0;
+                foreach (CustomShape r in Rectangles)
+                {
+                    if (r.Id == selectedCustomShape.Id)
+                    {
+                        Rectangles.RemoveAt(tmpIndex);
+                        Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                        SaveShapeToField(selectedCustomShape);
+                        break;
+                    }
+                    tmpIndex++;
+                }
+            }
+        }
+
+        #endregion
+
+        #endregion
+
+        #endregion
+
+
+        /// <summary>
+        /// Old stuff
+        /// </summary>
+
+
+
+        public ObservableCollection<Polygon> polygonsCollection { get; set; } = new ObservableCollection<Polygon>();
+        public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+
+        #region CroppedImage
+
+        #region Variables
 
         private BitmapImage _croppedImage;
         public BitmapImage CroppedImage
@@ -3512,6 +3565,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #endregion
+
+        #endregion
+
+
         private double x;
         public double X
         {
@@ -3520,370 +3578,15 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private double y;
-
         public double Y
         {
             get { return y; }
             set { y = value; }
         }
 
-        private string _name;
 
-        public string name
-        {
-            get { return _name; }
-            set { _name = value; }
-        }
-
-        private string _dst;
-        public string dst
-        {
-            get { return _dst; }
-            set { _dst = value; }
-        }
-
-        ///// <summary>
-        ///// this method loads all rectangles from an xml file and draws them on the canvas
-        ///// </summary>
-        //public void LoadRectangles()
-        //{
-        //    string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
-
-        //    if (File.Exists(destFileName) == true)
-        //    {
-        //        XmlDocument doc = new XmlDocument();
-        //        doc.Load(destFileName);
-
-        //        foreach (XmlNode node in doc.DocumentElement)
-        //        {
-
-        //            if (node.Name == "object")
-        //            {
-        //                foreach (XmlNode objectChild in node)
-        //                {
-        //                    if (objectChild.Name == "name")
-        //                    {
-        //                        name = objectChild.InnerText;
-        //                        RectangleText = name;
-        //                    }
-
-        //                    if (objectChild.Name == "bndbox")
-        //                    {
-        //                        int xmin = int.Parse(objectChild["xmin"].InnerText);
-        //                        int ymin = int.Parse(objectChild["ymin"].InnerText);
-        //                        int xmax = int.Parse(objectChild["xmax"].InnerText);
-        //                        int ymax = int.Parse(objectChild["ymax"].InnerText);
-                                
-        //                            ResizableRectangle loadedRect = new ResizableRectangle();
-
-        //                            loadedRect.RectangleHeight = ymax - ymin;
-        //                            loadedRect.RectangleWidth = xmax - xmin;
-        //                            loadedRect.RectangleText = name;
-        //                            loadedRect.X = xmin;
-        //                            loadedRect.Y = ymin;
-
-        //                            Canvas.SetLeft(loadedRect, xmin);
-        //                            Canvas.SetTop(loadedRect, ymin);
-
-        //                            AllRectangles.Add(loadedRect);
-        //                    }
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
-
-        //private bool _isOpen = false;
-
-        //public bool IsOpen
-        //{
-        //    get
-        //    {
-        //        return this._isOpen;
-        //    }
-
-        //    set
-        //    {
-        //        this._isOpen = value;
-        //        OnPropertyChanged("IsOpen");
-        //    }
-        //}
-
-        ///// <summary>
-        ///// sorts the list of rectangles in ascending order of their name
-        ///// </summary>
-        //public void SortList()
-        //{
-        //    ObservableCollection<ResizableRectangle> sortedRectangles = new ObservableCollection<ResizableRectangle>
-        //        (AllRectangles.OrderBy(resizable => resizable.RectangleText));
-
-        //    AllRectangles = sortedRectangles;
-        //    OnPropertyChanged("AllRectangles");
-        //}
-
-        ///// <summary>
-        ///// this method filters the list, depending on which label is selected in the combobox
-        ///// </summary>
-        //public void FilterName()
-        //{
-        //    if (SelectedComboBoxItem == "All Labels")
-        //    {
-        //        if (ListViewImage.Contains("grid"))
-        //        {
-        //            FilterVisibilitySelectedGallery = false;
-        //            FilterVisibilityAllLabels = true;
-        //            FilterVisibilityAllLabelsGallery = false;
-        //            FilterVisibilitySelected = false;
-        //        }
-
-        //        else if (ListViewImage.Contains("list"))
-        //        {
-        //            FilterVisibilitySelectedGallery = false;
-        //            FilterVisibilityAllLabels = false;
-        //            FilterVisibilityAllLabelsGallery = true;
-        //            FilterVisibilitySelected = false;
-        //        }
-                
-        //        AllRectanglesView = AllRectangles;
-        //        RectangleCount = "#" + AllRectangles.Count.ToString();
-        //        OnPropertyChanged("AllRectangles");
-        //        OnPropertyChanged("AllRectanglesView");
-        //        OnPropertyChanged("FilteredRectangles");
-        //        OnPropertyChanged("RectangleCount");
-        //        OnPropertyChanged("FilterVisibilitySelected");
-        //        OnPropertyChanged("FilterVisibilitySelectedGallery");
-        //        OnPropertyChanged("FilterVisibilityAllLabels");
-        //        OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-                
-        //    }
-
-        //    else if (SelectedComboBoxItem != "All Labels")
-        //    {
-        //        if (ListViewImage.Contains("grid"))
-        //        {
-        //            FilterVisibilitySelectedGallery = false;
-        //            FilterVisibilityAllLabels = false;
-        //            FilterVisibilityAllLabelsGallery = false;
-        //            FilterVisibilitySelected = true;
-        //        }
-
-        //        else if (ListViewImage.Contains("list"))
-        //        {
-        //            FilterVisibilitySelectedGallery = true;
-        //            FilterVisibilityAllLabels = false;
-        //            FilterVisibilityAllLabelsGallery = false;
-        //            FilterVisibilitySelected = false;
-        //        }
-
-        //        DefaultLabel = SelectedComboBoxItem;
-        //        RectangleCount = "#" + AllRectanglesView.Count.ToString();
-
-        //        ObservableCollection<ResizableRectangle> FilteredRectangles = new ObservableCollection<ResizableRectangle>
-        //            (AllRectangles.Where(AllRectangles => AllRectangles.RectangleText == SelectedComboBoxItem));
-        //        AllRectanglesView = FilteredRectangles;
-        //        OnPropertyChanged("AllRectangles");
-        //        OnPropertyChanged("AllRectanglesView");
-        //        OnPropertyChanged("FilteredRectangles");
-        //        OnPropertyChanged("DefaultLabel");
-        //        OnPropertyChanged("RectangleCount");
-        //        OnPropertyChanged("FilterVisibilitySelected");
-        //        OnPropertyChanged("FilterVisibilitySelectedGallery");
-        //        OnPropertyChanged("FilterVisibilityAllLabels");
-        //        OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-        //    }
-        //}
-
-        ///// <summary>
-        ///// this method adds all different labels to the combobox
-        ///// </summary>
-        //public void ComboBoxNames()
-        //{
-        //    temp = SelectedComboBoxItem;
-        //    ComboBoxItems.Clear();
-        //    ComboBoxItems.Add("All Labels");
-        //    SelectedComboBoxItem = temp;
-
-        //    foreach (var rec in AllRectangles)
-        //    {
-        //        if (!ComboBoxItems.Contains(rec.RectangleText))
-        //        {
-        //            ComboBoxItems.Add(rec.RectangleText);
-        //            OnPropertyChanged("ComboBoxItems");
-        //        }
-        //    }
-        //}
-
-        //private string _selectedComboBoxItem;
-
-        //public string SelectedComboBoxItem
-        //{
-        //    get
-        //    {
-        //        return _selectedComboBoxItem;
-        //    }
-        //    set
-        //    {
-        //        _selectedComboBoxItem = value;
-        //        OnPropertyChanged("SelectedComboBoxItem");
-        //    }
-        //}
-
-        //private bool _filterVisibilitySelected = false;
-
-        //public bool FilterVisibilitySelected
-        //{
-        //    get
-        //    {
-        //        return _filterVisibilitySelected;
-        //    }
-        //    set
-        //    {
-        //        _filterVisibilitySelected = value;
-        //        OnPropertyChanged("FilterVisibility1");
-        //    }
-        //}
-
-        //private bool _filterVisibilityAllLabels = true;
-
-        //public bool FilterVisibilityAllLabels
-        //{
-        //    get
-        //    {
-        //        return _filterVisibilityAllLabels;
-        //    }
-        //    set
-        //    {
-        //        _filterVisibilityAllLabels = value;
-        //        OnPropertyChanged("FilterVisibility");
-        //    }
-        //}
-
-        //private bool _filterVisibilitySelectedGallery = false;
-
-        //public bool FilterVisibilitySelectedGallery
-        //{
-        //    get
-        //    {
-        //        return _filterVisibilitySelectedGallery;
-        //    }
-        //    set
-        //    {
-        //        _filterVisibilitySelectedGallery = value;
-        //        OnPropertyChanged("FilterVisibilitySelectedGallery");
-        //    }
-        //}
-
-        //private bool _filterVisibilityAllLabelsGallery = false;
-
-        //public bool FilterVisibilityAllLabelsGallery
-        //{
-        //    get
-        //    {
-        //        return _filterVisibilityAllLabelsGallery;
-        //    }
-        //    set
-        //    {
-        //        _filterVisibilityAllLabelsGallery = value;
-        //        OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-        //    }
-        //}
-        
-        //private ICommand _loadXMLCommand;
-        //public ICommand LoadXMLCommand
-        //{
-        //    get
-        //    {
-        //        return _loadXMLCommand ?? (_loadXMLCommand = new CommandHandler(() => LoadXML(), _canExecute));
-        //    }
-        //}
-
-        ///// <summary>
-        ///// with this method, you can open an xml file from a different location as the loaded image.
-        ///// </summary>
-        //private async void LoadXML()
-        //{
-        //        this.IsEnabled = true;
-        //        OpenFileDialog openFileDialog = new OpenFileDialog();
-        //        openFileDialog.Filter = "XML Files | *.xml";
-
-        //        if (openFileDialog.ShowDialog() == true)
-        //            dst = openFileDialog.FileName;
-
-        //        if (dst != null)
-        //        {
-        //            XmlDocument doc = new XmlDocument();
-        //            doc.Load(dst);
-
-        //            foreach (XmlNode node in doc.DocumentElement)
-        //            {
-
-        //                if (node.Name == "object")
-        //                {
-        //                    foreach (XmlNode objectChild in node)
-        //                    {
-        //                        if (objectChild.Name == "name")
-        //                        {
-        //                            name = objectChild.InnerText;
-        //                            RectangleText = name;
-        //                        }
-
-        //                        if (objectChild.Name == "bndbox")
-        //                        {
-        //                            int xmin = int.Parse(objectChild["xmin"].InnerText);
-        //                            int ymin = int.Parse(objectChild["ymin"].InnerText);
-        //                            int xmax = int.Parse(objectChild["xmax"].InnerText);
-        //                            int ymax = int.Parse(objectChild["ymax"].InnerText);
-
-        //                            ResizableRectangle loadedRect = new ResizableRectangle();
-
-        //                            loadedRect.RectangleHeight = ymax - ymin;
-        //                            loadedRect.RectangleWidth = xmax - xmin;
-        //                            loadedRect.RectangleText = name;
-        //                            loadedRect.X = xmin;
-        //                            loadedRect.Y = ymin;
-
-        //                            Canvas.SetLeft(loadedRect, xmin);
-        //                            Canvas.SetTop(loadedRect, ymin);
-
-        //                            AllRectangles.Add(loadedRect);
-        //                            AllRectanglesView = AllRectangles;
-        //                            OnPropertyChanged("");
-        //                        }
-        //                    }
-        //                }
-        //            }
-        //        }
-        //        ComboBoxNames();
-        //        SortList();
-        //        await cropImageLabelBegin();
-          
-            
-        //}
-
-        private string _rectangleCount;
-        public string RectangleCount
-        {
-            get
-            {
-                return _rectangleCount;
-            }
-            set
-            {
-                _rectangleCount = value;
-                OnPropertyChanged("RectangleCount");
-            }
-        }
-
-        private Canvas _myCanvas;
-
-        public Canvas MyCanvas
-        {
-            get { return _myCanvas; }
-            set { _myCanvas = value; }
-        }
 
         private InkCanvas _myInkCanvas;
-
         public InkCanvas MyInkCanvas
         {
             get { return _myInkCanvas; }
@@ -3892,23 +3595,24 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         private System.Windows.Controls.Image _myPreview;
-
         public System.Windows.Controls.Image MyPreview
         {
             get { return _myPreview; }
             set { _myPreview = value; }
         }
 
-        private double _zoomBorderWidth;
 
+
+        private double _zoomBorderWidth;
         public double ZoomBorderWidth
         {
             get { return _zoomBorderWidth; }
             set { _zoomBorderWidth = value; }
         }
 
-        private double _zoomBorderHeight;
 
+
+        private double _zoomBorderHeight;
         public double ZoomBorderHeight
         {
             get { return _zoomBorderHeight; }
