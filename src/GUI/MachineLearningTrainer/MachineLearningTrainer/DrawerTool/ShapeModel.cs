@@ -32,6 +32,7 @@ namespace MachineLearningTrainer.DrawerTool
         private string fill;
         private string stroke;
         private string _lblTextBox_Color = "Black";
+        private bool visible = true;
 
         private string viewport = ConfigClass.viewportUnSelected;
         private System.Windows.Media.TileMode viewportTileMode = System.Windows.Media.TileMode.None;
@@ -327,7 +328,21 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public bool Visible
+        {
+            get { return this.visible; }
+            set
+            {
+                if (visible != value)
+                {
+                    this.visible = value;
+                    this.NotifyPropertyChanged("Visible");
+                }
+            }
+        }
+
         #endregion
+
 
         public bool IsMouseOver
         {

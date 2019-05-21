@@ -45,6 +45,9 @@
     <Reference Include="FileSystemModels, Version=3.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dirkster.FileListView.3.1.1\lib\net452\FileSystemModels.dll</HintPath>
     </Reference>
+    <Reference Include="GongSolutions.WPF.DragDrop, Version=2.0.0.0, Culture=neutral, PublicKeyToken=91f1945125b7a587, processorArchitecture=MSIL">
+      <HintPath>..\packages\gong-wpf-dragdrop.2.0.1\lib\net45\GongSolutions.WPF.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="InplaceEditBoxLib, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Dirkster.FileListView.3.1.1\lib\net452\InplaceEditBoxLib.dll</HintPath>
     </Reference>
@@ -227,6 +230,10 @@
     <Page Include="DecisionPages\TabularDataDecision.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ResourceDictionaries\Icons.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="DrawerTool\ColorPicker.xaml">
       <SubType>Designer</SubType>

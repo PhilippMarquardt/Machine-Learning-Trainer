@@ -7,6 +7,7 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
+    xmlns:dd="urn:gong-wpf-dragdrop"
     
     d:DesignHeight="1080"
     d:DesignWidth="1920"
@@ -31,6 +32,7 @@
     </UserControl.Triggers>
 
     <UserControl.Resources>
+
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
 
         <Style
@@ -41,6 +43,23 @@
             <Setter Property="Background" Value="Transparent" />
             <Setter Property="Foreground" Value="#FF2196F3" />
             <Setter Property="Margin" Value="10" />
+        </Style>
+
+        <Style
+            x:Key="ColorCanvas"
+            BasedOn="{StaticResource {x:Type xctk:ColorCanvas}}"
+            TargetType="xctk:ColorCanvas">
+            <Style.Triggers>
+                <DataTrigger Binding="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" Value="Fill">
+                    <Setter Property="SelectedColor" Value="{Binding SelectedLabel.Fill}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" Value="Border">
+                    <Setter Property="SelectedColor" Value="{Binding SelectedLabel.Stroke}" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" Value="Both">
+                    <Setter Property="SelectedColor" Value="{Binding SelectedLabel.Fill}" />
+                </DataTrigger>
+            </Style.Triggers>
         </Style>
 
         <Style
@@ -398,6 +417,7 @@
                 <ColumnDefinition Width="0" />
                 <ColumnDefinition x:Name="gridX" Width="*" />
                 <ColumnDefinition Width="auto" />
+                <ColumnDefinition x:Name="gridLV" Width="0"/>
                 <ColumnDefinition Width="auto" MinWidth="250" />
             </Grid.ColumnDefinitions>
             <Grid.RowDefinitions>
@@ -544,6 +564,319 @@
                     </Button.ToolTip>
                 </Button>
             </StackPanel>
+
+            <StackPanel
+            x:Name="ColorPicker_Panel"
+            Width="auto"
+            Visibility="Hidden"
+            Background="Transparent"
+            Grid.Row="0"
+                Grid.RowSpan="3"
+            Grid.Column="5"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Top"
+            MouseDown="ColorPicker_MouseDown">
+                <TextBox
+                    x:Name="RenameTxtBox"
+                    Margin="20,0,20,0"
+                    HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Left"
+                    IsReadOnly="True"
+                    MouseDoubleClick="TextBox_MouseDoubleClick"  
+                    LostFocus="TextBox_LostFocus"
+                    materialDesign:HintAssist.IsFloating="True"
+                    Foreground="Black"
+                    Background="White"
+                    Text="{Binding SelectedLabel.Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                    materialDesign:HintAssist.Hint="Rename" />
+                <Grid
+                    HorizontalAlignment="Center"
+                    MinWidth="120"
+                    >
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock
+                        Background="#FF2196F3"
+                        Margin="10,5,10,0"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Center"
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="ColorPicker" 
+                        TextAlignment="Center"
+                        Grid.Row="0"/>
+                    <Grid
+                        Grid.Row="1"
+                        Width="auto"
+                        MinWidth="120"
+                        Margin="10">
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+                        <DockPanel
+                        VerticalAlignment="Center" 
+                        Margin="5"
+                        Grid.Row="0">
+                            <Label
+                                Foreground="Black"
+                                DockPanel.Dock="Left"
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center">Mode:</Label>
+                            <ComboBox
+                                DockPanel.Dock="Right"
+                                Width="auto"
+                                Height="30"
+                                Margin="5"
+                                Padding="3"
+                                HorizontalAlignment="Right"
+                                VerticalContentAlignment="Center"
+                                FontSize="14"
+                                Foreground="Black"
+                                ItemsSource="{Binding ModeItems}"
+                                SelectedIndex="0"
+                                SelectedItem="{Binding SelectedModeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                        </DockPanel>
+                    </Grid>
+                    <xctk:ColorCanvas
+                    Background="Transparent"
+                    Foreground="Black"
+                    Style="{StaticResource ColorCanvas}"
+                    Margin="10"
+                    x:Name="_colorCanvas"
+                    Grid.Row="2"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Center" 
+                    UsingAlphaChannel="False"
+                    MouseDown="ColorPicker_MouseDown"
+                    SelectedColorChanged="_colorCanvas_SelectedColorChanged">
+                    </xctk:ColorCanvas>
+                    <DockPanel 
+                        VerticalAlignment="Center" 
+                        Margin="5"
+                        Grid.Row="3">
+                        <Label DockPanel.Dock="Left" Foreground="Black">O:</Label>
+                        <TextBox 
+                            x:Name="_opacityTextBox"
+                            DockPanel.Dock="Right"
+                            TextAlignment="Right"
+                            Foreground="Black"
+                            Width="40" 
+                            Text="1"
+                            IsReadOnly="True" />
+                        <Slider 
+                            Maximum="1" 
+                            Name="_sliderOpacity" 
+                            TickFrequency="0.05"
+                            IsSnapToTickEnabled="True"
+                            ValueChanged="_sliderOpacity_ValueChanged" 
+                            Value="{Binding SelectedLabel.Opacity, Mode=TwoWay}"/>
+                    </DockPanel>
+                    <xctk:ColorPicker
+                        x:Name="_colorPicker"
+                        Margin="5"
+                        Grid.Row="4"
+                        VerticalAlignment="Top"
+                        SelectedColorChanged="_colorPicker_SelectedColorChanged" 
+                        ShowTabHeaders="False" 
+                        ShowRecentColors="True"
+                        ShowAvailableColors="True"
+                        ShowStandardColors="True"/>
+
+                    <Grid
+                        Margin="5"
+                        Grid.Row="5"
+                        VerticalAlignment="Bottom">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="100" />
+                        </Grid.ColumnDefinitions>
+                        <!--<Button
+                        x:Name="_addColorButton"
+                        Grid.Column="0"
+                        Click="_applyColorChange_Click" 
+                        Content="Add">
+                        <Style
+                            BasedOn="{StaticResource {x:Type Button}}"
+                            TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding DeactivatedAddLabel}" Value="false">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                                <DataTrigger Binding="{Binding DeactivatedAddLabel}" Value="true">
+                                    <Setter Property="Visibility" Value="Hidden" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button>-->
+                        <Button
+                            x:Name="_closeColorChange"
+                            Grid.Column="2"
+                            Content="Close"
+                            Click="_closeColorChange_Click" />
+                    </Grid>
+                </Grid>
+            </StackPanel>
+
+            <ListBox
+                Visibility="Hidden"
+                x:Name="listBoxLabels"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                Grid.Column="5"
+                Width="140"
+                Margin="5,10,5,10"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Stretch"
+                Panel.ZIndex="1"
+                Foreground="Black"
+                ItemsSource="{Binding RectanglesView}"
+                SelectedItem="{Binding SelectedLabel}"
+                ItemContainerStyle="{StaticResource myLBStyle}"
+                MouseRightButtonUp="ListBox_RightButtonUp"
+                SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
+                SelectionChanged="listBoxLabels_SelectionChanged"
+                SelectionMode="Single"
+                Style="{StaticResource MyListBoxStyle}" 
+                dd:DragDrop.IsDragSource="True"
+                dd:DragDrop.IsDropTarget="True">
+
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel>
+                            <WrapPanel Width="auto" HorizontalAlignment="Left">
+                                <!--<TextBox
+                                    Height="auto"
+                                    x:Name="lblTextBox"
+                                    Width="60"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Left"
+                                    AcceptsReturn="False"
+                                    FontSize="12"
+                                    Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    IsReadOnly="True"
+                                    TextChanged="LblTextBox_TextChanged"
+                                    MouseDoubleClick="LblTextBox_MouseDoubleClick"
+                                    LostFocus="LblTextBox_LostFocus"
+                                    TextWrapping="Wrap"
+                                    Padding="5,0,5,0"
+                                    Margin="0,5,0,5"/>-->
+                                <TextBlock
+                                    Height="auto"
+                                    Width="76"
+                                    HorizontalAlignment="Left"
+                                    TextAlignment="Left"
+                                    FontSize="12"
+                                    TextWrapping="Wrap"
+                                    Padding="5,0,5,0"
+                                    Margin="0,5,0,5"
+                                    Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}" />
+                                <TextBlock
+                                    Height="auto"
+                                    Width="30"
+                                    HorizontalAlignment="Left"
+                                    TextAlignment="Left"
+                                    FontSize="12"
+                                    Padding="5,0,5,0"
+                                    Margin="0,5,0,5"
+                                    Text="{Binding Id}" />
+                                <ToolTipService.ToolTip>
+                                    <Grid>
+                                        <Grid.Resources>
+                                            <Style x:Key="lineStyle" TargetType="Line">
+                                                <Setter Property="Stroke" Value="LightGray" />
+                                                <Setter Property="Stretch" Value="Fill" />
+                                                <Setter Property="StrokeDashArray" Value="1,2" />
+                                            </Style>
+
+                                            <Style x:Key="horizontalLineStyle" TargetType="Line" BasedOn="{StaticResource lineStyle}">
+                                                <Setter Property="X2" Value="1" />
+                                                <Setter Property="VerticalAlignment" Value="Bottom" />
+                                                <Setter Property="Grid.ColumnSpan" Value="{Binding Path=ColumnDefinitions.Count, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                                            </Style>
+
+                                            <Style x:Key="verticalLineStyle" TargetType="Line" BasedOn="{StaticResource lineStyle}">
+                                                <Setter Property="Y2" Value="1" />
+                                                <Setter Property="HorizontalAlignment" Value="Right" />
+                                                <Setter Property="Grid.RowSpan" Value="{Binding Path=RowDefinitions.Count, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                                            </Style>
+                                        </Grid.Resources>
+
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*" />
+                                            <ColumnDefinition Width="*" />
+                                        </Grid.ColumnDefinitions>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="15" />
+                                            <RowDefinition Height="15" />
+                                        </Grid.RowDefinitions>
+
+                                        <Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
+                                        <Line Grid.Row="0" Style="{StaticResource horizontalLineStyle}" />
+                                        <Line Grid.Row="1" Style="{StaticResource horizontalLineStyle}" />
+                                        <Line Grid.Row="2" Style="{StaticResource horizontalLineStyle}" />
+
+                                        <TextBlock Grid.Row ="0" Grid.Column="0" Text="Label: " />
+                                        <TextBlock Grid.Row ="1" Grid.Column="0" Text="Id: " />
+                                        <TextBlock Grid.Row ="2" Grid.Column="0" Text="Center.X: " />
+                                        <TextBlock Grid.Row ="3" Grid.Column="0" Text="Center.Y: " />
+
+                                        <TextBlock Grid.Row ="0" Grid.Column="1" Text="{Binding Label}" Margin="5,0,0,0" />
+                                        <TextBlock Grid.Row ="1" Grid.Column="1" Text="{Binding Id}" Margin="5,0,0,0"/>
+                                        <TextBlock Grid.Row ="2" Grid.Column="1" Text="{Binding Center.X}" Margin="5,0,0,0"/>
+                                        <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>
+                                    </Grid>
+                                </ToolTipService.ToolTip>
+                            </WrapPanel>
+                            <Separator />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+                <ListBox.ContextMenu>
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                        <MenuItem
+                            ItemsSource="{Binding LabelColorFormat}"
+                            Header="Select Label"
+                            Width="300">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ChangeLabelCommand}" />
+                                    <Setter Property="CommandParameter" Value="{Binding Label}" />
+                                    <Setter Property="Header" Value="{Binding Label}" />
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                        </MenuItem>
+                        <Separator />
+                        <MenuItem
+                        Width="300"
+                        Command="{Binding DuplicateCommand}"
+                        Header="Duplicate"
+                        InputGestureText="Ctrl + D">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/duplicate.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                        <MenuItem
+                        Command="{Binding DeleteCommand}"
+                        Header="Delete"
+                        InputGestureText="Del">
+                            <MenuItem.Icon>
+                                <Image Source="/Icons/delete.png" />
+                            </MenuItem.Icon>
+                        </MenuItem>
+                    </ContextMenu>
+                </ListBox.ContextMenu>
+            </ListBox>
 
             <Canvas
                 Grid.Row="0"
@@ -840,100 +1173,45 @@
                 </local:ZoomBorder>
             </Border>
 
-            <StackPanel Grid.Row="0" Grid.Column="6">
+            <StackPanel Grid.Row="0" Grid.Column="7">
 
                 <WrapPanel Margin="10,0,10,0">
+                    <Button
+                        x:Name="showHide"
+                        Margin="-10,0,10,0"
+                            Height="18"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                            Background="Transparent"
+                            IsEnabled="{Binding IsEnabled}"
+                        Click="ShowHide_Click"
+                        RenderTransformOrigin=".5,.5">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Canvas
+                                    Background="Transparent">
+                                <Path 
+                                    Fill="#FF2196F3"
+                                    Stretch="UniformToFill"
+                                    Height="18"
+                                    Data="M19,19H5V5H19M19,3H5A2,2 0 0,0 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V5C21,3.89 20.1,3 19,3M10,8V16L15,12L10,8Z">
+                                </Path>
+                                </Canvas>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <Button.RenderTransform>
+                            <RotateTransform x:Name="animatedRoatateTransform" Angle="0" />
+                        </Button.RenderTransform>
+                        <Button.ToolTip>
+                            <TextBlock Text="Show/Hide visible Rectangles" />
+                        </Button.ToolTip>
+                    </Button>
+                    
                     <ToggleButton Margin="10" IsChecked="{Binding CropModeChecked, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-                    <TextBlock
+                        <TextBlock
                         Margin="10"
                         Foreground="Black"
                         Text="Crop Mode" />
-                </WrapPanel>
-
-                <Grid Margin="15">
-                    <Grid.Resources>
-                        <ImageBrush x:Key="AddButtonImageBrush" ImageSource="{Binding ListViewImage}" />
-                    </Grid.Resources>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="auto" />
-                        <ColumnDefinition Width="auto" />
-                    </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="auto" />
-                        <RowDefinition Height="auto" />
-                    </Grid.RowDefinitions>
-                    <!--<Button
-                        Width="26"
-                        Height="26"
-                        Margin="5"
-                        HorizontalAlignment="Left"
-                        BorderBrush="Transparent"
-                        Click="ColorPicker_Open"
-                        IsEnabled="{Binding ColorPickerEnabled}">
-                        <Button.Template>
-                            <ControlTemplate>
-                                <Image Margin="2" Source="{Binding ColorPickerIconPath}" />
-                            </ControlTemplate>
-                        </Button.Template>
-                        <Button.ToolTip>
-                            <TextBlock Text="Change Color of selected Label" />
-                        </Button.ToolTip>
-                    </Button>-->
-                    <ComboBox
-                        Width="150"
-                        Height="30"
-                        Margin="5"
-                        Padding="3"
-                        Grid.Column="0"
-                        Grid.RowSpan="2"
-                        HorizontalAlignment="Center"
-                        HorizontalContentAlignment="Left"
-                        VerticalContentAlignment="Center"
-                        DropDownClosed="ComboBox_DropDownClosed"
-                        FontSize="14"
-                        Foreground="Black"
-                        ItemsSource="{Binding ComboBoxItems}"
-                        MouseUp="ImgCamera_MouseUp"
-                        SelectedIndex="0"
-                        SelectedItem="{Binding SelectedComboBoxItem}" />
-                    <Button 
-                        x:Name="editLabelColorFormat"
-                        Margin="5"
-                        Grid.Column="1"
-                        Grid.Row="0"
-                        Width="auto"
-                        Height="auto"
-                        HorizontalAlignment="Right"
-                        Background="Transparent"
-                        Click="EditLabelColorFormat_Click"
-                        Foreground="#FF2196F3"
-                        Opacity="0.3"
-                        IsEnabled="{Binding IsEnabled}"
-                        Style="{StaticResource IncreaseOpacityOnHover2}">
-                        <materialDesign:PackIcon Kind="Pencil" />
-                    </Button>
-                    <TextBlock
-                        Grid.Column="1"
-                        Grid.Row="1"
-                        Margin="0,0,5,0"
-                        HorizontalAlignment="Right"
-                        VerticalAlignment="Center"
-                        FontStyle="Italic"
-                        Foreground="Gray"
-                        Text="{Binding RectangleCount, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
-
-
-                    <!--<Button
-                        Width="26"
-                        Height="26"
-                        Margin="5"
-                        HorizontalAlignment="Left"
-                        materialDesign:ShadowAssist.ShadowDepth="Depth0"
-                        Background="{StaticResource AddButtonImageBrush}"
-                        BorderBrush="Transparent"
-                        Command="{Binding ListViewCommand}" />-->
-
-                </Grid>
+                    </WrapPanel>
             </StackPanel>
 
 
@@ -1052,147 +1330,266 @@
                     </ContextMenu>
                 </ListBox.ContextMenu>
             </ListBox>-->
-
+            
+            
+            
             <!--  ListBox with All Labels and Text  -->
-            <ListBox
-                x:Name="listBoxLabels"
+            <Border
+                BorderThickness="1"
+                BorderBrush="Black"
                 Grid.Row="1"
-                Grid.Column="6"
-                Margin="5"
-                Panel.ZIndex="1"
-                Foreground="Black"
-                ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding RectanglesView}"
-                MouseDoubleClick="listBoxLabels_MouseDoubleClick"
-                MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectionChanged="listBoxLabels_SelectionChanged"
-                SelectionMode="Single"
-                Style="{StaticResource MyListBoxStyle}"
-                Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}">
-                <ListBox.InputBindings>
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand_Move}" />
-                    <!--<KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand}"
-                        Modifiers="Ctrl+Shift" />-->
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Return"
-                        Command="{Binding EnterCommand}"
-                        CommandParameter="Return" />
-                    <KeyBinding
-                        Key="Tab"
-                        Command="{Binding TabNextShape}" />
-                    <KeyBinding
-                        Key="Tab"
-                        Command="{Binding TabPreviousShape}"
-                        Modifiers="Ctrl" />
-
-                </ListBox.InputBindings>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <WrapPanel Width="auto" HorizontalAlignment="Center">
-                            <TextBox
-                                Height="auto"
-                                x:Name="lblTextBox"
-                                Width="120"
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                TextAlignment="Left"
-                                AcceptsReturn="False"
-                                FontSize="12"
-                                Foreground="{Binding lblTextBox_Color}"
-                                Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                IsReadOnly="True"
-                                TextChanged="LblTextBox_TextChanged"
-                                MouseDoubleClick="LblTextBox_MouseDoubleClick"
-                                LostFocus="LblTextBox_LostFocus"
-                                TextWrapping="Wrap"
-                                Margin="20"
-                                Padding="5"/>
-                            <!--<ComboBox
-                               Height="auto"
-                                x:Name="cbItemLabel"
-                                Width="20"
-                                HorizontalAlignment="Right"
-                                VerticalAlignment="Center"
-                                HorizontalContentAlignment="Left"
-                                SelectedItem="{Binding Label}"
-                                ItemsSource="{Binding DataContext.LabelList, RelativeSource={RelativeSource AncestorType=ListView}}"
-                                FontSize="12"
+                Grid.Column="7"
+                Grid.RowSpan="2"
+                Margin="0,10,10,10"
+                Panel.ZIndex="0">
+                <Grid
+                    Margin="5"
+                    Background="White"
+                    IsEnabled="{Binding IsEnabled}">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <WrapPanel
+                        Margin="5,10,0,0"
+                        Grid.Row="0">
+                        <TextBlock
+                        Height="20"
                                 Foreground="Black"
-                                DropDownClosed="CbItemLabel_DropDownClosed"
-                                DropDownOpened="CbItemLabel_DropDownOpened"
-                                IsReadOnly="True"
-                                Margin="20"
-                                Padding="5" >
-                            </ComboBox>-->
-                        </WrapPanel>
-                        
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ContextMenu>
-                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem
-                            Width="300"
-                            Command="{Binding DuplicateCommand}"
-                            Header="Duplicate"
-                            InputGestureText="Ctrl + D">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/duplicate.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding DeleteCommand}"
-                            Header="Delete"
-                            InputGestureText="Del">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/delete.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>
+                                Text="Parameter Sets" 
+                                Margin="0,5,10,5"/>
+                        <!--<Button
+                            Margin="0,0,10,0"
+                            Height="20"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                            Background="Transparent"
+                            IsEnabled="{Binding IsEnabled}">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Canvas
+                                        Background="Transparent">
+                                        <Path 
+                                        Fill="LightGray"
+                                        Stretch="Uniform"
+                                            Height="20">
+                                            <Path.Data>
+                                                <Geometry>m 681.88025 -4.9735467 c 0.30839 0.0578 0.80865 0.3552 1.09291 0.64975 0.0926 0.0959 3.89459 4.67856996 8.44891 10.18366 4.55433 5.5050897 8.38332 10.1186797 8.50886 10.2524397 0.3076 0.32773 0.59784 0.7205 0.74316 1.0057 0.0953 0.18694 0.12281 0.28972 0.1341 0.50005 l 0.0142 0.26475 -0.16039 0.15368 c -0.10799 0.10348 -0.23054 0.17635 -0.37512 0.22306 -0.20663 0.0668 -0.40212 0.0698 -5.18349 0.0804 l -4.96876 0.011 10e-4 14.94837 10e-4 14.948364 -0.0753 0.160094 c -0.14571 0.309981 -0.43175 0.523253 -0.88737 0.661623 -0.20381 0.06189 -0.58942 0.06593 -7.2655 0.07609 -7.67419 0.01167 -7.28497 0.02111 -7.69473 -0.186536 -0.20862 -0.105715 -0.42061 -0.331224 -0.52636 -0.559924 l -0.0774 -0.16733 -0.0181 -14.642827 -0.0181 -14.64283 -4.72407 -0.0191 c -5.01946 -0.0203 -4.77319 -0.0119 -5.19452 -0.17831 -0.29418 -0.11623 -0.48651 -0.38308 -0.48806 -0.6772 -0.002 -0.34875 0.24521 -0.86586 0.62847 -1.31547 0.11032 -0.12941 0.70144 -0.89504 1.31361 -1.70139 4.68117 -6.1661097 5.4688 -7.1989197 7.81262 -10.2445497 4.13483 -5.37293004 6.54607 -8.40182 7.29462 -9.16314 0.32083 -0.3263 0.54962 -0.47888 0.86356 -0.57591 0.21723 -0.0671 0.57372 -0.087 0.80014 -0.0446 z M 645.0341 81.824312 c -0.98327 -0.13416 -1.99504 -0.55457 -2.78258 -1.1562 -0.33694 -0.2574 -0.85657 -0.78575 -1.11167 -1.13033 -0.54443 -0.73538 -0.88908 -1.52906 -1.08546 -2.4997 -0.0606 -0.29961 -0.0647 -1.04637 -0.0742 -13.48486 l -0.01 -13.16768 5.82859 0 5.82859 0 0.009 9.9097 0.009 9.9097 30.3445 0.009 30.3445 0.009 0 -9.91877 0 -9.91877 5.84684 0 5.84685 0 -0.0113 13.16768 c -0.0106 12.26998 -0.0156 13.18866 -0.0735 13.47539 -0.28867 1.43007 -0.97084 2.60953 -2.01337 3.48106 -0.85942 0.71846 -1.8854 1.16842 -2.99994 1.31566 -0.36065 0.0477 -4.74055 0.0536 -36.97811 0.0503 -30.00552 -0.003 -36.63165 -0.0123 -36.91796 -0.0513 z</Geometry>
+                                            </Path.Data>
+                                        </Path>
+                                    </Canvas>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.ToolTip>
+                                <TextBlock Text="Load Parameter Set" />
+                            </Button.ToolTip>
+                        </Button>
+                        <Button
+                                Margin="0,0,10,0"
+                                Height="20"
+                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                Background="Transparent" 
+                            IsEnabled="{Binding IsEnabled}">
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Canvas
+                                        Background="Transparent">
+                                        <Path 
+                                            Fill="LightGray"
+                                            Stretch="Uniform"
+                                            Height="20">
+                                            <Path.Data>
+                                                <Geometry>m 443.16971 177.926 c -0.98327 -0.13416 -1.99504 -0.55457 -2.78258 -1.1562 -0.33694 -0.2574 -0.85657 -0.78575 -1.11167 -1.13033 -0.54443 -0.73538 -0.88908 -1.52906 -1.08546 -2.4997 -0.0606 -0.29961 -0.0647 -1.04637 -0.0742 -13.48486 l -0.01 -13.16768 5.82859 0 5.82859 0 0.009 9.9097 0.009 9.9097 30.3445 0.009 30.3445 0.009 0 -9.91877 0 -9.91877 5.84684 0 5.84685 0 -0.0113 13.16768 c -0.0106 12.26998 -0.0156 13.18866 -0.0735 13.47539 -0.28867 1.43007 -0.97084 2.60953 -2.01337 3.48106 -0.85942 0.71846 -1.8854 1.16842 -2.99994 1.31566 -0.36065 0.0477 -4.74055 0.0536 -36.97811 0.0503 -30.00552 -0.003 -36.63165 -0.0123 -36.91796 -0.0513 z m 37.07515 -32.6961 c -0.30839 -0.0578 -0.80865 -0.3552 -1.09291 -0.64975 -0.0926 -0.0959 -3.89459 -4.67857 -8.44891 -10.18366 -4.55433 -5.50509 -8.38332 -10.11868 -8.50886 -10.25244 -0.3076 -0.32773 -0.59784 -0.7205 -0.74316 -1.0057 -0.0953 -0.18694 -0.12281 -0.28972 -0.1341 -0.50005 l -0.0142 -0.26475 0.16039 -0.15368 c 0.10799 -0.10348 0.23054 -0.17635 0.37512 -0.22306 0.20663 -0.0668 0.40212 -0.0698 5.18349 -0.0804 l 4.96876 -0.011 -0.001 -14.94837 -0.001 -14.948363 0.0753 -0.160094 c 0.14571 -0.309981 0.43175 -0.523253 0.88737 -0.661623 0.20381 -0.06189 0.58942 -0.06593 7.2655 -0.07609 7.67419 -0.01167 7.28497 -0.02111 7.69473 0.186536 0.20862 0.105715 0.42061 0.331224 0.52636 0.559924 l 0.0774 0.16733 0.0181 14.642826 0.0181 14.64283 4.72407 0.0191 c 5.01946 0.0203 4.77319 0.0119 5.19452 0.17831 0.29418 0.11623 0.48651 0.38308 0.48806 0.6772 0.002 0.34875 -0.24521 0.86586 -0.62847 1.31547 -0.11032 0.12941 -0.70144 0.89504 -1.31361 1.70139 -4.68117 6.16611 -5.4688 7.19892 -7.81262 10.24455 -4.13483 5.37293 -6.54607 8.40182 -7.29462 9.16314 -0.32083 0.3263 -0.54962 0.47888 -0.86356 0.57591 -0.21723 0.0671 -0.57372 0.087 -0.80014 0.0446 z</Geometry>
+                                            </Path.Data>
+                                        </Path>
+                                    </Canvas>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.ToolTip>
+                                <TextBlock Text="Save Parameter Set" />
+                            </Button.ToolTip>
+                        </Button>-->
+                        <Button
+                            Margin="0,0,10,0"
+                            Height="20"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                            Background="Transparent"
+                            Click="AddLabelColorFormat_Click"
+                            IsEnabled="{Binding IsEnabled}" >
+                            <Button.Template>
+                                <ControlTemplate>
+                                    <Canvas
+                                        Background="Transparent">
+                                        <Path 
+                                            Fill="LightGray"
+                                            Stretch="Uniform"
+                                            Height="20">
+                                            <Path.Data>
+                                                <Geometry>m 270.32627 199.08147 0 -10.79249 -10.79249 0 -10.79249 0 0 -8.4463 0 -8.4463 10.79249 0 10.79249 0 0 -10.79249 0 -10.79249 8.4463 0 8.4463 0 0 10.79249 0 10.79249 10.79249 0 10.7925 0 0 8.4463 0 8.4463 -10.7925 0 -10.79249 0 0 10.79249 0 10.79249 -8.4463 0 -8.4463 0 0 -10.79249 z</Geometry>
+                                            </Path.Data>
+                                        </Path>
+                                    </Canvas>
+                                </ControlTemplate>
+                            </Button.Template>
+                            <Button.ToolTip>
+                                <TextBlock Text="Add Parameter Set" />
+                            </Button.ToolTip>
+                        </Button>
 
+                    </WrapPanel>
+                    <ListBox
+                        x:Name="labelListBox"
+                        Grid.Row="1"
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Panel.ZIndex="1"
+                        Foreground="Black"
+                        ItemsSource="{Binding LabelColorFormat}"
+                        SelectedItem="{Binding SelectedLabel}"
+                        ItemContainerStyle="{StaticResource myLBStyle}"
+                        SelectionChanged="LabelListBox_SelectionChanged"
+                        SelectionMode="Single"
+                        Style="{StaticResource MyListBoxStyle}"   
+                        Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}"
+                        
+                        dd:DragDrop.IsDragSource="True"
+                        dd:DragDrop.IsDropTarget="True">
+
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <WrapPanel 
+                                    Width="auto" 
+                                    HorizontalAlignment="Left"
+                                    Grid.Row="1"
+                                    Panel.ZIndex="2"
+                                    Height="auto">
+                                    <TextBox
+                                    x:Name="LabelTextBox"
+                                    HorizontalAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    Width="100"
+                                    TextAlignment="Left"
+                                    AcceptsReturn="False"
+                                    FontSize="12"
+                                    Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                    IsReadOnly="True"
+                                    TextChanged="LblTextBox_TextChanged"
+                                    MouseDoubleClick="LabelTextBox_MouseDoubleClick"
+                                    LostFocus="LblTextBox_LostFocus"
+                                    TextWrapping="Wrap"
+                                    Margin="10,0,5,0"
+                                    Padding="3">
+                                        <TextBox.ContextMenu>
+                                            <ContextMenu IsEnabled="False" />
+                                        </TextBox.ContextMenu>
+                                    </TextBox>
+                                    <Button
+                                        x:Name="showHideData"
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Click="ShowHideData_Click">
+                                        <Button.Style>
+                                            <Style
+                                                BasedOn="{StaticResource {x:Type Button}}"
+                                                TargetType="Button">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="true">
+                                                        <Setter Property="Foreground" Value="#FF2196F3" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="false">
+                                                        <Setter Property="Foreground" Value="LightGray" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                    Stretch="Uniform"
+                                                    Height="18"
+                                                    Data="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Show/Hide this Label Data" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <!--<Button
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Background="Transparent">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="LightGray"
+                                                    Stretch="Uniform"
+                                                    Height="18"
+                                                    Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M17,11V9H15V11H17M13,11V9H11V11H13M9,11V9H7V11H9Z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Show/Hide this Label Meta-Data" />
+                                        </Button.ToolTip>
+                                    </Button>-->
+                                    <Button
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Background="Transparent"
+                                        Click="RmvLabelColorFormat_Click">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="LightGray"
+                                                    Stretch="Uniform"
+                                                    Data="m 249.28106 239.3342 0 -8.4375 30 0 30 0 0 8.4375 0 8.4375 -30 0 -30 0 0 -8.4375 z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Remove Label" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button
+                                        x:Name="colorPickerButton"
+                                        Opacity="1"
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Click="ColorPickerButton_Click"
+                                        Background="Transparent">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Border
+                                                    BorderBrush="{Binding Stroke}"
+                                                    BorderThickness="1">
+                                                    <Rectangle
+                                                        Stroke="Transparent"
+                                                        StrokeThickness="0"
+                                                        Fill="{Binding Fill}"
+                                                        Opacity="{Binding Opacity}" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Change preview Color" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                </WrapPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                        <ListBox.ContextMenu>
+                            <ContextMenu IsEnabled="False" />
+                        </ListBox.ContextMenu>
+                    </ListBox>
+                </Grid>
+            </Border>
         </Grid>
     </DockPanel>
 </UserControl>

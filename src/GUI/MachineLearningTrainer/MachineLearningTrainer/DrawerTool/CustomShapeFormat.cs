@@ -1,17 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
 namespace MachineLearningTrainer.DrawerTool
 {
-    public class CustomShapeFormat
+    public class CustomShapeFormat : INotifyPropertyChanged
     {
         private string label;
         private string fill;
         private string stroke;
         private double opacity;
+        private bool visible;
 
 
         public CustomShapeFormat(string label, string fill, string stroke, double opacity)
@@ -20,6 +22,8 @@ namespace MachineLearningTrainer.DrawerTool
             this.fill = fill;
             this.stroke = stroke;
             this.opacity = opacity;
+
+            this.visible = true;
         }
 
 
@@ -69,6 +73,30 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.stroke = value;
                 }
+            }
+        }
+
+        public bool Visible
+        {
+            get { return this.visible; }
+            set
+            {
+                if (visible != value)
+                {
+                    this.visible = value;
+                    NotifyPropertyChanged("Visible");
+                }
+            }
+        }
+
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

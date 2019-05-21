@@ -118,14 +118,32 @@ namespace MachineLearningTrainer
 
         public static void WritePascalVocToXML(List<CustomShape> allRectangles, string name, int width, int height, int depth)
         {
+            string filePath = name.Remove(name.LastIndexOf('\\'));
+            string fileName = (name.Substring(name.LastIndexOf('\\')+1));
+            fileName = fileName.Remove(fileName.LastIndexOf('.'));
+            string fileFolder = filePath.Substring(filePath.LastIndexOf('\\')+1);
+
+
+            Console.WriteLine("Folder: " + fileFolder);
+            Console.WriteLine("Filename: " + fileName);
+            Console.WriteLine("Path: " + filePath);
+
             try
             {
-                XmlWriter writer = XmlWriter.Create(name);
+                XmlWriter writer = XmlWriter.Create(filePath+"\\"+fileName+".xml");
                 writer.WriteStartDocument();
                 writer.WriteStartElement("annotation");
 
                 writer.WriteStartElement("folder");
-                writer.WriteString("");
+                writer.WriteString(fileFolder);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("filename");
+                writer.WriteString(fileName);
+                writer.WriteEndElement();
+
+                writer.WriteStartElement("path");
+                writer.WriteString(filePath);
                 writer.WriteEndElement();
 
                 writer.WriteStartElement("source");

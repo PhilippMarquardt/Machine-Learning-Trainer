@@ -18,6 +18,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
@@ -495,14 +496,6 @@ namespace MachineLearningTrainer.DrawerTool
             zoomBorder.ZoomIn();
         }
 
-        private void listBoxLabels_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).SelectedCustomShape != null)
-            {
-                //zoomBorder.ZoomToRectangle();
-            }
-        }
-
         #endregion
 
         private void WrapPanel_FileExplorer_MouseEnter(object sender, MouseEventArgs e)
@@ -529,6 +522,7 @@ namespace MachineLearningTrainer.DrawerTool
         //    Button_Folder.Foreground = System.Windows.Media.Brushes.Black;
         //}
 
+        
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listBoxLabels.SelectedItem != null)
@@ -551,18 +545,20 @@ namespace MachineLearningTrainer.DrawerTool
 
         }
 
+        #region LabelListBox
+
         private void LblTextBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
             ListBoxItem item = (ListBoxItem)sender;
             item.IsSelected = true;
         }
-
-        private void LblTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        
+        private void LabelTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             TextBox textBox = sender as TextBox;
             textBox.IsReadOnly = false;
             textBox.SelectAll();
-            (this.DataContext as DrawerViewModel).DeleteSelectionForRename();
+            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
         }
 
         private void LblTextBox_LostFocus(object sender, RoutedEventArgs e)
@@ -575,12 +571,32 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private void LabelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            //if (labelListBox.SelectedIndex > -1)
+            //{
+            //    animatedRoatateTransform.Angle = 180;
+            //    gridLV.Width = new GridLength(150);
+            //    listBoxLabels.Visibility = Visibility.Visible;
+            //}
+            //else
+            //{
+            //    animatedRoatateTransform.Angle = 0;
+            //    gridLV.Width = new GridLength(0);
+            //    listBoxLabels.Visibility = Visibility.Hidden;
+            //}
+        }
+
+
+        #endregion
 
         private void MenuItem_OpenClick(object sender, RoutedEventArgs e)
         {
             if (imgPreview != null) 
                 zoomBorder.Reset();
         }
+
+        #region ColorPicker
 
         private void DrawCanvas_MouseDown(object sender, MouseButtonEventArgs e)
         {
@@ -599,9 +615,6 @@ namespace MachineLearningTrainer.DrawerTool
             element.ReleaseMouseCapture();
             e.Handled = true;
         }
-
-
-        #region ColorPicker
 
         private void EditLabelColorFormat_Click(object sender, RoutedEventArgs e)
         {
@@ -629,5 +642,124 @@ namespace MachineLearningTrainer.DrawerTool
         {
             (this.DataContext as DrawerViewModel).TestLabelName();
         }
+
+        private void AddLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        {
+            //(this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
+            (this.DataContext as DrawerViewModel).AddLabelColorFormat();
+            //if (RenameTxtBox.IsFocused == true)
+            //{
+            //    (this.DataContext as DrawerViewModel).Enter();
+            //}
+        }
+
+        private void RmvLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).DeleteSelectedLabel();
+        }
+
+        private void ShowHideData_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).ShowHideData();
+        }
+
+        private void ShowHide_Click(object sender, RoutedEventArgs e)
+        {
+            if (animatedRoatateTransform.Angle != 0)
+            {
+                animatedRoatateTransform.Angle = 0;
+                listBoxLabels.Visibility = Visibility.Hidden;
+                ColorPicker_Panel.Visibility = Visibility.Hidden;
+                gridLV.Width = new GridLength(0);
+            }
+            else
+            {
+                animatedRoatateTransform.Angle = 180;
+                listBoxLabels.Visibility = Visibility.Visible;
+                gridLV.Width = new GridLength(150);
+            }
+        }
+
+        private void ColorPickerButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (animatedRoatateTransform.Angle != 0)
+            {
+                animatedRoatateTransform.Angle = 0;
+                listBoxLabels.Visibility = Visibility.Hidden;
+                ColorPicker_Panel.Visibility = Visibility.Hidden;
+                gridLV.Width = new GridLength(0);
+            }
+            else
+            {
+                animatedRoatateTransform.Angle = 180;
+                ColorPicker_Panel.Visibility = Visibility.Visible;
+                gridLV.Width = new GridLength(265);
+            }
+        }
+
+        #region ColorPicker
+        private void _colorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            _colorPicker.SelectedColor = _colorCanvas.SelectedColor;
+            if (RenameTxtBox.IsFocused == true)
+            {
+                (this.DataContext as DrawerViewModel).Enter();
+            }
+            (this.DataContext as DrawerViewModel).ChangeColor();
+            (this.DataContext as DrawerViewModel).ChangeOpacity();
+        }
+
+        private void _colorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
+        {
+            _colorCanvas.SelectedColor = _colorPicker.SelectedColor;
+        }
+
+        private void _sliderOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        {
+            _opacityTextBox.Text = Convert.ToString(_sliderOpacity.Value);
+            (this.DataContext as DrawerViewModel).ChangeOpacity();
+        }
+
+        private void _closeColorChange_Click(object sender, RoutedEventArgs e)
+        {
+            animatedRoatateTransform.Angle = 0;
+            listBoxLabels.Visibility = Visibility.Hidden;
+            ColorPicker_Panel.Visibility = Visibility.Hidden;
+            gridLV.Width = new GridLength(0);
+
+            (this.DataContext as DrawerViewModel).TestLabelName();
+            (this.DataContext as DrawerViewModel).SelectedModeItem = "Fill";
+            (this.DataContext as DrawerViewModel).ColorPickerEnabled = false;
+
+            if ((this.DataContext as DrawerViewModel).DeactivatedAddLabel == false)
+            {
+                (this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
+            }
+        }
+
+        private void TextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = false;
+            textBox.SelectAll();
+            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
+            //(this.DataContext as DrawerViewModel).DeleteSelectionForRename();
+        }
+
+        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = true;
+        }
+
+        private void ColorPicker_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (RenameTxtBox.IsFocused == true)
+            {
+                (this.DataContext as DrawerViewModel).Enter();
+            }
+        }
+
+        #endregion
     }
 }

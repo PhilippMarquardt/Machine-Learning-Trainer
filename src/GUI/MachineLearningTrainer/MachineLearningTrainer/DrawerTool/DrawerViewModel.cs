@@ -499,16 +499,11 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
 
-                if (SelectedComboBoxItem != "All Labels")
+                if (SelectedLabel == null)
                 {
-                    RectanglesView[indexRectanglesView].Label = SelectedComboBoxItem;
+                    SelectedLabel = LabelColorFormat[0];
                 }
-
-                else
-                {
-                    AddLabelColorFormat(RectanglesView[indexRectanglesView]);
-                }
-
+                RectanglesView[indexRectanglesView].Label = SelectedLabel.Label;
 
                 CheckFormat(RectanglesView[indexRectanglesView]);
             }
@@ -1714,7 +1709,6 @@ namespace MachineLearningTrainer.DrawerTool
                                     SelectedComboBoxItem = "All Labels";
                                 }
                                 FilterName();
-                                RectangleCount = "#" + RectanglesView.Count.ToString();
 
                                 break;
                             }
@@ -1971,9 +1965,18 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region ComboBox & ItemList
+        #region RectanglesListView
 
         #region Variables
+
+        private ICommand _changeLabelCommand;
+        public ICommand ChangeLabelCommand
+        {
+            get
+            {
+                return _changeLabelCommand ?? (_changeLabelCommand = new RelayCommand(label => OnChangeLabel(label), true));
+            }
+        }
 
         public string temp { get; set; }
 
@@ -2153,7 +2156,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (CustomShape r in Rectangles)
             {
-                if (r.Label == SelectedComboBoxItem || "All Labels" == SelectedComboBoxItem)
+                if (r.Visible == true)
                 {
                     RectanglesView.Add(r);
                     SaveShapeToField(r);
@@ -2193,8 +2196,6 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-
-
         /// <summary>
         /// sorts the list of rectangles in ascending order of their name
         /// 
@@ -2210,6 +2211,37 @@ namespace MachineLearningTrainer.DrawerTool
             //{
             //    RectanglesView.Add(r);
             //}
+        }
+
+        private void OnChangeLabel(object label)
+        {
+            SelectedCustomShape.Label = label.ToString();
+            CheckFormat(SelectedCustomShape);
+        }
+
+        #endregion
+
+
+        #region LabelList-Navigation-Panel
+
+        #region Variables
+
+        #endregion
+
+        internal void ShowHideData()
+        {
+            SelectedLabel.Visible = !SelectedLabel.Visible;
+
+            foreach (var r in Rectangles)
+            {
+                if (r.Label == SelectedLabel.Label)
+                {
+                    r.Visible = SelectedLabel.Visible;
+                }
+            }
+
+            FilterName();
+
         }
 
         #endregion
@@ -2426,12 +2458,15 @@ namespace MachineLearningTrainer.DrawerTool
                     {
                         if(!LabelColorFormat.Any(x => x.Label == "default0"))
                         {
-                            LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.3));
+                            AddLabelColorFormat();
                         }
                         RemoveLabel();
                         ComboBoxNames();
                         FilterName();
-                        LabelColorFormat.Remove(r);
+                        if (r.Label != "default0")
+                        {
+                            LabelColorFormat.Remove(r);
+                        }
                         SelectedLabel = LabelColorFormat[0];
                         RefreshLabelList();
                         break;
@@ -2707,8 +2742,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void ExportToPascal()
         {
-            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
-            XMLWriter.WritePascalVocToXML(Rectangles.ToList(), destFileName, 1337, 1337, 3);
+            XMLWriter.WritePascalVocToXML(Rectangles.ToList(), ImagePath, Convert.ToInt32(MyCanvas.ActualWidth), Convert.ToInt32(MyCanvas.ActualHeight), 3);
         }
 
 
@@ -3063,10 +3097,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void Enter()
         {
-            if (ColorPickerEnabled == true)
-            {
-                OnRename();
-            }
+            OnRename();
             ComboBoxNames();
             FilterName();
             if (selectedCustomShape != null)
