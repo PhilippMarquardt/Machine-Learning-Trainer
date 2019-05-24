@@ -116,21 +116,17 @@ namespace MachineLearningTrainer
                    
         }
 
+
         public static void WritePascalVocToXML(List<CustomShape> allRectangles, string name, int width, int height, int depth)
         {
             string filePath = name.Remove(name.LastIndexOf('\\'));
             string fileName = (name.Substring(name.LastIndexOf('\\')+1));
-            fileName = fileName.Remove(fileName.LastIndexOf('.'));
+            string fileNameWriter = fileName.Remove(fileName.LastIndexOf('.'));
             string fileFolder = filePath.Substring(filePath.LastIndexOf('\\')+1);
-
-
-            Console.WriteLine("Folder: " + fileFolder);
-            Console.WriteLine("Filename: " + fileName);
-            Console.WriteLine("Path: " + filePath);
 
             try
             {
-                XmlWriter writer = XmlWriter.Create(filePath+"\\"+fileName+".xml");
+                XmlWriter writer = XmlWriter.Create(filePath+"\\"+fileNameWriter+".xml");
                 writer.WriteStartDocument();
                 writer.WriteStartElement("annotation");
 
@@ -182,22 +178,6 @@ namespace MachineLearningTrainer
                     writer.WriteString(rec.Label);
                     writer.WriteEndElement();
 
-                    writer.WriteStartElement("Format");
-
-                    writer.WriteStartElement("stroke");
-                    writer.WriteString(rec.Stroke);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("fill");
-                    writer.WriteString(rec.Fill);
-                    writer.WriteEndElement();
-
-                    writer.WriteStartElement("opacity");
-                    writer.WriteString(Convert.ToString(rec.Opacity));
-                    writer.WriteEndElement();
-
-                    writer.WriteEndElement();
-
                     writer.WriteStartElement("pose");
                     writer.WriteString("Unspecified");
                     writer.WriteEndElement();
@@ -230,15 +210,97 @@ namespace MachineLearningTrainer
 
                     writer.WriteEndElement();
 
+                    writer.WriteStartElement("subtypes");
+
+                    foreach (var sb in rec.Subtypes)
+                    {
+                        writer.WriteStartElement("def");
+
+                        writer.WriteStartElement("label");
+                        writer.WriteString(sb);
+                        writer.WriteEndElement();
+
+                        writer.WriteEndElement();
+                    }
+
                     writer.WriteEndElement();
 
-
-
+                    writer.WriteEndElement();
                 }
 
                 writer.WriteEndDocument();
                 writer.Close();
                 System.Windows.MessageBox.Show("Successful!", "Save to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
+
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(ex.Message);
+            }
+        }
+
+        public static void WriteLabelsToCPF(List<CustomShapeFormat> LabelColorFormat, string path)
+        {
+            string filePath = path.Remove(path.LastIndexOf('\\'));
+            string fileName = (path.Substring(path.LastIndexOf('\\') + 1));
+            string fileNameWriter = fileName.Remove(fileName.LastIndexOf('.'));
+            string fileFolder = filePath.Substring(filePath.LastIndexOf('\\') + 1);
+
+            try
+            {
+                XmlWriter writer = XmlWriter.Create(filePath + "\\" + fileNameWriter + "_LabelData.cpf");
+                writer.WriteStartDocument();
+                writer.WriteStartElement("label");
+
+                foreach (var lcf in LabelColorFormat)
+                {
+                    writer.WriteStartElement("object");
+
+                    writer.WriteStartElement("name");
+                    writer.WriteString(lcf.Label);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("Format");
+
+                    writer.WriteStartElement("stroke");
+                    writer.WriteString(lcf.Stroke);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("fill");
+                    writer.WriteString(lcf.Fill);
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("opacity");
+                    writer.WriteString(Convert.ToString(lcf.Opacity));
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+
+                    writer.WriteStartElement("subtypes");
+
+                    foreach (var sb in lcf.Subtypes)
+                    {
+                        writer.WriteStartElement("def");
+
+                        writer.WriteStartElement("label");
+                        writer.WriteString(sb.Label);
+                        writer.WriteEndElement();
+
+                        writer.WriteStartElement("parent");
+                        writer.WriteString(sb.Parent);
+                        writer.WriteEndElement();
+
+                        writer.WriteEndElement();
+                    }
+
+                    writer.WriteEndElement();
+
+                    writer.WriteEndElement();
+                }
+
+                writer.WriteEndDocument();
+                writer.Close();
+                System.Windows.MessageBox.Show("Successful!", "Save Labels to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
 
             }
             catch (Exception ex)

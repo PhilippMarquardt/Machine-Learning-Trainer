@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Windows;
 
 using System.ComponentModel;
+using System.Collections.ObjectModel;
 
 namespace MachineLearningTrainer.DrawerTool
 {
@@ -16,6 +17,7 @@ namespace MachineLearningTrainer.DrawerTool
     public class CustomShape : INotifyPropertyChanged
     {
         private string label;
+        private ObservableCollection<string> subtypes = new ObservableCollection<string>();
         private double width;
         private double height;
         private double x1;
@@ -91,7 +93,7 @@ namespace MachineLearningTrainer.DrawerTool
             this.height = 0;
         }
 
-        public CustomShape(double x1, double y1, double width, double height, int id)
+        public CustomShape(double x1, double y1, double width, double height, int id, ObservableCollection<string> subtypes)
         {
             this.x1 = x1;
             this.y1 = y1;
@@ -99,6 +101,11 @@ namespace MachineLearningTrainer.DrawerTool
             this.height = height;
             this.id = id;
             this.label = "";
+
+            foreach (var sb in subtypes)
+            {
+                this.subtypes.Add(sb);
+            }
 
             this.xLeft = x1;
             this.xLeftBorder = x1 - strokeThickness;
@@ -131,6 +138,11 @@ namespace MachineLearningTrainer.DrawerTool
             this.width = tmp.width;
             this.height = tmp.height;
 
+            foreach (var sb in tmp.Subtypes)
+            {
+                this.Subtypes.Add(sb);
+            }
+
             this.opacity = 1;
             this.fill = "Transparent";
             this.isMouseOver = false;
@@ -146,6 +158,19 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.label = value;
                     this.NotifyPropertyChanged("Label");
+                }
+            }
+        }
+
+        public ObservableCollection<string> Subtypes
+        {
+            get => subtypes;
+            set
+            {
+                if (subtypes != value)
+                {
+                    this.subtypes = value;
+                    this.NotifyPropertyChanged("Subtypes");
                 }
             }
         }

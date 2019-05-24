@@ -77,7 +77,16 @@ namespace MachineLearningTrainer.DrawerTool
             TextBox textBox = sender as TextBox;
             textBox.IsReadOnly = false;
             textBox.SelectAll();
-            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
+            if (textBox.Tag.GetType() == typeof(Subtypes))
+            {
+                Subtypes tmp = (Subtypes)textBox.Tag;
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Label = tmp.Label;
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Parent = tmp.Parent;
+            }
+            else
+            {
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
+            }
             //(this.DataContext as DrawerViewModel).DeleteSelectionForRename();
         }
 

@@ -35,6 +35,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             InitializeComponent();
             DriveInfo[] drives = DriveInfo.GetDrives();
+
             //foreach (DriveInfo driveInfo in drives)
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
         }
@@ -65,7 +66,19 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void ListBox_RightButtonUp(object sender, MouseButtonEventArgs e)
         {
+            (this.DataContext as DrawerViewModel).RefreshSubtypeList();
             (this.DataContext as DrawerViewModel).IsOpen = true;
+        }
+
+        private void Subtype_SubmenuOpened(object sender, RoutedEventArgs e)
+        {
+            ((MenuItem)sender).GetBindingExpression(MenuItem.ItemsSourceProperty).UpdateTarget();
+        }
+
+        private void ContextMenu_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).FilterName();
+            //listBoxLabels.LayoutUpdated();
         }
 
 
@@ -467,6 +480,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).IsEnabled = true;
                     (this.DataContext as DrawerViewModel).Rectangles.Clear();
 
+                    (this.DataContext as DrawerViewModel).LoadLabelData();
                     (this.DataContext as DrawerViewModel).LoadRectangles();
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
@@ -553,23 +567,7 @@ namespace MachineLearningTrainer.DrawerTool
             item.IsSelected = true;
         }
         
-        private void LabelTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            textBox.IsReadOnly = false;
-            textBox.SelectAll();
-            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
-        }
-
-        private void LblTextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            if(textBox != null)
-            {
-                textBox.IsReadOnly = true;
-                //(this.DataContext as DrawerViewModel).ComboBoxNames();
-            }
-        }
+        
 
         private void LabelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
@@ -587,6 +585,25 @@ namespace MachineLearningTrainer.DrawerTool
             //}
         }
 
+
+        private void LabelTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
+        {
+            Console.WriteLine(labelTreeView.SelectedItem);
+
+            if (labelTreeView.SelectedItem != null)
+            {
+                if (labelTreeView.SelectedItem.GetType() == typeof(CustomShapeFormat))
+                {
+                    (this.DataContext as DrawerViewModel).SelectedLabel = (CustomShapeFormat)labelTreeView.SelectedItem;
+                    (this.DataContext as DrawerViewModel).SelectedSubLabel = null;
+                }
+                else if (labelTreeView.SelectedItem.GetType() == typeof(Subtypes))
+                {
+                    (this.DataContext as DrawerViewModel).SelectedLabel = null;
+                    (this.DataContext as DrawerViewModel).SelectedSubLabel = (Subtypes)labelTreeView.SelectedItem;
+                }
+            }
+        }
 
         #endregion
 
@@ -635,13 +652,33 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void CbItemLabel_DropDownOpened(object sender, EventArgs e)
         {
-
+            //(this.DataContext as DrawerViewModel).FilterName();
         }
 
-        private void LblTextBox_TextChanged(object sender, TextChangedEventArgs e)
+
+        /// <summary>
+        /// show/hides SideBar with rectangles
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ShowHide_Click(object sender, RoutedEventArgs e)
         {
-            (this.DataContext as DrawerViewModel).TestLabelName();
+            if (animatedRoatateTransform.Angle != 180)
+            {
+                animatedRoatateTransform.Angle = 180;
+                listBoxLabels.Visibility = Visibility.Hidden;
+                ColorPicker_Panel.Visibility = Visibility.Hidden;
+                gridLV.Width = new GridLength(0);
+            }
+            else
+            {
+                animatedRoatateTransform.Angle = 0;
+                listBoxLabels.Visibility = Visibility.Visible;
+                gridLV.Width = new GridLength(150);
+            }
         }
+
+        #region Labelset Panel
 
         private void AddLabelColorFormat_Click(object sender, RoutedEventArgs e)
         {
@@ -653,51 +690,252 @@ namespace MachineLearningTrainer.DrawerTool
             //}
         }
 
-        private void RmvLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        #endregion
+
+
+        #region LabelControl
+
+
+        #region TextBox
+
+        private void LabelTextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
-            (this.DataContext as DrawerViewModel).DeleteSelectedLabel();
+            SelectTreeViewItem(sender);
         }
+
+        private void LabelTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            textBox.IsReadOnly = false;
+            textBox.SelectAll();
+            if (textBox.Tag.GetType() == typeof(Subtypes))
+            {
+                Subtypes tmpSubtype = (Subtypes)textBox.Tag;
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Parent = tmpSubtype.Parent;
+            }
+            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
+        }
+
+        private void LblTextBox_LostFocus(object sender, RoutedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+            if (textBox != null)
+            {
+                textBox.IsReadOnly = true;
+                (this.DataContext as DrawerViewModel).Enter();
+            }
+        }
+
+        #endregion
+
 
         private void ShowHideData_Click(object sender, RoutedEventArgs e)
         {
+
+            SelectTreeViewItem(sender);
+
             (this.DataContext as DrawerViewModel).ShowHideData();
+
+            if (labelTreeView.SelectedItem.GetType() == typeof(Subtypes))
+            {
+                Subtypes tmpSubtype = (Subtypes)labelTreeView.SelectedItem;
+                if (tmpSubtype.Visible == false)
+                {
+                    foreach (CustomShapeFormat csf in labelTreeView.Items)
+                    {
+                        if (csf.Label == tmpSubtype.Parent)
+                        {
+                            csf.Visible = false;
+                        }
+                    }
+                }
+                else if (tmpSubtype.Visible == true)
+                {
+                    foreach (CustomShapeFormat csf in labelTreeView.Items)
+                    {
+                        if (csf.Label == tmpSubtype.Parent)
+                        {
+                            csf.Visible = true;
+                            foreach (Subtypes sb in csf.Subtypes)
+                            {
+                                if (sb.Visible == false)
+                                {
+                                    csf.Visible = false;
+                                    break;
+                                }
+                            }
+                            break;
+                        }
+                    }
+                }
+            }
+
+            else if (labelTreeView.SelectedItem.GetType() == typeof(CustomShapeFormat))
+            {
+                CustomShapeFormat tmpCSF = (CustomShapeFormat)labelTreeView.SelectedItem;
+
+                foreach (CustomShapeFormat csf in labelTreeView.Items)
+                {
+                    if (csf.Label == tmpCSF.Label)
+                    {
+                        foreach (Subtypes sb in csf.Subtypes)
+                        {
+                            sb.Visible = tmpCSF.Visible;
+                        }
+                    }
+                }
+            }
         }
 
-        private void ShowHide_Click(object sender, RoutedEventArgs e)
+        private void AddSubtype_Click(object sender, RoutedEventArgs e)
         {
-            if (animatedRoatateTransform.Angle != 0)
+            SelectTreeViewItem(sender);
+
+            CustomShapeFormat tmpCSF = (CustomShapeFormat)labelTreeView.SelectedItem;
+            foreach (CustomShapeFormat csf in labelTreeView.Items)
             {
-                animatedRoatateTransform.Angle = 0;
-                listBoxLabels.Visibility = Visibility.Hidden;
-                ColorPicker_Panel.Visibility = Visibility.Hidden;
-                gridLV.Width = new GridLength(0);
+                if (csf.Label == tmpCSF.Label)
+                {
+                    csf.IsExpanded = true;
+                    break;
+                }
             }
-            else
-            {
-                animatedRoatateTransform.Angle = 180;
-                listBoxLabels.Visibility = Visibility.Visible;
-                gridLV.Width = new GridLength(150);
-            }
+
+            (this.DataContext as DrawerViewModel).AddSubtype();
         }
+
+        private void RmvLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        {
+            SelectTreeViewItem(sender);
+
+            (this.DataContext as DrawerViewModel).DeleteSelectedLabel();
+        }
+
+
+        /// <summary>
+        /// Select TreeViewItem depending on clicked TextBox/Icon
+        /// </summary>
+        /// <param name="sender"></param>
+        private void SelectTreeViewItem(object sender)
+        {
+
+            foreach (CustomShapeFormat lcf in labelTreeView.Items)
+            {
+                lcf.IsSelected = false;
+
+                foreach (Subtypes sub in lcf.Subtypes)
+                //foreach(CustomShapeFormat sub in lcf.Subtypes)
+                {
+                    sub.IsSelected = false;
+                }
+            }
+
+            if (sender.GetType() == typeof(Button))
+            {
+                if (((Button)sender).Tag != null)
+                {
+                    if (((Button)sender).Tag.GetType() == typeof(CustomShapeFormat))
+                    {
+                        CustomShapeFormat selectedItem = ((Button)sender).Tag as CustomShapeFormat;
+
+                        foreach (CustomShapeFormat lcf in labelTreeView.Items)
+                        {
+                            if (lcf.Label == selectedItem.Label)
+                            {
+                                lcf.IsSelected = true;
+                                (this.DataContext as DrawerViewModel).SelectedLabel = lcf;
+                                return;
+                            }
+                        }
+                    }
+                    else if (((Button)sender).Tag.GetType() == typeof(Subtypes))
+                    {
+                        Subtypes selectedItem = ((Button)sender).Tag as Subtypes;
+
+                        foreach (CustomShapeFormat lcf in labelTreeView.Items)
+                        {
+                            if (lcf.Label == selectedItem.Parent)
+                            {
+                                foreach (Subtypes sub in lcf.Subtypes)
+                                //foreach (CustomShapeFormat sub in lcf.Subtypes)
+                                {
+                                    if (sub.Label == selectedItem.Label)
+                                    {
+                                        sub.IsSelected = true;
+                                        (this.DataContext as DrawerViewModel).SelectedSubLabel = sub;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+
+            else if (sender.GetType() == typeof(TextBox))
+            {
+                if (((TextBox)sender).Tag != null)
+                {
+                    if (((TextBox)sender).Tag.GetType() == typeof(CustomShapeFormat))
+                    {
+                        CustomShapeFormat selectedItem = ((TextBox)sender).Tag as CustomShapeFormat;
+
+                        foreach (CustomShapeFormat lcf in labelTreeView.Items)
+                        {
+                            if (lcf.Label == selectedItem.Label)
+                            {
+                                lcf.IsSelected = true;
+                                return;
+                            }
+                        }
+                    }
+                    else if (((TextBox)sender).Tag.GetType() == typeof(Subtypes))
+                    {
+                        Subtypes selectedItem = ((TextBox)sender).Tag as Subtypes;
+
+                        foreach (CustomShapeFormat lcf in labelTreeView.Items)
+                        {
+                            if (lcf.Label == selectedItem.Parent)
+                            {
+                                foreach (Subtypes sub in lcf.Subtypes)
+                                //foreach (CustomShapeFormat sub in lcf.Subtypes)
+                                {
+                                    if (sub.Label == selectedItem.Label)
+                                    {
+                                        sub.IsSelected = true;
+                                        return;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+           
+        }
+
+
+        #region ColorPicker
 
         private void ColorPickerButton_Click(object sender, RoutedEventArgs e)
         {
-            if (animatedRoatateTransform.Angle != 0)
+            SelectTreeViewItem(sender);
+
+            if (animatedRoatateTransform.Angle != 180)
             {
-                animatedRoatateTransform.Angle = 0;
+                animatedRoatateTransform.Angle = 180;
                 listBoxLabels.Visibility = Visibility.Hidden;
                 ColorPicker_Panel.Visibility = Visibility.Hidden;
                 gridLV.Width = new GridLength(0);
             }
             else
             {
-                animatedRoatateTransform.Angle = 180;
+                animatedRoatateTransform.Angle = 0;
                 ColorPicker_Panel.Visibility = Visibility.Visible;
                 gridLV.Width = new GridLength(265);
             }
         }
 
-        #region ColorPicker
         private void _colorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
             _colorPicker.SelectedColor = _colorCanvas.SelectedColor;
@@ -737,21 +975,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private void TextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            textBox.IsReadOnly = false;
-            textBox.SelectAll();
-            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
-            //(this.DataContext as DrawerViewModel).DeleteSelectionForRename();
-        }
-
-        private void TextBox_LostFocus(object sender, RoutedEventArgs e)
-        {
-            TextBox textBox = sender as TextBox;
-            textBox.IsReadOnly = true;
-        }
-
         private void ColorPicker_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (RenameTxtBox.IsFocused == true)
@@ -759,6 +982,8 @@ namespace MachineLearningTrainer.DrawerTool
                 (this.DataContext as DrawerViewModel).Enter();
             }
         }
+
+        #endregion
 
         #endregion
     }

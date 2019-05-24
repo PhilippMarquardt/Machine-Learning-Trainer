@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,9 @@ namespace MachineLearningTrainer.DrawerTool
         private string stroke;
         private double opacity;
         private bool visible;
+        private bool isSelected;
+        private bool isExpanded;
+        private ObservableCollection<Subtypes> subtypes;
 
 
         public CustomShapeFormat(string label, string fill, string stroke, double opacity)
@@ -24,9 +28,44 @@ namespace MachineLearningTrainer.DrawerTool
             this.opacity = opacity;
 
             this.visible = true;
+
+            this.subtypes = new ObservableCollection<Subtypes>();
+        }
+
+        public CustomShapeFormat(string label, string fill, string stroke, double opacity, ObservableCollection<Subtypes> subtypes)
+        {
+            this.label = label;
+            this.fill = fill;
+            this.stroke = stroke;
+            this.opacity = opacity;
+
+            this.visible = true;
+
+            this.subtypes = new ObservableCollection<Subtypes>();
+
+            foreach (Subtypes sb in subtypes)
+            {
+                this.subtypes.Add(sb);
+            }
+        }
+
+        public ObservableCollection<Subtypes> Subtypes
+        {
+            get { return subtypes; }
+            set
+            {
+                if (value != subtypes)
+                {
+                    subtypes = value;
+                    NotifyPropertyChanged("Subtypes");
+                }
+            }
+
         }
 
 
+        #region Getter/Setter
+        public object Me { get { return this; } }
 
         public string Label
         {
@@ -36,6 +75,7 @@ namespace MachineLearningTrainer.DrawerTool
                 if (label != value)
                 {
                     this.label = value;
+                    NotifyPropertyChanged("Label");
                 }
             }
         }
@@ -48,6 +88,7 @@ namespace MachineLearningTrainer.DrawerTool
                 if (opacity != value)
                 {
                     this.opacity = value;
+                    NotifyPropertyChanged("Opacity");
                 }
             }
         }
@@ -60,6 +101,7 @@ namespace MachineLearningTrainer.DrawerTool
                 if (fill != value)
                 {
                     this.fill = value;
+                    NotifyPropertyChanged("Fill");
                 }
             }
         }
@@ -72,6 +114,90 @@ namespace MachineLearningTrainer.DrawerTool
                 if (stroke != value)
                 {
                     this.stroke = value;
+                    NotifyPropertyChanged("Stroke");
+                }
+            }
+        }
+
+        public bool IsSelected
+        {
+            get { return this.isSelected; }
+            set
+            {
+                if (isSelected != value)
+                {
+                    this.isSelected = value;
+                    NotifyPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get { return this.isExpanded; }
+            set
+            {
+                if (isExpanded != value)
+                {
+                    this.isExpanded = value;
+                    NotifyPropertyChanged("IsExpanded");
+                }
+            }
+        }
+
+        public bool Visible
+        {
+            get { return this.visible; }
+            set
+            {
+                if (visible != value)
+                {
+                    this.visible = value;
+                    NotifyPropertyChanged("Visible");
+                }
+            }
+        }
+        #endregion
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        private void NotifyPropertyChanged(string propertyName)
+        {
+            if (PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+    }
+
+    public class Subtypes : INotifyPropertyChanged
+    {
+        private string label;
+        private bool visible;
+        private bool isSelected;
+        private string parent;
+
+        public Subtypes(string label, string parent)
+        {
+            this.label = label;
+            this.parent = parent;
+
+            this.visible = true;
+        }
+
+
+        #region Getter/Setter
+        public object Me { get { return this; } }
+
+        public string Label
+        {
+            get { return this.label; }
+            set
+            {
+                if (label != value)
+                {
+                    this.label = value;
+                    NotifyPropertyChanged("Label");
                 }
             }
         }
@@ -89,6 +215,32 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public bool IsSelected
+        {
+            get { return this.isSelected; }
+            set
+            {
+                if (isSelected != value)
+                {
+                    this.isSelected = value;
+                    NotifyPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        public string Parent
+        {
+            get { return this.parent; }
+            set
+            {
+                if (parent != value)
+                {
+                    this.parent = value;
+                    NotifyPropertyChanged("Parent");
+                }
+            }
+        }
+        #endregion
 
         public event PropertyChangedEventHandler PropertyChanged;
 

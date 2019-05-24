@@ -147,9 +147,6 @@ namespace MachineLearningTrainer.DrawerTool
             LabelColorFormat = new ObservableCollection<CustomShapeFormat>();
             Random _rand = new Random();
 
-            LabelColorFormat.Add(new CustomShapeFormat("test 1", "Red", "Blue", 0.3));
-            LabelColorFormat.Add(new CustomShapeFormat("test 2", "Blue", "Red", 0.3));
-
             undoCustomShapes.Push(new CustomShape(0, 0));
             undoInformation.Push("Dummy");
             redoCustomShapes.Push(new CustomShape(0, 0));
@@ -157,6 +154,14 @@ namespace MachineLearningTrainer.DrawerTool
 
 
             //Only for debugging            
+
+
+            //LabelColorFormat.Add(new CustomShapeFormat("test 1", "Red", "Blue", 0.3));
+            //LabelColorFormat[0].Subtypes.Add(new Subtypes("test11","test 1"));
+            //LabelColorFormat[0].Subtypes.Add(new Subtypes("test12", "test 1"));
+            ////LabelColorFormat[0].Subtypes.Add(new CustomShapeFormat("test 1", "Red", "Blue", 0.3));
+            //LabelColorFormat.Add(new CustomShapeFormat("test 2", "Blue", "Red", 0.3));
+            //LabelColorFormat[1].Subtypes.Add(new Subtypes("test21", "test 2"));
 
             //RectanglesView.Add(new CustomShape(100, 50, 200, 100, 0));
             //Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
@@ -178,6 +183,7 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<CustomShapeFormat> LabelColorFormat { get; set; }
         public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
         public bool Enabled { get; set; } = true;
+        public bool Rename { get; set; } = false;
 
 
         #region constant values from ConfigClass: (go to ConfigClass for description)
@@ -499,11 +505,19 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RectanglesView.Add(new CustomShape(tmpX, tmpY, id));
 
-                if (SelectedLabel == null)
+                if (SelectedSubLabel != null)
                 {
-                    SelectedLabel = LabelColorFormat[0];
+                    RectanglesView[indexRectanglesView].Label = SelectedSubLabel.Parent;
+                    RectanglesView[indexRectanglesView].Subtypes.Add(SelectedSubLabel.Label);
                 }
-                RectanglesView[indexRectanglesView].Label = SelectedLabel.Label;
+                else
+                {
+                    if (SelectedLabel == null)
+                    {
+                        SelectedLabel = LabelColorFormat[0];
+                    }
+                    RectanglesView[indexRectanglesView].Label = SelectedLabel.Label;
+                }
 
                 CheckFormat(RectanglesView[indexRectanglesView]);
             }
@@ -641,6 +655,12 @@ namespace MachineLearningTrainer.DrawerTool
                 double tmpWidth;
                 double tmpX1;
                 double tmpY1;
+                ObservableCollection<string> tmpSubtypes = new ObservableCollection<string>();
+
+                foreach (string sb in selectedCustomShape.Subtypes)
+                {
+                    tmpSubtypes.Add(sb);
+                }
 
                 if (DuplicateVar == 1)
                 {
@@ -649,7 +669,7 @@ namespace MachineLearningTrainer.DrawerTool
                     tmpX1 = vmMousePoint.X - selectedCustomShape.Width / 2;
                     tmpY1 = vmMousePoint.Y - selectedCustomShape.Height / 2;
 
-                    DuplicateShape(tmpX1, tmpY1, tmpWidth, tmpHeight);
+                    DuplicateShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpSubtypes);
                 }
 
                 else if (DuplicateVar == 0)
@@ -659,7 +679,7 @@ namespace MachineLearningTrainer.DrawerTool
                     tmpX1 = selectedCustomShape.X1 + 30;
                     tmpY1 = selectedCustomShape.Y1 + 30;
 
-                    DuplicateShape(tmpX1, tmpY1, tmpWidth, tmpHeight);
+                    DuplicateShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpSubtypes);
                 }
             }
         }
@@ -671,9 +691,9 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="tmpY1"></param>
         /// <param name="tmpWidth"></param>
         /// <param name="tmpHeight"></param>
-        private void DuplicateShape(double tmpX1, double tmpY1, double tmpWidth, double tmpHeight)
+        private void DuplicateShape(double tmpX1, double tmpY1, double tmpWidth, double tmpHeight, ObservableCollection<string> tmpSubtypes)
         {
-            CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id);
+            CustomShape duplicatedCustomShape = new CustomShape(tmpX1, tmpY1, tmpWidth, tmpHeight, id, tmpSubtypes);
             duplicatedCustomShape.Label = selectedCustomShape.Label;
             duplicatedCustomShape = CheckOnCanvas(duplicatedCustomShape);
             CheckFormat(duplicatedCustomShape);
@@ -1978,6 +1998,15 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private ICommand _changeSubtypeCommand;
+        public ICommand ChangeSubtypeCommand
+        {
+            get
+            {
+                return _changeSubtypeCommand ?? (_changeSubtypeCommand = new RelayCommand(label => OnChangeSubtype(label), true));
+            }
+        }
+
         public string temp { get; set; }
 
         private int selectedIndex = -1;
@@ -2012,6 +2041,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private CustomShapeFormat _selectedLabel = new CustomShapeFormat("", "", "", 1);
+        private Subtypes _selectedSubLabel = new Subtypes("","");
         // Label of selected ListItem
         public CustomShapeFormat SelectedLabel
         {
@@ -2025,6 +2055,36 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     _selectedLabel = value;
                     OnPropertyChanged("SelectedLabel");
+                }
+            }
+        }
+        public Subtypes SelectedSubLabel
+        {
+            get
+            {
+                return _selectedSubLabel;
+            }
+            set
+            {
+                if (value != _selectedSubLabel)
+                {
+                    _selectedSubLabel = value;
+                    OnPropertyChanged("SelectedSubLabel");
+                }
+            }
+        }
+
+        //List of Subtypes of SelectedListElement
+        private ObservableCollection<Subtypes> subtypeList = new ObservableCollection<Subtypes>();
+        public ObservableCollection<Subtypes> SubtypeList
+        {
+            get => subtypeList;
+            set
+            {
+                if (subtypeList != value)
+                {
+                    subtypeList = value;
+                    OnPropertyChanged("SubtypeList");
                 }
             }
         }
@@ -2219,6 +2279,34 @@ namespace MachineLearningTrainer.DrawerTool
             CheckFormat(SelectedCustomShape);
         }
 
+        private void OnChangeSubtype(object label)
+        {
+            if (SelectedCustomShape.Subtypes.Any(x => x == label.ToString()))
+            {
+                SelectedCustomShape.Subtypes.Remove(label.ToString());
+            }
+            else
+            {
+                SelectedCustomShape.Subtypes.Add(label.ToString());
+            }
+        }
+
+        internal void RefreshSubtypeList()
+        {
+            SubtypeList.Clear();
+            foreach (var lcf in LabelColorFormat)
+            {
+                if (lcf.Label == SelectedCustomShape.Label)
+                {
+                    foreach (var sb in lcf.Subtypes)
+                    {
+                        SubtypeList.Add(sb);
+                    }
+                    break;
+                }
+            }
+        }
+
         #endregion
 
 
@@ -2230,18 +2318,62 @@ namespace MachineLearningTrainer.DrawerTool
 
         internal void ShowHideData()
         {
-            SelectedLabel.Visible = !SelectedLabel.Visible;
-
-            foreach (var r in Rectangles)
+            if (SelectedSubLabel != null)
             {
-                if (r.Label == SelectedLabel.Label)
+                SelectedSubLabel.Visible = !SelectedSubLabel.Visible;
+
+
+                foreach (var r in Rectangles)
                 {
-                    r.Visible = SelectedLabel.Visible;
+                    if (r.Subtypes.Any(x => x == SelectedSubLabel.Label) && r.Label == SelectedSubLabel.Parent)
+                    {
+                        r.Visible = SelectedSubLabel.Visible;
+                    }
+                }
+            }
+            else if (SelectedLabel != null)
+            {
+                SelectedLabel.Visible = !SelectedLabel.Visible;
+
+                foreach (var r in Rectangles)
+                {
+                    if (r.Label == SelectedLabel.Label)
+                    {
+                        r.Visible = SelectedLabel.Visible;
+                    }
                 }
             }
 
             FilterName();
 
+        }
+
+        internal void AddSubtype()
+        {
+            if (SelectedLabel != null)
+            {
+                int i = -1;
+                bool tmpBool = false;
+                while (tmpBool == false)
+                {
+                    tmpBool = true;
+                    i++;
+                    foreach (var st in SelectedLabel.Subtypes)
+                    {
+                        if (st.Label == "default" + Convert.ToString(i))
+                        {
+                            tmpBool = false;
+                            break;
+                        }
+                    }
+                }
+
+                SelectedLabel.Subtypes.Add(new Subtypes("default" + Convert.ToString(i),SelectedLabel.Label));
+                SelectedLabel.IsSelected = false;
+                SelectedSubLabel = SelectedLabel.Subtypes[SelectedLabel.Subtypes.Count() - 1];
+                SelectedSubLabel.IsSelected = true;
+                SelectedLabel = null;
+            }
         }
 
         #endregion
@@ -2298,8 +2430,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private  CustomShapeFormat _tmpNewLabel = new CustomShapeFormat("","White","Black",0.3);
-        public CustomShapeFormat TmpNewLabel
+        private  Subtypes _tmpNewLabel = new Subtypes("","");
+        public Subtypes TmpNewLabel
         {
             get
             {
@@ -2452,27 +2584,50 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (LabelColorFormat.Count() > 0)
             {
-                foreach (var r in LabelColorFormat)
+                if (SelectedLabel != null)
                 {
-                    if (r.Label == SelectedLabel.Label)
+                    foreach (var r in LabelColorFormat)
                     {
-                        if(!LabelColorFormat.Any(x => x.Label == "default0"))
+                        if (r.Label == SelectedLabel.Label)
                         {
-                            AddLabelColorFormat();
+                            if(!LabelColorFormat.Any(x => x.Label == "default0"))
+                            {
+                                AddLabelColorFormat();
+                            }
+                            RemoveLabel();
+                            ComboBoxNames();
+                            FilterName();
+                            if (r.Label != "default0")
+                            {
+                                LabelColorFormat.Remove(r);
+                            }
+                            SelectedLabel = LabelColorFormat[0];
+                            RefreshLabelList();
+                            break;
                         }
-                        RemoveLabel();
-                        ComboBoxNames();
-                        FilterName();
-                        if (r.Label != "default0")
+                    }
+                    SetSelectedColor();
+                }
+                else if (SelectedSubLabel != null)
+                {
+                    Subtypes tmpSubtype = SelectedSubLabel;
+                    foreach (var lcf in LabelColorFormat)
+                    {
+                        if (lcf.Label == tmpSubtype.Parent)
                         {
-                            LabelColorFormat.Remove(r);
+                            foreach (var st in lcf.Subtypes)
+                            {
+                                if (st.Label == tmpSubtype.Label)
+                                {
+                                    lcf.Subtypes.Remove(st);
+                                    SelectedSubLabel = null;
+                                    RefreshLabelList();
+                                    break;
+                                }
+                            }
                         }
-                        SelectedLabel = LabelColorFormat[0];
-                        RefreshLabelList();
-                        break;
                     }
                 }
-                SetSelectedColor();
             }
         }
 
@@ -2734,6 +2889,24 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        private ICommand _importLabels;
+        public ICommand ImportLabels
+        {
+            get
+            {
+                return _importLabels ?? (_importLabels = new CommandHandler(() => ImportLabelData(), _canExecute));
+            }
+        }
+
+        private ICommand _exportLabels;
+        public ICommand ExportLabels
+        {
+            get
+            {
+                return _exportLabels ?? (_exportLabels = new CommandHandler(() => ExportLabelData(), _canExecute));
+            }
+        }
+
         #endregion
 
 
@@ -2742,6 +2915,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void ExportToPascal()
         {
+            ExportLabelData();
             XMLWriter.WritePascalVocToXML(Rectangles.ToList(), ImagePath, Convert.ToInt32(MyCanvas.ActualWidth), Convert.ToInt32(MyCanvas.ActualHeight), 3);
         }
 
@@ -2752,70 +2926,71 @@ namespace MachineLearningTrainer.DrawerTool
         public void LoadRectangles()
         {
             string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + ".xml";
+            
+
 
             if (File.Exists(destFileName) == true)
             {
                 XmlDocument doc = new XmlDocument();
                 doc.Load(destFileName);
 
-                string stroke = "LawnGreen";
-                string fill = "Transparent";
-                double opacity = 1;
+                indexRectangles = 0;
+                indexRectanglesView = 0;
+                id = 0;
+
+                int xmin = 0;
+                int ymin = 0;
+                int xmax = 0;
+                int ymax = 0;
+
+                ObservableCollection<string> tmpSubtypes = new ObservableCollection<string>();
+
+
+                Rectangles.Clear();
+                RectanglesView.Clear();
+                ClearFields();
 
                 foreach (XmlNode node in doc.DocumentElement)
                 {
+
                     if (node.Name == "object")
                     {
                         name = node["name"].InnerText;
 
                         foreach (XmlNode objectChild in node)
                         {
-                            if (objectChild.Name == "Format")
-                            {
-                                
-                                stroke = objectChild["stroke"].InnerText;
-                                fill = objectChild["fill"].InnerText;
-                                opacity = double.Parse(objectChild["opacity"].InnerText);
-
-                                //RectangleText = name;
-                            }
-
                             if (objectChild.Name == "bndbox")
                             {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
-                                CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
-                                id++;
-                                loadedRect.Label = name;
-                                loadedRect.Stroke = stroke;
-                                loadedRect.Fill = fill;
-                                loadedRect.Opacity = opacity;
+                                xmin = int.Parse(objectChild["xmin"].InnerText);
+                                ymin = int.Parse(objectChild["ymin"].InnerText);
+                                xmax = int.Parse(objectChild["xmax"].InnerText);
+                                ymax = int.Parse(objectChild["ymax"].InnerText);
+                            }
 
-                                Rectangles.Add(loadedRect);
-                                RectanglesView.Add(loadedRect);
-
-                                bool addNewFormat = true;
-                                foreach (var r in LabelColorFormat)
+                            if (objectChild.Name == "subtypes")
+                            {
+                                foreach (XmlNode subtypesChild in objectChild)
                                 {
-                                    if (r.Label == name)
+                                    if (subtypesChild.Name == "def")
                                     {
-                                        addNewFormat = false;
-                                        break;
+                                        tmpSubtypes.Add(subtypesChild["label"].InnerText);
                                     }
                                 }
-                                if (addNewFormat == true)
-                                {
-                                    LabelColorFormat.Add(new CustomShapeFormat(name, fill, stroke, opacity));
-                                }
-
-                                //RectanglesView[indexRectanglesView] = Rectangles[indexRectangles];
-                                SaveShapeToField(loadedRect);
-                                indexRectangles++;
-                                indexRectanglesView++;
                             }
                         }
+
+                        CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id, tmpSubtypes);
+                        tmpSubtypes.Clear();
+                        id++;
+                        loadedRect.Label = name;
+                        CheckFormat(loadedRect);
+
+                        Rectangles.Add(loadedRect);
+                        RectanglesView.Add(loadedRect);
+                        SaveShapeToField(loadedRect);
+                        indexRectangles++;
+                        indexRectanglesView++;
+                        OnPropertyChanged("");
                     }
                 }
             }
@@ -2841,9 +3016,17 @@ namespace MachineLearningTrainer.DrawerTool
                 XmlDocument doc = new XmlDocument();
                 doc.Load(dst);
 
-                string stroke = "Black";
-                string fill = "Black";
-                double opacity = 1;
+                indexRectangles = 0;
+                indexRectanglesView = 0;
+                id = 0;
+
+                int xmin = 0;
+                int ymin = 0;
+                int xmax = 0;
+                int ymax = 0;
+
+                ObservableCollection<string> tmpSubtypes = new ObservableCollection<string>();
+
 
                 Rectangles.Clear();
                 RectanglesView.Clear();
@@ -2859,37 +3042,38 @@ namespace MachineLearningTrainer.DrawerTool
                         foreach (XmlNode objectChild in node)
                         {
 
-                            if (objectChild.Name == "Format")
-                            {
-                                stroke = objectChild["stroke"].InnerText;
-                                fill = objectChild["fill"].InnerText;
-                                opacity = double.Parse(objectChild["opacity"].InnerText);
-
-                                //RectangleText = name;
-                            }
-
                             if (objectChild.Name == "bndbox")
                             {
-                                int xmin = int.Parse(objectChild["xmin"].InnerText);
-                                int ymin = int.Parse(objectChild["ymin"].InnerText);
-                                int xmax = int.Parse(objectChild["xmax"].InnerText);
-                                int ymax = int.Parse(objectChild["ymax"].InnerText);
+                                xmin = int.Parse(objectChild["xmin"].InnerText);
+                                ymin = int.Parse(objectChild["ymin"].InnerText);
+                                xmax = int.Parse(objectChild["xmax"].InnerText);
+                                ymax = int.Parse(objectChild["ymax"].InnerText);
+                            }
 
-                                CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id);
-                                id++;
-                                loadedRect.Label = name;
-                                loadedRect.Stroke = stroke;
-                                loadedRect.Fill = fill;
-                                loadedRect.Opacity = opacity;
-
-                                Rectangles.Add(loadedRect);
-                                RectanglesView.Add(loadedRect);
-                                SaveShapeToField(loadedRect);
-                                indexRectangles++;
-                                indexRectanglesView++;
-                                OnPropertyChanged("");
+                            if (objectChild.Name == "subtypes")
+                            {
+                                foreach (XmlNode subtypesChild in objectChild)
+                                {
+                                    if (subtypesChild.Name == "def")
+                                    {
+                                        tmpSubtypes.Add(subtypesChild["label"].InnerText);
+                                    }
+                                }
                             }
                         }
+
+                        CustomShape loadedRect = new CustomShape(xmin, ymin, xmax - xmin, ymax - ymin, id, tmpSubtypes);
+                        tmpSubtypes.Clear();
+                        id++;
+                        loadedRect.Label = name;
+                        CheckFormat(loadedRect);
+
+                        Rectangles.Add(loadedRect);
+                        RectanglesView.Add(loadedRect);
+                        SaveShapeToField(loadedRect);
+                        indexRectangles++;
+                        indexRectanglesView++;
+                        OnPropertyChanged("");
                     }
                 }
             }
@@ -2897,6 +3081,154 @@ namespace MachineLearningTrainer.DrawerTool
             ComboBoxNames();
             SortList();
             await cropImageLabelBegin();
+        }
+
+        /// <summary>
+        /// Load LabelData when Loading image
+        /// </summary>
+        public void LoadLabelData()
+        {
+            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + "_LabelData.cpf";
+
+            if (File.Exists(destFileName) == true)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(destFileName);
+
+                foreach (CustomShapeFormat csf in LabelColorFormat)
+                {
+                    csf.Subtypes.Clear();
+                }
+                LabelColorFormat.Clear();
+
+                string tmpLabel = "";
+                string tmpFill = "";
+                string tmpStroke = "";
+                double tmpOpacity = 1;
+
+                string tmpSubtypeLabel = "";
+                string tmpSubtypeParent = "";
+                ObservableCollection<Subtypes> tmpSubtypes = new ObservableCollection<Subtypes>();
+
+
+                foreach (XmlNode node in doc.DocumentElement)
+                {
+                    if (node.Name == "object")
+                    {
+                        tmpLabel = node["name"].InnerText;
+
+                        foreach (XmlNode objectChild in node)
+                        {
+                            if (objectChild.Name == "Format")
+                            {
+                                tmpStroke = objectChild["stroke"].InnerText;
+                                tmpFill = objectChild["fill"].InnerText;
+                                tmpOpacity = double.Parse(objectChild["opacity"].InnerText);
+
+                            }
+                            else if (objectChild.Name == "subtypes")
+                            {
+                                foreach (XmlNode subtypesChild in objectChild)
+                                {
+                                    if (subtypesChild.Name == "def")
+                                    {
+                                        tmpSubtypeLabel = subtypesChild["label"].InnerText;
+                                        tmpSubtypeParent = subtypesChild["parent"].InnerText;
+
+                                        tmpSubtypes.Add(new Subtypes(tmpSubtypeLabel, tmpSubtypeParent));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpFill, tmpStroke, tmpOpacity, tmpSubtypes));
+                    tmpSubtypes.Clear();
+                }
+            }
+            else
+            {
+                AddLabelColorFormat();
+            }
+        }
+
+        /// <summary>
+        /// import Label Data from .cpf file
+        /// </summary>
+        private void ImportLabelData()
+        {
+            OpenFileDialog openFileDialog = new OpenFileDialog();
+
+            openFileDialog.Multiselect = false;
+            openFileDialog.Filter = "AnnotationTool Label Files (*.cpf)|*.cpf";
+            openFileDialog.DefaultExt = ".cpf";
+            openFileDialog.RestoreDirectory = true;
+
+            if (openFileDialog.ShowDialog() == true)
+                dst = openFileDialog.FileName;
+
+            if (dst != null)
+            {
+                XmlDocument doc = new XmlDocument();
+                doc.Load(dst);
+
+                foreach(CustomShapeFormat csf in LabelColorFormat)
+                {
+                    csf.Subtypes.Clear();
+                }
+                LabelColorFormat.Clear();
+
+                string tmpLabel = "";
+                string tmpFill = "";
+                string tmpStroke = "";
+                double tmpOpacity = 1;
+
+                string tmpSubtypeLabel = "";
+                string tmpSubtypeParent = "";
+                ObservableCollection<Subtypes> tmpSubtypes = new ObservableCollection<Subtypes>();
+
+
+                foreach (XmlNode node in doc.DocumentElement)
+                {
+                    if(node.Name == "object")
+                    {
+                        tmpLabel = node["name"].InnerText;
+
+                        foreach (XmlNode objectChild in node)
+                        {
+                            if (objectChild.Name == "Format")
+                            {
+                                tmpStroke = objectChild["stroke"].InnerText;
+                                tmpFill = objectChild["fill"].InnerText;
+                                tmpOpacity = double.Parse(objectChild["opacity"].InnerText);
+
+                            }
+                            else if (objectChild.Name == "subtypes")
+                            {
+                                foreach (XmlNode subtypesChild in objectChild)
+                                {
+                                    if (subtypesChild.Name == "def")
+                                    {
+                                        tmpSubtypeLabel = subtypesChild["label"].InnerText;
+                                        tmpSubtypeParent = subtypesChild["parent"].InnerText;
+
+                                        tmpSubtypes.Add(new Subtypes(tmpSubtypeLabel, tmpSubtypeParent));
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpFill, tmpStroke, tmpOpacity, tmpSubtypes));
+                    tmpSubtypes.Clear();
+                }
+            }
+        }
+
+        /// <summary>
+        /// export Label Data to .cpf file
+        /// </summary>
+        private void ExportLabelData()
+        {
+            XMLWriter.WriteLabelsToCPF(LabelColorFormat.ToList(), ImagePath);
         }
 
         #endregion
@@ -2978,6 +3310,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     fields[i] = new ObservableCollection<CustomShape>();
                 }
+                LoadLabelData();
                 LoadRectangles();
                 RectangleCount = "#" + RectanglesView.Count.ToString();
 
@@ -3114,13 +3447,34 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void OnRename()
         {
-            foreach (var r in Rectangles)
+            if (TmpNewLabel.Parent == "" | TmpNewLabel.Parent == null)
             {
-                if (r.Label == TmpNewLabel.Label)
+                foreach (var r in Rectangles)
                 {
-                    r.Label = SelectedLabel.Label;
+                    if (r.Label == TmpNewLabel.Label)
+                    {
+                        r.Label = SelectedLabel.Label;
+                    }
                 }
             }
+            else
+            {
+                foreach (var r in Rectangles)
+                {
+                    if (r.Label == TmpNewLabel.Parent)
+                    {
+                        if (r.Subtypes.Any(x=>x == TmpNewLabel.Label))
+                        {
+                            int tmpIndex = r.Subtypes.IndexOf(TmpNewLabel.Label);
+                            r.Subtypes[tmpIndex] = SelectedSubLabel.Label;
+                        }
+                    }
+                }
+                TmpNewLabel.Parent = "";
+            }
+
+
+            
         }
 
         #endregion

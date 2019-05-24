@@ -35,6 +35,12 @@
 
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
 
+        <local:BindingProxy
+          x:Key="DataContextProxy"
+          Data="{Binding}" />
+
+
+
         <Style
             x:Key="BasicButtonStyle"
             BasedOn="{StaticResource {x:Type Button}}"
@@ -152,6 +158,8 @@
                     Color="DodgerBlue" />
             </Style.Resources>
         </Style>
+        
+        <!--<DataTemplate DataType="{x:Type local:}"-->
         
     </UserControl.Resources>
 
@@ -582,8 +590,8 @@
                     HorizontalAlignment="Stretch"
                     HorizontalContentAlignment="Left"
                     IsReadOnly="True"
-                    MouseDoubleClick="TextBox_MouseDoubleClick"  
-                    LostFocus="TextBox_LostFocus"
+                    MouseDoubleClick="LabelTextBox_MouseDoubleClick"  
+                    LostFocus="LblTextBox_LostFocus"
                     materialDesign:HintAssist.IsFloating="True"
                     Foreground="Black"
                     Background="White"
@@ -790,7 +798,7 @@
                                     Text="{Binding Id}" />
                                 <ToolTipService.ToolTip>
                                     <Grid>
-                                        <Grid.Resources>
+                                        <!--<Grid.Resources>
                                             <Style x:Key="lineStyle" TargetType="Line">
                                                 <Setter Property="Stroke" Value="LightGray" />
                                                 <Setter Property="Stretch" Value="Fill" />
@@ -819,9 +827,9 @@
                                             <RowDefinition Height="15" />
                                             <RowDefinition Height="15" />
                                             <RowDefinition Height="15" />
-                                        </Grid.RowDefinitions>
+                                        </Grid.RowDefinitions>-->
 
-                                        <Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
+                                        <!--<Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
                                         <Line Grid.Row="0" Style="{StaticResource horizontalLineStyle}" />
                                         <Line Grid.Row="1" Style="{StaticResource horizontalLineStyle}" />
                                         <Line Grid.Row="2" Style="{StaticResource horizontalLineStyle}" />
@@ -834,23 +842,89 @@
                                         <TextBlock Grid.Row ="0" Grid.Column="1" Text="{Binding Label}" Margin="5,0,0,0" />
                                         <TextBlock Grid.Row ="1" Grid.Column="1" Text="{Binding Id}" Margin="5,0,0,0"/>
                                         <TextBlock Grid.Row ="2" Grid.Column="1" Text="{Binding Center.X}" Margin="5,0,0,0"/>
-                                        <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>
+                                        <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>-->
+
+                                        <ListView
+                                            ItemsSource="{Binding Subtypes}"
+                                            IsEnabled="False">
+                                                    <ListView.ItemTemplate>
+                                                        <DataTemplate>
+                                                            <WrapPanel>
+                                                                <TextBlock Text="{Binding}" Foreground="White"/>
+                                                            </WrapPanel>
+                                                        </DataTemplate>
+                                                    </ListView.ItemTemplate>    
+                                            <!--<ListView.Style>
+                                    <Style TargetType="ListView">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Label}" Value="{Binding ColorLabelFormat[0].Label}">
+                                                <Setter Property="ItemsSource" Value="{Binding ColorLabelFormat[0].Subtypes}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.Style>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding }"
+                                    </StackPanel>
+                                </DataTemplate>-->
+                                        </ListView>
+
                                     </Grid>
                                 </ToolTipService.ToolTip>
                             </WrapPanel>
+                            <ListView
+                                ItemsSource="{Binding Subtypes}"
+                                IsEnabled="False">
+                                <ListView.ItemTemplate>
+                                    <DataTemplate>
+                                        <WrapPanel>
+                                            <TextBlock Text="{Binding}" FontSize="10"/>
+                                        </WrapPanel>
+                                    </DataTemplate>
+                                </ListView.ItemTemplate>
+                                <!--<ListView.Style>
+                                    <Style TargetType="ListView">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Label}" Value="{Binding ColorLabelFormat[0].Label}">
+                                                <Setter Property="ItemsSource" Value="{Binding ColorLabelFormat[0].Subtypes}" />
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </ListView.Style>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal">
+                                        <CheckBox IsChecked="{Binding }"
+                                    </StackPanel>
+                                </DataTemplate>-->
+                            </ListView>
                             <Separator />
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>
                 <ListBox.ContextMenu>
-                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
+                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint"
+                                 ContextMenuClosing="ContextMenu_ContextMenuClosing">
                         <MenuItem
                             ItemsSource="{Binding LabelColorFormat}"
                             Header="Select Label"
                             Width="300">
                             <MenuItem.ItemContainerStyle>
                                 <Style TargetType="{x:Type MenuItem}">
-                                    <Setter Property="Command" Value="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type UserControl}}, Path=DataContext.ChangeLabelCommand}" />
+                                    <Setter Property="Command" Value="{Binding Path=Data.ChangeLabelCommand, Source={StaticResource DataContextProxy}}" />
+                                    <Setter Property="CommandParameter" Value="{Binding Label}" />
+                                    <Setter Property="Header" Value="{Binding Label}" />
+                                </Style>
+                            </MenuItem.ItemContainerStyle>
+                        </MenuItem>
+                        <MenuItem
+                            SubmenuOpened="Subtype_SubmenuOpened"
+                            ItemsSource="{Binding SubtypeList, UpdateSourceTrigger=PropertyChanged}"
+                            Header="Select Subtype"
+                            Width="300">
+                            <MenuItem.ItemContainerStyle>
+                                <Style TargetType="{x:Type MenuItem}">
+                                    <Setter Property="Command" Value="{Binding Path=Data.ChangeSubtypeCommand, Source={StaticResource DataContextProxy}}" />
                                     <Setter Property="CommandParameter" Value="{Binding Label}" />
                                     <Setter Property="Header" Value="{Binding Label}" />
                                 </Style>
@@ -1199,7 +1273,7 @@
                             </ControlTemplate>
                         </Button.Template>
                         <Button.RenderTransform>
-                            <RotateTransform x:Name="animatedRoatateTransform" Angle="0" />
+                            <RotateTransform x:Name="animatedRoatateTransform" Angle="180" />
                         </Button.RenderTransform>
                         <Button.ToolTip>
                             <TextBlock Text="Show/Hide visible Rectangles" />
@@ -1345,7 +1419,7 @@
                 <Grid
                     Margin="5"
                     Background="White"
-                    IsEnabled="{Binding IsEnabled}">
+                    >
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
@@ -1358,12 +1432,14 @@
                                 Foreground="Black"
                                 Text="Parameter Sets" 
                                 Margin="0,5,10,5"/>
-                        <!--<Button
+                        <Button
+                            x:Name="importLabels"
                             Margin="0,0,10,0"
                             Height="20"
                             Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
                             Background="Transparent"
-                            IsEnabled="{Binding IsEnabled}">
+                            IsEnabled="{Binding IsEnabled}"
+                            Command="{Binding ImportLabels}">
                             <Button.Template>
                                 <ControlTemplate>
                                     <Canvas
@@ -1384,11 +1460,13 @@
                             </Button.ToolTip>
                         </Button>
                         <Button
-                                Margin="0,0,10,0"
-                                Height="20"
-                                Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                Background="Transparent" 
-                            IsEnabled="{Binding IsEnabled}">
+                            x:Name="exportLabels"
+                            Margin="0,0,10,0"
+                            Height="20"
+                            Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                            Background="Transparent" 
+                            IsEnabled="{Binding IsEnabled}"
+                            Command="{Binding ExportLabels}">
                             <Button.Template>
                                 <ControlTemplate>
                                     <Canvas
@@ -1407,7 +1485,7 @@
                             <Button.ToolTip>
                                 <TextBlock Text="Save Parameter Set" />
                             </Button.ToolTip>
-                        </Button>-->
+                        </Button>
                         <Button
                             Margin="0,0,10,0"
                             Height="20"
@@ -1436,7 +1514,272 @@
                         </Button>
 
                     </WrapPanel>
-                    <ListBox
+
+                    <TreeView
+                        x:Name="labelTreeView"
+                        Grid.Row="1"
+                        Margin="5"
+                        HorizontalAlignment="Stretch"
+                        VerticalAlignment="Stretch"
+                        Panel.ZIndex="1"
+                        ItemsSource="{Binding LabelColorFormat}"
+                        SelectedItemChanged="LabelTreeView_SelectedItemChanged"
+                        Foreground="Black"
+                        >
+                        <TreeView.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                            </Style>
+                            <HierarchicalDataTemplate DataType="{x:Type local:CustomShapeFormat}" ItemsSource="{Binding Subtypes}">
+                                <!--<local:DTLabelColorFormatControl />-->
+                                <WrapPanel 
+                                    Width="auto" 
+                                    HorizontalAlignment="Left"
+                                    Grid.Row="1"
+                                    Panel.ZIndex="2"
+                                    Height="auto">
+                                    <TextBox
+                                        x:Name="LabelTextBox"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Width="70"
+                                        TextAlignment="Left"
+                                        AcceptsReturn="False"
+                                        FontSize="12"
+                                        Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        IsReadOnly="True"
+                                        PreviewMouseLeftButtonDown="LabelTextBox_PreviewMouseLeftButtonDown"
+                                        MouseDoubleClick="LabelTextBox_MouseDoubleClick"
+                                        LostFocus="LblTextBox_LostFocus"
+                                        TextWrapping="Wrap"
+                                        Margin="10,0,5,0"
+                                        Tag="{Binding Me}">
+                                        <TextBox.ContextMenu>
+                                            <ContextMenu IsEnabled="False" />
+                                        </TextBox.ContextMenu>
+                                    </TextBox>
+                                    <Button
+                                        x:Name="showHideData"
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Click="ShowHideData_Click"
+                                        Tag="{Binding Me}">
+                                        <Button.Style>
+                                            <Style
+                                                BasedOn="{StaticResource {x:Type Button}}"
+                                                TargetType="Button">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="true">
+                                                        <Setter Property="Foreground" Value="#FF2196F3" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="false">
+                                                        <Setter Property="Foreground" Value="LightGray" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                    Stretch="Uniform"
+                                                    Height="18"
+                                                    Data="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Show/Hide this Label Data" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                
+                                
+                                    <!--<Button
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Background="Transparent"
+                                        Tag="{Binding Me}">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="LightGray"
+                                                    Stretch="Uniform"
+                                                    Height="18"
+                                                    Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M17,11V9H15V11H17M13,11V9H11V11H13M9,11V9H7V11H9Z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Show/Hide this Label Meta-Data" />
+                                        </Button.ToolTip>
+                                    </Button>-->
+                                
+                                
+                                    <Button
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Background="Transparent"
+                                        Click="AddSubtype_Click"
+                                        Tag="{Binding Me}">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="LightGray"
+                                                    Stretch="Uniform">
+                                                    <Path.Data>
+                                                        <Geometry>m 270.32627 199.08147 0 -10.79249 -10.79249 0 -10.79249 0 0 -8.4463 0 -8.4463 10.79249 0 10.79249 0 0 -10.79249 0 -10.79249 8.4463 0 8.4463 0 0 10.79249 0 10.79249 10.79249 0 10.7925 0 0 8.4463 0 8.4463 -10.7925 0 -10.79249 0 0 10.79249 0 10.79249 -8.4463 0 -8.4463 0 0 -10.79249 z</Geometry>
+                                                    </Path.Data>
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Add Subtype" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Background="Transparent"
+                                        Click="RmvLabelColorFormat_Click"
+                                        Tag="{Binding Me}">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="LightGray"
+                                                    Stretch="Uniform"
+                                                    Data="m 249.28106 239.3342 0 -8.4375 30 0 30 0 0 8.4375 0 8.4375 -30 0 -30 0 0 -8.4375 z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Remove Label" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button
+                                        x:Name="colorPickerButton"
+                                        Opacity="1"
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Click="ColorPickerButton_Click"
+                                        Background="Transparent"
+                                        Tag="{Binding Me}">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Border
+                                                    BorderBrush="{Binding Stroke}"
+                                                    BorderThickness="1">
+                                                    <Rectangle
+                                                        Stroke="Transparent"
+                                                        StrokeThickness="0"
+                                                        Fill="{Binding Fill}"
+                                                        Opacity="{Binding Opacity}" />
+                                                </Border>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Change preview Color" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                </WrapPanel>
+                            </HierarchicalDataTemplate>
+                            <DataTemplate DataType="{x:Type local:Subtypes}">
+                                <WrapPanel 
+                                    Width="auto" 
+                                    HorizontalAlignment="Left"
+                                    Grid.Row="1"
+                                    Panel.ZIndex="2"
+                                    Height="auto">
+                                    <TextBox
+                                        x:Name="labelTextBox"
+                                        Visibility="Visible"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Center"
+                                        Width="100"
+                                        TextAlignment="Left"
+                                        AcceptsReturn="False"
+                                        FontSize="12"
+                                        Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                                        IsReadOnly="True"
+                                        PreviewMouseLeftButtonDown="LabelTextBox_PreviewMouseLeftButtonDown"
+                                        MouseDoubleClick="LabelTextBox_MouseDoubleClick"
+                                        LostFocus="LblTextBox_LostFocus"
+                                        TextWrapping="Wrap"
+                                        Margin="10,0,5,0"
+                                        Tag="{Binding Me}">
+                                        <TextBox.ContextMenu>
+                                            <ContextMenu IsEnabled="False" />
+                                        </TextBox.ContextMenu>
+                                    </TextBox>
+                                    <Button
+                                        x:Name="showHideData"
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Click="ShowHideData_Click"
+                                        Tag="{Binding Me}">
+                                        <Button.Style>
+                                            <Style
+                                                BasedOn="{StaticResource {x:Type Button}}"
+                                                TargetType="Button">
+                                                <Setter Property="Background" Value="Transparent" />
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="true">
+                                                        <Setter Property="Foreground" Value="#FF2196F3" />
+                                                    </DataTrigger>
+                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="false">
+                                                        <Setter Property="Foreground" Value="LightGray" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Button.Style>
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
+                                                    Stretch="Uniform"
+                                                    Height="18"
+                                                    Data="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Show/Hide this Label Data" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                    <Button
+                                        Margin="0,0,10,0"
+                                        Height="18"
+                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
+                                        Background="Transparent"
+                                        Click="RmvLabelColorFormat_Click"
+                                        Tag="{Binding Me}">
+                                        <Button.Template>
+                                            <ControlTemplate>
+                                                <Path 
+                                                    Fill="LightGray"
+                                                    Stretch="Uniform"
+                                                    Data="m 249.28106 239.3342 0 -8.4375 30 0 30 0 0 8.4375 0 8.4375 -30 0 -30 0 0 -8.4375 z">
+                                                </Path>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                        <Button.ToolTip>
+                                            <TextBlock Text="Remove Label" />
+                                        </Button.ToolTip>
+                                    </Button>
+                                </WrapPanel>
+                            </DataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+
+
+                    <!--<ListBox
                         x:Name="labelListBox"
                         Grid.Row="1"
                         Margin="5"
@@ -1518,7 +1861,7 @@
                                             <TextBlock Text="Show/Hide this Label Data" />
                                         </Button.ToolTip>
                                     </Button>
-                                    <!--<Button
+                                    <Button
                                         Margin="0,0,10,0"
                                         Height="18"
                                         Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
@@ -1536,7 +1879,7 @@
                                         <Button.ToolTip>
                                             <TextBlock Text="Show/Hide this Label Meta-Data" />
                                         </Button.ToolTip>
-                                    </Button>-->
+                                    </Button>
                                     <Button
                                         Margin="0,0,10,0"
                                         Height="18"
@@ -1587,7 +1930,7 @@
                         <ListBox.ContextMenu>
                             <ContextMenu IsEnabled="False" />
                         </ListBox.ContextMenu>
-                    </ListBox>
+                    </ListBox>-->
                 </Grid>
             </Border>
         </Grid>

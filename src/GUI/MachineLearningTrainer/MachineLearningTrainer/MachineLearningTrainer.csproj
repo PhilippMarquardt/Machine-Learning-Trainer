@@ -143,6 +143,7 @@
     <Compile Include="DeepNN\DeepNeuralNetwork.xaml.cs">
       <DependentUpon>DeepNeuralNetwork.xaml</DependentUpon>
     </Compile>
+    <Compile Include="DrawerTool\BindingProxy.cs" />
     <Compile Include="DrawerTool\ColorPicker.xaml.cs">
       <DependentUpon>ColorPicker.xaml</DependentUpon>
     </Compile>
@@ -154,6 +155,9 @@
     <Compile Include="DrawerTool\DispatchService.cs" />
     <Compile Include="DrawerTool\DrawerModel.cs" />
     <Compile Include="DrawerTool\DrawerViewModel.cs" />
+    <Compile Include="DrawerTool\DTLabelColorFormatControl.xaml.cs">
+      <DependentUpon>DTLabelColorFormatControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="DrawerTool\HeaderToImageConverter.cs" />
     <Compile Include="DrawerTool\ImageDrawer.xaml.cs">
       <DependentUpon>ImageDrawer.xaml</DependentUpon>
@@ -228,6 +232,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DecisionPages\TabularDataDecision.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DrawerTool\DTLabelColorFormatControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
