@@ -14,6 +14,7 @@ namespace MachineLearningTrainer.DrawerTool
         private string fill;
         private string stroke;
         private double opacity;
+        private int count = 100;
         private bool visible;
         private bool isSelected;
         private bool isExpanded;
@@ -119,6 +120,19 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public int Count
+        {
+            get { return this.count; }
+            set
+            {
+                if (count != value)
+                {
+                    this.count = value;
+                    NotifyPropertyChanged("Count");
+                }
+            }
+        }
+
         public bool IsSelected
         {
             get { return this.isSelected; }
@@ -176,6 +190,7 @@ namespace MachineLearningTrainer.DrawerTool
         private bool visible;
         private bool isSelected;
         private string parent;
+        private int count = 100;
 
         public Subtypes(string label, string parent)
         {
@@ -202,6 +217,32 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public string Parent
+        {
+            get { return this.parent; }
+            set
+            {
+                if (parent != value)
+                {
+                    this.parent = value;
+                    NotifyPropertyChanged("Parent");
+                }
+            }
+        }
+
+        public int Count
+        {
+            get { return this.count; }
+            set
+            {
+                if (count != value)
+                {
+                    this.count = value;
+                    NotifyPropertyChanged("Count");
+                }
+            }
+        }
+
         public bool Visible
         {
             get { return this.visible; }
@@ -224,19 +265,6 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.isSelected = value;
                     NotifyPropertyChanged("IsSelected");
-                }
-            }
-        }
-
-        public string Parent
-        {
-            get { return this.parent; }
-            set
-            {
-                if (parent != value)
-                {
-                    this.parent = value;
-                    NotifyPropertyChanged("Parent");
                 }
             }
         }

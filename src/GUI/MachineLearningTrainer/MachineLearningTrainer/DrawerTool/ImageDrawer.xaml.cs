@@ -704,7 +704,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         private void LabelTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
-        {
+        {    
             TextBox textBox = sender as TextBox;
             textBox.IsReadOnly = false;
             textBox.SelectAll();
@@ -722,8 +722,25 @@ namespace MachineLearningTrainer.DrawerTool
             if (textBox != null)
             {
                 textBox.IsReadOnly = true;
-                (this.DataContext as DrawerViewModel).Enter();
+
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Parent = "";
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Label = "";
+
             }
+        }
+
+        private void LabelTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            TextBox textBox = sender as TextBox;
+
+            (this.DataContext as DrawerViewModel).OnRename();
+
+            if (textBox.Tag.GetType() == typeof(Subtypes))
+            {
+                Subtypes tmpSubtype = (Subtypes)textBox.Tag;
+                (this.DataContext as DrawerViewModel).TmpNewLabel.Parent = tmpSubtype.Parent;
+            }
+            (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
         }
 
         #endregion
@@ -986,5 +1003,6 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
         #endregion
+
     }
 }

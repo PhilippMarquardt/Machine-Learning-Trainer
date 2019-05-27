@@ -850,7 +850,8 @@
                                                     <ListView.ItemTemplate>
                                                         <DataTemplate>
                                                             <WrapPanel>
-                                                                <TextBlock Text="{Binding}" Foreground="White"/>
+                                                                <TextBlock Text="{Binding}" Foreground="White"
+                                                                           TextWrapping="Wrap"/>
                                                             </WrapPanel>
                                                         </DataTemplate>
                                                     </ListView.ItemTemplate>    
@@ -1524,14 +1525,15 @@
                         Panel.ZIndex="1"
                         ItemsSource="{Binding LabelColorFormat}"
                         SelectedItemChanged="LabelTreeView_SelectedItemChanged"
-                        Foreground="Black"
-                        >
+                        Foreground="Black">
                         <TreeView.Resources>
                             <Style TargetType="{x:Type TreeViewItem}">
                                 <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                                 <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
                             </Style>
-                            <HierarchicalDataTemplate DataType="{x:Type local:CustomShapeFormat}" ItemsSource="{Binding Subtypes}">
+                            <HierarchicalDataTemplate 
+                                DataType="{x:Type local:CustomShapeFormat}" 
+                                ItemsSource="{Binding Subtypes}">
                                 <!--<local:DTLabelColorFormatControl />-->
                                 <WrapPanel 
                                     Width="auto" 
@@ -1552,6 +1554,7 @@
                                         PreviewMouseLeftButtonDown="LabelTextBox_PreviewMouseLeftButtonDown"
                                         MouseDoubleClick="LabelTextBox_MouseDoubleClick"
                                         LostFocus="LblTextBox_LostFocus"
+                                        TextChanged="LabelTextBox_TextChanged"
                                         TextWrapping="Wrap"
                                         Margin="10,0,5,0"
                                         Tag="{Binding Me}">
@@ -1687,9 +1690,13 @@
                                             <TextBlock Text="Change preview Color" />
                                         </Button.ToolTip>
                                     </Button>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Count}">
+                                    </TextBlock>
                                 </WrapPanel>
                             </HierarchicalDataTemplate>
-                            <DataTemplate DataType="{x:Type local:Subtypes}">
+                            <HierarchicalDataTemplate DataType="{x:Type local:Subtypes}">
                                 <WrapPanel 
                                     Width="auto" 
                                     HorizontalAlignment="Left"
@@ -1710,6 +1717,7 @@
                                         PreviewMouseLeftButtonDown="LabelTextBox_PreviewMouseLeftButtonDown"
                                         MouseDoubleClick="LabelTextBox_MouseDoubleClick"
                                         LostFocus="LblTextBox_LostFocus"
+                                        TextChanged="LabelTextBox_TextChanged"
                                         TextWrapping="Wrap"
                                         Margin="10,0,5,0"
                                         Tag="{Binding Me}">
@@ -1773,8 +1781,12 @@
                                             <TextBlock Text="Remove Label" />
                                         </Button.ToolTip>
                                     </Button>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        Text="{Binding Count}">
+                                    </TextBlock>
                                 </WrapPanel>
-                            </DataTemplate>
+                            </HierarchicalDataTemplate>
                         </TreeView.Resources>
                     </TreeView>
 

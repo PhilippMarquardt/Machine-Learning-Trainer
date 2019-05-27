@@ -3430,14 +3430,9 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void Enter()
         {
-            OnRename();
-            ComboBoxNames();
-            FilterName();
-            if (selectedCustomShape != null)
-            {
-                CheckFormat(selectedCustomShape);
-            }
-            SortList();
+            //OnRename();
+            TmpNewLabel.Parent = "";
+            TmpNewLabel.Label = "";
             Keyboard.ClearFocus();
         }
 
@@ -3445,10 +3440,22 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// this method renames all files in the listox
         /// </summary>
-        private void OnRename()
+        public void OnRename()
         {
             if (TmpNewLabel.Parent == "" | TmpNewLabel.Parent == null)
             {
+                foreach (var lcf in LabelColorFormat)
+                {
+                    if (lcf.Label == SelectedLabel.Label)
+                   {
+                        foreach (var sb in lcf.Subtypes)
+                        {
+                            sb.Parent = lcf.Label;
+                        }
+                        break;
+                    }
+                }
+
                 foreach (var r in Rectangles)
                 {
                     if (r.Label == TmpNewLabel.Label)
@@ -3473,8 +3480,13 @@ namespace MachineLearningTrainer.DrawerTool
                 TmpNewLabel.Parent = "";
             }
 
-
-            
+            ComboBoxNames();
+            FilterName();
+            if (selectedCustomShape != null)
+            {
+                CheckFormat(selectedCustomShape);
+            }
+            SortList();
         }
 
         #endregion
