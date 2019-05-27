@@ -604,7 +604,7 @@ namespace MachineLearningTrainer.DrawerTool
                     indexRectangles++;
                     id++;
 
-                    RectangleCount = "#" + RectanglesView.Count.ToString();
+                    RefreshRectangleCount();
                     ComboBoxNames();
 
                     OnPropertyChanged("RectanglesView");
@@ -707,7 +707,7 @@ namespace MachineLearningTrainer.DrawerTool
             undoCustomShapes.Push(duplicatedCustomShape);
             undoInformation.Push("Add");
 
-            RectangleCount = "#" + RectanglesView.Count.ToString();
+            RefreshRectangleCount();
         }
 
         #endregion
@@ -1835,7 +1835,7 @@ namespace MachineLearningTrainer.DrawerTool
                         }
                 }
 
-                RectangleCount = "#" + RectanglesView.Count.ToString();
+                RefreshRectangleCount();
 
             }
             OnPropertyChanged("");
@@ -1956,7 +1956,7 @@ namespace MachineLearningTrainer.DrawerTool
                             break;
                         }
                 }
-                RectangleCount = "#" + RectanglesView.Count.ToString();
+                RefreshRectangleCount();
             }
             OnPropertyChanged("");
         }
@@ -2225,7 +2225,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             indexRectanglesView = RectanglesView.Count();
 
-            RectangleCount = "#" + RectanglesView.Count.ToString();
+            RefreshRectangleCount();
         }
 
 
@@ -2315,6 +2315,58 @@ namespace MachineLearningTrainer.DrawerTool
         #region Variables
 
         #endregion
+
+        /// <summary>
+        /// this method renames all files in the listox
+        /// </summary>
+        public void OnRename()
+        {
+            if (TmpNewLabel.Parent == "" | TmpNewLabel.Parent == null)
+            {
+                foreach (var lcf in LabelColorFormat)
+                {
+                    if (lcf.Label == SelectedLabel.Label)
+                    {
+                        foreach (var sb in lcf.Subtypes)
+                        {
+                            sb.Parent = lcf.Label;
+                        }
+                        break;
+                    }
+                }
+
+                foreach (var r in Rectangles)
+                {
+                    if (r.Label == TmpNewLabel.Label)
+                    {
+                        r.Label = SelectedLabel.Label;
+                    }
+                }
+            }
+            else
+            {
+                foreach (var r in Rectangles)
+                {
+                    if (r.Label == TmpNewLabel.Parent)
+                    {
+                        if (r.Subtypes.Any(x => x == TmpNewLabel.Label))
+                        {
+                            int tmpIndex = r.Subtypes.IndexOf(TmpNewLabel.Label);
+                            r.Subtypes[tmpIndex] = SelectedSubLabel.Label;
+                        }
+                    }
+                }
+                TmpNewLabel.Parent = "";
+            }
+
+            ComboBoxNames();
+            FilterName();
+            if (selectedCustomShape != null)
+            {
+                CheckFormat(selectedCustomShape);
+            }
+            SortList();
+        }
 
         internal void ShowHideData()
         {
@@ -3312,8 +3364,8 @@ namespace MachineLearningTrainer.DrawerTool
                 }
                 LoadLabelData();
                 LoadRectangles();
-                RectangleCount = "#" + RectanglesView.Count.ToString();
 
+                RefreshRectangleCount();
 
                 RefreshLabelList();
                 ComboBoxNames();
@@ -3343,6 +3395,53 @@ namespace MachineLearningTrainer.DrawerTool
                 //
             }
         }
+
+        private void RefreshRectangleCount()
+        {
+            foreach (var lcf in LabelColorFormat)
+            {
+                lcf.Count = GetCount(lcf.Label);
+
+                foreach (var sb in lcf.Subtypes)
+                {
+                    sb.Count = GetCount(sb.Label, sb.Parent);
+                }
+            }
+        }
+
+        private int GetCount(string label)
+        {
+            int count = 0;
+
+            foreach (var r in Rectangles)
+            {
+                if (r.Label == label)
+                {
+                    count++;
+                }
+            }
+
+            return count;
+        }
+        
+        private int GetCount(string label, string parent)
+        {
+            int count = 0;
+
+            foreach (var r in Rectangles)
+            {
+                if (r.Label == parent)
+                {
+                    if (r.Subtypes.Any(x => x == label))
+                    {
+                        count++;
+                    }
+                }
+            }
+            return count;
+        }
+
+
 
         #endregion
 
@@ -3434,59 +3533,6 @@ namespace MachineLearningTrainer.DrawerTool
             TmpNewLabel.Parent = "";
             TmpNewLabel.Label = "";
             Keyboard.ClearFocus();
-        }
-
-
-        /// <summary>
-        /// this method renames all files in the listox
-        /// </summary>
-        public void OnRename()
-        {
-            if (TmpNewLabel.Parent == "" | TmpNewLabel.Parent == null)
-            {
-                foreach (var lcf in LabelColorFormat)
-                {
-                    if (lcf.Label == SelectedLabel.Label)
-                   {
-                        foreach (var sb in lcf.Subtypes)
-                        {
-                            sb.Parent = lcf.Label;
-                        }
-                        break;
-                    }
-                }
-
-                foreach (var r in Rectangles)
-                {
-                    if (r.Label == TmpNewLabel.Label)
-                    {
-                        r.Label = SelectedLabel.Label;
-                    }
-                }
-            }
-            else
-            {
-                foreach (var r in Rectangles)
-                {
-                    if (r.Label == TmpNewLabel.Parent)
-                    {
-                        if (r.Subtypes.Any(x=>x == TmpNewLabel.Label))
-                        {
-                            int tmpIndex = r.Subtypes.IndexOf(TmpNewLabel.Label);
-                            r.Subtypes[tmpIndex] = SelectedSubLabel.Label;
-                        }
-                    }
-                }
-                TmpNewLabel.Parent = "";
-            }
-
-            ComboBoxNames();
-            FilterName();
-            if (selectedCustomShape != null)
-            {
-                CheckFormat(selectedCustomShape);
-            }
-            SortList();
         }
 
         #endregion
