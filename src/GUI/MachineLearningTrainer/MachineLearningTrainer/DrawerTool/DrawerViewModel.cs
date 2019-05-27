@@ -1551,15 +1551,12 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// Select next ListItem
         /// </summary>
-        public void NextShape()
+        private void NextShape()
         {
-            if (selectedCustomShape != null)
-            {
-                ChangeShape(ChangeMode.next);
-                _duplicateVar = 0;
-                SelectListItem();
-                _duplicateVar = 1;
-            }
+            ChangeShape(ChangeMode.next);
+            _duplicateVar = 0;
+            SelectListItem();
+            _duplicateVar = 1;
         }
 
         /// <summary>
@@ -1567,13 +1564,10 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void PreviousShape()
         {
-            if (selectedCustomShape != null)
-            {
-                ChangeShape(ChangeMode.previous);
-                _duplicateVar = 0;
-                SelectListItem();
-                _duplicateVar = 1;
-            }
+            ChangeShape(ChangeMode.previous);
+            _duplicateVar = 0;
+            SelectListItem();
+            _duplicateVar = 1;
         }
 
 
@@ -1592,9 +1586,6 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 modifier = -1;
             }
-            CustomShape tmpCustomShape = selectedCustomShape;
-            int tmpIndex = 0;
-            DeleteSelection();
 
             if (_cropModeChecked == true)
             {
@@ -1606,24 +1597,39 @@ namespace MachineLearningTrainer.DrawerTool
                 ClearFields();
             }
 
-            foreach (CustomShape r in RectanglesView)
+            if (selectedCustomShape != null)
             {
-                if (r.Id == tmpCustomShape.Id)
+                CustomShape tmpCustomShape = selectedCustomShape;
+                int tmpIndex = 0;
+                DeleteSelection();
+
+                foreach (CustomShape r in RectanglesView)
                 {
-                    tmpIndex = RectanglesView.IndexOf(r) + modifier;
-                    if (tmpIndex >= RectanglesView.Count())
+                    if (r.Id == tmpCustomShape.Id)
                     {
-                        tmpIndex = 0;
+                        tmpIndex = RectanglesView.IndexOf(r) + modifier;
+                        if (tmpIndex >= RectanglesView.Count())
+                        {
+                            tmpIndex = 0;
+                        }
+                        else if (tmpIndex < 0)
+                        {
+                            tmpIndex = RectanglesView.Count() - 1;
+                        }
+                        selectedCustomShape = RectanglesView[tmpIndex];
+                        break;
                     }
-                    else if (tmpIndex < 0)
-                    {
-                        tmpIndex = RectanglesView.Count() - 1;
-                    }
-                    selectedCustomShape = RectanglesView[tmpIndex];
-                    break;
                 }
             }
-
+            else if (RectanglesView.Count()>0)
+            {
+                selectedCustomShape = RectanglesView[0];
+            }
+            else
+            {
+                return;
+            }
+            
             if (_cropModeChecked == true)
             {
                 SaveShapeToField(selectedCustomShape);
@@ -1721,13 +1727,13 @@ namespace MachineLearningTrainer.DrawerTool
                                 Console.WriteLine("Rectangles count: " + Rectangles.Count);
                                 //
 
-                                string tmpFilterName = SelectedComboBoxItem;
-                                ComboBoxNames();
-                                SelectedComboBoxItem = tmpFilterName;
-                                if (RectanglesView.Count() == 0)
-                                {
-                                    SelectedComboBoxItem = "All Labels";
-                                }
+                                //string tmpFilterName = SelectedComboBoxItem;
+                                //ComboBoxNames();
+                                //SelectedComboBoxItem = tmpFilterName;
+                                //if (RectanglesView.Count() == 0)
+                                //{
+                                //    SelectedComboBoxItem = "All Labels";
+                                //}
                                 FilterName();
 
                                 break;
@@ -1736,6 +1742,8 @@ namespace MachineLearningTrainer.DrawerTool
                         break;
                     }
                 }
+
+                selectedCustomShape = null;
             }
         }
 
