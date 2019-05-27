@@ -189,6 +189,7 @@ namespace MachineLearningTrainer.DrawerTool
         private string label;
         private bool visible;
         private bool isSelected;
+        private bool isExpanded = false;
         private string parent;
         private int count = 100;
 
@@ -265,6 +266,20 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     this.isSelected = value;
                     NotifyPropertyChanged("IsSelected");
+                }
+            }
+        }
+
+        public bool IsExpanded
+        {
+            get { return this.isExpanded; }
+            set
+            {
+                if (isExpanded != value)
+                {
+                    Console.WriteLine("Subtype isExpanded: ");
+                    this.isExpanded = value;
+                    NotifyPropertyChanged("IsExpanded");
                 }
             }
         }

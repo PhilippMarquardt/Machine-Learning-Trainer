@@ -52,23 +52,6 @@
         </Style>
 
         <Style
-            x:Key="ColorCanvas"
-            BasedOn="{StaticResource {x:Type xctk:ColorCanvas}}"
-            TargetType="xctk:ColorCanvas">
-            <Style.Triggers>
-                <DataTrigger Binding="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" Value="Fill">
-                    <Setter Property="SelectedColor" Value="{Binding SelectedLabel.Fill}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" Value="Border">
-                    <Setter Property="SelectedColor" Value="{Binding SelectedLabel.Stroke}" />
-                </DataTrigger>
-                <DataTrigger Binding="{Binding SelectedModeItem, UpdateSourceTrigger=PropertyChanged}" Value="Both">
-                    <Setter Property="SelectedColor" Value="{Binding SelectedLabel.Fill}" />
-                </DataTrigger>
-            </Style.Triggers>
-        </Style>
-
-        <Style
             x:Key="IncreaseOpacityOnHover"
             BasedOn="{StaticResource {x:Type Button}}"
             TargetType="Button">
@@ -582,21 +565,19 @@
                 Grid.RowSpan="3"
             Grid.Column="5"
             HorizontalAlignment="Center"
-            VerticalAlignment="Top"
-            MouseDown="ColorPicker_MouseDown">
-                <TextBox
-                    x:Name="RenameTxtBox"
+            VerticalAlignment="Top">
+                <TextBlock
+                    Margin="20,0,20,5"
+                    HorizontalAlignment="Stretch"
+                    Foreground="Black"
+                    Background="Transparent"
+                    Text="Selected Label:" />
+                <TextBlock
                     Margin="20,0,20,0"
                     HorizontalAlignment="Stretch"
-                    HorizontalContentAlignment="Left"
-                    IsReadOnly="True"
-                    MouseDoubleClick="LabelTextBox_MouseDoubleClick"  
-                    LostFocus="LblTextBox_LostFocus"
-                    materialDesign:HintAssist.IsFloating="True"
                     Foreground="Black"
-                    Background="White"
-                    Text="{Binding SelectedLabel.Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                    materialDesign:HintAssist.Hint="Rename" />
+                    Background="Transparent"
+                    Text="{Binding SelectedLabel.Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
                 <Grid
                     HorizontalAlignment="Center"
                     MinWidth="120"
@@ -638,6 +619,7 @@
                                 HorizontalAlignment="Center"
                                 VerticalAlignment="Center">Mode:</Label>
                             <ComboBox
+                                x:Name="coloringMode"
                                 DockPanel.Dock="Right"
                                 Width="auto"
                                 Height="30"
@@ -648,22 +630,36 @@
                                 FontSize="14"
                                 Foreground="Black"
                                 ItemsSource="{Binding ModeItems}"
+                                SelectedItem="{Binding SelectedModeItem}"
                                 SelectedIndex="0"
-                                SelectedItem="{Binding SelectedModeItem, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+                                DropDownClosed="ColoringMode_DropDownClosed"/>
                         </DockPanel>
                     </Grid>
                     <xctk:ColorCanvas
-                    Background="Transparent"
-                    Foreground="Black"
-                    Style="{StaticResource ColorCanvas}"
-                    Margin="10"
-                    x:Name="_colorCanvas"
-                    Grid.Row="2"
-                    VerticalAlignment="Top"
-                    HorizontalAlignment="Center" 
-                    UsingAlphaChannel="False"
-                    MouseDown="ColorPicker_MouseDown"
-                    SelectedColorChanged="_colorCanvas_SelectedColorChanged">
+                        x:Name="fillColorCanvas"
+                        Background="Transparent"
+                        Foreground="Black"
+                        Visibility="Visible"
+                        Margin="10"
+                        Grid.Row="2"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center" 
+                        UsingAlphaChannel="False"
+                        SelectedColor="{Binding SelectedLabel.Fill, Mode=TwoWay}"
+                        SelectedColorChanged="_colorCanvas_SelectedColorChanged">
+                    </xctk:ColorCanvas>
+                    <xctk:ColorCanvas
+                        x:Name="strokeColorCanvas"
+                        Background="Transparent"
+                        Foreground="Black"
+                        Visibility="Hidden"
+                        Margin="10"
+                        Grid.Row="2"
+                        VerticalAlignment="Top"
+                        HorizontalAlignment="Center" 
+                        UsingAlphaChannel="False"
+                        SelectedColor="{Binding SelectedLabel.Stroke, Mode=TwoWay}"
+                        SelectedColorChanged="_colorCanvas_SelectedColorChanged">
                     </xctk:ColorCanvas>
                     <DockPanel 
                         VerticalAlignment="Center" 
@@ -696,7 +692,6 @@
                         ShowRecentColors="True"
                         ShowAvailableColors="True"
                         ShowStandardColors="True"/>
-
                     <Grid
                         Margin="5"
                         Grid.Row="5"
@@ -706,24 +701,6 @@
                             <ColumnDefinition Width="*" />
                             <ColumnDefinition Width="100" />
                         </Grid.ColumnDefinitions>
-                        <!--<Button
-                        x:Name="_addColorButton"
-                        Grid.Column="0"
-                        Click="_applyColorChange_Click" 
-                        Content="Add">
-                        <Style
-                            BasedOn="{StaticResource {x:Type Button}}"
-                            TargetType="Button">
-                            <Style.Triggers>
-                                <DataTrigger Binding="{Binding DeactivatedAddLabel}" Value="false">
-                                    <Setter Property="Visibility" Value="Visible" />
-                                </DataTrigger>
-                                <DataTrigger Binding="{Binding DeactivatedAddLabel}" Value="true">
-                                    <Setter Property="Visibility" Value="Hidden" />
-                                </DataTrigger>
-                            </Style.Triggers>
-                        </Style>
-                    </Button>-->
                         <Button
                             x:Name="_closeColorChange"
                             Grid.Column="2"
@@ -1420,7 +1397,7 @@
                 <Grid
                     Margin="5"
                     Background="White"
-                    >
+                    IsEnabled="{Binding IsEnabled}">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />

@@ -949,54 +949,111 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 animatedRoatateTransform.Angle = 0;
                 ColorPicker_Panel.Visibility = Visibility.Visible;
+                (this.DataContext as DrawerViewModel).IsEnabled = false;
                 gridLV.Width = new GridLength(265);
+
+                Console.WriteLine((this.DataContext as DrawerViewModel).SelectedLabel.Label);
             }
         }
 
+        /// <summary>
+        /// Shows ColorCanvas according to selected coloring mode in ComboBox
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ColoringMode_DropDownClosed(object sender, EventArgs e)
+        {
+            switch (coloringMode.Text)
+            {
+                case "Fill":
+                case "Both":
+                    fillColorCanvas.Visibility = Visibility.Visible;
+                    strokeColorCanvas.Visibility = Visibility.Hidden;
+                    _colorPicker.SelectedColor = fillColorCanvas.SelectedColor;
+                    break;
+                case "Border":
+                    fillColorCanvas.Visibility = Visibility.Hidden;
+                    strokeColorCanvas.Visibility = Visibility.Visible;
+                    _colorPicker.SelectedColor = strokeColorCanvas.SelectedColor;
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// Changes and refreshes Colorformat of all Rectangles of selected Label
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _colorCanvas_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            _colorPicker.SelectedColor = _colorCanvas.SelectedColor;
-            if (RenameTxtBox.IsFocused == true)
+            switch (coloringMode.Text)
             {
-                (this.DataContext as DrawerViewModel).Enter();
+                case "Fill":
+                case "Both":
+                    _colorPicker.SelectedColor = fillColorCanvas.SelectedColor;
+                    break;
+                case "Border":
+                    _colorPicker.SelectedColor = strokeColorCanvas.SelectedColor;
+                    break;
             }
+            
+
             (this.DataContext as DrawerViewModel).ChangeColor();
-            (this.DataContext as DrawerViewModel).ChangeOpacity();
+            //(this.DataContext as DrawerViewModel).ChangeOpacity();
         }
 
+        /// <summary>
+        /// Change Color by colorPicker
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _colorPicker_SelectedColorChanged(object sender, RoutedPropertyChangedEventArgs<System.Windows.Media.Color?> e)
         {
-            _colorCanvas.SelectedColor = _colorPicker.SelectedColor;
+            switch (coloringMode.Text)
+            {
+                case "Fill":
+                case "Both":
+                    fillColorCanvas.SelectedColor = _colorPicker.SelectedColor;
+                    break;
+                case "Border":
+                    strokeColorCanvas.SelectedColor = _colorPicker.SelectedColor;
+                    break;
+            }
         }
 
+        /// <summary>
+        /// Changes and refreshes Opacity of all Rectangles of selected Label
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _sliderOpacity_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             _opacityTextBox.Text = Convert.ToString(_sliderOpacity.Value);
             (this.DataContext as DrawerViewModel).ChangeOpacity();
         }
 
+        /// <summary>
+        /// Closes ColorPicker and reactivates TreeView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void _closeColorChange_Click(object sender, RoutedEventArgs e)
         {
-            animatedRoatateTransform.Angle = 0;
+            (this.DataContext as DrawerViewModel).IsEnabled = true;
+            animatedRoatateTransform.Angle = 180;
             listBoxLabels.Visibility = Visibility.Hidden;
             ColorPicker_Panel.Visibility = Visibility.Hidden;
             gridLV.Width = new GridLength(0);
 
-            (this.DataContext as DrawerViewModel).TestLabelName();
             (this.DataContext as DrawerViewModel).SelectedModeItem = "Fill";
+            fillColorCanvas.Visibility = Visibility.Visible;
+            strokeColorCanvas.Visibility = Visibility.Hidden;
+
             (this.DataContext as DrawerViewModel).ColorPickerEnabled = false;
 
             if ((this.DataContext as DrawerViewModel).DeactivatedAddLabel == false)
             {
                 (this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
-            }
-        }
-
-        private void ColorPicker_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if (RenameTxtBox.IsFocused == true)
-            {
-                (this.DataContext as DrawerViewModel).Enter();
             }
         }
 
