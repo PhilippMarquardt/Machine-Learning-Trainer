@@ -231,7 +231,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         void Zoom_In(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.OemPlus && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            if ((e.Key == Key.OemPlus || e.Key == Key.Add) && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
             {
                 zoomBorder.ZoomIn();
             }
@@ -239,7 +239,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         void Zoom_Out(object sender, KeyEventArgs e)
         {
-            if (e.Key == Key.OemMinus && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            if ((e.Key == Key.OemMinus || e.Key == Key.Subtract) && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
             {
                 zoomBorder.ZoomOut();
             }
@@ -1058,6 +1058,48 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Key-Bindings on Selected TreeView Element
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LabelTreeView_PreviewKeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Left)
+            {
+                (this.DataContext as DrawerViewModel).LeftButton_Move();
+            }
+            else if (e.Key == Key.Right)
+            {
+                (this.DataContext as DrawerViewModel).RightButton_Move();
+            }
+            else if (e.Key == Key.Up)
+            {
+                (this.DataContext as DrawerViewModel).UpButton_Move();
+            }
+            else if (e.Key == Key.Down)
+            {
+                (this.DataContext as DrawerViewModel).DownButton_Move();
+            }
+            else if (e.Key == Key.Left && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                (this.DataContext as DrawerViewModel).LeftButton1();
+            }
+            else if (e.Key == Key.Right && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                (this.DataContext as DrawerViewModel).RightButton1();
+            }
+            else if (e.Key == Key.Up && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                (this.DataContext as DrawerViewModel).UpButton1();
+            }
+            else if (e.Key == Key.Down && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                (this.DataContext as DrawerViewModel).DownButton1();
+            }
+        }
 
         #endregion
 

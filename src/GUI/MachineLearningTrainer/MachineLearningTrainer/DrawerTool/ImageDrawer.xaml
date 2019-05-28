@@ -130,13 +130,20 @@
                     Opacity="0.8"
                     Color="DodgerBlue" />
             </Style.Resources>
-
         </Style>
 
         <Style x:Key="MyListBoxStyle" TargetType="{x:Type ListBox}">
             <Style.Resources>
                 <SolidColorBrush
                     x:Key="{x:Static SystemColors.HighlightBrushKey}"
+                    Opacity="0.8"
+                    Color="DodgerBlue" />
+                <SolidColorBrush
+                    x:Key="{x:Static SystemColors.ControlBrushKey}"
+                    Opacity="0.8"
+                    Color="DodgerBlue" />
+                <SolidColorBrush
+                    x:Key="{x:Static SystemColors.InactiveSelectionHighlightBrushKey}"
                     Opacity="0.8"
                     Color="DodgerBlue" />
             </Style.Resources>
@@ -732,6 +739,53 @@
                 Style="{StaticResource MyListBoxStyle}" 
                 dd:DragDrop.IsDragSource="True"
                 dd:DragDrop.IsDropTarget="True">
+                
+                <ListBox.InputBindings>
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand_Move}" />
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand}"
+                        Modifiers="Ctrl+Shift" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand}"
+                        Modifiers="Ctrl+Shift" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand}"
+                        Modifiers="Ctrl+Shift" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand}"
+                        Modifiers="Ctrl+Shift" />
+                    <KeyBinding
+                        Key="Right"
+                        Command="{Binding RightButtonCommand1}"
+                        Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="Left"
+                        Command="{Binding LeftButtonCommand1}"
+                        Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="Down"
+                        Command="{Binding DownButtonCommand1}"
+                        Modifiers="Ctrl" />
+                    <KeyBinding
+                        Key="Up"
+                        Command="{Binding UpButtonCommand1}"
+                        Modifiers="Ctrl" />
+                </ListBox.InputBindings>
 
                 <ListBox.ItemTemplate>
                     <DataTemplate>
@@ -775,7 +829,7 @@
                                     Text="{Binding Id}" />
                                 <ToolTipService.ToolTip>
                                     <Grid>
-                                        <!--<Grid.Resources>
+                                        <Grid.Resources>
                                             <Style x:Key="lineStyle" TargetType="Line">
                                                 <Setter Property="Stroke" Value="LightGray" />
                                                 <Setter Property="Stretch" Value="Fill" />
@@ -804,9 +858,9 @@
                                             <RowDefinition Height="15" />
                                             <RowDefinition Height="15" />
                                             <RowDefinition Height="15" />
-                                        </Grid.RowDefinitions>-->
+                                        </Grid.RowDefinitions>
 
-                                        <!--<Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
+                                        <Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
                                         <Line Grid.Row="0" Style="{StaticResource horizontalLineStyle}" />
                                         <Line Grid.Row="1" Style="{StaticResource horizontalLineStyle}" />
                                         <Line Grid.Row="2" Style="{StaticResource horizontalLineStyle}" />
@@ -819,35 +873,7 @@
                                         <TextBlock Grid.Row ="0" Grid.Column="1" Text="{Binding Label}" Margin="5,0,0,0" />
                                         <TextBlock Grid.Row ="1" Grid.Column="1" Text="{Binding Id}" Margin="5,0,0,0"/>
                                         <TextBlock Grid.Row ="2" Grid.Column="1" Text="{Binding Center.X}" Margin="5,0,0,0"/>
-                                        <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>-->
-
-                                        <ListView
-                                            ItemsSource="{Binding Subtypes}"
-                                            IsEnabled="False">
-                                                    <ListView.ItemTemplate>
-                                                        <DataTemplate>
-                                                            <WrapPanel>
-                                                                <TextBlock Text="{Binding}" Foreground="White"
-                                                                           TextWrapping="Wrap"/>
-                                                            </WrapPanel>
-                                                        </DataTemplate>
-                                                    </ListView.ItemTemplate>    
-                                            <!--<ListView.Style>
-                                    <Style TargetType="ListView">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Label}" Value="{Binding ColorLabelFormat[0].Label}">
-                                                <Setter Property="ItemsSource" Value="{Binding ColorLabelFormat[0].Subtypes}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ListView.Style>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding }"
-                                    </StackPanel>
-                                </DataTemplate>-->
-                                        </ListView>
-
+                                        <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>
                                     </Grid>
                                 </ToolTipService.ToolTip>
                             </WrapPanel>
@@ -861,20 +887,6 @@
                                         </WrapPanel>
                                     </DataTemplate>
                                 </ListView.ItemTemplate>
-                                <!--<ListView.Style>
-                                    <Style TargetType="ListView">
-                                        <Style.Triggers>
-                                            <DataTrigger Binding="{Binding Label}" Value="{Binding ColorLabelFormat[0].Label}">
-                                                <Setter Property="ItemsSource" Value="{Binding ColorLabelFormat[0].Subtypes}" />
-                                            </DataTrigger>
-                                        </Style.Triggers>
-                                    </Style>
-                                </ListView.Style>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal">
-                                        <CheckBox IsChecked="{Binding }"
-                                    </StackPanel>
-                                </DataTemplate>-->
                             </ListView>
                             <Separator />
                         </StackPanel>
@@ -1385,7 +1397,7 @@
             
             
             
-            <!--  ListBox with All Labels and Text  -->
+            <!--  TreeView with All Labels and Text  -->
             <Border
                 BorderThickness="1"
                 BorderBrush="Black"
@@ -1502,6 +1514,7 @@
                         Panel.ZIndex="1"
                         ItemsSource="{Binding LabelColorFormat}"
                         SelectedItemChanged="LabelTreeView_SelectedItemChanged"
+                        PreviewKeyDown="LabelTreeView_PreviewKeyDown"
                         Foreground="Black">
                         <TreeView.Resources>
                             <Style TargetType="{x:Type TreeViewItem}">
@@ -1511,7 +1524,6 @@
                             <HierarchicalDataTemplate 
                                 DataType="{x:Type local:CustomShapeFormat}" 
                                 ItemsSource="{Binding Subtypes}">
-                                <!--<local:DTLabelColorFormatControl />-->
                                 <WrapPanel 
                                     Width="auto" 
                                     HorizontalAlignment="Left"
@@ -1575,8 +1587,8 @@
                                             <TextBlock Text="Show/Hide this Label Data" />
                                         </Button.ToolTip>
                                     </Button>
-                                
-                                
+
+
                                     <!--<Button
                                         Margin="0,0,10,0"
                                         Height="18"
@@ -1597,8 +1609,8 @@
                                             <TextBlock Text="Show/Hide this Label Meta-Data" />
                                         </Button.ToolTip>
                                     </Button>-->
-                                
-                                
+
+
                                     <Button
                                         Margin="0,0,10,0"
                                         Height="18"
@@ -1668,6 +1680,7 @@
                                         </Button.ToolTip>
                                     </Button>
                                     <TextBlock
+                                        Margin="0,0,5,0"
                                         VerticalAlignment="Center"
                                         Text="{Binding Count}">
                                     </TextBlock>
