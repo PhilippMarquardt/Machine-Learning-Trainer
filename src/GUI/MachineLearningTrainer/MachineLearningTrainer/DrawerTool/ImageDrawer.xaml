@@ -4,6 +4,7 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:MachineLearningTrainer.DrawerTool"
+    xmlns:converter="clr-namespace:MachineLearningTrainer.ValueConverter"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:xctk="http://schemas.xceed.com/wpf/xaml/toolkit"
@@ -39,7 +40,7 @@
           x:Key="DataContextProxy"
           Data="{Binding}" />
 
-
+        <converter:NullImageConverter x:Key="nullImageConverter" />
 
         <Style
             x:Key="BasicButtonStyle"
@@ -257,11 +258,7 @@
             Key="Tab"
             Command="{Binding TabPreviousShape}"
             Modifiers="Ctrl" />
-
-        <KeyBinding
-            Key="{Binding NewFileCommand.Key}"
-            Command="{Binding NewFileCommand}"
-            Modifiers="{Binding NewFileCommand.Modifiers}" />
+        
     </UserControl.InputBindings>
 
     <DockPanel>
@@ -753,7 +750,7 @@
                     <KeyBinding
                         Key="Down"
                         Command="{Binding DownButtonCommand_Move}" />
-                    <KeyBinding
+                    <!--<KeyBinding
                         Key="Left"
                         Command="{Binding LeftButtonCommand}"
                         Modifiers="Ctrl+Shift" />
@@ -768,7 +765,7 @@
                     <KeyBinding
                         Key="Down"
                         Command="{Binding DownButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
+                        Modifiers="Ctrl+Shift" />-->
                     <KeyBinding
                         Key="Right"
                         Command="{Binding RightButtonCommand1}"
@@ -958,7 +955,7 @@
                         <Rectangle
                             x:Name="Rectangle_FileExplorer"
                             Width="3"
-                            Height="{Binding ActualWidth, ElementName=FileExplorer_Button}"
+                            Height="{Binding ActualWidth, ElementName=Button_FileExplorer}"
                             Margin="1"
                             Fill="Gray" />
                         <Button
@@ -1155,7 +1152,7 @@
                             Width="auto"
                             Height="auto"
                             ClipToBounds="True"
-                            Source="{Binding ImagePath}" />
+                            Source="{Binding ImagePath, Converter={StaticResource nullImageConverter}}" />
 
                         <ItemsControl
                             x:Name="ad"

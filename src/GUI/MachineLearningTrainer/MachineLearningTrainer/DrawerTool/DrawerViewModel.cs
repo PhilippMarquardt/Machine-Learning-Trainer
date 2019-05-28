@@ -2048,7 +2048,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private CustomShapeFormat _selectedLabel = new CustomShapeFormat("", "", "", 1);
+        private CustomShapeFormat _selectedLabel = new CustomShapeFormat("", "White", "White", 0);
         private Subtypes _selectedSubLabel = new Subtypes("","");
         // Label of selected ListItem
         public CustomShapeFormat SelectedLabel
@@ -3352,6 +3352,9 @@ namespace MachineLearningTrainer.DrawerTool
             if (ImagePath != null)
             {
                 this.IsEnabled = true;
+                SelectedCustomShape = null;
+                SelectedLabel = new CustomShapeFormat("", "White", "White", 0);
+                SelectedSubLabel = new Subtypes("", "");
                 Rectangles.Clear();
                 RectanglesView.Clear();
                 LabelColorFormat.Clear();
@@ -3565,9 +3568,9 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                selectedCustomShape.X1 += 2;
-                selectedCustomShape.X2 += 2;
-                selectedCustomShape.XLeft += 2;
+                selectedCustomShape.X1 += ConfigClass.stepSize;
+                selectedCustomShape.X2 += ConfigClass.stepSize;
+                selectedCustomShape.XLeft += ConfigClass.stepSize;
                 selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
 
                 int tmpIndex = 0;
@@ -3601,9 +3604,9 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                selectedCustomShape.X1 -= 2;
-                selectedCustomShape.X2 -= 2;
-                selectedCustomShape.XLeft -= 2;
+                selectedCustomShape.X1 -= ConfigClass.stepSize;
+                selectedCustomShape.X2 -= ConfigClass.stepSize;
+                selectedCustomShape.XLeft -= ConfigClass.stepSize;
                 selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
 
                 int tmpIndex = 0;
@@ -3637,9 +3640,9 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                selectedCustomShape.Y1 -= 2;
-                selectedCustomShape.Y2 -= 2;
-                selectedCustomShape.YTop -= 2;
+                selectedCustomShape.Y1 -= ConfigClass.stepSize;
+                selectedCustomShape.Y2 -= ConfigClass.stepSize;
+                selectedCustomShape.YTop -= ConfigClass.stepSize;
                 selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
 
                 int tmpIndex = 0;
@@ -3673,9 +3676,9 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                selectedCustomShape.Y1 += 2;
-                selectedCustomShape.Y2 += 2;
-                selectedCustomShape.YTop += 2;
+                selectedCustomShape.Y1 += ConfigClass.stepSize;
+                selectedCustomShape.Y2 += ConfigClass.stepSize;
+                selectedCustomShape.YTop += ConfigClass.stepSize;
                 selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
 
                 int tmpIndex = 0;
@@ -3849,15 +3852,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void RightButton1()
         {
-            if (selectedCustomShape != null && selectedCustomShape.Width >= minShapeSize)
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize-ConfigClass.stepSize)
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                selectedCustomShape.X2 += 2;
-                selectedCustomShape.Width += 2;
+                selectedCustomShape.X2 += ConfigClass.stepSize;
+                selectedCustomShape.Width += ConfigClass.stepSize;
 
-                //selectedCustomShape.X2 += 2;
-                //selectedCustomShape.Width += 2;
+                //selectedCustomShape.X2 += ConfigClass.stepSize;
+                //selectedCustomShape.Width += ConfigClass.stepSize;
 
                 int tmpIndex = 0;
                 foreach (CustomShape r in Rectangles)
@@ -3891,13 +3894,13 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                //selectedCustomShape.X1 -= 2;
-                //selectedCustomShape.XLeft -= 2;
+                //selectedCustomShape.X1 -= ConfigClass.stepSize;
+                //selectedCustomShape.XLeft -= ConfigClass.stepSize;
                 //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-                //selectedCustomShape.Width += 2;
+                //selectedCustomShape.Width += ConfigClass.stepSize;
 
-                selectedCustomShape.X2 -= 2;
-                selectedCustomShape.Width -= 2;
+                selectedCustomShape.X2 -= ConfigClass.stepSize;
+                selectedCustomShape.Width -= ConfigClass.stepSize;
 
                 int tmpIndex = 0;
                 foreach (CustomShape r in Rectangles)
@@ -3929,13 +3932,13 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                //selectedCustomShape.Y1 -= 2;
-                //selectedCustomShape.YTop -= 2;
+                //selectedCustomShape.Y1 -= ConfigClass.stepSize;
+                //selectedCustomShape.YTop -= ConfigClass.stepSize;
                 //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                //selectedCustomShape.Height += 2;
+                //selectedCustomShape.Height += ConfigClass.stepSize;
 
-                selectedCustomShape.Y2 -= 2;
-                selectedCustomShape.Height -= 2;
+                selectedCustomShape.Y2 -= ConfigClass.stepSize;
+                selectedCustomShape.Height -= ConfigClass.stepSize;
 
                 int tmpIndex = 0;
                 foreach (CustomShape r in Rectangles)
@@ -3964,15 +3967,15 @@ namespace MachineLearningTrainer.DrawerTool
 
         public void DownButton1()
         {
-            if (selectedCustomShape != null && selectedCustomShape.Height >= minShapeSize)
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize-ConfigClass.stepSize)
             {
                 RemoveShapeFromField(selectedCustomShape);
 
-                //selectedCustomShape.Y2 += 2;
-                //selectedCustomShape.Height += 2;
+                //selectedCustomShape.Y2 += ConfigClass.stepSize;
+                //selectedCustomShape.Height += ConfigClass.stepSize;
 
-                selectedCustomShape.Y2 += 2;
-                selectedCustomShape.Height += 2;
+                selectedCustomShape.Y2 += ConfigClass.stepSize;
+                selectedCustomShape.Height += ConfigClass.stepSize;
 
                 int tmpIndex = 0;
                 foreach (CustomShape r in Rectangles)

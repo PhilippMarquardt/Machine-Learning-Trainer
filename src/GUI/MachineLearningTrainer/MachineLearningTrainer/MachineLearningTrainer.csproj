@@ -188,6 +188,7 @@
     <Compile Include="DecisionPages\WelcomePage.xaml.cs">
       <DependentUpon>WelcomePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="ValueConverter\NullImageConverter.cs" />
     <Compile Include="ValueConverter\SelectedLayerDense.cs" />
     <Compile Include="ValueConverter\SelectedLayerDropout.cs" />
     <Compile Include="ValueConverter\SelectedTypeDense.cs" />

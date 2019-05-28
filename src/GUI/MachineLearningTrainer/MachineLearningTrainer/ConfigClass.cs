@@ -22,6 +22,9 @@ namespace MachineLearningTrainer
         //min Heigth and Width of Shape
         public static double minShapeSize = 10;
 
+        //Stepsize for Keybindings
+        public static int stepSize = 2;
+
         //Dimensions of rectangles in which Canvas is splited for faster 
         //Shape detection -> "#region Divide img into fields for better performance"
         public static double fieldWidth = 200;
