@@ -230,7 +230,7 @@ namespace MachineLearningTrainer
 
                 writer.WriteEndDocument();
                 writer.Close();
-                System.Windows.MessageBox.Show("Successful!", "Save to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
+                //System.Windows.MessageBox.Show("Successful!", "Save to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
 
             }
             catch (Exception ex)
@@ -300,7 +300,7 @@ namespace MachineLearningTrainer
 
                 writer.WriteEndDocument();
                 writer.Close();
-                System.Windows.MessageBox.Show("Successful!", "Save Labels to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
+                //System.Windows.MessageBox.Show("Successful!", "Save Labels to XML", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Information, System.Windows.MessageBoxResult.OK);
 
             }
             catch (Exception ex)

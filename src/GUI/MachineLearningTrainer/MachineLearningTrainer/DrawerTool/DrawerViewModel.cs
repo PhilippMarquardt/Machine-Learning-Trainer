@@ -2945,7 +2945,7 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(), _canExecute));
+                return _exportPascalVoc ?? (_exportPascalVoc = new CommandHandler(() => ExportToPascal(CallMode.ICommand), _canExecute));
             }
         }
 
@@ -2963,9 +2963,11 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get
             {
-                return _exportLabels ?? (_exportLabels = new CommandHandler(() => ExportLabelData(), _canExecute));
+                return _exportLabels ?? (_exportLabels = new CommandHandler(() => ExportLabelData(CallMode.ICommand), _canExecute));
             }
         }
+
+        public enum CallMode { ICommand, Autosave };
 
         #endregion
 
@@ -2973,12 +2975,19 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// export rectangles to xml file
         /// </summary>
-        private void ExportToPascal()
+        public void ExportToPascal(CallMode callMode)
         {
-            ExportLabelData();
-            XMLWriter.WritePascalVocToXML(Rectangles.ToList(), ImagePath, Convert.ToInt32(MyCanvas.ActualWidth), Convert.ToInt32(MyCanvas.ActualHeight), 3);
-        }
+            if (ImagePath != null)
+            {
+                ExportLabelData(callMode);
+                XMLWriter.WritePascalVocToXML(Rectangles.ToList(), ImagePath, Convert.ToInt32(MyCanvas.ActualWidth), Convert.ToInt32(MyCanvas.ActualHeight), 3);
 
+                if (callMode == CallMode.ICommand)
+                {
+                    MessageBox.Show("Saving successful!", "Saved Rectangles and Labels", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+                }
+            }
+        }
 
         /// <summary>
         /// this method loads all rectangles from an xml file and draws them on the canvas
@@ -3286,9 +3295,14 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// export Label Data to .cpf file
         /// </summary>
-        private void ExportLabelData()
+        public void ExportLabelData(CallMode callMode)
         {
             XMLWriter.WriteLabelsToCPF(LabelColorFormat.ToList(), ImagePath);
+
+            if (callMode == CallMode.ICommand)
+            {
+                MessageBox.Show("Successful!", "Save Labels to XML", MessageBoxButton.OK, MessageBoxImage.Information, MessageBoxResult.OK);
+            }
         }
 
         #endregion

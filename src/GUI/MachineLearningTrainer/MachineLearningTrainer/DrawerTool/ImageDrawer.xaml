@@ -420,6 +420,30 @@
                 <RowDefinition x:Name="gridY1" Height="*" />
                 <RowDefinition x:Name="gridY2" Height="auto" />
             </Grid.RowDefinitions>
+            
+            <!-- SaveIcon -->
+            <Viewbox 
+                x:Name="saveIcon"
+                Width="60"  
+                Height="60" 
+                     Grid.Column="3"
+                     HorizontalAlignment="Left"
+                     Panel.ZIndex="100"
+                     Visibility="Hidden"
+                     Margin="15">
+                <Canvas 
+                    x:Name="saveIconCanvas"
+                    Width="24"
+                    Height="{Binding ActualWidth, RelativeSource={RelativeSource Self}}"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center">
+                    <Path 
+                        Data="M15,9H5V5H15M12,19A3,3 0 0,1 9,16A3,3 0 0,1 12,13A3,3 0 0,1 15,16A3,3 0 0,1 12,19M17,3H5C3.89,3 3,3.9 3,5V19A2,2 0 0,0 5,21H19A2,2 0 0,0 21,19V7L17,3Z" 
+                        Fill="DodgerBlue" 
+                        Stretch="UniformToFill"
+                        Height="{Binding ActualWidth, ElementName=saveIconCanvas}"/>
+                </Canvas>
+            </Viewbox>
 
             <!-- StackPanel with Buttons -->
             <StackPanel

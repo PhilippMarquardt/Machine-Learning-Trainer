@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace MachineLearningTrainer
 {
@@ -10,6 +11,30 @@ namespace MachineLearningTrainer
     {
         //Set to True, if you want to use the whole program
         public static bool IsDevModeEnabled = false;
+
+        #region ConfigData for ImageDrawer.xaml.cs
+        //ConfigData for ImageDrawer.xaml.cs
+
+        #region AutoSave
+        //Sets the autosave Intervall in seconds
+        public static double autosaveIntervall = 10;
+
+        //Sets minWidth of SaveIcon animation
+        public static double smallWidth = 24;
+
+        //Sets maxWidht of SaveIcon animation
+        public static double bigWidth = 48;
+
+        //Sets Animation duration
+        public static Duration durationSaveIconAnimated = new Duration(new TimeSpan(0, 0, 0, 1, 0));
+
+        //Sets Time that Save icon is shown
+        public static TimeSpan durationSaveIconShown =  new TimeSpan(0, 0, 0, 1, 50)
+
+        #endregion
+
+        #endregion
+
 
         #region ConfigData for DrawerViewModel
         //ConfigData for DrawerViewModel:

@@ -22,6 +22,7 @@ using System.Windows.Media.Animation;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 using System.Xml;
 
 namespace MachineLearningTrainer.DrawerTool
@@ -36,8 +37,28 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             DriveInfo[] drives = DriveInfo.GetDrives();
 
+            DispatcherTimer autosaveTimer = new DispatcherTimer(TimeSpan.FromSeconds(ConfigClass.autosaveIntervall), DispatcherPriority.Background, 
+                new EventHandler(DoAutoSave), Application.Current.Dispatcher);
+
             //foreach (DriveInfo driveInfo in drives)
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
+        }
+
+        private async void DoAutoSave(object sender, EventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).ExportToPascal(DrawerViewModel.CallMode.Autosave);
+
+            if ((this.DataContext as DrawerViewModel).ImagePath != null)
+            {
+                saveIcon.Visibility = Visibility.Visible;
+                
+                DoubleAnimation animationZoomIn = new DoubleAnimation(ConfigClass.smallWidth, ConfigClass.bigWidth, ConfigClass.durationSaveIconAnimated);
+
+                saveIcon.BeginAnimation(Viewbox.WidthProperty, animationZoomIn);
+
+                await Task.Delay(ConfigClass.durationSaveIconShown);
+                saveIcon.Visibility = Visibility.Hidden;
+            }
         }
 
 
