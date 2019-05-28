@@ -425,8 +425,11 @@
                 Width="30"
                 Height="30"
                 Opacity="0.2"
-                     Grid.Column="3"
-                     HorizontalAlignment="Left"
+                Grid.Column="3"
+                Grid.Row="0"
+                Grid.RowSpan="2"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
                      Panel.ZIndex="100"
                      Visibility="Visible"
                      Margin="15">
