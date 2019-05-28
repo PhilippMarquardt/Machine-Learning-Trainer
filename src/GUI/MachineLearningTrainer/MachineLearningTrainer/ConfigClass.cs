@@ -29,7 +29,7 @@ namespace MachineLearningTrainer
         public static Duration durationSaveIconAnimated = new Duration(new TimeSpan(0, 0, 0, 1, 0));
 
         //Sets Time that Save icon is shown
-        public static TimeSpan durationSaveIconShown =  new TimeSpan(0, 0, 0, 1, 50)
+        public static TimeSpan durationSaveIconShown = new TimeSpan(0, 0, 0, 1, 50);
 
         #endregion
 
