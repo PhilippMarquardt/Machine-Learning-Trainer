@@ -37,27 +37,42 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
             DriveInfo[] drives = DriveInfo.GetDrives();
 
-            DispatcherTimer autosaveTimer = new DispatcherTimer(TimeSpan.FromSeconds(ConfigClass.autosaveIntervall), DispatcherPriority.Background, 
+            DispatcherTimer autosaveTimer = new DispatcherTimer(TimeSpan.FromSeconds(ConfigClass.autosaveRefreshRate), DispatcherPriority.Background, 
                 new EventHandler(DoAutoSave), Application.Current.Dispatcher);
 
             //foreach (DriveInfo driveInfo in drives)
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
         }
 
+        private double timeCounter = 0;
+
         private async void DoAutoSave(object sender, EventArgs e)
         {
-            (this.DataContext as DrawerViewModel).ExportToPascal(DrawerViewModel.CallMode.Autosave);
+            timeCounter += ConfigClass.autosaveRefreshRate;
 
-            if ((this.DataContext as DrawerViewModel).ImagePath != null)
+            if (((this.DataContext as DrawerViewModel).ImagePath != null && (this.DataContext as DrawerViewModel).ChangeDetected == true)
+                || timeCounter > ConfigClass.autosaveIntervall)
             {
-                saveIcon.Visibility = Visibility.Visible;
-                
-                DoubleAnimation animationZoomIn = new DoubleAnimation(ConfigClass.smallWidth, ConfigClass.bigWidth, ConfigClass.durationSaveIconAnimated);
+                (this.DataContext as DrawerViewModel).ChangeDetected = false;
+                timeCounter = 0;
 
-                saveIcon.BeginAnimation(Viewbox.WidthProperty, animationZoomIn);
+                (this.DataContext as DrawerViewModel).ExportToPascal(DrawerViewModel.CallMode.Autosave);
 
+                //saveIcon.Visibility = Visibility.Visible;
+
+                //DoubleAnimation animationZoomIn = new DoubleAnimation(ConfigClass.smallWidth, ConfigClass.bigWidth, ConfigClass.durationSaveIconAnimated);
+                //saveIcon.BeginAnimation(Viewbox.WidthProperty, animationZoomIn);
+
+                //await Task.Delay(ConfigClass.durationSaveIconShown);
+                //saveIcon.Visibility = Visibility.Hidden;
+
+
+                DoubleAnimation increaseOpacity = new DoubleAnimation(ConfigClass.minOpacity, ConfigClass.maxOpacity, ConfigClass.durationSaveIconAnimated);
+                DoubleAnimation decreaseOpacity = new DoubleAnimation(ConfigClass.maxOpacity, ConfigClass.minOpacity, ConfigClass.durationSaveIconAnimated);
+
+                saveIcon.BeginAnimation(Viewbox.OpacityProperty, increaseOpacity);
                 await Task.Delay(ConfigClass.durationSaveIconShown);
-                saveIcon.Visibility = Visibility.Hidden;
+                saveIcon.BeginAnimation(Viewbox.OpacityProperty, decreaseOpacity);
             }
         }
 
@@ -1060,6 +1075,8 @@ namespace MachineLearningTrainer.DrawerTool
         /// <param name="e"></param>
         private void _closeColorChange_Click(object sender, RoutedEventArgs e)
         {
+            (this.DataContext as DrawerViewModel).ChangeDetected = true;
+
             (this.DataContext as DrawerViewModel).IsEnabled = true;
             animatedRoatateTransform.Angle = 180;
             listBoxLabels.Visibility = Visibility.Hidden;

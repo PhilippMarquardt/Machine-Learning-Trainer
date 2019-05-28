@@ -607,6 +607,8 @@ namespace MachineLearningTrainer.DrawerTool
                     RefreshRectangleCount();
                     ComboBoxNames();
 
+                    ChangeDetected = true;
+
                     OnPropertyChanged("RectanglesView");
                 }
             }
@@ -681,6 +683,8 @@ namespace MachineLearningTrainer.DrawerTool
 
                     DuplicateShape(tmpX1, tmpY1, tmpWidth, tmpHeight, tmpSubtypes);
                 }
+
+                ChangeDetected = true;
             }
         }
 
@@ -929,6 +933,8 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                     tmpIndex++;
                 }
+
+                ChangeDetected = true;
 
                 selectedCustomShape.Move = false;
             }
@@ -1303,6 +1309,7 @@ namespace MachineLearningTrainer.DrawerTool
                 tmpIndex++;
             }
 
+            ChangeDetected = true;
             selectedCustomShape.Resize = false;
         }
 
@@ -1686,6 +1693,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region Delete Routine
 
+        #region Command
+
         private ICommand _deleteCommand;
         public ICommand DeleteCommand
         {
@@ -1694,6 +1703,8 @@ namespace MachineLearningTrainer.DrawerTool
                 return _deleteCommand ?? (_deleteCommand = new CommandHandler(() => OnDelete(true), true));
             }
         }
+
+        #endregion
 
         /// <summary>
         /// Delete the selected shape
@@ -1743,6 +1754,8 @@ namespace MachineLearningTrainer.DrawerTool
                     }
                 }
 
+                ChangeDetected = true;
+
                 selectedCustomShape = null;
             }
         }
@@ -1755,6 +1768,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region Undo
 
+        #region Command
+
         private ICommand _undoStackCommand;
         public ICommand UndoCommand
         {
@@ -1763,6 +1778,8 @@ namespace MachineLearningTrainer.DrawerTool
                 return _undoStackCommand ?? (_undoStackCommand = new CommandHandler(() => Undo(), _canExecute));
             }
         }
+
+        #endregion
 
         /// <summary>
         /// this method undoes actions on canvas 
@@ -1843,6 +1860,8 @@ namespace MachineLearningTrainer.DrawerTool
                         }
                 }
 
+                ChangeDetected = true;
+
                 RefreshRectangleCount();
 
             }
@@ -1874,6 +1893,8 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region Redo
 
+        #region Command
+
         private ICommand _redoStackCommand;
         public ICommand RedoCommand
         {
@@ -1882,6 +1903,8 @@ namespace MachineLearningTrainer.DrawerTool
                 return _redoStackCommand ?? (_redoStackCommand = new CommandHandler(() => Redo(), _canExecute));
             }
         }
+
+        #endregion
 
 
         /// <summary>
@@ -1964,6 +1987,9 @@ namespace MachineLearningTrainer.DrawerTool
                             break;
                         }
                 }
+
+                ChangeDetected = true;
+
                 RefreshRectangleCount();
             }
             OnPropertyChanged("");
@@ -2374,6 +2400,8 @@ namespace MachineLearningTrainer.DrawerTool
                 CheckFormat(selectedCustomShape);
             }
             SortList();
+
+            ChangeDetected = true;
         }
 
         internal void ShowHideData()
@@ -2433,6 +2461,8 @@ namespace MachineLearningTrainer.DrawerTool
                 SelectedSubLabel = SelectedLabel.Subtypes[SelectedLabel.Subtypes.Count() - 1];
                 SelectedSubLabel.IsSelected = true;
                 SelectedLabel = null;
+
+                ChangeDetected = true;
             }
         }
 
@@ -2688,6 +2718,8 @@ namespace MachineLearningTrainer.DrawerTool
                         }
                     }
                 }
+
+                ChangeDetected = true;
             }
         }
 
@@ -2764,63 +2796,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
             SelectedLabel = LabelColorFormat[LabelColorFormat.Count() - 1];
             RefreshLabelList();
-        }
 
-        /// <summary>
-        /// Adds a new ColorFormat with Random Colors for Border and Fill when creating new Rectangle and no Label is Selected in ComboBox
-        /// </summary>
-        /// <param name="customShape"></param>
-        /// <returns></returns>
-        private CustomShape AddLabelColorFormat(CustomShape customShape)
-        {
-            if (LabelColorFormat.Count() > 0)
-            {
-                int i = -1;
-                bool tmpBool = false;
-                while(tmpBool == false)
-                {
-                    tmpBool = true;
-                    i++;
-                    foreach (var r in LabelColorFormat)
-                    {
-                        if (r.Label == "default" + Convert.ToString(i))
-                        {
-                            tmpBool = false;
-                            break;
-                        }
-                    }
-                }
-
-                string tmpLabel = "default" + Convert.ToString(i);
-                Random random = new System.Random(i);
-
-                string[] rand = new string[6];
-
-                for (int j = 0; j < 6; j++)
-                {
-                    int randNum = random.Next(0, 255);
-                    if (randNum < 16)
-                    {
-                        rand[j] = "0";
-                    }
-                    rand[j] += randNum.ToString("X");
-                }
-
-                string tmpColor1 = "#" + rand[0] + rand[1] + rand[2];
-                string tmpColor2 = "#" + rand[3] + rand[4] + rand[5];
-
-                LabelColorFormat.Add(new CustomShapeFormat(tmpLabel, tmpColor1, tmpColor2, 0.3));
-
-            }
-            else
-            {
-                LabelColorFormat.Add(new CustomShapeFormat("default0", "White", "LawnGreen", 0.3));
-            }
-            SelectedLabel = LabelColorFormat[LabelColorFormat.Count() - 1];
-            customShape.Label = SelectedLabel.Label;
-            RefreshLabelList();
-
-            return customShape;
+            ChangeDetected = true;
         }
 
         /// <summary>
@@ -2849,8 +2826,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
             
         }
-
-
 
         /// <summary>
         /// Checks Label and if allready exists, copys Color-Format
@@ -2881,6 +2856,17 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
+        #endregion
+
+
+        #region Autosave
+
+        /// <summary>
+        /// true if something was changed e.g. Rectangle drawn/duplicated/resized or Label changed/added/removed
+        /// false if now changes were detected to prevent saving the whole time
+        /// </summary>
+        public bool ChangeDetected = false;
 
         #endregion
 
@@ -2979,8 +2965,15 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (ImagePath != null)
             {
+                string tmpPath = ImagePath;
+
                 ExportLabelData(callMode);
-                XMLWriter.WritePascalVocToXML(Rectangles.ToList(), ImagePath, Convert.ToInt32(MyCanvas.ActualWidth), Convert.ToInt32(MyCanvas.ActualHeight), 3);
+                if (callMode == CallMode.Autosave)
+                {
+                    tmpPath = ImagePath.Remove(ImagePath.LastIndexOf('.')) + "_AutosaveBackup" + ImagePath.Substring(ImagePath.LastIndexOf('.'));
+                }
+
+                XMLWriter.WritePascalVocToXML(Rectangles.ToList(), tmpPath, Convert.ToInt32(MyCanvas.ActualWidth), Convert.ToInt32(MyCanvas.ActualHeight), 3);
 
                 if (callMode == CallMode.ICommand)
                 {
@@ -3297,7 +3290,14 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void ExportLabelData(CallMode callMode)
         {
-            XMLWriter.WriteLabelsToCPF(LabelColorFormat.ToList(), ImagePath);
+            string tmpPath = ImagePath;
+
+            if (callMode == CallMode.Autosave)
+            {
+                tmpPath = ImagePath.Remove(ImagePath.LastIndexOf('.')) + "_AutosaveBackup" + ImagePath.Substring(ImagePath.LastIndexOf('.'));
+            }
+
+            XMLWriter.WriteLabelsToCPF(LabelColorFormat.ToList(), tmpPath);
 
             if (callMode == CallMode.ICommand)
             {

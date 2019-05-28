@@ -14,7 +14,7 @@ namespace MachineLearningTrainer.DrawerTool
         private string fill;
         private string stroke;
         private double opacity;
-        private int count = 100;
+        private int count = 0;
         private bool visible;
         private bool isSelected;
         private bool isExpanded;
@@ -191,7 +191,7 @@ namespace MachineLearningTrainer.DrawerTool
         private bool isSelected;
         private bool isExpanded = false;
         private string parent;
-        private int count = 100;
+        private int count = 0;
 
         public Subtypes(string label, string parent)
         {

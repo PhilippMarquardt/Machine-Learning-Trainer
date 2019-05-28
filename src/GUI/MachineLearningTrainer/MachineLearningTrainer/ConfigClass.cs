@@ -16,20 +16,26 @@ namespace MachineLearningTrainer
         //ConfigData for ImageDrawer.xaml.cs
 
         #region AutoSave
-        //Sets the autosave Intervall in seconds
-        public static double autosaveIntervall = 10;
+        //Sets the autosave Intervall in seconds (always saves)
+        public static double autosaveIntervall = 60;
+        //Sets the autosave refreshrate that saves always when a change has occured
+        public static double autosaveRefreshRate = 1;
 
         //Sets minWidth of SaveIcon animation
         public static double smallWidth = 24;
-
         //Sets maxWidht of SaveIcon animation
         public static double bigWidth = 48;
 
-        //Sets Animation duration
-        public static Duration durationSaveIconAnimated = new Duration(new TimeSpan(0, 0, 0, 1, 0));
+        //Sets minOpacity of SaveIcon animation
+        public static double minOpacity = 0.2;
+        //Sets maxOpacity of SaveIcon animation
+        public static double maxOpacity = 0.7;
 
-        //Sets Time that Save icon is shown
-        public static TimeSpan durationSaveIconShown = new TimeSpan(0, 0, 0, 1, 50);
+        //Sets Animation TimeSpan
+        public static TimeSpan durationSaveIconShown = new TimeSpan(0, 0, 0, 0, 150);
+
+        //Sets Animation duration
+        public static Duration durationSaveIconAnimated = new Duration(durationSaveIconShown);
 
         #endregion
 
