@@ -2309,8 +2309,12 @@ namespace MachineLearningTrainer.DrawerTool
 
         private void OnChangeLabel(object label)
         {
-            SelectedCustomShape.Label = label.ToString();
-            CheckFormat(SelectedCustomShape);
+            if (label.ToString() != SelectedCustomShape.Label)
+            {
+                SelectedCustomShape.Label = label.ToString();
+                SelectedCustomShape.Subtypes.Clear();
+                CheckFormat(SelectedCustomShape);
+            }
         }
 
         private void OnChangeSubtype(object label)
@@ -3075,6 +3079,8 @@ namespace MachineLearningTrainer.DrawerTool
 
             if (dst != null)
             {
+                LoadLabelData(dst);
+
                 XmlDocument doc = new XmlDocument();
                 doc.Load(dst);
 
@@ -3148,9 +3154,9 @@ namespace MachineLearningTrainer.DrawerTool
         /// <summary>
         /// Load LabelData when Loading image
         /// </summary>
-        public void LoadLabelData()
+        public void LoadLabelData(string destFileName)
         {
-            string destFileName = ImagePath.Remove(ImagePath.LastIndexOf('.')) + "_LabelData.cpf";
+            destFileName = destFileName.Remove(ImagePath.LastIndexOf('.')) + "_LabelData.cpf";
 
             if (File.Exists(destFileName) == true)
             {
@@ -3387,7 +3393,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     fields[i] = new ObservableCollection<CustomShape>();
                 }
-                LoadLabelData();
+                LoadLabelData(ImagePath);
                 LoadRectangles();
 
                 RefreshRectangleCount();

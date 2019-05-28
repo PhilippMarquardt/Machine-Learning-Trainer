@@ -516,7 +516,7 @@ namespace MachineLearningTrainer.DrawerTool
                     (this.DataContext as DrawerViewModel).IsEnabled = true;
                     (this.DataContext as DrawerViewModel).Rectangles.Clear();
 
-                    (this.DataContext as DrawerViewModel).LoadLabelData();
+                    (this.DataContext as DrawerViewModel).LoadLabelData((this.DataContext as DrawerViewModel).ImagePath);
                     (this.DataContext as DrawerViewModel).LoadRectangles();
                     (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
