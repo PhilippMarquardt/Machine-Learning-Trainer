@@ -7,6 +7,7 @@ using System.Windows;
 
 using System.ComponentModel;
 using System.Collections.ObjectModel;
+using System.Windows.Media.Imaging;
 
 namespace MachineLearningTrainer.DrawerTool
 {
@@ -29,6 +30,8 @@ namespace MachineLearningTrainer.DrawerTool
         private double yTop;
         private double yTopBorder;
         private int id;
+
+        private BitmapImage croppedImage;
 
         private double opacity;
         private string fill;
@@ -175,6 +178,7 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #region Informations for Geometrie (Drawing in XAML)
 
         public double Width
         {
@@ -311,6 +315,7 @@ namespace MachineLearningTrainer.DrawerTool
             get { return this.id; }
         }
 
+        #endregion
 
         #region Colorinformations for Drawing
 
@@ -478,6 +483,18 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public BitmapImage CroppedImage
+        {
+            get => croppedImage;
+            set
+            {
+                if (value != croppedImage)
+                {
+                    croppedImage = value;
+                    NotifyPropertyChanged("CroppedImage");
+                }
+            }
+        }
 
         public event PropertyChangedEventHandler PropertyChanged;
 

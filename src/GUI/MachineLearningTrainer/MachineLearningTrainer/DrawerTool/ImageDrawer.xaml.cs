@@ -710,9 +710,11 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 animatedRoatateTransform.Angle = 0;
                 listBoxLabels.Visibility = Visibility.Visible;
-                gridLV.Width = new GridLength(150);
+                gridLV.Width = GridLength.Auto;
             }
         }
+
+
 
         #region Labelset Panel
 
@@ -1140,6 +1142,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
         #endregion
+
 
     }
 }

@@ -312,11 +312,11 @@
                         <Image Source="/Icons/loadxml.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--<Separator />-->
-                <!--<MenuItem
+                <!--<Separator />
+                <MenuItem
                     Command="{Binding UpdatePreviewsCommand}"
                     Header="Update Previews"
-                    IsEnabled="{Binding OnDelete}">
+                    IsEnabled="{Binding IsEnabled}">
                     <MenuItem.Icon>
                         <Image Source="/Icons/update.png" />
                     </MenuItem.Icon>
@@ -740,14 +740,26 @@
                 </Grid>
             </StackPanel>
 
+            <!--<Button
+                Grid.Row="0"
+                Grid.Column="5"
+                HorizontalAlignment="Left"
+                Margin="10,0,0,0"
+                Command="{Binding ChangeListViewMode}">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Image Margin="2" Source="{Binding ListViewModeIcon}" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>-->
             <ListBox
                 Visibility="Hidden"
                 x:Name="listBoxLabels"
-                Grid.Row="0"
+                Grid.Row="1"
                 Grid.RowSpan="2"
                 Grid.Column="5"
-                Width="140"
-                Margin="5,10,5,10"
+                Width="auto"
+                Margin="5,10,15,10"
                 HorizontalAlignment="Stretch"
                 VerticalAlignment="Stretch"
                 Panel.ZIndex="1"
@@ -814,26 +826,18 @@
                     <DataTemplate>
                         <StackPanel>
                             <WrapPanel Width="auto" HorizontalAlignment="Left">
-                                <!--<TextBox
-                                    Height="auto"
-                                    x:Name="lblTextBox"
-                                    Width="60"
-                                    HorizontalAlignment="Left"
+                                <Image
                                     VerticalAlignment="Center"
-                                    TextAlignment="Left"
-                                    AcceptsReturn="False"
-                                    FontSize="12"
-                                    Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    IsReadOnly="True"
-                                    TextChanged="LblTextBox_TextChanged"
-                                    MouseDoubleClick="LblTextBox_MouseDoubleClick"
-                                    LostFocus="LblTextBox_LostFocus"
-                                    TextWrapping="Wrap"
-                                    Padding="5,0,5,0"
-                                    Margin="0,5,0,5"/>-->
-                                <TextBlock
+                                    Width="50"
+                                    Height="50"
+                                    Margin="10"
+                                    Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
+                                <StackPanel>
+                                    <WrapPanel Width="auto" HorizontalAlignment="Left">
+                                        <TextBlock
+                                    VerticalAlignment="Center"
                                     Height="auto"
-                                    Width="76"
+                                    Width="60"
                                     HorizontalAlignment="Left"
                                     TextAlignment="Left"
                                     FontSize="12"
@@ -841,77 +845,80 @@
                                     Padding="5,0,5,0"
                                     Margin="0,5,0,5"
                                     Text="{Binding Label, UpdateSourceTrigger=PropertyChanged}" />
-                                <TextBlock
+                                        <TextBlock
                                     Height="auto"
                                     Width="30"
                                     HorizontalAlignment="Left"
-                                    TextAlignment="Left"
+                                    VerticalAlignment="Center"
+                                    TextAlignment="Right"
                                     FontSize="12"
                                     Padding="5,0,5,0"
                                     Margin="0,5,0,5"
                                     Text="{Binding Id}" />
-                                <ToolTipService.ToolTip>
-                                    <Grid>
-                                        <Grid.Resources>
-                                            <Style x:Key="lineStyle" TargetType="Line">
-                                                <Setter Property="Stroke" Value="LightGray" />
-                                                <Setter Property="Stretch" Value="Fill" />
-                                                <Setter Property="StrokeDashArray" Value="1,2" />
-                                            </Style>
-
-                                            <Style x:Key="horizontalLineStyle" TargetType="Line" BasedOn="{StaticResource lineStyle}">
-                                                <Setter Property="X2" Value="1" />
-                                                <Setter Property="VerticalAlignment" Value="Bottom" />
-                                                <Setter Property="Grid.ColumnSpan" Value="{Binding Path=ColumnDefinitions.Count, RelativeSource={RelativeSource AncestorType=Grid}}"/>
-                                            </Style>
-
-                                            <Style x:Key="verticalLineStyle" TargetType="Line" BasedOn="{StaticResource lineStyle}">
-                                                <Setter Property="Y2" Value="1" />
-                                                <Setter Property="HorizontalAlignment" Value="Right" />
-                                                <Setter Property="Grid.RowSpan" Value="{Binding Path=RowDefinitions.Count, RelativeSource={RelativeSource AncestorType=Grid}}"/>
-                                            </Style>
-                                        </Grid.Resources>
-
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition Width="2*" />
-                                            <ColumnDefinition Width="*" />
-                                        </Grid.ColumnDefinitions>
-                                        <Grid.RowDefinitions>
-                                            <RowDefinition Height="15" />
-                                            <RowDefinition Height="15" />
-                                            <RowDefinition Height="15" />
-                                            <RowDefinition Height="15" />
-                                        </Grid.RowDefinitions>
-
-                                        <Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
-                                        <Line Grid.Row="0" Style="{StaticResource horizontalLineStyle}" />
-                                        <Line Grid.Row="1" Style="{StaticResource horizontalLineStyle}" />
-                                        <Line Grid.Row="2" Style="{StaticResource horizontalLineStyle}" />
-
-                                        <TextBlock Grid.Row ="0" Grid.Column="0" Text="Label: " />
-                                        <TextBlock Grid.Row ="1" Grid.Column="0" Text="Id: " />
-                                        <TextBlock Grid.Row ="2" Grid.Column="0" Text="Center.X: " />
-                                        <TextBlock Grid.Row ="3" Grid.Column="0" Text="Center.Y: " />
-
-                                        <TextBlock Grid.Row ="0" Grid.Column="1" Text="{Binding Label}" Margin="5,0,0,0" />
-                                        <TextBlock Grid.Row ="1" Grid.Column="1" Text="{Binding Id}" Margin="5,0,0,0"/>
-                                        <TextBlock Grid.Row ="2" Grid.Column="1" Text="{Binding Center.X}" Margin="5,0,0,0"/>
-                                        <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>
-                                    </Grid>
-                                </ToolTipService.ToolTip>
-                            </WrapPanel>
-                            <ListView
+                                    </WrapPanel>
+                                    <ListView
                                 ItemsSource="{Binding Subtypes}"
                                 IsEnabled="False">
-                                <ListView.ItemTemplate>
-                                    <DataTemplate>
-                                        <WrapPanel>
-                                            <TextBlock Text="{Binding}" FontSize="10"/>
-                                        </WrapPanel>
-                                    </DataTemplate>
-                                </ListView.ItemTemplate>
-                            </ListView>
-                            <Separator />
+                                        <ListView.ItemTemplate>
+                                            <DataTemplate>
+                                                <WrapPanel>
+                                                    <TextBlock Text="{Binding}" FontSize="10"/>
+                                                </WrapPanel>
+                                            </DataTemplate>
+                                        </ListView.ItemTemplate>
+                                    </ListView>
+                                    <Separator />
+                                </StackPanel>
+                            </WrapPanel>
+                            <ToolTipService.ToolTip>
+                                <Grid>
+                                    <Grid.Resources>
+                                        <Style x:Key="lineStyle" TargetType="Line">
+                                            <Setter Property="Stroke" Value="LightGray" />
+                                            <Setter Property="Stretch" Value="Fill" />
+                                            <Setter Property="StrokeDashArray" Value="1,2" />
+                                        </Style>
+
+                                        <Style x:Key="horizontalLineStyle" TargetType="Line" BasedOn="{StaticResource lineStyle}">
+                                            <Setter Property="X2" Value="1" />
+                                            <Setter Property="VerticalAlignment" Value="Bottom" />
+                                            <Setter Property="Grid.ColumnSpan" Value="{Binding Path=ColumnDefinitions.Count, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                                        </Style>
+
+                                        <Style x:Key="verticalLineStyle" TargetType="Line" BasedOn="{StaticResource lineStyle}">
+                                            <Setter Property="Y2" Value="1" />
+                                            <Setter Property="HorizontalAlignment" Value="Right" />
+                                            <Setter Property="Grid.RowSpan" Value="{Binding Path=RowDefinitions.Count, RelativeSource={RelativeSource AncestorType=Grid}}"/>
+                                        </Style>
+                                    </Grid.Resources>
+
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="2*" />
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="15" />
+                                        <RowDefinition Height="15" />
+                                        <RowDefinition Height="15" />
+                                        <RowDefinition Height="15" />
+                                    </Grid.RowDefinitions>
+
+                                    <Line Grid.Column="0" Style="{StaticResource verticalLineStyle}" />
+                                    <Line Grid.Row="0" Style="{StaticResource horizontalLineStyle}" />
+                                    <Line Grid.Row="1" Style="{StaticResource horizontalLineStyle}" />
+                                    <Line Grid.Row="2" Style="{StaticResource horizontalLineStyle}" />
+
+                                    <TextBlock Grid.Row ="0" Grid.Column="0" Text="Label: " />
+                                    <TextBlock Grid.Row ="1" Grid.Column="0" Text="Id: " />
+                                    <TextBlock Grid.Row ="2" Grid.Column="0" Text="Center.X: " />
+                                    <TextBlock Grid.Row ="3" Grid.Column="0" Text="Center.Y: " />
+
+                                    <TextBlock Grid.Row ="0" Grid.Column="1" Text="{Binding Label}" Margin="5,0,0,0" />
+                                    <TextBlock Grid.Row ="1" Grid.Column="1" Text="{Binding Id}" Margin="5,0,0,0"/>
+                                    <TextBlock Grid.Row ="2" Grid.Column="1" Text="{Binding Center.X}" Margin="5,0,0,0"/>
+                                    <TextBlock Grid.Row ="3" Grid.Column="1" Text="{Binding Center.Y}" Margin="5,0,0,0"/>
+                                </Grid>
+                            </ToolTipService.ToolTip>
                         </StackPanel>
                     </DataTemplate>
                 </ListBox.ItemTemplate>

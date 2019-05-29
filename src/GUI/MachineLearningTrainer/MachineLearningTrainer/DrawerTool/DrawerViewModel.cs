@@ -595,6 +595,8 @@ namespace MachineLearningTrainer.DrawerTool
                     Rectangles.Add(createdRectangle);
                     RectanglesView.Add(createdRectangle);
                     SaveShapeToField(createdRectangle);
+                    UpdateCropedImage(Rectangles[indexRectangles]);
+
                     createdRectangle = null;
 
                     undoCustomShapes.Push(RectanglesView[indexRectanglesView]);
@@ -608,6 +610,7 @@ namespace MachineLearningTrainer.DrawerTool
                     ComboBoxNames();
 
                     ChangeDetected = true;
+
 
                     OnPropertyChanged("RectanglesView");
                 }
@@ -704,6 +707,8 @@ namespace MachineLearningTrainer.DrawerTool
             RectanglesView.Add(duplicatedCustomShape);
             Rectangles.Add(duplicatedCustomShape);
             SaveShapeToField(duplicatedCustomShape);
+            UpdateCropedImage(Rectangles[indexRectangles]);
+
             indexRectanglesView++;
             indexRectangles++;
             id++;
@@ -935,6 +940,8 @@ namespace MachineLearningTrainer.DrawerTool
                 }
 
                 ChangeDetected = true;
+
+                UpdateCropedImage(SelectedCustomShape);
 
                 selectedCustomShape.Move = false;
             }
@@ -1310,6 +1317,9 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
             ChangeDetected = true;
+
+            UpdateCropedImage(SelectedCustomShape);
+
             selectedCustomShape.Resize = false;
         }
 
@@ -1579,7 +1589,7 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         /// <summary>
-        /// Changing algorithm
+        /// Algorithm that selects next/previous shape
         /// </summary>
         /// <param name="mode"></param>
         private void ChangeShape(ChangeMode mode)
@@ -1820,6 +1830,8 @@ namespace MachineLearningTrainer.DrawerTool
                             Rectangles.Add(top);
                             SaveShapeToField(top);
 
+                            UpdateCropedImage(Rectangles[indexRectangles]);
+
                             indexRectanglesView++;
                             indexRectangles++;
                             break;
@@ -1929,6 +1941,8 @@ namespace MachineLearningTrainer.DrawerTool
                             RectanglesView.Add(top);
                             Rectangles.Add(top);
                             SaveShapeToField(top);
+
+                            UpdateCropedImage(Rectangles[indexRectangles]);
 
                             indexRectanglesView++;
                             indexRectangles++;
@@ -2344,6 +2358,168 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
         }
+
+
+        #region CroppedImage
+
+        #region Variables
+
+        private BitmapImage _croppedImage;
+        public BitmapImage CroppedImage
+        {
+            get
+            {
+                return _croppedImage;
+            }
+            set
+            {
+                _croppedImage = value;
+                OnPropertyChanged("CroppedImage");
+            }
+        }
+
+
+        private BitmapImage _recI;
+        public BitmapImage RECI
+        {
+            get { return _recI; }
+            set
+            {
+                _recI = value;
+                OnPropertyChanged("RECI");
+            }
+        }
+
+        private System.Windows.Controls.Image _myPreview;
+        public System.Windows.Controls.Image MyPreview
+        {
+            get { return _myPreview; }
+            set { _myPreview = value; }
+        }
+
+        #endregion
+
+        #region Commands
+
+        //private ICommand _updatePreviewsCommand;
+        //public ICommand UpdatePreviewsCommand
+        //{
+        //    get
+        //    {
+        //        return _updatePreviewsCommand ?? (_updatePreviewsCommand = new CommandHandler(() => CropImageLabelBegin(), _canExecute));
+        //    }
+        //}
+
+        #endregion
+
+        BitmapImage bImage;
+
+        ///// <summary>
+        ///// update only the cropped image of the selected rectangle
+        ///// </summary>
+        ///// <param name="resizable"></param>
+        public void UpdateCropedImage(CustomShape selectedShape)
+        {
+            Console.WriteLine("UpdateCropedImage()");
+            selectedShape.CroppedImage = null;
+
+            if (bImage == null)
+            {
+                bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+            }
+            Bitmap src;
+            using (MemoryStream outStream = new MemoryStream())
+            {
+                BitmapEncoder enc = new BmpBitmapEncoder();
+                enc.Frames.Add(BitmapFrame.Create(bImage));
+                enc.Save(outStream);
+                System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+
+                src = new Bitmap(bitmap);
+            }
+
+
+            Mat mat = SupportCode.ConvertBmp2Mat(src);
+            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)selectedShape.X1, (int)selectedShape.Y1, (int)selectedShape.Width, (int)selectedShape.Height);
+
+            Mat croppedImage = new Mat(mat, rectCrop);
+            selectedShape.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+        }
+
+        /// <summary>
+        /// this method only cropes images when there is an item without a cropped image in the list
+        /// </summary>
+        public void CropImageLabelBegin()
+        {
+            if (MyPreview.Source != null)
+            {
+                if (bImage == null)
+                {
+                    bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+                }
+                Bitmap src;
+
+                using (MemoryStream outStream = new MemoryStream())
+                {
+                    BitmapEncoder enc = new BmpBitmapEncoder();
+                    enc.Frames.Add(BitmapFrame.Create(bImage));
+                    enc.Save(outStream);
+                    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+                    src = new Bitmap(bitmap);
+                }
+
+                foreach (var rec in RectanglesView)
+                {
+                    Mat mat = SupportCode.ConvertBmp2Mat(src);
+                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X1, (int)rec.Y1, (int)rec.Width, (int)rec.Height);
+
+                    Mat croppedImage = new Mat(mat, rectCrop);
+                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                }
+            }
+        }
+
+        /// <summary>
+        /// this method updates all cropped images in the list
+        /// </summary>
+        //public void UpdatePreviews()
+        //{
+        //    BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
+        //    Bitmap src;
+
+        //    using (MemoryStream outStream = new MemoryStream())
+        //    {
+        //        BitmapEncoder enc = new BmpBitmapEncoder();
+        //        enc.Frames.Add(BitmapFrame.Create(bImage));
+        //        enc.Save(outStream);
+        //        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+
+        //        src = new Bitmap(bitmap);
+        //    }
+
+        //    foreach (var rec in RectanglesView)
+        //    {
+        //        if (rec.CroppedImage == null)
+        //        {
+        //            rec.CroppedImage = null;
+        //            double RECX = rec.X1;
+        //            double RECY = rec.Y1;
+        //            double RECH = rec.Height;
+        //            double RECW = rec.Width;
+
+        //            Mat mat = SupportCode.ConvertBmp2Mat(src);
+        //            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
+
+        //            Mat croppedImage = new Mat(mat, rectCrop);
+        //            rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+
+        //        }
+        //    }
+        //}
+
+        #endregion
 
         #endregion
 
@@ -3148,7 +3324,7 @@ namespace MachineLearningTrainer.DrawerTool
             RefreshLabelList();
             ComboBoxNames();
             SortList();
-            await cropImageLabelBegin();
+            CropImageLabelBegin();
         }
 
         /// <summary>
@@ -3402,8 +3578,8 @@ namespace MachineLearningTrainer.DrawerTool
                 ComboBoxNames();
                 SortList();
                 FilterName();
-
-
+                bImage = null;
+                CropImageLabelBegin();
 
                 //Only for debugging
                 //for (int i = 0; i < 10; i++)
@@ -3593,19 +3769,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.XLeft += ConfigClass.stepSize;
                 selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3629,19 +3793,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.XLeft -= ConfigClass.stepSize;
                 selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3665,19 +3817,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.YTop -= ConfigClass.stepSize;
                 selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3701,19 +3841,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.YTop += ConfigClass.stepSize;
                 selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3882,19 +4010,7 @@ namespace MachineLearningTrainer.DrawerTool
                 //selectedCustomShape.X2 += ConfigClass.stepSize;
                 //selectedCustomShape.Width += ConfigClass.stepSize;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3922,19 +4038,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.X2 -= ConfigClass.stepSize;
                 selectedCustomShape.Width -= ConfigClass.stepSize;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3960,19 +4064,7 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.Y2 -= ConfigClass.stepSize;
                 selectedCustomShape.Height -= ConfigClass.stepSize;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
@@ -3997,23 +4089,36 @@ namespace MachineLearningTrainer.DrawerTool
                 selectedCustomShape.Y2 += ConfigClass.stepSize;
                 selectedCustomShape.Height += ConfigClass.stepSize;
 
-                int tmpIndex = 0;
-                foreach (CustomShape r in Rectangles)
-                {
-                    if (r.Id == selectedCustomShape.Id)
-                    {
-                        Rectangles.RemoveAt(tmpIndex);
-                        Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                        SaveShapeToField(selectedCustomShape);
-                        break;
-                    }
-                    tmpIndex++;
-                }
+                FinalizeArrowKeyCommand();
             }
         }
 
         #endregion
+
+
+        /// <summary>
+        /// Checks if SelectedCustomShape still on Image and then updates the collection with all Rectangles
+        /// </summary>
+        private void FinalizeArrowKeyCommand()
+        {
+            CheckIfSelectedCustomShapeOnCanvas();
+
+            int tmpIndex = 0;
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r.Id == selectedCustomShape.Id)
+                {
+                    Rectangles.RemoveAt(tmpIndex);
+                    Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                    UpdateCropedImage(SelectedCustomShape);
+
+                    SaveShapeToField(selectedCustomShape);
+                    break;
+                }
+                tmpIndex++;
+            }
+        }
 
         #endregion
 
@@ -4029,27 +4134,10 @@ namespace MachineLearningTrainer.DrawerTool
         public ObservableCollection<Polygon> polygonsCollection { get; set; } = new ObservableCollection<Polygon>();
         public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
 
-        #region CroppedImage
 
-        #region Variables
 
-        private BitmapImage _croppedImage;
-        public BitmapImage CroppedImage
-        {
-            get
-            {
-                return _croppedImage;
-            }
-            set
-            {
-                _croppedImage = value;
-                OnPropertyChanged("CroppedImage");
-            }
-        }
 
-        #endregion
 
-        #endregion
 
 
         private double x;
@@ -4076,12 +4164,7 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
-        private System.Windows.Controls.Image _myPreview;
-        public System.Windows.Controls.Image MyPreview
-        {
-            get { return _myPreview; }
-            set { _myPreview = value; }
-        }
+        
 
 
 
@@ -4101,173 +4184,12 @@ namespace MachineLearningTrainer.DrawerTool
             set { _zoomBorderHeight = value; }
         }
 
-        //public ResizableRectangle validateResizableRect(ResizableRectangle resizable)
-        //{
-        //    if (resizable.X < 0)
-        //    {
-        //        resizable.RectangleWidth += resizable.X;
-        //        resizable.X = 0;
-        //    }
-        //    if (resizable.Y < 0)
-        //    {
-        //        resizable.RectangleHeight += resizable.Y;
-        //        resizable.Y = 0;
-        //    }
-        //    if (resizable.X + resizable.RectangleWidth > MyCanvas.ActualWidth) resizable.RectangleWidth = MyCanvas.ActualWidth - resizable.X;
-        //    if (resizable.Y + resizable.RectangleHeight > MyCanvas.ActualHeight) resizable.RectangleHeight = MyCanvas.ActualHeight - resizable.Y;
-        //    return resizable;
-        //}
 
+        
 
-        ///// <summary>
-        ///// update only the cropped image of the selected rectangle
-        ///// </summary>
-        ///// <param name="resizable"></param>
-        //public void UpdateCropedImage(ResizableRectangle resizable)
-        //{
-        //    resizable = validateResizableRect(resizable);
-        //    if (resizable.RectangleHeight > 5 && resizable.RectangleWidth > 5)
-        //    {
-        //        BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-        //        Bitmap src;
-        //        using (MemoryStream outStream = new MemoryStream())
-        //        {
-        //            BitmapEncoder enc = new BmpBitmapEncoder();
-        //            enc.Frames.Add(BitmapFrame.Create(bImage));
-        //            enc.Save(outStream);
-        //            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
+        
 
-        //            src = new Bitmap(bitmap);
-        //        }
-
-
-        //        Mat mat = SupportCode.ConvertBmp2Mat(src);
-        //        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)resizable.X, (int)resizable.Y, (int)resizable.RectangleWidth, (int)resizable.RectangleHeight);
-
-        //        Mat croppedImage = new Mat(mat, rectCrop);
-        //        resizable.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-        //    }
-                
-        //}
-
-        //public void SelectClickedRectangle(ResizableRectangle resizableRectangle)
-        //{
-        //    resizableRectangle = validateResizableRect(resizableRectangle);
-        //    SelectedResizableRectangle = resizableRectangle;
-        //    OnPropertyChanged("SelectedResizableRectangle");
-        //}
-
-        private BitmapImage _recI;
-
-        public BitmapImage RECI
-        {
-            get { return _recI; }
-            set { _recI = value;
-                OnPropertyChanged("RECI");
-            }
-        }
-
-        /// <summary>
-        /// this method only cropes images when there is an item without a cropped image in the list
-        /// </summary>
-        public async Task cropImageLabelBegin()
-        {
-            //if (MyPreview.Source != null)
-            //{
-            //    BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-            //    Bitmap src;
-
-            //    using (MemoryStream outStream = new MemoryStream())
-            //    {
-            //        BitmapEncoder enc = new BmpBitmapEncoder();
-            //        enc.Frames.Add(BitmapFrame.Create(bImage));
-            //        enc.Save(outStream);
-            //        System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-            //        src = new Bitmap(bitmap);
-            //    }
-
-            //    foreach (var rec in AllRectanglesView)
-            //    {
-
-            //        if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
-            //        {
-            //            double RECX = rec.X;
-            //            double RECY = rec.Y;
-            //            double RECH = rec.RectangleHeight;
-            //            double RECW = rec.RectangleWidth;
-            //            RECI = rec.CroppedImage;
-
-            //            await Task.Run(() =>
-            //            {
-                            
-            //                Mat mat = SupportCode.ConvertBmp2Mat(src);
-            //                OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
-
-            //                Mat croppedImage = new Mat(mat, rectCrop);
-            //                RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
-            //            });
-
-            //            rec.CroppedImage = RECI;
-            //            OnPropertyChanged("CroppedImage");
-            //        }
-            //    }
-            //}
-        }
-
-        //private ICommand _updatePreviewsCommand;
-        //public ICommand UpdatePreviewsCommand
-        //{
-        //    get
-        //    {
-        //        return _updatePreviewsCommand ?? (_updatePreviewsCommand = new CommandHandler(() => UpdatePreviews(), _canExecute));
-        //    }
-        //}
-
-        /// <summary>
-        /// this method updates all cropped images in the list
-        /// </summary>
-        //public async Task UpdatePreviews()
-        //{
-            //BitmapImage bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
-            //Bitmap src;
-
-            //using (MemoryStream outStream = new MemoryStream())
-            //{
-            //    BitmapEncoder enc = new BmpBitmapEncoder();
-            //    enc.Frames.Add(BitmapFrame.Create(bImage));
-            //    enc.Save(outStream);
-            //    System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-            //    src = new Bitmap(bitmap);
-            //}
-
-            //foreach (var rec in AllRectanglesView)
-            //{
-            //    if (rec.X > 0 && rec.X + rec.RectangleWidth < MyCanvas.ActualWidth && rec.Y > 0 && rec.Y + rec.RectangleHeight < MyCanvas.ActualHeight && rec.CroppedImage == null)
-            //    {
-            //        rec.CroppedImage = null;
-            //        double RECX = rec.X;
-            //        double RECY = rec.Y;
-            //        double RECH = rec.RectangleHeight;
-            //        double RECW = rec.RectangleWidth;
-            //        RECI = rec.CroppedImage;
-
-            //        await Task.Run(() =>
-            //        {
-
-            //            Mat mat = SupportCode.ConvertBmp2Mat(src);
-            //            OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
-
-            //            Mat croppedImage = new Mat(mat, rectCrop);
-            //            RECI = SupportCode.ConvertMat2BmpImg(croppedImage);
-            //        });
-
-            //        rec.CroppedImage = RECI;
-            //        OnPropertyChanged("CroppedImage");
-            //    }
-            //}
-        //}
+        
 
 
 
