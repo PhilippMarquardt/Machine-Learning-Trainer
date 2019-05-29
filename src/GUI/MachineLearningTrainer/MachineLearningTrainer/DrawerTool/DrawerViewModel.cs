@@ -595,7 +595,11 @@ namespace MachineLearningTrainer.DrawerTool
                     Rectangles.Add(createdRectangle);
                     RectanglesView.Add(createdRectangle);
                     SaveShapeToField(createdRectangle);
-                    UpdateCropedImage(Rectangles[indexRectangles]);
+
+                    if (CroppedImageVisibility == Visibility.Visible)
+                    {
+                        UpdateCropedImage(Rectangles[indexRectangles]);
+                    }
 
                     createdRectangle = null;
 
@@ -707,7 +711,11 @@ namespace MachineLearningTrainer.DrawerTool
             RectanglesView.Add(duplicatedCustomShape);
             Rectangles.Add(duplicatedCustomShape);
             SaveShapeToField(duplicatedCustomShape);
-            UpdateCropedImage(Rectangles[indexRectangles]);
+
+            if (CroppedImageVisibility == Visibility.Visible)
+            {
+                UpdateCropedImage(Rectangles[indexRectangles]);
+            }
 
             indexRectanglesView++;
             indexRectangles++;
@@ -941,7 +949,10 @@ namespace MachineLearningTrainer.DrawerTool
 
                 ChangeDetected = true;
 
-                UpdateCropedImage(SelectedCustomShape);
+                if (CroppedImageVisibility == Visibility.Visible)
+                {
+                    UpdateCropedImage(SelectedCustomShape);
+                }
 
                 selectedCustomShape.Move = false;
             }
@@ -1318,7 +1329,10 @@ namespace MachineLearningTrainer.DrawerTool
 
             ChangeDetected = true;
 
-            UpdateCropedImage(SelectedCustomShape);
+            if (CroppedImageVisibility == Visibility.Visible)
+            {
+                UpdateCropedImage(SelectedCustomShape);
+            }
 
             selectedCustomShape.Resize = false;
         }
@@ -1830,7 +1844,10 @@ namespace MachineLearningTrainer.DrawerTool
                             Rectangles.Add(top);
                             SaveShapeToField(top);
 
-                            UpdateCropedImage(Rectangles[indexRectangles]);
+                            if (CroppedImageVisibility == Visibility.Visible)
+                            {
+                                UpdateCropedImage(Rectangles[indexRectangles]);
+                            }
 
                             indexRectanglesView++;
                             indexRectangles++;
@@ -1942,7 +1959,10 @@ namespace MachineLearningTrainer.DrawerTool
                             Rectangles.Add(top);
                             SaveShapeToField(top);
 
-                            UpdateCropedImage(Rectangles[indexRectangles]);
+                            if (CroppedImageVisibility == Visibility.Visible)
+                            {
+                                UpdateCropedImage(Rectangles[indexRectangles]);
+                            }
 
                             indexRectanglesView++;
                             indexRectangles++;
@@ -2035,7 +2055,7 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region RectanglesListView
 
-        #region Variables
+        #region Commands
 
         private ICommand _changeLabelCommand;
         public ICommand ChangeLabelCommand
@@ -2054,6 +2074,54 @@ namespace MachineLearningTrainer.DrawerTool
                 return _changeSubtypeCommand ?? (_changeSubtypeCommand = new RelayCommand(label => OnChangeSubtype(label), true));
             }
         }
+
+        private ICommand _changeListViewMode;
+        public ICommand ChangeListViewMode
+        {
+            get
+            {
+                return _changeListViewMode ?? (_changeListViewMode = new RelayCommand(label => OnChangeListViewMode(), true));
+            }
+        }
+
+        #endregion
+
+
+        #region Variables
+
+        private string listViewModeIcon = "/Icons/list_view.png";
+        public string ListViewModeIcon
+        {
+            get
+            {
+                return listViewModeIcon;
+            }
+            set
+            {
+                if (value != listViewModeIcon)
+                {
+                    listViewModeIcon = value;
+                    OnPropertyChanged("ListViewModeIcon");
+                }
+            }
+        }
+
+        private Visibility croppedImageVisibility = Visibility.Visible;
+        public Visibility CroppedImageVisibility
+        {
+            get => croppedImageVisibility;
+            set
+            {
+                if (value != croppedImageVisibility)
+                {
+                    croppedImageVisibility = value;
+                    OnPropertyChanged("CroppedImageVisibility");
+                }
+            }
+        }
+
+        public enum ListViewModes { List, ListView }; //gallery could be added here
+        public ListViewModes selectedListViewMode = ListViewModes.ListView;
 
         public string temp { get; set; }
 
@@ -2360,6 +2428,40 @@ namespace MachineLearningTrainer.DrawerTool
         }
 
 
+        private void OnChangeListViewMode()
+        {
+            int tmpIntListViewMode = (int)selectedListViewMode + 1;
+
+            if (tmpIntListViewMode >= Enum.GetValues(typeof(ListViewModes)).Length)
+            {
+                tmpIntListViewMode = 0;
+            }
+
+            selectedListViewMode = (ListViewModes)(tmpIntListViewMode);
+
+            switch (selectedListViewMode)
+            {
+                case ListViewModes.List:
+                    CroppedImageVisibility = Visibility.Collapsed;
+                    ListViewModeIcon = "/Icons/list.png";
+
+                    break;
+
+                case ListViewModes.ListView:
+                    CroppedImageVisibility = Visibility.Visible;
+                    ListViewModeIcon = "/Icons/list_view.png";
+
+                    CropImageLabelBegin();
+                    break;
+            }
+
+            //Console.WriteLine(Enum.GetValues(typeof(ListViewModes)).Length);
+            //Console.WriteLine(selectedListViewMode);
+            //Console.WriteLine((int)selectedListViewMode);
+
+        }
+
+
         #region CroppedImage
 
         #region Variables
@@ -2420,7 +2522,6 @@ namespace MachineLearningTrainer.DrawerTool
         ///// <param name="resizable"></param>
         public void UpdateCropedImage(CustomShape selectedShape)
         {
-            Console.WriteLine("UpdateCropedImage()");
             selectedShape.CroppedImage = null;
 
             if (bImage == null)
@@ -2454,6 +2555,8 @@ namespace MachineLearningTrainer.DrawerTool
         {
             if (MyPreview.Source != null)
             {
+                Mouse.OverrideCursor = Cursors.Wait;
+
                 if (bImage == null)
                 {
                     bImage = new BitmapImage(new Uri(MyPreview.Source.ToString()));
@@ -2470,14 +2573,32 @@ namespace MachineLearningTrainer.DrawerTool
                     src = new Bitmap(bitmap);
                 }
 
+                //tmpCounter to force GarbadgeCollector to clean up the memory every 10th iteration
+                int tmpCounter = 1;
+
                 foreach (var rec in RectanglesView)
                 {
-                    Mat mat = SupportCode.ConvertBmp2Mat(src);
-                    OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X1, (int)rec.Y1, (int)rec.Width, (int)rec.Height);
+                    if (rec.Changed == true)
+                    {
+                        rec.Changed = false;
+                        tmpCounter++;
+                        Mat mat = SupportCode.ConvertBmp2Mat(src);
+                        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rec.X1, (int)rec.Y1, (int)rec.Width, (int)rec.Height);
 
-                    Mat croppedImage = new Mat(mat, rectCrop);
-                    rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+                        Mat croppedImage = new Mat(mat, rectCrop);
+                        rec.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
+
+                        if (tmpCounter > 10)
+                        {
+                            System.GC.Collect();
+                            System.GC.WaitForPendingFinalizers();
+
+                            tmpCounter = 0;
+                        }
+                    }
                 }
+
+                Mouse.OverrideCursor = Cursors.Arrow;
             }
         }
 
@@ -4111,7 +4232,10 @@ namespace MachineLearningTrainer.DrawerTool
                     Rectangles.RemoveAt(tmpIndex);
                     Rectangles.Insert(tmpIndex, selectedCustomShape);
 
-                    UpdateCropedImage(SelectedCustomShape);
+                    if (CroppedImageVisibility == Visibility.Visible)
+                    {
+                        UpdateCropedImage(SelectedCustomShape);
+                    }
 
                     SaveShapeToField(selectedCustomShape);
                     break;

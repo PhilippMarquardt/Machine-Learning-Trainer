@@ -740,18 +740,19 @@
                 </Grid>
             </StackPanel>
 
-            <!--<Button
+            <Button
                 Grid.Row="0"
                 Grid.Column="5"
                 HorizontalAlignment="Left"
                 Margin="10,0,0,0"
-                Command="{Binding ChangeListViewMode}">
+                Command="{Binding ChangeListViewMode}"
+                Click="ChangeListViewMode_Click">
                 <Button.Template>
                     <ControlTemplate>
                         <Image Margin="2" Source="{Binding ListViewModeIcon}" />
                     </ControlTemplate>
                 </Button.Template>
-            </Button>-->
+            </Button>
             <ListBox
                 Visibility="Hidden"
                 x:Name="listBoxLabels"
@@ -831,7 +832,8 @@
                                     Width="50"
                                     Height="50"
                                     Margin="10"
-                                    Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
+                                    Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" 
+                                    Visibility="{Binding Path=Data.CroppedImageVisibility, Source={StaticResource DataContextProxy}}"/>
                                 <StackPanel>
                                     <WrapPanel Width="auto" HorizontalAlignment="Left">
                                         <TextBlock

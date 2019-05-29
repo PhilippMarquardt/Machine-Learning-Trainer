@@ -32,6 +32,7 @@ namespace MachineLearningTrainer.DrawerTool
         private int id;
 
         private BitmapImage croppedImage;
+        private bool changed = true;
 
         private double opacity;
         private string fill;
@@ -496,12 +497,28 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        public bool Changed
+        {
+            get => changed;
+            set
+            {
+                if (value != changed)
+                {
+                    changed = value;
+                }
+            }
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         private void NotifyPropertyChanged(string propertyName)
         {
             if (PropertyChanged != null)
             {
+                if (changed != true)
+                {
+                    changed = true;
+                }
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }

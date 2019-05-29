@@ -710,7 +710,7 @@ namespace MachineLearningTrainer.DrawerTool
             {
                 animatedRoatateTransform.Angle = 0;
                 listBoxLabels.Visibility = Visibility.Visible;
-                gridLV.Width = GridLength.Auto;
+                gridLV.Width = new GridLength(240);
             }
         }
 
@@ -1141,8 +1141,19 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+
         #endregion
 
-
+        private void ChangeListViewMode_Click(object sender, RoutedEventArgs e)
+        {
+            if (!((this.DataContext as DrawerViewModel).selectedListViewMode == DrawerViewModel.ListViewModes.List))
+            {
+                gridLV.Width = new GridLength(150);
+            }
+            else
+            {
+                gridLV.Width = new GridLength(240);
+            }
+        }
     }
 }
