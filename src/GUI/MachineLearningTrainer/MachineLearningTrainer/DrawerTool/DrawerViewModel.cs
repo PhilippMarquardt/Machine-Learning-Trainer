@@ -4011,7 +4011,7 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         public ObservableCollection<Polygon> polygonsCollection { get; set; } = new ObservableCollection<Polygon>();
-        public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
+        public ObservableCollection<CustomShape> PixelRectangles { get; set; } = new ObservableCollection<CustomShape>();
 
 
 
@@ -4252,10 +4252,10 @@ namespace MachineLearningTrainer.DrawerTool
 
             var rec = PixelRectangles[PixelRectangles.Count - 1];
 
-            double RECX = rec.X;
-            double RECY = rec.Y;
-            double RECH = rec.RectangleHeight;
-            double RECW = rec.RectangleWidth;
+            double RECX = rec.X1;
+            double RECY = rec.Y1;
+            double RECH = rec.Height;
+            double RECW = rec.Width;
 
             Mat mat = SupportCode.ConvertBmp2Mat(src);
             OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)RECX, (int)RECY, (int)RECW, (int)RECH);
@@ -4269,9 +4269,9 @@ namespace MachineLearningTrainer.DrawerTool
             //    lastRectangle = PixelRectangles[PixelRectangles.Count - 2];
 
             int x1 = 0;
-            int x2 = (int)rectSelectArea.RectangleWidth;
+            int x2 = (int)rectSelectArea.Width;
             int y1 = 0;
-            int y2 = (int)rectSelectArea.RectangleHeight;
+            int y2 = (int)rectSelectArea.Height;
             
             var rect = new OpenCvSharp.Rect(x1+2,y1+2,x2-5,y2-5);
             var bgdModel = new Mat();
@@ -4321,7 +4321,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     for (int k = 0; k < contours[m].Length; k++)
                     {
-                        pointsFull.Add(new System.Windows.Point(contours[m][k].X + rectSelectArea.X, contours[m][k].Y + rectSelectArea.Y));
+                        pointsFull.Add(new System.Windows.Point(contours[m][k].X + rectSelectArea.X1, contours[m][k].Y + rectSelectArea.Y1));
                     }
                 }
             }
@@ -4330,8 +4330,8 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var q in PixelRectangles)
             {
-                q.RectangleMovable = false;
-                q.Visibility = Visibility.Collapsed;
+                //q.RectangleMovable = false;
+                q.Visible = false;
             }
 
 
@@ -4348,10 +4348,10 @@ namespace MachineLearningTrainer.DrawerTool
             var watch = System.Diagnostics.Stopwatch.StartNew();
             var rectSelectArea = PixelRectangles[PixelRectangles.Count - 1];
 
-            int x1 = (int)rectSelectArea.X;
-            int x2 = (int)rectSelectArea.RectangleWidth;
-            int y1 = (int)rectSelectArea.Y;
-            int y2 = (int)rectSelectArea.RectangleHeight;
+            int x1 = (int)rectSelectArea.X1;
+            int x2 = (int)rectSelectArea.Width;
+            int y1 = (int)rectSelectArea.Y1;
+            int y2 = (int)rectSelectArea.Height;
 
             System.Windows.Rect rect1 = new System.Windows.Rect();
             rect1.X = x1;
@@ -4396,7 +4396,7 @@ namespace MachineLearningTrainer.DrawerTool
                 {
                     for (int k = 0; k < contours[m].Length; k++)
                     {
-                        pointsFull.Add(new System.Windows.Point(contours[m][k].X + rectSelectArea.X, contours[m][k].Y + rectSelectArea.Y));
+                        pointsFull.Add(new System.Windows.Point(contours[m][k].X + rectSelectArea.X1, contours[m][k].Y + rectSelectArea.Y1));
                     }
                 }
             }
@@ -4406,8 +4406,8 @@ namespace MachineLearningTrainer.DrawerTool
 
             foreach (var q in PixelRectangles)
             {
-                q.RectangleMovable = false;
-                q.Visibility = Visibility.Collapsed;
+                //q.RectangleMovable = false;
+                q.Visible = false;
             }
 
             OnPropertyChanged("polygonsCollection");
@@ -4458,8 +4458,8 @@ namespace MachineLearningTrainer.DrawerTool
             }
 
             var rectSelectArea = PixelRectangles[PixelRectangles.Count - 1];
-            int x2 = (int)rectSelectArea.RectangleWidth;
-            int y2 = (int)rectSelectArea.RectangleHeight;
+            int x2 = (int)rectSelectArea.Width;
+            int y2 = (int)rectSelectArea.Height;
 
             await Task.Run(() =>
             {

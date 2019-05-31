@@ -145,9 +145,6 @@
     </Compile>
     <Compile Include="DrawerTool\BindingProxy.cs" />
     <Compile Include="DrawerTool\CustomShapeFormat.cs" />
-    <Compile Include="DrawerTool\CustomThumb.xaml.cs">
-      <DependentUpon>CustomThumb.xaml</DependentUpon>
-    </Compile>
     <Compile Include="DrawerTool\DesignerItemDecorator.cs" />
     <Compile Include="DrawerTool\DispatchService.cs" />
     <Compile Include="DrawerTool\DrawerModel.cs" />
@@ -156,15 +153,10 @@
     <Compile Include="DrawerTool\ImageDrawer.xaml.cs">
       <DependentUpon>ImageDrawer.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DrawerTool\MoveThumb.cs" />
     <Compile Include="DrawerTool\MyICommand.cs" />
     <Compile Include="DrawerTool\PixelTool.xaml.cs">
       <DependentUpon>PixelTool.xaml</DependentUpon>
     </Compile>
-    <Compile Include="DrawerTool\ResizableRectangle.xaml.cs">
-      <DependentUpon>ResizableRectangle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="DrawerTool\ResizeThumb.cs" />
     <Compile Include="DrawerTool\ShapeModel.cs" />
     <Compile Include="DrawerTool\SupportCode.cs" />
     <Compile Include="DrawerTool\VisibilityAnimation.cs" />
@@ -234,19 +226,11 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="DrawerTool\CustomThumb.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="DrawerTool\ImageDrawer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="DrawerTool\PixelTool.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="DrawerTool\ResizableRectangle.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

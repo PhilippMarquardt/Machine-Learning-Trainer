@@ -9,13 +9,14 @@
              Background="{DynamicResource MaterialDesignPaper}"
              FontFamily="{DynamicResource MaterialDesignFont}"
              Focusable="True"
-             d:DesignHeight="1080" d:DesignWidth="1920"
-             Loaded="UserControl_Loaded"
-             KeyUp="UserControl_KeyUp">
+             d:DesignHeight="1080" d:DesignWidth="1920">
+    
+    <!--Loaded="UserControl_Loaded"
+             KeyUp="UserControl_KeyUp">-->
 
-    <UserControl.Resources>
+    <!--<UserControl.Resources>-->
         
-        <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
+        <!--<BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
 
         <Style x:Key="BasicButtonStyle" TargetType="Button" BasedOn="{StaticResource {x:Type Button}}">
             <Setter Property="Content" Value="Hello World"/>
@@ -228,9 +229,9 @@
                     <materialDesign:PackIcon Kind="SkipPreviousCircleOutline" />
                 </Button>
 
-            </Canvas>
+            </Canvas>-->
             
-            <Border Grid.Column="3" 
+            <!--<Border Grid.Column="3" 
                     Panel.ZIndex="0" 
                     Grid.Row="0" 
                     Grid.RowSpan="4"
@@ -330,10 +331,10 @@
                     
                 </local:ZoomBorder>
                 
-            </Border>
+            </Border>-->
             
-        </Grid>
+        <!--</Grid>
         
-    </DockPanel>
+    </DockPanel>-->
     
 </UserControl>

@@ -30,235 +30,228 @@ namespace MachineLearningTrainer.DrawerTool
             InitializeComponent();
         }
 
-        private System.Windows.Point currentPoint;
-        private System.Windows.Point startPoint;
-        private ResizableRectangle rectSelectArea;
-        private int colorFG { get; set; }
-        public InkCanvas inkCanvas = new InkCanvas();
+        //    private System.Windows.Point currentPoint;
+        //    private System.Windows.Point startPoint;
+        //    private CustomShape rectSelectArea;
+        //    private int colorFG { get; set; }
+        //    public InkCanvas inkCanvas = new InkCanvas();
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
-        {
+        //    private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        //    {
 
-            this.Focus();
-            (this.DataContext as DrawerViewModel).AnnoToolMode = "Pixel";
-            (this.DataContext as DrawerViewModel).MyInkCanvas = cnvInk;
-            (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
-            (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
+        //        this.Focus();
+        //        (this.DataContext as DrawerViewModel).AnnoToolMode = "Pixel";
+        //        (this.DataContext as DrawerViewModel).MyInkCanvas = cnvInk;
+        //        (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
+        //        (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
 
-            var gridHeight = gridY0.ActualHeight + gridY1.ActualHeight + gridY2.ActualHeight;
-            (this.DataContext as DrawerViewModel).ZoomBorderHeight = gridHeight; ;
-            (this.DataContext as DrawerViewModel).ZoomBorderWidth = gridX.ActualWidth;
-        }
-        
-        #region Zoom
+        //        var gridHeight = gridY0.ActualHeight + gridY1.ActualHeight + gridY2.ActualHeight;
+        //        (this.DataContext as DrawerViewModel).ZoomBorderHeight = gridHeight; ;
+        //        (this.DataContext as DrawerViewModel).ZoomBorderWidth = gridX.ActualWidth;
+        //    }
 
-        private void MenuItem_Reset(object sender, RoutedEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).ImagePath != null)
-                zoomBorder.Reset();
-        }
+        //    #region Zoom
 
-        private void MenuItem_ZoomOut(object sender, RoutedEventArgs e)
-        {
-            zoomBorder.ZoomOut();
-        }
+        //    private void MenuItem_Reset(object sender, RoutedEventArgs e)
+        //    {
+        //        if ((this.DataContext as DrawerViewModel).ImagePath != null)
+        //            zoomBorder.Reset();
+        //    }
 
-        private void MenuItem_ZoomIn(object sender, RoutedEventArgs e)
-        {
-            zoomBorder.ZoomIn();
-        }
+        //    private void MenuItem_ZoomOut(object sender, RoutedEventArgs e)
+        //    {
+        //        zoomBorder.ZoomOut();
+        //    }
 
-        #endregion
-        
-        private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).Enabled == false)
-            {
-                cnvInk.Strokes.Clear();
-                cnvImage.Cursor = Cursors.Cross;
-                startPoint = e.GetPosition(cnvImage);
-                rectSelectArea = new ResizableRectangle();
-                rectSelectArea.RectangleBorderThickness = 3;
-                rectSelectArea.ThumbColor = System.Windows.Media.Brushes.Blue;
-                rectSelectArea.ThumbSize = 5;
-                rectSelectArea.RectangleOpacity = 0;
-                rectSelectArea.ResizeThumbColor = System.Windows.Media.Brushes.Blue;
+        //    private void MenuItem_ZoomIn(object sender, RoutedEventArgs e)
+        //    {
+        //        zoomBorder.ZoomIn();
+        //    }
 
-                (this.DataContext as DrawerViewModel).PixelRectangles.Add(rectSelectArea);
-                
-                Canvas.SetLeft(rectSelectArea, startPoint.X);
-                Canvas.SetTop(rectSelectArea, startPoint.Y);
-            }
-            
-            currentPoint = e.GetPosition(cnvImage);
-            startPoint = e.GetPosition(cnvImage);
+        //    #endregion
 
-        }
+        //    private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
+        //    {
+        //        if ((this.DataContext as DrawerViewModel).Enabled == false)
+        //        {
+        //            cnvInk.Strokes.Clear();
+        //            cnvImage.Cursor = Cursors.Cross;
+        //            startPoint = e.GetPosition(cnvImage);
+        //            rectSelectArea = new CustomShape(0,0,0);
+        //            rectSelectArea.Opacity = 0;
 
-        private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).Enabled == false)
+        //            (this.DataContext as DrawerViewModel).PixelRectangles.Add(rectSelectArea);
 
-            {
-                cnvImage.Cursor = Cursors.Cross;
-                if (e.LeftButton == MouseButtonState.Released || rectSelectArea == null)
-                    return;
+        //            rectSelectArea.X1 = startPoint.X;
+        //            rectSelectArea.Y1 = startPoint.Y;
+        //        }
 
-                var pos = e.GetPosition(cnvImage);
-                
-                var x = Math.Min(pos.X, startPoint.X);
-                var y = Math.Min(pos.Y, startPoint.Y);
-                
-                var w = Math.Max(pos.X, startPoint.X) - x;
-                var h = Math.Max(pos.Y, startPoint.Y) - y;
+        //        currentPoint = e.GetPosition(cnvImage);
+        //        startPoint = e.GetPosition(cnvImage);
 
-                rectSelectArea.RectangleWidth = w;
-                rectSelectArea.RectangleHeight = h;
+        //    }
 
-                Canvas.SetLeft(rectSelectArea, x);
-                Canvas.SetTop(rectSelectArea, y);
+        //    private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
+        //    {
+        //        if ((this.DataContext as DrawerViewModel).Enabled == false)
 
-                rectSelectArea.X = x;
-                rectSelectArea.Y = y;
+        //        {
+        //            cnvImage.Cursor = Cursors.Cross;
+        //            if (e.LeftButton == MouseButtonState.Released || rectSelectArea == null)
+        //                return;
 
-                int recStartX = (Convert.ToInt16(x));
-                int recStartY = (Convert.ToInt16(y));
-                int recWidth = (Convert.ToInt16(w));
-                int recHeight = (Convert.ToInt16(h));
+        //            var pos = e.GetPosition(cnvImage);
 
-            }
-        }
+        //            var x = Math.Min(pos.X, startPoint.X);
+        //            var y = Math.Min(pos.Y, startPoint.Y);
 
-        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).Enabled == false)
-            {
-                foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
-                    q.RectangleMovable = true;
-                (this.DataContext as DrawerViewModel).Enabled = true;
-                cnvImage.Cursor = Cursors.Arrow;
-                (this.DataContext as DrawerViewModel).RectOrMask = 0;
-                
-                //inkCanvas.Width = rectSelectArea.RectangleWidth;
-                //inkCanvas.Opacity = 0.3;
+        //            var w = Math.Max(pos.X, startPoint.X) - x;
+        //            var h = Math.Max(pos.Y, startPoint.Y) - y;
 
-                //inkCanvas.DefaultDrawingAttributes.Color = Colors.Purple;
-                //inkCanvas.Height = rectSelectArea.RectangleHeight;
-                //inkCanvas.Background = System.Windows.Media.Brushes.LawnGreen;
-                //inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
-                //inkCanvas.IsEnabled = true;
+        //            rectSelectArea.Width = w;
+        //            rectSelectArea.Height = h;
 
-                //Canvas.SetLeft(inkCanvas, rectSelectArea.X);
-                //Canvas.SetTop(inkCanvas, rectSelectArea.Y);
+        //            rectSelectArea.X1 = x;
+        //            rectSelectArea.Y1 = y;
 
-                //cnvImage.Children.Add(inkCanvas);
+        //            int recStartX = (Convert.ToInt16(x));
+        //            int recStartY = (Convert.ToInt16(y));
+        //            int recWidth = (Convert.ToInt16(w));
+        //            int recHeight = (Convert.ToInt16(h));
 
-            }
-        }
-         
-        private void UserControl_KeyUp(object sender, KeyEventArgs e)
-        {
-            cnvInk = (this.DataContext as DrawerViewModel).MyInkCanvas;
-            var viewModel = (this.DataContext as DrawerViewModel);
-            viewModel.inkCanvas = inkCanvas;
+        //        }
+        //    }
 
-            if (e.Key == Key.D)
-            {
-                cnvInk.IsEnabled = viewModel.DrawEnabled;
-                cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
-                colorFG = 0;
-                cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+        //    private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        //    {
+        //        if ((this.DataContext as DrawerViewModel).Enabled == false)
+        //        {
+        //            foreach (var q in (this.DataContext as DrawerViewModel).PixelRectangles)
+        //                //q.RectangleMovable = true;
+        //            (this.DataContext as DrawerViewModel).Enabled = true;
+        //            cnvImage.Cursor = Cursors.Arrow;
+        //            (this.DataContext as DrawerViewModel).RectOrMask = 0;
 
-                foreach (var q in viewModel.PixelRectangles)
-                {
-                    q.RectangleMovable = false;
-                    q.Visibility = Visibility.Collapsed;
-                }
-            }
+        //            //inkCanvas.Width = rectSelectArea.RectangleWidth;
+        //            //inkCanvas.Opacity = 0.3;
 
-            if (e.Key == Key.F || e.Key == Key.B || e.Key == Key.E || e.Key == Key.OemPlus || e.Key == Key.OemMinus)
-            {
+        //            //inkCanvas.DefaultDrawingAttributes.Color = Colors.Purple;
+        //            //inkCanvas.Height = rectSelectArea.RectangleHeight;
+        //            //inkCanvas.Background = System.Windows.Media.Brushes.LawnGreen;
+        //            //inkCanvas.EditingMode = InkCanvasEditingMode.Ink;
+        //            //inkCanvas.IsEnabled = true;
 
-                if (cnvInk.DefaultDrawingAttributes.Height < 3)
-                {
-                    cnvInk.UseCustomCursor = true;
-                    cnvInk.Cursor = Cursors.Pen;
-                }
+        //            //Canvas.SetLeft(inkCanvas, rectSelectArea.X);
+        //            //Canvas.SetTop(inkCanvas, rectSelectArea.Y);
 
-                else
-                {
-                    cnvInk.UseCustomCursor = false;
-                }
+        //            //cnvImage.Children.Add(inkCanvas);
 
-                switch (e.Key)
-                {
-                    case Key.F:
-                        cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
-                        colorFG = 0;
-                        cnvInk.EditingMode = InkCanvasEditingMode.Ink;
-                        break;
-                    case Key.B:
-                        cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
-                        colorFG = 1;
-                        cnvInk.EditingMode = InkCanvasEditingMode.Ink;
-                        break;
-                    case Key.E:
-                        cnvInk.EditingMode = InkCanvasEditingMode.EraseByPoint;
-                        cnvInk.DefaultDrawingAttributes.StylusTip = System.Windows.Ink.StylusTip.Ellipse;
-                        break;
-                    case Key.OemPlus:
-                        cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height + 1;
-                        cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width + 1;
-                        break;
-                    case Key.OemMinus:
-                        if (cnvInk.DefaultDrawingAttributes.Height > 1 && cnvInk.DefaultDrawingAttributes.Width > 1)
-                        {
-                            cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height - 1;
-                            cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width - 1;
-                        }
-                        break;
-                }
-            }
-        }
+        //        }
+        //    }
 
-        private void cnvInk_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            if (colorFG == 0)
-            {
-                cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
-                cnvInk.EditingMode = InkCanvasEditingMode.Ink;
-                colorFG = 1;
-            }
+        //    private void UserControl_KeyUp(object sender, KeyEventArgs e)
+        //    {
+        //        cnvInk = (this.DataContext as DrawerViewModel).MyInkCanvas;
+        //        var viewModel = (this.DataContext as DrawerViewModel);
+        //        viewModel.inkCanvas = inkCanvas;
 
-            else
-            {
-                cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
-                cnvInk.EditingMode = InkCanvasEditingMode.Ink;
-                colorFG = 0;
-            }
-            
-        }
+        //        if (e.Key == Key.D)
+        //        {
+        //            cnvInk.IsEnabled = viewModel.DrawEnabled;
+        //            cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
+        //            colorFG = 0;
+        //            cnvInk.EditingMode = InkCanvasEditingMode.Ink;
 
-        private void CreateSaveBitmap(InkCanvas canvas, string filename)
-        {
-            RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
-             (int)canvas.Width, (int)canvas.Height,
-             96d, 96d, PixelFormats.Pbgra32);
-            // needed otherwise the image output is black
-            canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
-            canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
+        //            foreach (var q in viewModel.PixelRectangles)
+        //            {
+        //                //q.RectangleMovable = false;
+        //                q.Visible = false;
+        //            }
+        //        }
 
-            renderBitmap.Render(canvas);
+        //        if (e.Key == Key.F || e.Key == Key.B || e.Key == Key.E || e.Key == Key.OemPlus || e.Key == Key.OemMinus)
+        //        {
 
-            //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-            PngBitmapEncoder encoder = new PngBitmapEncoder();
-            encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+        //            if (cnvInk.DefaultDrawingAttributes.Height < 3)
+        //            {
+        //                cnvInk.UseCustomCursor = true;
+        //                cnvInk.Cursor = Cursors.Pen;
+        //            }
 
-            using (FileStream file = File.Create(filename))
-            {
-                encoder.Save(file);
-            }
-        }
+        //            else
+        //            {
+        //                cnvInk.UseCustomCursor = false;
+        //            }
+
+        //            switch (e.Key)
+        //            {
+        //                case Key.F:
+        //                    cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
+        //                    colorFG = 0;
+        //                    cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+        //                    break;
+        //                case Key.B:
+        //                    cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
+        //                    colorFG = 1;
+        //                    cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+        //                    break;
+        //                case Key.E:
+        //                    cnvInk.EditingMode = InkCanvasEditingMode.EraseByPoint;
+        //                    cnvInk.DefaultDrawingAttributes.StylusTip = System.Windows.Ink.StylusTip.Ellipse;
+        //                    break;
+        //                case Key.OemPlus:
+        //                    cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height + 1;
+        //                    cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width + 1;
+        //                    break;
+        //                case Key.OemMinus:
+        //                    if (cnvInk.DefaultDrawingAttributes.Height > 1 && cnvInk.DefaultDrawingAttributes.Width > 1)
+        //                    {
+        //                        cnvInk.DefaultDrawingAttributes.Height = cnvInk.DefaultDrawingAttributes.Height - 1;
+        //                        cnvInk.DefaultDrawingAttributes.Width = cnvInk.DefaultDrawingAttributes.Width - 1;
+        //                    }
+        //                    break;
+        //            }
+        //        }
+        //    }
+
+        //    private void cnvInk_PreviewMouseRightButtonUp(object sender, MouseButtonEventArgs e)
+        //    {
+        //        if (colorFG == 0)
+        //        {
+        //            cnvInk.DefaultDrawingAttributes.Color = Colors.Red;
+        //            cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+        //            colorFG = 1;
+        //        }
+
+        //        else
+        //        {
+        //            cnvInk.DefaultDrawingAttributes.Color = Colors.LawnGreen;
+        //            cnvInk.EditingMode = InkCanvasEditingMode.Ink;
+        //            colorFG = 0;
+        //        }
+
+        //    }
+
+        //    private void CreateSaveBitmap(InkCanvas canvas, string filename)
+        //    {
+        //        RenderTargetBitmap renderBitmap = new RenderTargetBitmap(
+        //         (int)canvas.Width, (int)canvas.Height,
+        //         96d, 96d, PixelFormats.Pbgra32);
+        //        // needed otherwise the image output is black
+        //        canvas.Measure(new System.Windows.Size((int)canvas.Width, (int)canvas.Height));
+        //        canvas.Arrange(new System.Windows.Rect(new System.Windows.Size((int)canvas.Width, (int)canvas.Height)));
+
+        //        renderBitmap.Render(canvas);
+
+        //        //JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+        //        PngBitmapEncoder encoder = new PngBitmapEncoder();
+        //        encoder.Frames.Add(BitmapFrame.Create(renderBitmap));
+
+        //        using (FileStream file = File.Create(filename))
+        //        {
+        //            encoder.Save(file);
+        //        }
+        //    }
     }
 }
  
