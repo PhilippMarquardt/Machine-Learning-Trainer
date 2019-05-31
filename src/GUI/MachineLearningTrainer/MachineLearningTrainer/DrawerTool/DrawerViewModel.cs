@@ -32,100 +32,6 @@ namespace MachineLearningTrainer.DrawerTool
 {
     public class DrawerViewModel : INotifyPropertyChanged
     {
-        #region PropertyChangedArea
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        //Only for debugging
-        int test = 0;
-        //
-
-        /// <summary>
-        /// Raise Property changed event for INotifyPropertyChanged => dynamlically updating bindings for UI element)
-        /// </summary>
-        /// <param name="name"></param>
-        protected void OnPropertyChanged(string name)
-        {
-            //For debugging only
-            //Console.WriteLine("OnPropertyChanged: #" + test);
-            //test++;
-            //
-
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-
-                handler(this, new PropertyChangedEventArgs(name));
-                //if (name != "SelectedIndex")
-                //{
-                //    CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
-                //}
-            }
-
-        }
-        #endregion
-
-
-        #region RaisePropertChanged Area
-        private void RaisePropertyChanged([CallerMemberName] string caller = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(caller));
-            }
-        }
-        #endregion
-
-
-        #region ShapeCollectionChangedHandler
-
-        /// <summary>
-        /// gets called when Element is added or deleted to ShapeCollection / RectanglesView
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e"></param>
-        //private void ShapeCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        //{
-        //    if (e.NewItems != null)
-        //    {
-        //        {
-        //            //foreach (object item in e.NewItems)
-        //            //{
-        //            //    if (item is CustomShape)
-        //            //        ((CustomShape)item).PropertyChanged += Shape_PropertyChanged;
-        //            //}
-        //        }
-
-        //        if (e.OldItems != null)
-        //        {
-        //            //foreach (object item in e.OldItems)
-        //            //{
-        //            //    if (item is CustomShape)
-        //            //        ((CustomShape)item).PropertyChanged -= Shape_PropertyChanged;
-        //            //}
-        //        }
-        //    }
-        //}
-
-        ///// <summary>
-        ///// gets called every time a Property in an RectangleView-Object is changed
-        ///// </summary>
-        ///// <param name="sender"></param>
-        ///// <param name="e"></param>
-        ////private void Shape_PropertyChanged(object sender, PropertyChangedEventArgs e)
-        //private void Shape_PropertyChanged(object sender)
-        //{
-        //    CollectionViewSource.GetDefaultView(RectanglesView).Refresh();
-        //}
-
-
-
-        //private void ManipulatableShape_PropertyChanged(object sender)
-        //{
-        //    CollectionViewSource.GetDefaultView(manipulatableShape).Refresh();
-        //}
-        #endregion
-
 
         private DrawerModel _drawerModel;
         private bool _canExecute = true;
@@ -133,14 +39,30 @@ namespace MachineLearningTrainer.DrawerTool
         private Grid _mainGrid;
         private MainViewModel _mainViewModel;
 
+
+        public enum MouseState { Normal, CreateRectangle, CreateEllipse, Move, Resize }
+        private MouseState mouseHandlingState;
+        public MouseState MouseHandlingState
+        {
+            get => mouseHandlingState;
+            set
+            {
+                if (mouseHandlingState != value)
+                {
+                    this.mouseHandlingState = value;
+                    OnPropertyChanged("MouseHandlingState");
+                }
+            }
+        }
+
+
+
         public DrawerViewModel(DrawerModel drawerModel, MainModel model, Grid mainGrid, MainViewModel mainViewModel)
         {
             this._drawerModel = drawerModel;
             this._mainGrid = mainGrid;
             this._mainModel = model;
             this._mainViewModel = mainViewModel;
-            ComboBoxItems.Add("All Labels");
-            SelectedComboBoxItem = "All Labels";
 
             RectanglesView = new ObservableCollection<CustomShape>();
             Rectangles = new ObservableCollection<CustomShape>();
@@ -151,28 +73,9 @@ namespace MachineLearningTrainer.DrawerTool
             undoInformation.Push("Dummy");
             redoCustomShapes.Push(new CustomShape(0, 0));
             redoInformation.Push("Dummy");
-
-
-            //Only for debugging            
-
-
-            //LabelColorFormat.Add(new CustomShapeFormat("test 1", "Red", "Blue", 0.3));
-            //LabelColorFormat[0].Subtypes.Add(new Subtypes("test11","test 1"));
-            //LabelColorFormat[0].Subtypes.Add(new Subtypes("test12", "test 1"));
-            ////LabelColorFormat[0].Subtypes.Add(new CustomShapeFormat("test 1", "Red", "Blue", 0.3));
-            //LabelColorFormat.Add(new CustomShapeFormat("test 2", "Blue", "Red", 0.3));
-            //LabelColorFormat[1].Subtypes.Add(new Subtypes("test21", "test 2"));
-
-            //RectanglesView.Add(new CustomShape(100, 50, 200, 100, 0));
-            //Rectangles.Add(new CustomShape(RectanglesView[indexRectanglesView]));
-            //undoCustomShapes.Push(RectanglesView[0]);
-            //undoInformation.Push("Add");
-            //id++;
-            //indexRectangles++;
-            //indexRectanglesView++;
-            //
         }
 
+        #region Public Collections
 
         public ObservableCollection<CustomShape> RectanglesView { get; set; }
         public ObservableCollection<CustomShape> Rectangles { get; set; }
@@ -181,9 +84,9 @@ namespace MachineLearningTrainer.DrawerTool
         public Stack<CustomShape> redoCustomShapes { get; set; } = new Stack<CustomShape>();
         public Stack<string> redoInformation { get; set; } = new Stack<string>();
         public ObservableCollection<CustomShapeFormat> LabelColorFormat { get; set; }
-        public ObservableCollection<string> ComboBoxItems { get; set; } = new ObservableCollection<string>();
         public bool Enabled { get; set; } = true;
-        public bool Rename { get; set; } = false;
+
+        #endregion
 
 
         #region constant values from ConfigClass: (go to ConfigClass for description)
@@ -205,213 +108,7 @@ namespace MachineLearningTrainer.DrawerTool
 
 
 
-
-        public enum MouseState { Normal, CreateRectangle, CreateEllipse, Move, Resize }
-        private MouseState mouseHandlingState;
-        public MouseState MouseHandlingState
-        {
-            get => mouseHandlingState;
-            set
-            {
-                if (mouseHandlingState != value)
-                {
-                    this.mouseHandlingState = value;
-                    OnPropertyChanged("MouseHandlingState");
-                }
-            }
-        }
-
-        
-        private System.Windows.Point _vmMousePoint;
-        /// <summary>
-        /// Stores mouse position
-        /// </summary>
-        public System.Windows.Point vmMousePoint
-        {
-            get { return _vmMousePoint; }
-            set { _vmMousePoint = value; }
-        }
-
-        private string _rectangleCount;
-        public string RectangleCount
-        {
-            get
-            {
-                return _rectangleCount;
-            }
-            set
-            {
-                _rectangleCount = value;
-                OnPropertyChanged("RectangleCount");
-            }
-        }
-
-
-
-        #region Check If Mouse/Shape On Canvas
-        //CheckCanvas:
-        //makes sure that you only draw on canvas
-
-        #region Variables
-
-        private double tmpX;
-        private double tmpY;
-
-        private Canvas _myCanvas;
-        public Canvas MyCanvas
-        {
-            get { return _myCanvas; }
-            set { _myCanvas = value; }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Checks if Mouse is on img and if not sets X/Y to BorderPoint on img
-        /// 
-        /// #CreateRectangle #ResizeRectangle
-        /// </summary>
-        /// <param name="mousePosition"></param>
-        private void CheckOnCanvas(System.Windows.Point mousePosition)
-        {
-            if (mousePosition.X < distanceToBorder)
-            {
-                tmpX = distanceToBorder;
-            }
-            else if (mousePosition.X > MyCanvas.ActualWidth-distanceToBorder)
-            {
-                tmpX = MyCanvas.ActualWidth-distanceToBorder;
-            }
-            if (mousePosition.Y < distanceToBorder)
-            {
-                tmpY = distanceToBorder;
-            }
-            else if (mousePosition.Y > MyCanvas.ActualHeight-distanceToBorder)
-            {
-                tmpY = MyCanvas.ActualHeight-distanceToBorder;
-            }
-        }
-
-        /// <summary>
-        /// Checks if Duplicated Shape is still on img and if not, sets border to imgBorder
-        /// 
-        /// #DuplicateRectangle
-        /// </summary>
-        /// <param name="customShape"></param>
-        /// <returns></returns>
-        private CustomShape CheckOnCanvas(CustomShape customShape)
-        {
-            if (customShape.X1 < distanceToBorder)
-            {
-                customShape.X1 = distanceToBorder;
-                customShape.XLeft = distanceToBorder;
-                customShape.XLeftBorder = customShape.XLeft - customShape.StrokeThickness;
-            }
-            if (customShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
-            {
-                customShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
-            }
-            if (customShape.Y1 < distanceToBorder)
-            {
-                customShape.Y1 = distanceToBorder;
-                customShape.YTop = distanceToBorder;
-                customShape.YTopBorder = customShape.YTop - customShape.StrokeThickness;
-            }
-            if (customShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
-            {
-                customShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
-            }
-            customShape.Width = customShape.X2 - customShape.X1;
-            customShape.Height = customShape.Y2 - customShape.Y1;
-
-            return customShape;
-        }
-
-
-
-        /// <summary>
-        /// Checks if moved SelectedCustomShape is on Canvas(img) and if not, sets border to imgBorder
-        /// 
-        /// #MoveRectangle
-        /// </summary>
-        private bool CheckIfSelectedCustomShapeOnCanvas()
-        {
-            if (selectedCustomShape.X1 < distanceToBorder)
-            {
-                selectedCustomShape.X1 = distanceToBorder;
-                selectedCustomShape.XLeft = distanceToBorder;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
-            }
-            else if (selectedCustomShape.X1 > MyCanvas.ActualWidth - distanceToBorder)
-            {
-                //Comment if Rectangles outside of img should be fitted on img again
-                OnDelete(false);
-                return false;
-
-                //Uncomment if Rectangles outside of img should be fitted on img again
-                //selectedCustomShape.X1 = MyCanvas.ActualWidth - distanceToBorder - minShapeSize;
-                //selectedCustomShape.XLeft = MyCanvas.ActualWidth - distanceToBorder - minShapeSize;
-                //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-                //selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
-
-            }
-            if (selectedCustomShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
-            {
-                selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
-                selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
-            }
-            else if (selectedCustomShape.X2 < distanceToBorder)
-            {
-                //Comment if Rectangles outside of img should be fitted on img again
-                OnDelete(false);
-                return false;
-
-                //Uncomment if Rectangles outside of img should be fitted on img again
-                //selectedCustomShape.X2 = distanceToBorder + minShapeSize;
-                //selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
-            }
-
-
-            if (selectedCustomShape.Y1 < distanceToBorder)
-            {
-                selectedCustomShape.Y1 = distanceToBorder;
-                selectedCustomShape.YTop = distanceToBorder;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
-            }
-            else if (selectedCustomShape.Y1 > MyCanvas.ActualHeight - distanceToBorder)
-            {
-                //Comment if Rectangles outside of img should be fitted on img again
-                OnDelete(false);
-                return false;
-
-                //Uncomment if Rectangles outside of img should be fitted on img again
-                //selectedCustomShape.Y1 = MyCanvas.ActualHeight - distanceToBorder - minShapeSize;
-                //selectedCustomShape.YTop = MyCanvas.ActualHeight - distanceToBorder - minShapeSize;
-                //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                //selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
-            }
-            if (selectedCustomShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
-            {
-                selectedCustomShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
-                selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
-            }
-            else if (selectedCustomShape.Y2 < distanceToBorder)
-            {
-                //Comment if Rectangles outside of img should be fitted on img again
-                OnDelete(false);
-                return false;
-
-                //Uncomment if Rectangles outside of img should be fitted on img again
-                //selectedCustomShape.Y2 = distanceToBorder + minShapeSize;
-                //selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
-            }
-
-            return true;
-        }
-        #endregion
-
+        //Methods for Rectangle creation/manipulation
 
         #region Create Rectangles : CustomShape
         //Create Rectangles:
@@ -611,7 +308,6 @@ namespace MachineLearningTrainer.DrawerTool
                     id++;
 
                     RefreshRectangleCount();
-                    ComboBoxNames();
 
                     ChangeDetected = true;
 
@@ -628,13 +324,14 @@ namespace MachineLearningTrainer.DrawerTool
 
         #region Variables
 
-        private ICommand _duplicateCommand;
-        public ICommand DuplicateCommand
+        private System.Windows.Point _vmMousePoint;
+        /// <summary>
+        /// Stores mouse position
+        /// </summary>
+        public System.Windows.Point vmMousePoint
         {
-            get
-            {
-                return _duplicateCommand ?? (_duplicateCommand = new CommandHandler(() => OnDuplicate(), true));
-            }
+            get { return _vmMousePoint; }
+            set { _vmMousePoint = value; }
         }
 
 
@@ -648,6 +345,19 @@ namespace MachineLearningTrainer.DrawerTool
             set
             {
                 _duplicateVar = value;
+            }
+        }
+
+        #endregion
+
+        #region Commands
+
+        private ICommand _duplicateCommand;
+        public ICommand DuplicateCommand
+        {
+            get
+            {
+                return _duplicateCommand ?? (_duplicateCommand = new CommandHandler(() => OnDuplicate(), true));
             }
         }
 
@@ -730,104 +440,558 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region Devide img into fields for better performance
-        //Devide img into rectangles/fields with const Widht and Height
-        //so that the detectShape Algorithm will only search in current
-        //field for Rectangles and wont search the whole List of visible
-        //Rectangles (RectanglesView)
+        #region Check If Mouse/Shape On Canvas
+        //CheckCanvas:
+        //makes sure that you only draw on canvas
+
+        #region Variables
+
+        private double tmpX;
+        private double tmpY;
+
+        private Canvas _myCanvas;
+        public Canvas MyCanvas
+        {
+            get { return _myCanvas; }
+            set { _myCanvas = value; }
+        }
+
+        #endregion
 
         /// <summary>
-        /// Saves Shape to according fields in image-grid
+        /// Checks if Mouse is on img and if not sets X/Y to BorderPoint on img
+        /// 
+        /// #CreateRectangle #ResizeRectangle
+        /// </summary>
+        /// <param name="mousePosition"></param>
+        private void CheckOnCanvas(System.Windows.Point mousePosition)
+        {
+            if (mousePosition.X < distanceToBorder)
+            {
+                tmpX = distanceToBorder;
+            }
+            else if (mousePosition.X > MyCanvas.ActualWidth-distanceToBorder)
+            {
+                tmpX = MyCanvas.ActualWidth-distanceToBorder;
+            }
+            if (mousePosition.Y < distanceToBorder)
+            {
+                tmpY = distanceToBorder;
+            }
+            else if (mousePosition.Y > MyCanvas.ActualHeight-distanceToBorder)
+            {
+                tmpY = MyCanvas.ActualHeight-distanceToBorder;
+            }
+        }
+
+        /// <summary>
+        /// Checks if Duplicated Shape is still on img and if not, sets border to imgBorder
+        /// 
+        /// #DuplicateRectangle
         /// </summary>
         /// <param name="customShape"></param>
-        private void SaveShapeToField(CustomShape customShape)
+        /// <returns></returns>
+        private CustomShape CheckOnCanvas(CustomShape customShape)
         {
-            int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
-            int columnX2 = Convert.ToInt32(Math.Floor(customShape.X2 / fieldWidth));
-            int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
-            int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
-
-            int numberColumns = Math.Abs(columnX2 - columnX1) + 1;
-            int numberRows = Math.Abs(rowY2 - rowY1) + 1;
-
-            for (int i = 0; i < numberColumns; i++)
+            if (customShape.X1 < distanceToBorder)
             {
-                for (int j = 0; j < numberRows; j++)
-                {
-                    ShapeToField(Math.Min(columnX1, columnX2) + i, Math.Min(rowY1, rowY2) + j, customShape);
-                }
+                customShape.X1 = distanceToBorder;
+                customShape.XLeft = distanceToBorder;
+                customShape.XLeftBorder = customShape.XLeft - customShape.StrokeThickness;
             }
+            if (customShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
+            {
+                customShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
+            }
+            if (customShape.Y1 < distanceToBorder)
+            {
+                customShape.Y1 = distanceToBorder;
+                customShape.YTop = distanceToBorder;
+                customShape.YTopBorder = customShape.YTop - customShape.StrokeThickness;
+            }
+            if (customShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
+            {
+                customShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
+            }
+            customShape.Width = customShape.X2 - customShape.X1;
+            customShape.Height = customShape.Y2 - customShape.Y1;
+
+            return customShape;
         }
 
-        private void ShapeToField(int column, int row, CustomShape customShape)
-        {
-            int fieldNumber = column + row * meshColumnNumber;
-            fields[fieldNumber].Add(new CustomShape(customShape));
-            int indexRectField = fields[fieldNumber].Count() - 1;
-            fields[fieldNumber][indexRectField] = customShape;
-        }
-
-        /// <summary>
-        /// Removes Shape from all fields in image-grid
-        /// </summary>
-        /// <param name="customShape"></param>
-        private void RemoveShapeFromField(CustomShape customShape)
-        {
-            int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
-            int columnX2 = Convert.ToInt32(Math.Floor(customShape.X2 / fieldWidth));
-            int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
-            int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
-
-            int numberColumns = Math.Abs(columnX2 - columnX1) + 1;
-            int numberRows = Math.Abs(rowY2 - rowY1) + 1;
-
-            for (int i = 0; i < numberColumns; i++)
-            {
-                for (int j = 0; j < numberRows; j++)
-                {
-                    ShapeFromField(Math.Min(columnX1, columnX2) + i, Math.Min(rowY1, rowY2) + j, customShape);
-                }
-            }
-        }
-
-        private void ShapeFromField(int column, int row, CustomShape customShape)
-        {
-            int fieldNumber = column + row * meshColumnNumber;
-            if (fieldNumber < 0)
-            {
-                return;
-            }
-            foreach (CustomShape r in fields[fieldNumber])
-            {
-                if (r.Id == customShape.Id)
-                {
-                    fields[fieldNumber].Remove(r);
-                    break;
-                }
-            }
-        }
 
 
         /// <summary>
-        /// Clears all fields of the ObservableCollection Array
+        /// Checks if moved SelectedCustomShape is on Canvas(img) and if not, sets border to imgBorder
+        /// 
+        /// #MoveRectangle
         /// </summary>
-        private void ClearFields()
+        private bool CheckIfSelectedCustomShapeOnCanvas()
         {
-            if (fields != null)
+            if (selectedCustomShape.X1 < distanceToBorder)
             {
-                for (int i = 0; i < fields.Length; i++)
-                {
-                    fields[i].Clear();
-                }
+                selectedCustomShape.X1 = distanceToBorder;
+                selectedCustomShape.XLeft = distanceToBorder;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+                selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
             }
-        }
+            else if (selectedCustomShape.X1 > MyCanvas.ActualWidth - distanceToBorder)
+            {
+                //Comment if Rectangles outside of img should be fitted on img again
+                OnDelete(false);
+                return false;
 
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.X1 = MyCanvas.ActualWidth - distanceToBorder - minShapeSize;
+                //selectedCustomShape.XLeft = MyCanvas.ActualWidth - distanceToBorder - minShapeSize;
+                //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+
+            }
+            if (selectedCustomShape.X2 > MyCanvas.ActualWidth - distanceToBorder)
+            {
+                selectedCustomShape.X2 = MyCanvas.ActualWidth - distanceToBorder;
+                selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+            }
+            else if (selectedCustomShape.X2 < distanceToBorder)
+            {
+                //Comment if Rectangles outside of img should be fitted on img again
+                OnDelete(false);
+                return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.X2 = distanceToBorder + minShapeSize;
+                //selectedCustomShape.Width = Math.Abs(selectedCustomShape.X2 - selectedCustomShape.X1);
+            }
+
+
+            if (selectedCustomShape.Y1 < distanceToBorder)
+            {
+                selectedCustomShape.Y1 = distanceToBorder;
+                selectedCustomShape.YTop = distanceToBorder;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+                selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
+            }
+            else if (selectedCustomShape.Y1 > MyCanvas.ActualHeight - distanceToBorder)
+            {
+                //Comment if Rectangles outside of img should be fitted on img again
+                OnDelete(false);
+                return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.Y1 = MyCanvas.ActualHeight - distanceToBorder - minShapeSize;
+                //selectedCustomShape.YTop = MyCanvas.ActualHeight - distanceToBorder - minShapeSize;
+                //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
+            }
+            if (selectedCustomShape.Y2 > MyCanvas.ActualHeight - distanceToBorder)
+            {
+                selectedCustomShape.Y2 = MyCanvas.ActualHeight - distanceToBorder;
+                selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
+            }
+            else if (selectedCustomShape.Y2 < distanceToBorder)
+            {
+                //Comment if Rectangles outside of img should be fitted on img again
+                OnDelete(false);
+                return false;
+
+                //Uncomment if Rectangles outside of img should be fitted on img again
+                //selectedCustomShape.Y2 = distanceToBorder + minShapeSize;
+                //selectedCustomShape.Height = Math.Abs(selectedCustomShape.Y2 - selectedCustomShape.Y1);
+            }
+
+            return true;
+        }
         #endregion
 
 
         #region MoveShape
         //Move-Block:
         //Routine to move different shapes on canvas
+
+        #region Key-Bindings
+
+        #region KeyArrowCommands
+
+        #region ArrowKey
+
+        private ICommand _rightButtonCommand_Move;
+        public ICommand RightButtonCommand_Move
+        {
+            get
+            {
+                return _rightButtonCommand_Move ?? (_rightButtonCommand_Move = new CommandHandler(() => RightButton_Move(), _canExecute));
+            }
+        }
+
+        public void RightButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                selectedCustomShape.X1 += ConfigClass.stepSize;
+                selectedCustomShape.X2 += ConfigClass.stepSize;
+                selectedCustomShape.XLeft += ConfigClass.stepSize;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        private ICommand _leftButtonCommand_Move;
+        public ICommand LeftButtonCommand_Move
+        {
+            get
+            {
+                return _leftButtonCommand_Move ?? (_leftButtonCommand_Move = new CommandHandler(() => LeftButton_Move(), _canExecute));
+            }
+        }
+
+        public void LeftButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                selectedCustomShape.X1 -= ConfigClass.stepSize;
+                selectedCustomShape.X2 -= ConfigClass.stepSize;
+                selectedCustomShape.XLeft -= ConfigClass.stepSize;
+                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        private ICommand _upButtonCommand_Move;
+        public ICommand UpButtonCommand_Move
+        {
+            get
+            {
+                return _upButtonCommand_Move ?? (_upButtonCommand_Move = new CommandHandler(() => UpButton_Move(), _canExecute));
+            }
+        }
+
+        public void UpButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                selectedCustomShape.Y1 -= ConfigClass.stepSize;
+                selectedCustomShape.Y2 -= ConfigClass.stepSize;
+                selectedCustomShape.YTop -= ConfigClass.stepSize;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        private ICommand _downButtonCommand_Move;
+        public ICommand DownButtonCommand_Move
+        {
+            get
+            {
+                return _downButtonCommand_Move ?? (_downButtonCommand_Move = new CommandHandler(() => DownButton_Move(), _canExecute));
+            }
+        }
+
+        public void DownButton_Move()
+        {
+            if (selectedCustomShape != null)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                selectedCustomShape.Y1 += ConfigClass.stepSize;
+                selectedCustomShape.Y2 += ConfigClass.stepSize;
+                selectedCustomShape.YTop += ConfigClass.stepSize;
+                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        #endregion
+
+        //#region ArrowKey+Shift
+
+        //private ICommand _rightButtonCommand;
+        //public ICommand RightButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _rightButtonCommand ?? (_rightButtonCommand = new CommandHandler(() => RightButton(), _canExecute));
+        //    }
+        //}
+
+        //public void RightButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
+        //    {
+        //        selectedCustomShape.X1 += 2;
+        //        selectedCustomShape.XLeft += 2;
+        //        selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+        //        selectedCustomShape.Width -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //private ICommand _leftButtonCommand;
+        //public ICommand LeftButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _leftButtonCommand ?? (_leftButtonCommand = new CommandHandler(() => LeftButton(), _canExecute));
+        //    }
+        //}
+
+        //public void LeftButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
+        //    {
+        //        selectedCustomShape.X2 -= 2;
+        //        selectedCustomShape.Width -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //private ICommand _upButtonCommand;
+        //public ICommand UpButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _upButtonCommand ?? (_upButtonCommand = new CommandHandler(() => UpButton(), _canExecute));
+        //    }
+        //}
+        //public void UpButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+        //    {
+        //        selectedCustomShape.Y2 -= 2;
+        //        selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+        //        selectedCustomShape.Height -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //private ICommand _downButtonCommand;
+        //public ICommand DownButtonCommand
+        //{
+        //    get
+        //    {
+        //        return _downButtonCommand ?? (_downButtonCommand = new CommandHandler(() => DownButton(), _canExecute));
+        //    }
+        //}
+
+        //public void DownButton()
+        //{
+        //    if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+        //    {
+        //        selectedCustomShape.Y1 += 2;
+        //        selectedCustomShape.YTop += 2;
+        //        selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+        //        selectedCustomShape.Height -= 2;
+
+        //        RemoveShapeFromField(selectedCustomShape);
+        //        int tmpIndex = 0;
+        //        foreach (CustomShape r in Rectangles)
+        //        {
+        //            if (r.Id == selectedCustomShape.Id)
+        //            {
+        //                Rectangles.RemoveAt(tmpIndex);
+        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+        //                SaveShapeToField(selectedCustomShape);
+        //                break;
+        //            }
+        //            tmpIndex++;
+        //        }
+        //    }
+        //}
+
+        //#endregion
+
+        #region ArrowKey+Ctrl
+
+        private ICommand _rightButtonCommand1;
+        public ICommand RightButtonCommand1
+        {
+            get
+            {
+                return _rightButtonCommand1 ?? (_rightButtonCommand1 = new CommandHandler(() => RightButton1(), _canExecute));
+            }
+        }
+
+        public void RightButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize - ConfigClass.stepSize)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                selectedCustomShape.X2 += ConfigClass.stepSize;
+                selectedCustomShape.Width += ConfigClass.stepSize;
+
+                //selectedCustomShape.X2 += ConfigClass.stepSize;
+                //selectedCustomShape.Width += ConfigClass.stepSize;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+
+        private ICommand _leftButtonCommand1;
+        public ICommand LeftButtonCommand1
+        {
+            get
+            {
+                return _leftButtonCommand1 ?? (_leftButtonCommand1 = new CommandHandler(() => LeftButton1(), _canExecute));
+            }
+        }
+
+        public void LeftButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                //selectedCustomShape.X1 -= ConfigClass.stepSize;
+                //selectedCustomShape.XLeft -= ConfigClass.stepSize;
+                //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Width += ConfigClass.stepSize;
+
+                selectedCustomShape.X2 -= ConfigClass.stepSize;
+                selectedCustomShape.Width -= ConfigClass.stepSize;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        private ICommand _upButtonCommand1;
+        public ICommand UpButtonCommand1
+        {
+            get
+            {
+                return _upButtonCommand1 ?? (_upButtonCommand1 = new CommandHandler(() => UpButton1(), _canExecute));
+            }
+        }
+        public void UpButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                //selectedCustomShape.Y1 -= ConfigClass.stepSize;
+                //selectedCustomShape.YTop -= ConfigClass.stepSize;
+                //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
+                //selectedCustomShape.Height += ConfigClass.stepSize;
+
+                selectedCustomShape.Y2 -= ConfigClass.stepSize;
+                selectedCustomShape.Height -= ConfigClass.stepSize;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        private ICommand _downButtonCommand1;
+        public ICommand DownButtonCommand1
+        {
+            get
+            {
+                return _downButtonCommand1 ?? (_downButtonCommand1 = new CommandHandler(() => DownButton1(), _canExecute));
+            }
+        }
+
+        public void DownButton1()
+        {
+            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize - ConfigClass.stepSize)
+            {
+                RemoveShapeFromField(selectedCustomShape);
+
+                //selectedCustomShape.Y2 += ConfigClass.stepSize;
+                //selectedCustomShape.Height += ConfigClass.stepSize;
+
+                selectedCustomShape.Y2 += ConfigClass.stepSize;
+                selectedCustomShape.Height += ConfigClass.stepSize;
+
+                FinalizeArrowKeyCommand();
+            }
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Checks if SelectedCustomShape still on Image and then updates the collection with all Rectangles
+        /// </summary>
+        private void FinalizeArrowKeyCommand()
+        {
+            CheckIfSelectedCustomShapeOnCanvas();
+
+            int tmpIndex = 0;
+            foreach (CustomShape r in Rectangles)
+            {
+                if (r.Id == selectedCustomShape.Id)
+                {
+                    Rectangles.RemoveAt(tmpIndex);
+                    Rectangles.Insert(tmpIndex, selectedCustomShape);
+
+                    if (CroppedImageVisibility == Visibility.Visible)
+                    {
+                        UpdateCropedImage(SelectedCustomShape);
+                    }
+
+                    SaveShapeToField(selectedCustomShape);
+                    break;
+                }
+                tmpIndex++;
+            }
+        }
+
+        #endregion
+
+        #endregion
 
         #region Variables
 
@@ -1340,6 +1504,177 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
+        #region Devide img into fields for better performance
+        //Devide img into rectangles/fields with const Widht and Height
+        //so that the detectShape Algorithm will only search in current
+        //field for Rectangles and wont search the whole List of visible
+        //Rectangles (RectanglesView)
+
+        /// <summary>
+        /// Saves Shape to according fields in image-grid
+        /// </summary>
+        /// <param name="customShape"></param>
+        private void SaveShapeToField(CustomShape customShape)
+        {
+            int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
+            int columnX2 = Convert.ToInt32(Math.Floor(customShape.X2 / fieldWidth));
+            int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
+            int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
+
+            int numberColumns = Math.Abs(columnX2 - columnX1) + 1;
+            int numberRows = Math.Abs(rowY2 - rowY1) + 1;
+
+            for (int i = 0; i < numberColumns; i++)
+            {
+                for (int j = 0; j < numberRows; j++)
+                {
+                    ShapeToField(Math.Min(columnX1, columnX2) + i, Math.Min(rowY1, rowY2) + j, customShape);
+                }
+            }
+        }
+
+        private void ShapeToField(int column, int row, CustomShape customShape)
+        {
+            int fieldNumber = column + row * meshColumnNumber;
+            fields[fieldNumber].Add(new CustomShape(customShape));
+            int indexRectField = fields[fieldNumber].Count() - 1;
+            fields[fieldNumber][indexRectField] = customShape;
+        }
+
+        /// <summary>
+        /// Removes Shape from all fields in image-grid
+        /// </summary>
+        /// <param name="customShape"></param>
+        private void RemoveShapeFromField(CustomShape customShape)
+        {
+            int columnX1 = Convert.ToInt32(Math.Floor(customShape.X1 / fieldWidth));
+            int columnX2 = Convert.ToInt32(Math.Floor(customShape.X2 / fieldWidth));
+            int rowY1 = Convert.ToInt32(Math.Floor(customShape.Y1 / fieldHeight));
+            int rowY2 = Convert.ToInt32(Math.Floor(customShape.Y2 / fieldHeight));
+
+            int numberColumns = Math.Abs(columnX2 - columnX1) + 1;
+            int numberRows = Math.Abs(rowY2 - rowY1) + 1;
+
+            for (int i = 0; i < numberColumns; i++)
+            {
+                for (int j = 0; j < numberRows; j++)
+                {
+                    ShapeFromField(Math.Min(columnX1, columnX2) + i, Math.Min(rowY1, rowY2) + j, customShape);
+                }
+            }
+        }
+
+        private void ShapeFromField(int column, int row, CustomShape customShape)
+        {
+            int fieldNumber = column + row * meshColumnNumber;
+            if (fieldNumber < 0)
+            {
+                return;
+            }
+            foreach (CustomShape r in fields[fieldNumber])
+            {
+                if (r.Id == customShape.Id)
+                {
+                    fields[fieldNumber].Remove(r);
+                    break;
+                }
+            }
+        }
+
+
+        /// <summary>
+        /// Clears all fields of the ObservableCollection Array
+        /// </summary>
+        private void ClearFields()
+        {
+            if (fields != null)
+            {
+                for (int i = 0; i < fields.Length; i++)
+                {
+                    fields[i].Clear();
+                }
+            }
+        }
+
+        #endregion
+
+
+        #region Delete Routine
+
+        #region Command
+
+        private ICommand _deleteCommand;
+        public ICommand DeleteCommand
+        {
+            get
+            {
+                return _deleteCommand ?? (_deleteCommand = new CommandHandler(() => OnDelete(true), true));
+            }
+        }
+
+        #endregion
+
+        /// <summary>
+        /// Delete the selected shape
+        /// </summary>
+        private void OnDelete(bool isOnCanvas)
+        {
+            if (selectedCustomShape != null)
+            {
+                foreach (CustomShape rv in RectanglesView)
+                {
+                    if (rv.Id == selectedCustomShape.Id)
+                    {
+                        if (isOnCanvas == true)
+                        {
+                            undoCustomShapes.Push(rv);
+                            undoInformation.Push("Delete");
+                        }
+                        RectanglesView.Remove(rv);
+                        indexRectanglesView--;
+                        RemoveShapeFromField(rv);
+
+                        foreach (CustomShape r in Rectangles)
+                        {
+                            if (r.Id == selectedCustomShape.Id)
+                            {
+                                Rectangles.Remove(r);
+                                indexRectangles--;
+
+                                //Only for debugging
+                                Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
+                                Console.WriteLine("Rectangles count: " + Rectangles.Count);
+                                //
+
+                                //string tmpFilterName = SelectedComboBoxItem;
+                                //ComboBoxNames();
+                                //SelectedComboBoxItem = tmpFilterName;
+                                //if (RectanglesView.Count() == 0)
+                                //{
+                                //    SelectedComboBoxItem = "All Labels";
+                                //}
+                                FilterName();
+
+                                break;
+                            }
+                        }
+                        break;
+                    }
+                }
+
+                ChangeDetected = true;
+
+                selectedCustomShape = null;
+            }
+        }
+
+
+        #endregion
+
+
+
+        //Support Methods that only work in Background
+
         #region Detect & Select Shape
         //DetectShape:
         //routines to detect different Shapes on Canvas
@@ -1715,79 +2050,6 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region Delete Routine
-
-        #region Command
-
-        private ICommand _deleteCommand;
-        public ICommand DeleteCommand
-        {
-            get
-            {
-                return _deleteCommand ?? (_deleteCommand = new CommandHandler(() => OnDelete(true), true));
-            }
-        }
-
-        #endregion
-
-        /// <summary>
-        /// Delete the selected shape
-        /// </summary>
-        private void OnDelete(bool isOnCanvas)
-        {
-            if (selectedCustomShape != null)
-            {
-                foreach (CustomShape rv in RectanglesView)
-                {
-                    if (rv.Id == selectedCustomShape.Id)
-                    {
-                        if (isOnCanvas == true)
-                        {
-                            undoCustomShapes.Push(rv);
-                            undoInformation.Push("Delete");
-                        }
-                        RectanglesView.Remove(rv);
-                        indexRectanglesView--;
-                        RemoveShapeFromField(rv);
-
-                        foreach (CustomShape r in Rectangles)
-                        {
-                            if (r.Id == selectedCustomShape.Id)
-                            {
-                                Rectangles.Remove(r);
-                                indexRectangles--;
-
-                                //Only for debugging
-                                Console.WriteLine("RectanglesView count: " + RectanglesView.Count);
-                                Console.WriteLine("Rectangles count: " + Rectangles.Count);
-                                //
-
-                                //string tmpFilterName = SelectedComboBoxItem;
-                                //ComboBoxNames();
-                                //SelectedComboBoxItem = tmpFilterName;
-                                //if (RectanglesView.Count() == 0)
-                                //{
-                                //    SelectedComboBoxItem = "All Labels";
-                                //}
-                                FilterName();
-
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                }
-
-                ChangeDetected = true;
-
-                selectedCustomShape = null;
-            }
-        }
-
-
-        #endregion
-
-
         #region UndoRedo
 
         #region Undo
@@ -2053,6 +2315,69 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
+        #region PageNavigation
+
+        private ICommand _previousPage;
+        public ICommand PreviousPage
+        {
+            get
+            {
+                return _previousPage ?? (_previousPage = new CommandHandler(() => SetNextState(Command.Previous), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// browse to the previous page
+        /// </summary>
+        /// <param name="command"></param>
+        public void SetNextState(Command command)
+        {
+            UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
+            this._mainGrid.Children.Clear();
+            usc.DataContext = this._mainViewModel;
+            this._mainGrid.Children.Add(usc);
+        }
+
+        #endregion
+
+
+        #region Key-Binding: ESC-Button => deselect Rectangle/cancel AddRectangle
+
+        private ICommand _deleteSelectionRectangle;
+        public ICommand DeleteSelectionRectangle
+        {
+            get
+            {
+                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// Unselect rectangle
+        /// </summary>
+        public void DeleteSelection()
+        {
+            if (selectedCustomShape != null)
+            {
+                CheckFormat(selectedCustomShape);
+                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
+                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
+                selectedCustomShape = null;
+            }
+
+            detectedCustomShape = null;
+            SelectedIndex = -1;
+            Enabled = true;
+            mouseHandlingState = MouseState.Normal;
+            IconPath = "\\Icons\\new.png";
+        }
+
+        #endregion
+
+
+
+        //Methods for LabelList and RectangleListView
+
         #region RectanglesListView
 
         #region Commands
@@ -2205,79 +2530,6 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        private string _selectedComboBoxItem;
-        // Selected ComboBoxItem
-        public string SelectedComboBoxItem
-        {
-            get
-            {
-                return _selectedComboBoxItem;
-            }
-            set
-            {
-                _selectedComboBoxItem = value;
-                OnPropertyChanged("SelectedComboBoxItem");
-
-            }
-        }
-
-
-        private bool _filterVisibilitySelected = false;
-        public bool FilterVisibilitySelected
-        {
-            get
-            {
-                return _filterVisibilitySelected;
-            }
-            set
-            {
-                _filterVisibilitySelected = value;
-                OnPropertyChanged("FilterVisibility1");
-            }
-        }
-
-        private bool _filterVisibilityAllLabels = true;
-        public bool FilterVisibilityAllLabels
-        {
-            get
-            {
-                return _filterVisibilityAllLabels;
-            }
-            set
-            {
-                _filterVisibilityAllLabels = value;
-                OnPropertyChanged("FilterVisibility");
-            }
-        }
-
-        private bool _filterVisibilitySelectedGallery = false;
-        public bool FilterVisibilitySelectedGallery
-        {
-            get
-            {
-                return _filterVisibilitySelectedGallery;
-            }
-            set
-            {
-                _filterVisibilitySelectedGallery = value;
-                OnPropertyChanged("FilterVisibilitySelectedGallery");
-            }
-        }
-
-        private bool _filterVisibilityAllLabelsGallery = false;
-        public bool FilterVisibilityAllLabelsGallery
-        {
-            get
-            {
-                return _filterVisibilityAllLabelsGallery;
-            }
-            set
-            {
-                _filterVisibilityAllLabelsGallery = value;
-                OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-            }
-        }
-
         #endregion
 
         /// <summary>
@@ -2306,27 +2558,10 @@ namespace MachineLearningTrainer.DrawerTool
 
 
         /// <summary>
-        /// Filter list by Label selected in ComboBox 
+        /// Filter list of visible Rectangles depending if Visibility is on or off
         /// </summary>
         public void FilterName()
         {
-            // Uncomment if ListView/GalleryView is working again
-            //
-            //if (ListViewImage.Contains("grid"))
-            //{
-            //    FilterVisibilitySelectedGallery = false;
-            //    FilterVisibilityAllLabels = false;
-            //    FilterVisibilityAllLabelsGallery = false;
-            //    FilterVisibilitySelected = true;
-            //}
-            //else if (ListViewImage.Contains("list"))
-            //{
-            //    FilterVisibilitySelectedGallery = true;
-            //    FilterVisibilityAllLabels = false;
-            //    FilterVisibilityAllLabelsGallery = false;
-            //    FilterVisibilitySelected = false;
-            //}
-
             RectanglesView.Clear();
             ClearFields();
 
@@ -2343,34 +2578,6 @@ namespace MachineLearningTrainer.DrawerTool
 
             RefreshRectangleCount();
         }
-
-
-        /// <summary>
-        /// this method adds all different labels to the combobox
-        /// </summary>
-        public void ComboBoxNames()
-        {
-            temp = SelectedComboBoxItem;
-            ComboBoxItems.Clear();
-            ComboBoxItems.Add("All Labels");
-
-            foreach (var rec in Rectangles)
-            {
-                if (!ComboBoxItems.Contains(rec.Label))
-                {
-                    ComboBoxItems.Add(rec.Label);
-                }
-            }
-            if (temp != null)
-            {
-                SelectedComboBoxItem = temp;
-            }
-            else
-            {
-                SelectedComboBoxItem = "All Labels";
-            }
-        }
-
 
         /// <summary>
         /// sorts the list of rectangles in ascending order of their name
@@ -2694,7 +2901,6 @@ namespace MachineLearningTrainer.DrawerTool
                 TmpNewLabel.Parent = "";
             }
 
-            ComboBoxNames();
             FilterName();
             if (selectedCustomShape != null)
             {
@@ -2766,6 +2972,30 @@ namespace MachineLearningTrainer.DrawerTool
                 ChangeDetected = true;
             }
         }
+
+
+        #region Return-Button => finalize rename of Label
+
+        private ICommand _enterCommand;
+        public ICommand EnterCommand
+        {
+            get
+            {
+                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
+            }
+        }
+
+        /// <summary>
+        /// Controls every possible action that can occure on return
+        /// </summary>
+        public void Enter()
+        {
+            TmpNewLabel.Parent = "";
+            TmpNewLabel.Label = "";
+            Keyboard.ClearFocus();
+        }
+
+        #endregion
 
         #endregion
 
@@ -2887,7 +3117,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         public void ChangeColor()
         {
-            if (SelectedComboBoxItem != null && SelectedLabel != null)
+            if (SelectedLabel != null)
             {
                 {
                     foreach (var r in Rectangles)
@@ -2929,7 +3159,7 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         internal void ChangeOpacity()
         {
-            if (SelectedComboBoxItem != null && SelectedLabel != null)
+            if (SelectedLabel != null)
             {
                 {
                     foreach (var r in Rectangles)
@@ -2944,29 +3174,6 @@ namespace MachineLearningTrainer.DrawerTool
             OnPropertyChanged("ChangeOpacity");
         }
 
-
-        /// <summary>
-        /// Sets SelectedColor according to selected Label when opening ColorPicker
-        /// </summary>
-        internal void SetSelectedColor()
-        {
-            if (SelectedComboBoxItem == "All Labels")
-            {
-                if (LabelColorFormat.Count() != 0)
-                {
-                    SelectedLabel = LabelColorFormat[0];
-                    return;
-                }
-            }
-            foreach (var r in LabelColorFormat)
-            {
-                if (r.Label == SelectedComboBoxItem)
-                {
-                    SelectedLabel = r;
-                    return;
-                }
-            }
-        }
 
         /// <summary>
         /// Deletes Selected ColorFormat
@@ -2986,7 +3193,6 @@ namespace MachineLearningTrainer.DrawerTool
                                 AddLabelColorFormat();
                             }
                             RemoveLabel();
-                            ComboBoxNames();
                             FilterName();
                             if (r.Label != "default0")
                             {
@@ -2997,7 +3203,6 @@ namespace MachineLearningTrainer.DrawerTool
                             break;
                         }
                     }
-                    SetSelectedColor();
                 }
                 else if (SelectedSubLabel != null)
                 {
@@ -3133,44 +3338,32 @@ namespace MachineLearningTrainer.DrawerTool
         /// </summary>
         private void CheckFormat(CustomShape Rectangle)
         {
-            if (SelectedComboBoxItem != null || SelectedComboBoxItem != "All Labels")
+            string tmpStroke = "LawnGreen";
+            string tmpFill = "White";
+            double tmpOpacity = 0.1;
+
+            foreach (var r in LabelColorFormat)
             {
-
-                string tmpStroke = "LawnGreen";
-                string tmpFill = "White";
-                double tmpOpacity = 0.1;
-
-                foreach (var r in LabelColorFormat)
+                if (r.Label == Rectangle.Label)
                 {
-                    if (r.Label == Rectangle.Label)
-                    {
-                        tmpStroke = r.Stroke;
-                        tmpFill = r.Fill;
-                        tmpOpacity = r.Opacity;
-                        break;
-                    }
+                    tmpStroke = r.Stroke;
+                    tmpFill = r.Fill;
+                    tmpOpacity = r.Opacity;
+                    break;
                 }
-
-                Rectangle.Stroke = tmpStroke;
-                Rectangle.Fill = tmpFill;
-                Rectangle.Opacity = tmpOpacity;
             }
+
+            Rectangle.Stroke = tmpStroke;
+            Rectangle.Fill = tmpFill;
+            Rectangle.Opacity = tmpOpacity;
         }
 
 
         #endregion
 
 
-        #region Autosave
 
-        /// <summary>
-        /// true if something was changed e.g. Rectangle drawn/duplicated/resized or Label changed/added/removed
-        /// false if now changes were detected to prevent saving the whole time
-        /// </summary>
-        public bool ChangeDetected = false;
-
-        #endregion
-
+        //Methods for Loading/Saving
 
         #region Import/Export Rectangles <=> XML
 
@@ -3443,7 +3636,6 @@ namespace MachineLearningTrainer.DrawerTool
                 }
             }
             RefreshLabelList();
-            ComboBoxNames();
             SortList();
             CropImageLabelBegin();
         }
@@ -3696,7 +3888,6 @@ namespace MachineLearningTrainer.DrawerTool
                 RefreshRectangleCount();
 
                 RefreshLabelList();
-                ComboBoxNames();
                 SortList();
                 FilterName();
                 bImage = null;
@@ -3774,493 +3965,53 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        #region PageNavigation
-
-        private ICommand _previousPage;
-        public ICommand PreviousPage
-        {
-            get
-            {
-                return _previousPage ?? (_previousPage = new CommandHandler(() => SetNextState(Command.Previous), _canExecute));
-            }
-        }
+        #region Autosave
 
         /// <summary>
-        /// browse to the previous page
+        /// true if something was changed e.g. Rectangle drawn/duplicated/resized or Label changed/added/removed
+        /// false if now changes were detected to prevent saving the whole time
         /// </summary>
-        /// <param name="command"></param>
-        public void SetNextState(Command command)
-        {
-            UserControl usc = this._mainModel.SetNextState(_mainGrid, command);
-            this._mainGrid.Children.Clear();
-            usc.DataContext = this._mainViewModel;
-            this._mainGrid.Children.Add(usc);
-        }
+        public bool ChangeDetected = false;
 
         #endregion
 
 
-        #region Key-Bindings
 
-        #region ESC-Button => deselect Rectangle
+        //PropertyChangedEvent
 
-        private ICommand _deleteSelectionRectangle;
-        public ICommand DeleteSelectionRectangle
-        {
-            get
-            {
-                return _deleteSelectionRectangle ?? (_deleteSelectionRectangle = new CommandHandler(() => DeleteSelection(), _canExecute));
-            }
-        }
+        #region PropertyChangedArea
+
+        public event PropertyChangedEventHandler PropertyChanged;
 
         /// <summary>
-        /// Unselect rectangle
+        /// Raise Property changed event for INotifyPropertyChanged => dynamlically updating bindings for UI element)
         /// </summary>
-        public void DeleteSelection()
+        /// <param name="name"></param>
+        protected void OnPropertyChanged(string name)
         {
-            if (selectedCustomShape != null)
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
             {
-                CheckFormat(selectedCustomShape);
-                selectedCustomShape.Viewport = ConfigClass.viewportUnSelected;
-                selectedCustomShape.ViewportTileMode = ConfigClass.viewportTileModeUnSelected;
-                selectedCustomShape = null;
+
+                handler(this, new PropertyChangedEventArgs(name));
             }
 
-            detectedCustomShape = null;
-            SelectedIndex = -1;
-            Enabled = true;
-            mouseHandlingState = MouseState.Normal;
-            IconPath = "\\Icons\\new.png";
-        }
-
-        private string tmpLabel;
-        public void DeleteSelectionForRename()
-        {
-            tmpLabel = SelectedCustomShape.Label;
-        }
-        #endregion
-
-
-        #region Return-Button => refresh FilterList
-
-        private ICommand _enterCommand;
-        public ICommand EnterCommand
-        {
-            get
-            {
-                return _enterCommand ?? (_enterCommand = new CommandHandler(() => Enter(), _canExecute));
-            }
-        }
-
-        /// <summary>
-        /// Controls every possible action that can occure on return
-        /// </summary>
-        public void Enter()
-        {
-            //OnRename();
-            TmpNewLabel.Parent = "";
-            TmpNewLabel.Label = "";
-            Keyboard.ClearFocus();
         }
 
         #endregion
 
-
-        #region KeyArrowCommands
-
-        #region ArrowKey
-
-        private ICommand _rightButtonCommand_Move;
-        public ICommand RightButtonCommand_Move
-        {
-            get
-            {
-                return _rightButtonCommand_Move ?? (_rightButtonCommand_Move = new CommandHandler(() => RightButton_Move(), _canExecute));
-            }
-        }
-
-        public void RightButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                selectedCustomShape.X1 += ConfigClass.stepSize;
-                selectedCustomShape.X2 += ConfigClass.stepSize;
-                selectedCustomShape.XLeft += ConfigClass.stepSize;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        private ICommand _leftButtonCommand_Move;
-        public ICommand LeftButtonCommand_Move
-        {
-            get
-            {
-                return _leftButtonCommand_Move ?? (_leftButtonCommand_Move = new CommandHandler(() => LeftButton_Move(), _canExecute));
-            }
-        }
-
-        public void LeftButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                selectedCustomShape.X1 -= ConfigClass.stepSize;
-                selectedCustomShape.X2 -= ConfigClass.stepSize;
-                selectedCustomShape.XLeft -= ConfigClass.stepSize;
-                selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        private ICommand _upButtonCommand_Move;
-        public ICommand UpButtonCommand_Move
-        {
-            get
-            {
-                return _upButtonCommand_Move ?? (_upButtonCommand_Move = new CommandHandler(() => UpButton_Move(), _canExecute));
-            }
-        }
-
-        public void UpButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                selectedCustomShape.Y1 -= ConfigClass.stepSize;
-                selectedCustomShape.Y2 -= ConfigClass.stepSize;
-                selectedCustomShape.YTop -= ConfigClass.stepSize;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        private ICommand _downButtonCommand_Move;
-        public ICommand DownButtonCommand_Move
-        {
-            get
-            {
-                return _downButtonCommand_Move ?? (_downButtonCommand_Move = new CommandHandler(() => DownButton_Move(), _canExecute));
-            }
-        }
-
-        public void DownButton_Move()
-        {
-            if (selectedCustomShape != null)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                selectedCustomShape.Y1 += ConfigClass.stepSize;
-                selectedCustomShape.Y2 += ConfigClass.stepSize;
-                selectedCustomShape.YTop += ConfigClass.stepSize;
-                selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        #endregion
-
-        //#region ArrowKey+Shift
-
-        //private ICommand _rightButtonCommand;
-        //public ICommand RightButtonCommand
-        //{
-        //    get
-        //    {
-        //        return _rightButtonCommand ?? (_rightButtonCommand = new CommandHandler(() => RightButton(), _canExecute));
-        //    }
-        //}
-
-        //public void RightButton()
-        //{
-        //    if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-        //    {
-        //        selectedCustomShape.X1 += 2;
-        //        selectedCustomShape.XLeft += 2;
-        //        selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-        //        selectedCustomShape.Width -= 2;
-
-        //        RemoveShapeFromField(selectedCustomShape);
-        //        int tmpIndex = 0;
-        //        foreach (CustomShape r in Rectangles)
-        //        {
-        //            if (r.Id == selectedCustomShape.Id)
-        //            {
-        //                Rectangles.RemoveAt(tmpIndex);
-        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-        //                SaveShapeToField(selectedCustomShape);
-        //                break;
-        //            }
-        //            tmpIndex++;
-        //        }
-        //    }
-        //}
-
-        //private ICommand _leftButtonCommand;
-        //public ICommand LeftButtonCommand
-        //{
-        //    get
-        //    {
-        //        return _leftButtonCommand ?? (_leftButtonCommand = new CommandHandler(() => LeftButton(), _canExecute));
-        //    }
-        //}
-
-        //public void LeftButton()
-        //{
-        //    if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-        //    {
-        //        selectedCustomShape.X2 -= 2;
-        //        selectedCustomShape.Width -= 2;
-
-        //        RemoveShapeFromField(selectedCustomShape);
-        //        int tmpIndex = 0;
-        //        foreach (CustomShape r in Rectangles)
-        //        {
-        //            if (r.Id == selectedCustomShape.Id)
-        //            {
-        //                Rectangles.RemoveAt(tmpIndex);
-        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-        //                SaveShapeToField(selectedCustomShape);
-        //                break;
-        //            }
-        //            tmpIndex++;
-        //        }
-        //    }
-        //}
-
-        //private ICommand _upButtonCommand;
-        //public ICommand UpButtonCommand
-        //{
-        //    get
-        //    {
-        //        return _upButtonCommand ?? (_upButtonCommand = new CommandHandler(() => UpButton(), _canExecute));
-        //    }
-        //}
-        //public void UpButton()
-        //{
-        //    if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-        //    {
-        //        selectedCustomShape.Y2 -= 2;
-        //        selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-        //        selectedCustomShape.Height -= 2;
-
-        //        RemoveShapeFromField(selectedCustomShape);
-        //        int tmpIndex = 0;
-        //        foreach (CustomShape r in Rectangles)
-        //        {
-        //            if (r.Id == selectedCustomShape.Id)
-        //            {
-        //                Rectangles.RemoveAt(tmpIndex);
-        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-        //                SaveShapeToField(selectedCustomShape);
-        //                break;
-        //            }
-        //            tmpIndex++;
-        //        }
-        //    }
-        //}
-
-        //private ICommand _downButtonCommand;
-        //public ICommand DownButtonCommand
-        //{
-        //    get
-        //    {
-        //        return _downButtonCommand ?? (_downButtonCommand = new CommandHandler(() => DownButton(), _canExecute));
-        //    }
-        //}
-
-        //public void DownButton()
-        //{
-        //    if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-        //    {
-        //        selectedCustomShape.Y1 += 2;
-        //        selectedCustomShape.YTop += 2;
-        //        selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-        //        selectedCustomShape.Height -= 2;
-
-        //        RemoveShapeFromField(selectedCustomShape);
-        //        int tmpIndex = 0;
-        //        foreach (CustomShape r in Rectangles)
-        //        {
-        //            if (r.Id == selectedCustomShape.Id)
-        //            {
-        //                Rectangles.RemoveAt(tmpIndex);
-        //                Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-        //                SaveShapeToField(selectedCustomShape);
-        //                break;
-        //            }
-        //            tmpIndex++;
-        //        }
-        //    }
-        //}
-
-        //#endregion
-
-        #region ArrowKey+Ctrl
-
-        private ICommand _rightButtonCommand1;
-        public ICommand RightButtonCommand1
-        {
-            get
-            {
-                return _rightButtonCommand1 ?? (_rightButtonCommand1 = new CommandHandler(() => RightButton1(), _canExecute));
-            }
-        }
-
-        public void RightButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize-ConfigClass.stepSize)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                selectedCustomShape.X2 += ConfigClass.stepSize;
-                selectedCustomShape.Width += ConfigClass.stepSize;
-
-                //selectedCustomShape.X2 += ConfigClass.stepSize;
-                //selectedCustomShape.Width += ConfigClass.stepSize;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-
-        private ICommand _leftButtonCommand1;
-        public ICommand LeftButtonCommand1
-        {
-            get
-            {
-                return _leftButtonCommand1 ?? (_leftButtonCommand1 = new CommandHandler(() => LeftButton1(), _canExecute));
-            }
-        }
-
-        public void LeftButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Width > minShapeSize)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                //selectedCustomShape.X1 -= ConfigClass.stepSize;
-                //selectedCustomShape.XLeft -= ConfigClass.stepSize;
-                //selectedCustomShape.XLeftBorder = selectedCustomShape.XLeft - selectedCustomShape.StrokeThickness;
-                //selectedCustomShape.Width += ConfigClass.stepSize;
-
-                selectedCustomShape.X2 -= ConfigClass.stepSize;
-                selectedCustomShape.Width -= ConfigClass.stepSize;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        private ICommand _upButtonCommand1;
-        public ICommand UpButtonCommand1
-        {
-            get
-            {
-                return _upButtonCommand1 ?? (_upButtonCommand1 = new CommandHandler(() => UpButton1(), _canExecute));
-            }
-        }
-        public void UpButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                //selectedCustomShape.Y1 -= ConfigClass.stepSize;
-                //selectedCustomShape.YTop -= ConfigClass.stepSize;
-                //selectedCustomShape.YTopBorder = selectedCustomShape.YTop - selectedCustomShape.StrokeThickness;
-                //selectedCustomShape.Height += ConfigClass.stepSize;
-
-                selectedCustomShape.Y2 -= ConfigClass.stepSize;
-                selectedCustomShape.Height -= ConfigClass.stepSize;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        private ICommand _downButtonCommand1;
-        public ICommand DownButtonCommand1
-        {
-            get
-            {
-                return _downButtonCommand1 ?? (_downButtonCommand1 = new CommandHandler(() => DownButton1(), _canExecute));
-            }
-        }
-
-        public void DownButton1()
-        {
-            if (selectedCustomShape != null && selectedCustomShape.Height > minShapeSize-ConfigClass.stepSize)
-            {
-                RemoveShapeFromField(selectedCustomShape);
-
-                //selectedCustomShape.Y2 += ConfigClass.stepSize;
-                //selectedCustomShape.Height += ConfigClass.stepSize;
-
-                selectedCustomShape.Y2 += ConfigClass.stepSize;
-                selectedCustomShape.Height += ConfigClass.stepSize;
-
-                FinalizeArrowKeyCommand();
-            }
-        }
-
-        #endregion
-
-
-        /// <summary>
-        /// Checks if SelectedCustomShape still on Image and then updates the collection with all Rectangles
-        /// </summary>
-        private void FinalizeArrowKeyCommand()
-        {
-            CheckIfSelectedCustomShapeOnCanvas();
-
-            int tmpIndex = 0;
-            foreach (CustomShape r in Rectangles)
-            {
-                if (r.Id == selectedCustomShape.Id)
-                {
-                    Rectangles.RemoveAt(tmpIndex);
-                    Rectangles.Insert(tmpIndex, selectedCustomShape);
-
-                    if (CroppedImageVisibility == Visibility.Visible)
-                    {
-                        UpdateCropedImage(SelectedCustomShape);
-                    }
-
-                    SaveShapeToField(selectedCustomShape);
-                    break;
-                }
-                tmpIndex++;
-            }
-        }
-
-        #endregion
-
-        #endregion
 
 
         /// <summary>
         /// Old stuff
         /// </summary>
 
+        #region GrapCut (not functional)
 
 
         public ObservableCollection<Polygon> polygonsCollection { get; set; } = new ObservableCollection<Polygon>();
         public ObservableCollection<ResizableRectangle> PixelRectangles { get; set; } = new ObservableCollection<ResizableRectangle>();
-
-
-
-
 
 
 
@@ -4287,11 +4038,6 @@ namespace MachineLearningTrainer.DrawerTool
             set { _myInkCanvas = value; }
         }
 
-
-        
-
-
-
         private double _zoomBorderWidth;
         public double ZoomBorderWidth
         {
@@ -4306,93 +4052,6 @@ namespace MachineLearningTrainer.DrawerTool
         {
             get { return _zoomBorderHeight; }
             set { _zoomBorderHeight = value; }
-        }
-
-
-        
-
-        
-
-        
-
-
-
-        private ICommand _listViewCommand;
-        public ICommand ListViewCommand
-        {
-            get
-            {
-                return _listViewCommand ?? (_listViewCommand = new CommandHandler(() => ListView(), _canExecute));
-            }
-        }
-
-        private string _listViewImage = @"/Icons/grid_view.png";
-
-        public string ListViewImage
-        {
-            get
-            {
-                return _listViewImage;
-            }
-            set
-            {
-                _listViewImage = value;
-                OnPropertyChanged("ListViewImage");
-            }
-        }
-
-        private void ListView()
-        {
-            if (ListViewImage.Contains("grid"))
-            {
-                ListViewImage = @"/Icons/list_view.png";
-                OnPropertyChanged("ListViewTextVisibility");
-
-                if (SelectedComboBoxItem == "All Labels")
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = true;
-                    FilterVisibilitySelected = false;
-
-                }
-
-                else
-                {
-                    FilterVisibilitySelectedGallery = true;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = false;
-                }
-            }
-
-            else if (ListViewImage.Contains("list"))
-            {
-                ListViewImage = @"/Icons/grid_view.png";
-                OnPropertyChanged("ListViewTextVisibility");
-
-                if (SelectedComboBoxItem == "All Labels")
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = true;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = false;
-                }
-
-                else
-                {
-                    FilterVisibilitySelectedGallery = false;
-                    FilterVisibilityAllLabels = false;
-                    FilterVisibilityAllLabelsGallery = false;
-                    FilterVisibilitySelected = true;
-                }
-            }
-
-            OnPropertyChanged("FilterVisibilitySelected");
-            OnPropertyChanged("FilterVisibilitySelectedGallery");
-            OnPropertyChanged("FilterVisibilityAllLabels");
-            OnPropertyChanged("FilterVisibilityAllLabelsGallery");
-
         }
 
 
@@ -4986,5 +4645,7 @@ namespace MachineLearningTrainer.DrawerTool
             showMessageBox = true;
         }
     }
+
+#endregion 
 
 }

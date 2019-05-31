@@ -252,12 +252,6 @@ namespace MachineLearningTrainer.DrawerTool
         #endregion
 
 
-        private void ComboBox_DropDownClosed(object sender, EventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).FilterName();
-            (this.DataContext as DrawerViewModel).RectangleCount = "#" + (this.DataContext as DrawerViewModel).RectanglesView.Count.ToString();
-        }
-
 
         //public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
         //{
@@ -518,7 +512,6 @@ namespace MachineLearningTrainer.DrawerTool
 
                     (this.DataContext as DrawerViewModel).LoadLabelData((this.DataContext as DrawerViewModel).ImagePath);
                     (this.DataContext as DrawerViewModel).LoadRectangles();
-                    (this.DataContext as DrawerViewModel).ComboBoxNames();
                     (this.DataContext as DrawerViewModel).SortList();
                     (this.DataContext as DrawerViewModel).FilterName();
                     (this.DataContext as DrawerViewModel).ClearUndoRedoStack();
@@ -667,15 +660,6 @@ namespace MachineLearningTrainer.DrawerTool
             UIElement element = (UIElement)sender;
             element.ReleaseMouseCapture();
             e.Handled = true;
-        }
-
-        private void EditLabelColorFormat_Click(object sender, RoutedEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).SetSelectedColor();
-            (this.DataContext as DrawerViewModel).ColorPickerEnabled = true;
-            ColorPicker newColorPicker = new ColorPicker();
-            newColorPicker.DataContext = this.DataContext;
-            newColorPicker.ShowDialog();
         }
 
         #endregion
@@ -976,22 +960,12 @@ namespace MachineLearningTrainer.DrawerTool
         {
             SelectTreeViewItem(sender);
 
-            if (animatedRoatateTransform.Angle != 180)
-            {
-                animatedRoatateTransform.Angle = 180;
-                listBoxLabels.Visibility = Visibility.Hidden;
-                ColorPicker_Panel.Visibility = Visibility.Hidden;
-                gridLV.Width = new GridLength(0);
-            }
-            else
-            {
-                animatedRoatateTransform.Angle = 0;
-                ColorPicker_Panel.Visibility = Visibility.Visible;
-                (this.DataContext as DrawerViewModel).IsEnabled = false;
-                gridLV.Width = new GridLength(265);
-
-                Console.WriteLine((this.DataContext as DrawerViewModel).SelectedLabel.Label);
-            }
+            animatedRoatateTransform.Angle = 0;
+            listBoxLabels.Visibility = Visibility.Hidden;
+            listViewMode.Visibility = Visibility.Hidden;
+            ColorPicker_Panel.Visibility = Visibility.Visible;
+            (this.DataContext as DrawerViewModel).IsEnabled = false;
+            gridLV.Width = new GridLength(265);
         }
 
         /// <summary>
@@ -1082,6 +1056,7 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).IsEnabled = true;
             animatedRoatateTransform.Angle = 180;
             listBoxLabels.Visibility = Visibility.Hidden;
+            listViewMode.Visibility = Visibility.Visible;
             ColorPicker_Panel.Visibility = Visibility.Hidden;
             gridLV.Width = new GridLength(0);
 
@@ -1144,6 +1119,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
+        /// <summary>
+        /// Changes ListView between List and Gallary List Mode
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ChangeListViewMode_Click(object sender, RoutedEventArgs e)
         {
             if (!((this.DataContext as DrawerViewModel).selectedListViewMode == DrawerViewModel.ListViewModes.List))

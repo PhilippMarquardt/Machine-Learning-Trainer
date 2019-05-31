@@ -741,6 +741,7 @@
             </StackPanel>
 
             <Button
+                x:Name="listViewMode"
                 Grid.Row="0"
                 Grid.Column="5"
                 HorizontalAlignment="Left"
