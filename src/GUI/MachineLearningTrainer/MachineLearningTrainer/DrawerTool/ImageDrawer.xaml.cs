@@ -32,6 +32,10 @@ namespace MachineLearningTrainer.DrawerTool
     /// </summary>
     public partial class ImageDrawer : UserControl, INotifyPropertyChanged
     {
+        // Initialization of ImageDrawer
+
+        #region Initialization
+
         public ImageDrawer()
         {
             InitializeComponent();
@@ -44,246 +48,7 @@ namespace MachineLearningTrainer.DrawerTool
             //    treeView.Items.Add(CreateTreeItem(driveInfo));
         }
 
-        private double timeCounter = 0;
-
-        private async void DoAutoSave(object sender, EventArgs e)
-        {
-            timeCounter += ConfigClass.autosaveRefreshRate;
-
-            if (((this.DataContext as DrawerViewModel).ImagePath != null && (this.DataContext as DrawerViewModel).ChangeDetected == true)
-                || timeCounter > ConfigClass.autosaveIntervall)
-            {
-                (this.DataContext as DrawerViewModel).ChangeDetected = false;
-                timeCounter = 0;
-
-                (this.DataContext as DrawerViewModel).ExportToPascal(DrawerViewModel.CallMode.Autosave);
-
-                //saveIcon.Visibility = Visibility.Visible;
-
-                //DoubleAnimation animationZoomIn = new DoubleAnimation(ConfigClass.smallWidth, ConfigClass.bigWidth, ConfigClass.durationSaveIconAnimated);
-                //saveIcon.BeginAnimation(Viewbox.WidthProperty, animationZoomIn);
-
-                //await Task.Delay(ConfigClass.durationSaveIconShown);
-                //saveIcon.Visibility = Visibility.Hidden;
-
-
-                DoubleAnimation increaseOpacity = new DoubleAnimation(ConfigClass.minOpacity, ConfigClass.maxOpacity, ConfigClass.durationSaveIconAnimated);
-                DoubleAnimation decreaseOpacity = new DoubleAnimation(ConfigClass.maxOpacity, ConfigClass.minOpacity, ConfigClass.durationSaveIconAnimated);
-
-                saveIcon.BeginAnimation(Viewbox.OpacityProperty, increaseOpacity);
-                await Task.Delay(ConfigClass.durationSaveIconShown);
-                saveIcon.BeginAnimation(Viewbox.OpacityProperty, decreaseOpacity);
-            }
-        }
-
-
-        #region Property changed area
-        public event PropertyChangedEventHandler PropertyChanged;
-        protected void OnPropertyChanged(string name)
-        {
-
-            PropertyChangedEventHandler handler = PropertyChanged;
-
-            if (handler != null)
-            {
-
-                handler(this, new PropertyChangedEventArgs(name));
-
-            }
-
-        }
-        #endregion
-
-        public ResizableRectangle SelectedResizableRectangle { get; }
-        private System.Windows.Point startPoint;
-        private ResizableRectangle rectSelectArea;
-        public string filenameTreeView { get; set; }
-        public System.Windows.Point mousePosition { get; set; }
-
-        public void ListBox_RightButtonUp(object sender, MouseButtonEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).RefreshSubtypeList();
-            (this.DataContext as DrawerViewModel).IsOpen = true;
-        }
-
-        private void Subtype_SubmenuOpened(object sender, RoutedEventArgs e)
-        {
-            ((MenuItem)sender).GetBindingExpression(MenuItem.ItemsSourceProperty).UpdateTarget();
-        }
-
-        private void ContextMenu_ContextMenuClosing(object sender, ContextMenuEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).FilterName();
-            //listBoxLabels.LayoutUpdated();
-        }
-
-
-        #region Define MouseEvents
-
-        private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).SelectCustomShape();
-        }
-
-        private int tmpRVCount = 0;
-
-        private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
-        {
-            mousePosition = e.GetPosition(cnvImage);
-            (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
-            txtBox.Content = "X: " + (int)mousePosition.X + "; Y: " + (int)mousePosition.Y;
-            txtBox1.Content = (this.DataContext as DrawerViewModel).ImagePath;
-
-            if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
-            {
-
-                if (tmpRVCount != (this.DataContext as DrawerViewModel).RectanglesView.Count())
-                {
-                    tmpRVCount = (this.DataContext as DrawerViewModel).RectanglesView.Count();
-                    int zIndex = tmpRVCount + 2;
-
-                    Panel.SetZIndex(horizontalLine, zIndex);
-                    Panel.SetZIndex(verticalLine, zIndex);
-                }
-
-                horizontalLine.Y1 = mousePosition.Y;
-                horizontalLine.Y2 = mousePosition.Y;
-                horizontalLine.StrokeThickness = 1;
-                verticalLine.X1 = mousePosition.X;
-                verticalLine.X2 = mousePosition.X;
-                verticalLine.StrokeThickness = 1;
-
-                Mouse.OverrideCursor = Cursors.Cross;
-                (this.DataContext as DrawerViewModel).CreateRectangle(mousePosition);
-            }
-            else
-            {
-                if(horizontalLine.Y1 != -1)
-                { 
-                    horizontalLine.Y1 = -1;
-                    horizontalLine.Y2 = -1;
-                    horizontalLine.StrokeThickness = 0;
-                    verticalLine.X1 = -1;
-                    verticalLine.X2 = -1;
-                    verticalLine.StrokeThickness = 0;
-                }
-
-                if (e.LeftButton == MouseButtonState.Released)
-                {
-                    (this.DataContext as DrawerViewModel).DetectCustomShape(mousePosition);
-                    if ((this.DataContext as DrawerViewModel).ShapeDetected == true)
-                    {
-                        (this.DataContext as DrawerViewModel).Enabled = false;
-                    }
-                    else
-                    {
-                        (this.DataContext as DrawerViewModel).Enabled = true;
-                        Mouse.OverrideCursor = Cursors.Arrow;
-                    }
-                }
-                //Uncommented, because it overrides Resize-MouseCursor
-                //else
-                //{
-                //    Mouse.OverrideCursor = Cursors.Hand;
-                //}
-
-                (this.DataContext as DrawerViewModel).Resize(mousePosition);
-                (this.DataContext as DrawerViewModel).Move(mousePosition);
-            }
-        }
-
-        private async void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            //(this.DataContext as DrawerViewModel).SortList();
-            //(this.DataContext as DrawerViewModel).ComboBoxNames();
-
-            //if ((this.DataContext as DrawerViewModel).Enabled == false && rectSelectArea != null)
-            //{
-            //    //foreach (var q in (this.DataContext as DrawerViewModel).RectanglesView)
-            //    //    q.RectangleMovable = true;
-            //    (this.DataContext as DrawerViewModel).Enabled = true;
-            //    var w = (int)rectSelectArea.RectangleWidth;
-            //    var h = (int)rectSelectArea.RectangleHeight;
-            //    if (w > 1 && h > 1)
-            //    {
-            //        BitmapImage bImage = new BitmapImage(new Uri(imgPreview.Source.ToString()));
-            //        Bitmap src;
-
-            //        using (MemoryStream outStream = new MemoryStream())
-            //        {
-            //            BitmapEncoder enc = new BmpBitmapEncoder();
-            //            enc.Frames.Add(BitmapFrame.Create(bImage));
-            //            enc.Save(outStream);
-            //            System.Drawing.Bitmap bitmap = new System.Drawing.Bitmap(outStream);
-
-            //            src = new Bitmap(bitmap);
-            //        }
-
-            //        Mat mat = SupportCode.ConvertBmp2Mat(src);
-            //        OpenCvSharp.Rect rectCrop = new OpenCvSharp.Rect((int)rectSelectArea.X, (int)rectSelectArea.Y, (int)rectSelectArea.RectangleWidth, (int)rectSelectArea.RectangleHeight);
-            //        Mat croppedImage = new Mat(mat, rectCrop);
-
-            //        rectSelectArea.CroppedImage = SupportCode.ConvertMat2BmpImg(croppedImage);
-            //    }
-
-            //}
-
-            ////else
-            ////{
-            ////    await (this.DataContext as DrawerViewModel).cropImageLabelBegin();
-            ////}
-            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count > 0)
-            {
-                (this.DataContext as DrawerViewModel).UndoEnabled = true;
-            }
-        }
-
-        private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).DuplicateVar = 0;
-            Mouse.OverrideCursor = Cursors.Arrow;
-        }
-
-        private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).DuplicateVar = 1;
-        }
-
-        #endregion
-
-
-
-        //public void TextBox_TextChanged(object sender, TextChangedEventArgs e)
-        //{
-        //    var binding = ((TextBox)sender).GetBindingExpression(TextBox.TextProperty);
-        //    binding.UpdateSource();
-        //}
-
-        void Zoom_In(object sender, KeyEventArgs e)
-        {
-            if ((e.Key == Key.OemPlus || e.Key == Key.Add) && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-            {
-                zoomBorder.ZoomIn();
-            }
-        }
-
-        void Zoom_Out(object sender, KeyEventArgs e)
-        {
-            if ((e.Key == Key.OemMinus || e.Key == Key.Subtract) && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-            {
-                zoomBorder.ZoomOut();
-            }
-        }
-
-        void Zoom_Reset(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.D0 && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
-            {
-                zoomBorder.Reset();
-            }
-        }
-
-
+        //Gets called when UserControl is loaded
         private void UserControl_Loaded(object sender, RoutedEventArgs e)
         {
             this.Focus();
@@ -293,7 +58,7 @@ namespace MachineLearningTrainer.DrawerTool
 
             (this.DataContext as DrawerViewModel).MyCanvas = cnvImage;
             (this.DataContext as DrawerViewModel).MyPreview = imgPreview;
-            (this.DataContext as DrawerViewModel).vmMousePoint = mousePosition;
+            (this.DataContext as DrawerViewModel).vmMousePoint = MousePosition;
 
             var gridHeight = gridY0.ActualHeight + gridY1.ActualHeight + gridY2.ActualHeight;
             (this.DataContext as DrawerViewModel).ZoomBorderHeight = gridHeight; ;
@@ -321,8 +86,310 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        #endregion
 
-        #region Folder Expanded
+
+
+        //Autosave
+
+        #region Autosave
+
+        #region Variables
+
+        private double timeCounter = 0;
+
+        #endregion
+
+        private async void DoAutoSave(object sender, EventArgs e)
+        {
+            timeCounter += ConfigClass.autosaveRefreshRate;
+
+            if (((this.DataContext as DrawerViewModel).ImagePath != null && (this.DataContext as DrawerViewModel).ChangeDetected == true)
+                || timeCounter > ConfigClass.autosaveIntervall)
+            {
+                (this.DataContext as DrawerViewModel).ChangeDetected = false;
+                timeCounter = 0;
+
+                (this.DataContext as DrawerViewModel).ExportToPascal(DrawerViewModel.CallMode.Autosave);
+
+                DoubleAnimation increaseOpacity = new DoubleAnimation(ConfigClass.minOpacity, ConfigClass.maxOpacity, ConfigClass.durationSaveIconAnimated);
+                DoubleAnimation decreaseOpacity = new DoubleAnimation(ConfigClass.maxOpacity, ConfigClass.minOpacity, ConfigClass.durationSaveIconAnimated);
+
+                saveIcon.BeginAnimation(Viewbox.OpacityProperty, increaseOpacity);
+                await Task.Delay(ConfigClass.durationSaveIconShown);
+                saveIcon.BeginAnimation(Viewbox.OpacityProperty, decreaseOpacity);
+            }
+        }
+
+        #endregion
+
+
+
+        //Variables
+
+        #region Variables
+
+        public System.Windows.Point MousePosition { get; set; }
+
+        #endregion
+
+
+
+        //MouseEvents
+
+        #region Define MouseEvents on Image/DrawCanvas
+
+        /// <summary>
+        /// Select Rectangle
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImgCamera_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).SelectCustomShape();
+        }
+
+
+        private int tmpRVCount = 0;
+        /// <summary>
+        /// Handels all MouseMove-Events:
+        /// - Add Rectangle
+        /// - Resize "
+        /// - Move "
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImgCamera_MouseMove(object sender, MouseEventArgs e)
+        {
+            MousePosition = e.GetPosition(cnvImage);
+            (this.DataContext as DrawerViewModel).vmMousePoint = MousePosition;
+            txtBox.Content = "X: " + (int)MousePosition.X + "; Y: " + (int)MousePosition.Y;
+            txtBox1.Content = (this.DataContext as DrawerViewModel).ImagePath;
+
+            //Create Rectangle region
+            if ((this.DataContext as DrawerViewModel).MouseHandlingState == DrawerViewModel.MouseState.CreateRectangle)
+            {
+
+                if (tmpRVCount != (this.DataContext as DrawerViewModel).RectanglesView.Count())
+                {
+                    tmpRVCount = (this.DataContext as DrawerViewModel).RectanglesView.Count();
+                    int zIndex = tmpRVCount + 2;
+
+                    Panel.SetZIndex(horizontalLine, zIndex);
+                    Panel.SetZIndex(verticalLine, zIndex);
+                }
+
+                horizontalLine.Y1 = MousePosition.Y;
+                horizontalLine.Y2 = MousePosition.Y;
+                horizontalLine.StrokeThickness = 1;
+                verticalLine.X1 = MousePosition.X;
+                verticalLine.X2 = MousePosition.X;
+                verticalLine.StrokeThickness = 1;
+
+                Mouse.OverrideCursor = Cursors.Cross;
+                (this.DataContext as DrawerViewModel).CreateRectangle(MousePosition);
+            }
+
+            //Detect Rectangle
+            else
+            {
+                if(horizontalLine.Y1 != -1)
+                { 
+                    horizontalLine.Y1 = -1;
+                    horizontalLine.Y2 = -1;
+                    horizontalLine.StrokeThickness = 0;
+                    verticalLine.X1 = -1;
+                    verticalLine.X2 = -1;
+                    verticalLine.StrokeThickness = 0;
+                }
+
+                if (e.LeftButton == MouseButtonState.Released)
+                {
+                    (this.DataContext as DrawerViewModel).DetectCustomShape(MousePosition);
+                    if ((this.DataContext as DrawerViewModel).ShapeDetected == true)
+                    {
+                        (this.DataContext as DrawerViewModel).Enabled = false;
+                    }
+                    else
+                    {
+                        (this.DataContext as DrawerViewModel).Enabled = true;
+                        Mouse.OverrideCursor = Cursors.Arrow;
+                    }
+                }
+
+                //Resize and Move Rectangle
+                (this.DataContext as DrawerViewModel).Resize(MousePosition);
+                (this.DataContext as DrawerViewModel).Move(MousePosition);
+            }
+        }
+
+
+        /// <summary>
+        /// Checks if undo stack is empty and if not enables Undo functionallity
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ImgCamera_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            if ((this.DataContext as DrawerViewModel).undoCustomShapes.Count > 0)
+            {
+                (this.DataContext as DrawerViewModel).UndoEnabled = true;
+            }
+        }
+
+
+        /// <summary>
+        /// Detects when Mouse leaves Image for DuplicateMethod
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cnvImage_MouseLeave(object sender, MouseEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).DuplicateVar = 0;
+            Mouse.OverrideCursor = Cursors.Arrow;
+        }
+
+
+        /// <summary>
+        /// Detects when Mouse enters Image for DuplicateMethod
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void cnvImage_MouseEnter(object sender, MouseEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).DuplicateVar = 1;
+        }
+
+
+        /// <summary>
+        /// CapturesMouse to detect MouseUp events even when outside of DrawCanvas/Image
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DrawCanvas_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if ((this.DataContext as DrawerViewModel).Enabled == false)
+            {
+                UIElement element = (UIElement)sender;
+                element.CaptureMouse();
+                e.Handled = true;
+            }
+        }
+
+        /// <summary>
+        /// Releases MouseCapture
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void DrawCanvas_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            //Release the mouse capture, if this element held the capture.
+            UIElement element = (UIElement)sender;
+            element.ReleaseMouseCapture();
+            e.Handled = true;
+        }
+
+
+        #endregion
+
+
+
+        //MenuItems
+
+        #region MenuItems
+
+        /// <summary>
+        /// Resets Zoom when new Image is Loaded
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_OpenClick(object sender, RoutedEventArgs e)
+        {
+            if (imgPreview != null) 
+                zoomBorder.Reset();
+        }
+
+        /// <summary>
+        /// Reset Zoom and sets Zoomview to whole image Width
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_Reset(object sender, RoutedEventArgs e)
+        {
+            if ((this.DataContext as DrawerViewModel).ImagePath != null)
+                zoomBorder.Reset();
+        }
+
+        /// <summary>
+        /// Zoom out
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_ZoomOut(object sender, RoutedEventArgs e)
+        {
+            zoomBorder.ZoomOut();
+        }
+
+        /// <summary>
+        /// Zoom in
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void MenuItem_ZoomIn(object sender, RoutedEventArgs e)
+        {
+            zoomBorder.ZoomIn();
+        }
+
+        #endregion
+
+
+
+        //Different Panels
+
+        #region FileNavigation-TreeView Panel 
+
+        #region Variables
+        public string filenameTreeView { get; set; }
+
+        #endregion
+
+
+        #region Graphics of TreeView show/hide button
+
+        private void WrapPanel_FileExplorer_MouseEnter(object sender, MouseEventArgs e)
+        {
+            Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.DodgerBlue;
+            Button_FileExplorer.Foreground = System.Windows.Media.Brushes.DodgerBlue;
+        }
+        private void WrapPanel_FileExplorer_MouseLeave(object sender, MouseEventArgs e)
+        {
+            Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.Gray;
+            Button_FileExplorer.Foreground = System.Windows.Media.Brushes.Black;
+        }
+
+        #endregion
+
+
+        /// <summary>
+        /// Show/Hide FileNavigation TreeView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Button_Click_FolderView_Panel(object sender, RoutedEventArgs e)
+        {
+            if (FolderView_Panel.Visibility == Visibility.Visible)
+            {
+                FolderView_Panel.Visibility = Visibility.Collapsed;
+            }
+
+            else
+            {
+                //Folder_Panel.Visibility = Visibility.Collapsed;
+                FolderView_Panel.Visibility = Visibility.Visible;
+
+            }
+        }
+
 
         /// <summary>
         /// When a folder is expanded, find the sub folders/files
@@ -428,9 +495,6 @@ namespace MachineLearningTrainer.DrawerTool
             #endregion
         }
 
-        #endregion
-
-        #region Helpers
 
         /// <summary>
         /// Find the file or folder name from a full path
@@ -457,38 +521,12 @@ namespace MachineLearningTrainer.DrawerTool
             return path.Substring(lastIndex + 1);
         }
 
-        #endregion
 
-        private void Button_Click_FolderView_Panel(object sender, RoutedEventArgs e)
-        {
-            if (FolderView_Panel.Visibility == Visibility.Visible)
-            {
-                FolderView_Panel.Visibility = Visibility.Collapsed;
-            }
-
-            else
-            {
-                //Folder_Panel.Visibility = Visibility.Collapsed;
-                FolderView_Panel.Visibility = Visibility.Visible;
-
-            }
-        }
-
-        //private void Button_Folder_Click(object sender, RoutedEventArgs e)
-        //{
-        //    if (Folder_Panel.Visibility == Visibility.Visible)
-        //    {
-        //        Folder_Panel.Visibility = Visibility.Collapsed;
-        //    }
-
-        //    else
-        //    {
-        //        FolderView_Panel.Visibility = Visibility.Collapsed;
-        //        Folder_Panel.Visibility = Visibility.Visible;
-
-        //    }
-        //}
-
+        /// <summary>
+        /// Loads file which was selected in FileNavigation-TreeView
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void TreeViewItem_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {
             if (FolderView.SelectedItem != null)
@@ -521,51 +559,51 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-        #region Zoom
-
-        private void MenuItem_Reset(object sender, RoutedEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).ImagePath != null)
-                zoomBorder.Reset();
-        }
-
-        private void MenuItem_ZoomOut(object sender, RoutedEventArgs e)
-        {
-            zoomBorder.ZoomOut();
-        }
-
-        private void MenuItem_ZoomIn(object sender, RoutedEventArgs e)
-        {
-            zoomBorder.ZoomIn();
-        }
-
         #endregion
 
-        private void WrapPanel_FileExplorer_MouseEnter(object sender, MouseEventArgs e)
+
+        #region RectangleListView-Panel
+
+
+        #region ContextMenu
+        /// <summary>
+        /// Refreshes ContextMenu Elements depending on selected Rectangle
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        public void ListBox_RightButtonUp(object sender, MouseButtonEventArgs e)
         {
-            Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.DodgerBlue;
-            Button_FileExplorer.Foreground = System.Windows.Media.Brushes.DodgerBlue;
+            (this.DataContext as DrawerViewModel).RefreshSubtypeList();
+            (this.DataContext as DrawerViewModel).IsOpen = true;
         }
 
-        //private void WrapPanel_Folder_MouseEnter(object sender, MouseEventArgs e)
-        //{
-        //    Rectangle_Folder.Fill = System.Windows.Media.Brushes.DodgerBlue;
-        //    Button_Folder.Foreground = System.Windows.Media.Brushes.DodgerBlue;
-        //}
-
-        private void WrapPanel_FileExplorer_MouseLeave(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Forces Subtypes to Update
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void Subtype_SubmenuOpened(object sender, RoutedEventArgs e)
         {
-            Rectangle_FileExplorer.Fill = System.Windows.Media.Brushes.Gray;
-            Button_FileExplorer.Foreground = System.Windows.Media.Brushes.Black;
+            ((MenuItem)sender).GetBindingExpression(MenuItem.ItemsSourceProperty).UpdateTarget();
         }
 
-        //private void WrapPanel_Folder_MouseLeave(object sender, MouseEventArgs e)
-        //{
-        //    Rectangle_Folder.Fill = System.Windows.Media.Brushes.Gray;
-        //    Button_Folder.Foreground = System.Windows.Media.Brushes.Black;
-        //}
+        /// <summary>
+        /// Refreshes Rectangles List
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ContextMenu_ContextMenuClosing(object sender, ContextMenuEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).FilterName();
+        }
+        #endregion
 
-        
+
+        /// <summary>
+        /// Select Rectangle depening on selected ListElement and viceversa
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void listBoxLabels_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (listBoxLabels.SelectedItem != null)
@@ -586,93 +624,6 @@ namespace MachineLearningTrainer.DrawerTool
                 zoomBorder.ZoomToRectangle();
             }
 
-        }
-
-        #region LabelListBox
-
-        private void LblTextBox_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            ListBoxItem item = (ListBoxItem)sender;
-            item.IsSelected = true;
-        }
-        
-        
-
-        private void LabelListBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-            //if (labelListBox.SelectedIndex > -1)
-            //{
-            //    animatedRoatateTransform.Angle = 180;
-            //    gridLV.Width = new GridLength(150);
-            //    listBoxLabels.Visibility = Visibility.Visible;
-            //}
-            //else
-            //{
-            //    animatedRoatateTransform.Angle = 0;
-            //    gridLV.Width = new GridLength(0);
-            //    listBoxLabels.Visibility = Visibility.Hidden;
-            //}
-        }
-
-
-        private void LabelTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            Console.WriteLine(labelTreeView.SelectedItem);
-
-            if (labelTreeView.SelectedItem != null)
-            {
-                if (labelTreeView.SelectedItem.GetType() == typeof(CustomShapeFormat))
-                {
-                    (this.DataContext as DrawerViewModel).SelectedLabel = (CustomShapeFormat)labelTreeView.SelectedItem;
-                    (this.DataContext as DrawerViewModel).SelectedSubLabel = null;
-                }
-                else if (labelTreeView.SelectedItem.GetType() == typeof(Subtypes))
-                {
-                    (this.DataContext as DrawerViewModel).SelectedLabel = null;
-                    (this.DataContext as DrawerViewModel).SelectedSubLabel = (Subtypes)labelTreeView.SelectedItem;
-                }
-            }
-        }
-
-        #endregion
-
-        private void MenuItem_OpenClick(object sender, RoutedEventArgs e)
-        {
-            if (imgPreview != null) 
-                zoomBorder.Reset();
-        }
-
-        #region ColorPicker
-
-        private void DrawCanvas_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-            if ((this.DataContext as DrawerViewModel).Enabled == false)
-            {
-                UIElement element = (UIElement)sender;
-                element.CaptureMouse();
-                e.Handled = true;
-            }
-        }
-
-        private void DrawCanvas_MouseUp(object sender, MouseButtonEventArgs e)
-        {
-            //Release the mouse capture, if this element held the capture.
-            UIElement element = (UIElement)sender;
-            element.ReleaseMouseCapture();
-            e.Handled = true;
-        }
-
-        #endregion
-
-
-        private void CbItemLabel_DropDownClosed(object sender, EventArgs e)
-        {
-            (this.DataContext as DrawerViewModel).CbItemLabel_DropDownClosed();
-        }
-
-        private void CbItemLabel_DropDownOpened(object sender, EventArgs e)
-        {
-            //(this.DataContext as DrawerViewModel).FilterName();
         }
 
 
@@ -698,33 +649,75 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-
-        #region Labelset Panel
-
-        private void AddLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Changes ListView between List and Gallary List Mode
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void ChangeListViewMode_Click(object sender, RoutedEventArgs e)
         {
-            //(this.DataContext as DrawerViewModel).DeactivatedAddLabel = !(this.DataContext as DrawerViewModel).DeactivatedAddLabel;
-            (this.DataContext as DrawerViewModel).AddLabelColorFormat();
-            //if (RenameTxtBox.IsFocused == true)
-            //{
-            //    (this.DataContext as DrawerViewModel).Enter();
-            //}
+            if (!((this.DataContext as DrawerViewModel).selectedListViewMode == DrawerViewModel.ListViewModes.List))
+            {
+                gridLV.Width = new GridLength(150);
+            }
+            else
+            {
+                gridLV.Width = new GridLength(240);
+            }
         }
+
+        /// <summary>
+        /// Selects element of RectangleList when clicking on it
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        private void LblTextBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            ListBoxItem item = (ListBoxItem)sender;
+            item.IsSelected = true;
+        }
+
 
         #endregion
 
 
-        #region LabelControl
+        #region ButtonPanel
 
+        //for ZoomButtons look at #region MenuItems
+
+        #endregion
+
+
+        #region LabelList-Navigation-Panel
+
+        #region Label Sets Control-Panel
+
+        private void AddLabelColorFormat_Click(object sender, RoutedEventArgs e)
+        {
+            (this.DataContext as DrawerViewModel).AddLabelColorFormat();
+        }
+
+        #endregion
+
+        #region LabelList
 
         #region TextBox
 
+        /// <summary>
+        /// Select correct TreeViewItem
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LabelTextBox_PreviewMouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             SelectTreeViewItem(sender);
         }
 
+        /// <summary>
+        /// Activate TextBox for renaming Label/Subtype
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LabelTextBox_MouseDoubleClick(object sender, MouseButtonEventArgs e)
         {    
             TextBox textBox = sender as TextBox;
@@ -738,6 +731,11 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).TmpNewLabel.Label = textBox.Text;
         }
 
+        /// <summary>
+        /// Clears tmpLabel to prevent problems for next renaming
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LblTextBox_LostFocus(object sender, RoutedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -751,6 +749,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Updates Rectangles Label
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void LabelTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
             TextBox textBox = sender as TextBox;
@@ -767,7 +770,11 @@ namespace MachineLearningTrainer.DrawerTool
 
         #endregion
 
-
+        /// <summary>
+        /// Show/Hide Rectangles with according Label/Subtype
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ShowHideData_Click(object sender, RoutedEventArgs e)
         {
 
@@ -826,6 +833,11 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
+        /// <summary>
+        /// Adds Suptype to Label
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void AddSubtype_Click(object sender, RoutedEventArgs e)
         {
             SelectTreeViewItem(sender);
@@ -843,6 +855,11 @@ namespace MachineLearningTrainer.DrawerTool
             (this.DataContext as DrawerViewModel).AddSubtype();
         }
 
+        /// <summary>
+        /// Removes Label/Subtype
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void RmvLabelColorFormat_Click(object sender, RoutedEventArgs e)
         {
             SelectTreeViewItem(sender);
@@ -1116,24 +1133,102 @@ namespace MachineLearningTrainer.DrawerTool
             }
         }
 
-
-        #endregion
-
         /// <summary>
-        /// Changes ListView between List and Gallary List Mode
+        /// Change selected Label to new SelectedItem
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
-        private void ChangeListViewMode_Click(object sender, RoutedEventArgs e)
+        private void LabelTreeView_SelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            if (!((this.DataContext as DrawerViewModel).selectedListViewMode == DrawerViewModel.ListViewModes.List))
+            Console.WriteLine(labelTreeView.SelectedItem);
+
+            if (labelTreeView.SelectedItem != null)
             {
-                gridLV.Width = new GridLength(150);
-            }
-            else
-            {
-                gridLV.Width = new GridLength(240);
+                if (labelTreeView.SelectedItem.GetType() == typeof(CustomShapeFormat))
+                {
+                    (this.DataContext as DrawerViewModel).SelectedLabel = (CustomShapeFormat)labelTreeView.SelectedItem;
+                    (this.DataContext as DrawerViewModel).SelectedSubLabel = null;
+                }
+                else if (labelTreeView.SelectedItem.GetType() == typeof(Subtypes))
+                {
+                    (this.DataContext as DrawerViewModel).SelectedLabel = null;
+                    (this.DataContext as DrawerViewModel).SelectedSubLabel = (Subtypes)labelTreeView.SelectedItem;
+                }
             }
         }
+
+        #endregion
+
+        #endregion
+
+
+
+        //Key-Bindings
+
+        #region Key-Bindings for Zoom
+
+        /// <summary>
+        /// Zoom in
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Zoom_In(object sender, KeyEventArgs e)
+        {
+            if ((e.Key == Key.OemPlus || e.Key == Key.Add) && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                zoomBorder.ZoomIn();
+            }
+        }
+
+        /// <summary>
+        /// Zoom out
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Zoom_Out(object sender, KeyEventArgs e)
+        {
+            if ((e.Key == Key.OemMinus || e.Key == Key.Subtract) && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                zoomBorder.ZoomOut();
+            }
+        }
+
+        /// <summary>
+        /// Reset Zoom and sets Zoomview to whole image Width
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void Zoom_Reset(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.D0 && e.KeyboardDevice.Modifiers == ModifierKeys.Control)
+            {
+                zoomBorder.Reset();
+            }
+        }
+
+        #endregion
+
+
+
+        //Property Changed Area
+
+        #region Property changed area
+        public event PropertyChangedEventHandler PropertyChanged;
+        protected void OnPropertyChanged(string name)
+        {
+
+            PropertyChangedEventHandler handler = PropertyChanged;
+
+            if (handler != null)
+            {
+
+                handler(this, new PropertyChangedEventArgs(name));
+
+            }
+
+        }
+        #endregion
+
+
     }
 }

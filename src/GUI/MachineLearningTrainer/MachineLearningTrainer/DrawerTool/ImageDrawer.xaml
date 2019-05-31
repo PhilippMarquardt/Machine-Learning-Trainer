@@ -740,6 +740,9 @@
                 </Grid>
             </StackPanel>
 
+            
+            <!-- Panel with List of visible Rectangles-->
+            <!-- Change between ListViewModes -->
             <Button
                 x:Name="listViewMode"
                 Grid.Row="0"
@@ -754,6 +757,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
+            
+            <!-- ListBox with visible Rectangles -->
             <ListBox
                 Visibility="Hidden"
                 x:Name="listBoxLabels"
@@ -1311,124 +1316,6 @@
                     </WrapPanel>
             </StackPanel>
 
-
-            <!--  ListBox with SelectedLabels, gallery format  -->
-            <!--<ListBox
-                Grid.Row="1"
-                Grid.Column="6"
-                Margin="5"
-                Panel.ZIndex="1"
-                Background="White"
-                Foreground="Black"
-                ItemContainerStyle="{StaticResource myLBStyle}"
-                ItemsSource="{Binding RectanglesView}"
-                MouseDoubleClick="listBoxLabels_MouseDoubleClick"
-                MouseRightButtonUp="ListBox_RightButtonUp"
-                SelectedIndex="{Binding SelectedIndex, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"
-                SelectionChanged="listBoxLabels_SelectionChanged"
-                SelectionMode="Extended"
-                Style="{StaticResource MyListBoxStyle}"
-                Visibility="{Binding FilterVisibilitySelectedGallery, Converter={StaticResource booleanToVisibiliy}}">
-                <ListBox.InputBindings>
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand_Move}" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand}"
-                        Modifiers="Ctrl+Shift" />
-                    <KeyBinding
-                        Key="Right"
-                        Command="{Binding RightButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Left"
-                        Command="{Binding LeftButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Down"
-                        Command="{Binding DownButtonCommand1}"
-                        Modifiers="Ctrl" />
-                    <KeyBinding
-                        Key="Up"
-                        Command="{Binding UpButtonCommand1}"
-                        Modifiers="Ctrl" />
-                </ListBox.InputBindings>
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        -->
-            <!--<WrapPanel>
-                            <Image
-                                Width="60"
-                                Height="60"
-                                Margin="10"
-                                Source="{Binding CroppedImage, UpdateSourceTrigger=PropertyChanged}" />
-                        </WrapPanel>-->
-            <!--
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-                <ListBox.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid
-                            Height="auto"
-                            HorizontalAlignment="Left"
-                            VerticalAlignment="Top"
-                            Columns="3" />
-                    </ItemsPanelTemplate>
-                </ListBox.ItemsPanel>
-                <ListBox.ContextMenu>
-                    <ContextMenu IsOpen="{Binding IsOpen}" Placement="MousePoint">
-                        <MenuItem
-                            Width="300"
-                            Command="{Binding DuplicateCommand}"
-                            Header="Duplicate"
-                            InputGestureText="Ctrl + D">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/duplicate.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding RenameCommand}"
-                            Header="Rename All"
-                            InputGestureText="Ctrl + U">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/rename.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                        <MenuItem
-                            Command="{Binding DeleteCommand}"
-                            Header="Delete"
-                            InputGestureText="Del">
-                            <MenuItem.Icon>
-                                <Image Source="/Icons/delete.png" />
-                            </MenuItem.Icon>
-                        </MenuItem>
-                    </ContextMenu>
-                </ListBox.ContextMenu>
-            </ListBox>-->
-            
-            
             
             <!--  TreeView with All Labels and Text  -->
             <Border
@@ -1453,7 +1340,7 @@
                         <TextBlock
                         Height="20"
                                 Foreground="Black"
-                                Text="Parameter Sets" 
+                                Text="Label Sets" 
                                 Margin="0,5,10,5"/>
                         <Button
                             x:Name="importLabels"
@@ -1833,159 +1720,6 @@
                         </TreeView.Resources>
                     </TreeView>
 
-
-                    <!--<ListBox
-                        x:Name="labelListBox"
-                        Grid.Row="1"
-                        Margin="5"
-                        HorizontalAlignment="Stretch"
-                        VerticalAlignment="Stretch"
-                        Panel.ZIndex="1"
-                        Foreground="Black"
-                        ItemsSource="{Binding LabelColorFormat}"
-                        SelectedItem="{Binding SelectedLabel}"
-                        ItemContainerStyle="{StaticResource myLBStyle}"
-                        SelectionChanged="LabelListBox_SelectionChanged"
-                        SelectionMode="Single"
-                        Style="{StaticResource MyListBoxStyle}"   
-                        Visibility="{Binding FilterVisibilityAllLabels, Converter={StaticResource booleanToVisibiliy}}"
-                        
-                        dd:DragDrop.IsDragSource="True"
-                        dd:DragDrop.IsDropTarget="True">
-
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <WrapPanel 
-                                    Width="auto" 
-                                    HorizontalAlignment="Left"
-                                    Grid.Row="1"
-                                    Panel.ZIndex="2"
-                                    Height="auto">
-                                    <TextBox
-                                    x:Name="LabelTextBox"
-                                    HorizontalAlignment="Left"
-                                    VerticalAlignment="Center"
-                                    Width="100"
-                                    TextAlignment="Left"
-                                    AcceptsReturn="False"
-                                    FontSize="12"
-                                    Text="{Binding Label, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                    IsReadOnly="True"
-                                    TextChanged="LblTextBox_TextChanged"
-                                    MouseDoubleClick="LabelTextBox_MouseDoubleClick"
-                                    LostFocus="LblTextBox_LostFocus"
-                                    TextWrapping="Wrap"
-                                    Margin="10,0,5,0"
-                                    Padding="3">
-                                        <TextBox.ContextMenu>
-                                            <ContextMenu IsEnabled="False" />
-                                        </TextBox.ContextMenu>
-                                    </TextBox>
-                                    <Button
-                                        x:Name="showHideData"
-                                        Margin="0,0,10,0"
-                                        Height="18"
-                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                        Click="ShowHideData_Click">
-                                        <Button.Style>
-                                            <Style
-                                                BasedOn="{StaticResource {x:Type Button}}"
-                                                TargetType="Button">
-                                                <Setter Property="Background" Value="Transparent" />
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="true">
-                                                        <Setter Property="Foreground" Value="#FF2196F3" />
-                                                    </DataTrigger>
-                                                    <DataTrigger Binding="{Binding Visible, UpdateSourceTrigger=PropertyChanged}" Value="false">
-                                                        <Setter Property="Foreground" Value="LightGray" />
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <Button.Template>
-                                            <ControlTemplate>
-                                                <Path 
-                                                    Fill="{Binding Foreground, RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=Button}}"
-                                                    Stretch="Uniform"
-                                                    Height="18"
-                                                    Data="M12,9A3,3 0 0,0 9,12A3,3 0 0,0 12,15A3,3 0 0,0 15,12A3,3 0 0,0 12,9M12,17A5,5 0 0,1 7,12A5,5 0 0,1 12,7A5,5 0 0,1 17,12A5,5 0 0,1 12,17M12,4.5C7,4.5 2.73,7.61 1,12C2.73,16.39 7,19.5 12,19.5C17,19.5 21.27,16.39 23,12C21.27,7.61 17,4.5 12,4.5Z">
-                                                </Path>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                        <Button.ToolTip>
-                                            <TextBlock Text="Show/Hide this Label Data" />
-                                        </Button.ToolTip>
-                                    </Button>
-                                    <Button
-                                        Margin="0,0,10,0"
-                                        Height="18"
-                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                        Background="Transparent">
-                                        <Button.Template>
-                                            <ControlTemplate>
-                                                <Path 
-                                                    Fill="LightGray"
-                                                    Stretch="Uniform"
-                                                    Height="18"
-                                                    Data="M9,22A1,1 0 0,1 8,21V18H4A2,2 0 0,1 2,16V4C2,2.89 2.9,2 4,2H20A2,2 0 0,1 22,4V16A2,2 0 0,1 20,18H13.9L10.2,21.71C10,21.9 9.75,22 9.5,22V22H9M17,11V9H15V11H17M13,11V9H11V11H13M9,11V9H7V11H9Z">
-                                                </Path>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                        <Button.ToolTip>
-                                            <TextBlock Text="Show/Hide this Label Meta-Data" />
-                                        </Button.ToolTip>
-                                    </Button>
-                                    <Button
-                                        Margin="0,0,10,0"
-                                        Height="18"
-                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                        Background="Transparent"
-                                        Click="RmvLabelColorFormat_Click">
-                                        <Button.Template>
-                                            <ControlTemplate>
-                                                <Path 
-                                                    Fill="LightGray"
-                                                    Stretch="Uniform"
-                                                    Data="m 249.28106 239.3342 0 -8.4375 30 0 30 0 0 8.4375 0 8.4375 -30 0 -30 0 0 -8.4375 z">
-                                                </Path>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                        <Button.ToolTip>
-                                            <TextBlock Text="Remove Label" />
-                                        </Button.ToolTip>
-                                    </Button>
-                                    <Button
-                                        x:Name="colorPickerButton"
-                                        Opacity="1"
-                                        Margin="0,0,10,0"
-                                        Height="18"
-                                        Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}"
-                                        Click="ColorPickerButton_Click"
-                                        Background="Transparent">
-                                        <Button.Template>
-                                            <ControlTemplate>
-                                                <Border
-                                                    BorderBrush="{Binding Stroke}"
-                                                    BorderThickness="1">
-                                                    <Rectangle
-                                                        Stroke="Transparent"
-                                                        StrokeThickness="0"
-                                                        Fill="{Binding Fill}"
-                                                        Opacity="{Binding Opacity}" />
-                                                </Border>
-                                            </ControlTemplate>
-                                        </Button.Template>
-                                        <Button.ToolTip>
-                                            <TextBlock Text="Change preview Color" />
-                                        </Button.ToolTip>
-                                    </Button>
-                                </WrapPanel>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                        <ListBox.ContextMenu>
-                            <ContextMenu IsEnabled="False" />
-                        </ListBox.ContextMenu>
-                    </ListBox>-->
                 </Grid>
             </Border>
         </Grid>
