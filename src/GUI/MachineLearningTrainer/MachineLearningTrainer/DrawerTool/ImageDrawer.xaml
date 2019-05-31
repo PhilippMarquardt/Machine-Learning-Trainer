@@ -18,6 +18,7 @@
     Loaded="UserControl_Loaded"
     mc:Ignorable="d">
 
+    <!-- Triggers -->
     <UserControl.Triggers>
         <EventTrigger RoutedEvent="Loaded">
             <BeginStoryboard>
@@ -32,6 +33,8 @@
         </EventTrigger>
     </UserControl.Triggers>
 
+    
+    <!-- Resources -->
     <UserControl.Resources>
 
         <BooleanToVisibilityConverter x:Key="booleanToVisibiliy" />
@@ -152,6 +155,8 @@
 
     </UserControl.Resources>
 
+    
+    <!-- InputBindings -->
     <UserControl.InputBindings>
         <KeyBinding
             Key="Delete"
@@ -259,6 +264,9 @@
         
     </UserControl.InputBindings>
 
+    
+    <!-- Menu Items -->
+    
     <DockPanel>
         <Menu DockPanel.Dock="Top">
             <MenuItem
@@ -312,15 +320,6 @@
                         <Image Source="/Icons/loadxml.png" />
                     </MenuItem.Icon>
                 </MenuItem>
-                <!--<Separator />
-                <MenuItem
-                    Command="{Binding UpdatePreviewsCommand}"
-                    Header="Update Previews"
-                    IsEnabled="{Binding IsEnabled}">
-                    <MenuItem.Icon>
-                        <Image Source="/Icons/update.png" />
-                    </MenuItem.Icon>
-                </MenuItem>-->
             </MenuItem>
             <MenuItem
                 Height="25"
@@ -403,6 +402,7 @@
         </Menu>
 
 
+        <!-- Interface Grid -->
         <Grid>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="auto" />
@@ -418,6 +418,79 @@
                 <RowDefinition x:Name="gridY1" Height="*" />
                 <RowDefinition x:Name="gridY2" Height="auto" />
             </Grid.RowDefinitions>
+            
+            
+            <!-- Grid.Column="0": -->
+            <!--                  -->
+            <!--  ______________  -->
+
+
+            <!-- Canvas with FileNavigation Button -->
+            <Canvas
+                Grid.Row="0"
+                Grid.RowSpan="4"
+                Grid.Column="0"
+                Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}"
+                Panel.ZIndex="1">
+
+                <StackPanel>
+                    <WrapPanel
+                        x:Name="WrapPanel_FileExplorer"
+                        Width="auto"
+                        MouseEnter="WrapPanel_FileExplorer_MouseEnter"
+                        MouseLeave="WrapPanel_FileExplorer_MouseLeave">
+                        <Rectangle
+                            x:Name="Rectangle_FileExplorer"
+                            Width="3"
+                            Height="{Binding ActualWidth, ElementName=Button_FileExplorer}"
+                            Margin="1"
+                            Fill="Gray" />
+                        <Button
+                            x:Name="Button_FileExplorer"
+                            Height="25"
+                            Margin="1"
+                            HorizontalAlignment="Center"
+                            Background="Transparent"
+                            BorderBrush="White"
+                            BorderThickness="0"
+                            Click="Button_Click_FolderView_Panel"
+                            Content="File Explorer"
+                            Foreground="Black"
+                            Style="{StaticResource BasicButtonStyle}"
+                            TextOptions.TextRenderingMode="Auto">
+                            <Button.LayoutTransform>
+                                <RotateTransform Angle="90" />
+                            </Button.LayoutTransform>
+                        </Button>
+                    </WrapPanel>
+                </StackPanel>
+            </Canvas>
+            
+
+            <!-- Back to previous Page Button -->
+            <Button 
+                Grid.Column="0"
+                Grid.Row="5"
+                Width="46"
+                Height="100"
+                Margin="2"
+                HorizontalAlignment="Left"
+                Background="Transparent"
+                Command="{Binding PreviousPage}"
+                Foreground="#FF2196F3"
+                Opacity="0.3"
+                Style="{StaticResource IncreaseOpacityOnHover}">
+                <materialDesign:PackIcon Kind="SkipPreviousCircleOutline"  HorizontalAlignment="Center" />
+            </Button>
+
+
+            
+            
+
+            <!-- Grid.Column="3": -->
+            <!--                  -->
+            <!--  ______________  -->
+
             
             <!-- SaveIcon -->
             <Viewbox 
@@ -447,145 +520,221 @@
                 </Canvas>
             </Viewbox>
 
-            <!-- StackPanel with Buttons -->
-            <StackPanel
-                x:Name="Functions_Panel"
-                Visibility="Visible"
-                Grid.Row="0"
-                Grid.RowSpan="3"
-                Grid.Column="4"
-                Margin="5"
-                Panel.ZIndex="3">
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Command="{Binding AddRectangle}"
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="{Binding IconPath}" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="New Rectangle (Alt + R)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Command="{Binding UndoCommand}"
-                    IsEnabled="{Binding UndoEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/undo.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Undo (Ctrl + Z)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Command="{Binding RedoCommand}"
-                    IsEnabled="{Binding UndoEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/redo.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Redo (Ctrl + Y)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Command="{Binding DuplicateCommand}"
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/duplicate.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Duplicate Rectangle (Ctrl + D)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Command="{Binding DeleteCommand}" 
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/delete.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Delete Rectangle (Del)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Click="MenuItem_ZoomIn"
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/zoom_in.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Zoom in (Ctrl + +)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Click="MenuItem_ZoomOut"
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/zoom_out.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Zoom out (Ctrl + -)" />
-                    </Button.ToolTip>
-                </Button>
-                <Button
-                    Width="22"
-                    Height="22"
-                    Margin="5,10,5,10"
-                    BorderBrush="Transparent"
-                    Click="MenuItem_Reset"
-                    IsEnabled="{Binding IsEnabled}">
-                    <Button.Template>
-                        <ControlTemplate>
-                            <Image Margin="2" Source="/Icons/fit.png" />
-                        </ControlTemplate>
-                    </Button.Template>
-                    <Button.ToolTip>
-                        <TextBlock Text="Fit to width (Ctrl + 0)" />
-                    </Button.ToolTip>
-                </Button>
-            </StackPanel>
 
+            <!-- FileNavigation TreeView -->
+            <Grid
+                x:Name="gridcolumn1"
+                Grid.Row="0"
+                Grid.RowSpan="4"
+                Grid.Column="3"
+                Width="auto"
+                HorizontalAlignment="Left"
+                Panel.ZIndex="3"
+                Background="White">
+
+                <StackPanel
+                    x:Name="FolderView_Panel"
+                    Width="auto"
+                    MinWidth="160"
+                    Visibility="Collapsed">
+                    <Grid
+                        Width="auto"
+                        MinWidth="120"
+                        Margin="10"
+                        Background="#FF2196F3">
+                        <TextBlock
+                            Margin="5"
+                            HorizontalAlignment="Stretch"
+                            VerticalAlignment="Center"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="File Explorer" />
+                    </Grid>
+                    <TreeView
+                        x:Name="FolderView"
+                        Width="auto"
+                        Height="700"
+                        MinWidth="160"
+                        Margin="10"
+                        Padding="10"
+                        HorizontalAlignment="Stretch"
+                        BorderBrush="Gray"
+                        BorderThickness="0.5"
+                        ScrollViewer.VerticalScrollBarVisibility="Auto">
+                        <TreeView.Resources>
+                            <Style TargetType="{x:Type TreeViewItem}">
+                                <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick" />
+                                <Setter Property="HeaderTemplate">
+                                    <Setter.Value>
+                                        <DataTemplate>
+                                            <StackPanel Orientation="Horizontal">
+                                                <Image
+                                                    Width="20"
+                                                    Margin="3"
+                                                    Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}, Path=Tag, Converter={x:Static local:HeaderToImageConverter.Instance}}" />
+                                                <TextBlock VerticalAlignment="Center" Text="{Binding}" />
+                                            </StackPanel>
+                                        </DataTemplate>
+                                    </Setter.Value>
+                                </Setter>
+                            </Style>
+                        </TreeView.Resources>
+                    </TreeView>
+                </StackPanel>
+            </Grid>
+            
+            <!-- Labels with MousePosition on Image -->
+            <Label
+                Name="txtBox"
+                Grid.Row="3"
+                Grid.Column="3"
+                Width="auto"
+                Height="auto"
+                Margin="0,0,10,10"
+                Padding="3"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Panel.ZIndex="3"
+                Background="White"
+                BorderBrush="Black"
+                BorderThickness="1"
+                FontWeight="Bold" />
+            <Label
+                Name="txtBox1"
+                Grid.Row="3"
+                Grid.Column="3"
+                Width="auto"
+                Height="auto"
+                Margin="10,0,0,10"
+                Padding="3"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Panel.ZIndex="3"
+                Background="White"
+                BorderBrush="Black"
+                BorderThickness="1"
+                FontWeight="Bold" />
+
+            <!-- Image Canvas -->
+            <Border
+                Grid.Row="0"
+                Grid.RowSpan="4"
+                Grid.Column="3"
+                Grid.ColumnSpan="1"
+                Panel.ZIndex="0"
+                BorderBrush="Gray"
+                BorderThickness="1.5">
+                <local:ZoomBorder
+                    x:Name="zoomBorder"
+                    Background="LightGray"
+                    ClipToBounds="True">
+                    <Canvas
+                        x:Name="cnvImage"
+                        Width="{Binding ActualWidth, ElementName=imgPreview}"
+                        Height="{Binding ActualHeight, ElementName=imgPreview}"
+                        ClipToBounds="True"
+                        PreviewMouseDown="ImgCamera_MouseDown"
+                        MouseEnter="cnvImage_MouseEnter"
+                        MouseLeave="cnvImage_MouseLeave"
+                        MouseMove="ImgCamera_MouseMove"
+                        PreviewMouseUp="ImgCamera_MouseUp">
+
+                        <Image
+                            x:Name="imgPreview"
+                            Width="auto"
+                            Height="auto"
+                            ClipToBounds="True"
+                            Source="{Binding ImagePath, Converter={StaticResource nullImageConverter}}" />
+
+                        <ItemsControl
+                            x:Name="ad"
+                            Width="{Binding ActualWidth, ElementName=imgPreview}"
+                            Height="{Binding ActualHeight, ElementName=imgPreview}"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Background="Transparent"
+                            ItemsSource="{Binding RectanglesView, UpdateSourceTrigger=PropertyChanged}"
+                            Panel.ZIndex="1">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border
+                                        BorderThickness="{Binding StrokeThickness}">
+                                        <Border.BorderBrush>
+                                            <DrawingBrush Viewport="{Binding Viewport}" ViewportUnits="Absolute" TileMode="{Binding ViewportTileMode}">
+                                                <DrawingBrush.Drawing>
+                                                    <DrawingGroup>
+                                                        <GeometryDrawing Brush="{Binding Stroke}">
+                                                            <GeometryDrawing.Geometry>
+                                                                <GeometryGroup>
+                                                                    <RectangleGeometry Rect="0,0,50,50" />
+                                                                    <RectangleGeometry Rect="50,50,50,50" />
+                                                                </GeometryGroup>
+                                                            </GeometryDrawing.Geometry>
+                                                        </GeometryDrawing>
+                                                    </DrawingGroup>
+                                                </DrawingBrush.Drawing>
+                                            </DrawingBrush>
+                                        </Border.BorderBrush>
+                                        <Border.RenderTransform>
+                                            <TranslateTransform X="{Binding XLeftBorder}" Y="{Binding YTopBorder}"  />
+                                        </Border.RenderTransform>
+                                        <Rectangle
+                                        Width="{Binding Width}"
+                                        Height="{Binding Height}">
+                                            <Rectangle.Fill>
+                                                <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
+                                            </Rectangle.Fill>
+                                        </Rectangle>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate>
+                                    <Canvas 
+                                        Name="DrawCanvas"
+                                        HorizontalAlignment="Left"
+                                        VerticalAlignment="Top"
+                                        Width="{Binding ActualWidth, ElementName=imgPreview}"
+                                        Height="{Binding ActualHeight, ElementName=imgPreview}"
+                                        ClipToBounds="True"
+                                        IsItemsHost="True" 
+                                        Background="Transparent"
+                                        MouseDown="DrawCanvas_MouseDown"
+                                        MouseUp="DrawCanvas_MouseUp">
+                                    </Canvas>
+                                </ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                        </ItemsControl>
+
+                        <Line
+                            x:Name="horizontalLine"
+                            X1="0"
+                            X2="{Binding ActualWidth, ElementName=imgPreview}"
+                            Y1="-1"
+                            Y2="-1"
+                            Stroke="Black"
+                            StrokeThickness="0"/>
+                        <Line
+                            x:Name="verticalLine"
+                            X1="-1"
+                            X2="-1"
+                            Y1="0"
+                            Y2="{Binding ActualHeight, ElementName=imgPreview}"
+                            Stroke="Black"
+                            StrokeThickness="1"/>
+                    </Canvas>
+                </local:ZoomBorder>
+            </Border>
+
+
+            
+            
+            <!-- Grid.Column="5": -->
+            <!--                  -->
+            <!--  ______________  -->
+
+
+            <!-- StackPanel with ColorPicker -->
             <StackPanel
             x:Name="ColorPicker_Panel"
             Width="auto"
@@ -740,7 +889,7 @@
                 </Grid>
             </StackPanel>
 
-            
+
             <!-- Panel with List of visible Rectangles-->
             <!-- Change between ListViewModes -->
             <Button
@@ -757,7 +906,8 @@
                     </ControlTemplate>
                 </Button.Template>
             </Button>
-            
+
+
             <!-- ListBox with visible Rectangles -->
             <ListBox
                 Visibility="Hidden"
@@ -781,7 +931,7 @@
                 Style="{StaticResource MyListBoxStyle}" 
                 dd:DragDrop.IsDragSource="True"
                 dd:DragDrop.IsDropTarget="True">
-                
+
                 <ListBox.InputBindings>
                     <KeyBinding
                         Key="Left"
@@ -980,303 +1130,163 @@
                 </ListBox.ContextMenu>
             </ListBox>
 
-            <Canvas
+            
+            
+            
+            <!-- Grid.Column="4": -->
+            <!--                  -->
+            <!--  ______________  -->
+            
+
+            <!-- StackPanel with Buttons -->
+            <StackPanel
+                x:Name="Functions_Panel"
+                Visibility="Visible"
                 Grid.Row="0"
-                Grid.RowSpan="4"
-                Grid.Column="0"
-                Width="{Binding ActualWidth, ElementName=WrapPanel_FileExplorer}"
-                Panel.ZIndex="1">
-
-                <StackPanel>
-                    <WrapPanel
-                        x:Name="WrapPanel_FileExplorer"
-                        Width="auto"
-                        MouseEnter="WrapPanel_FileExplorer_MouseEnter"
-                        MouseLeave="WrapPanel_FileExplorer_MouseLeave">
-                        <Rectangle
-                            x:Name="Rectangle_FileExplorer"
-                            Width="3"
-                            Height="{Binding ActualWidth, ElementName=Button_FileExplorer}"
-                            Margin="1"
-                            Fill="Gray" />
-                        <Button
-                            x:Name="Button_FileExplorer"
-                            Height="25"
-                            Margin="1"
-                            HorizontalAlignment="Center"
-                            Background="Transparent"
-                            BorderBrush="White"
-                            BorderThickness="0"
-                            Click="Button_Click_FolderView_Panel"
-                            Content="File Explorer"
-                            Foreground="Black"
-                            Style="{StaticResource BasicButtonStyle}"
-                            TextOptions.TextRenderingMode="Auto">
-                            <Button.LayoutTransform>
-                                <RotateTransform Angle="90" />
-                            </Button.LayoutTransform>
-                        </Button>
-                    </WrapPanel>
-                </StackPanel>
-
-
-
-            </Canvas>
-
-            <Button 
-                Grid.Column="0"
-                Grid.Row="5"
-                Width="46"
-                Height="100"
-                Margin="2"
-                HorizontalAlignment="Left"
-                Background="Transparent"
-                Command="{Binding PreviousPage}"
-                Foreground="#FF2196F3"
-                Opacity="0.3"
-                Style="{StaticResource IncreaseOpacityOnHover}">
-                <materialDesign:PackIcon Kind="SkipPreviousCircleOutline"  HorizontalAlignment="Center" />
-            </Button>
-
-            <Grid
-                x:Name="gridcolumn1"
-                Grid.Row="0"
-                Grid.RowSpan="4"
-                Grid.Column="3"
-                Width="auto"
-                HorizontalAlignment="Left"
-                Panel.ZIndex="3"
-                Background="White">
-
-                <StackPanel
-                    x:Name="FolderView_Panel"
-                    Width="auto"
-                    MinWidth="160"
-                    Visibility="Collapsed">
-                    <Grid
-                        Width="auto"
-                        MinWidth="120"
-                        Margin="10"
-                        Background="#FF2196F3">
-                        <TextBlock
-                            Margin="5"
-                            HorizontalAlignment="Stretch"
-                            VerticalAlignment="Center"
-                            FontWeight="Bold"
-                            Foreground="White"
-                            Text="File Explorer" />
-                    </Grid>
-                    <TreeView
-                        x:Name="FolderView"
-                        Width="auto"
-                        Height="700"
-                        MinWidth="160"
-                        Margin="10"
-                        Padding="10"
-                        HorizontalAlignment="Stretch"
-                        BorderBrush="Gray"
-                        BorderThickness="0.5"
-                        ScrollViewer.VerticalScrollBarVisibility="Auto">
-                        <TreeView.Resources>
-                            <Style TargetType="{x:Type TreeViewItem}">
-                                <EventSetter Event="MouseDoubleClick" Handler="TreeViewItem_MouseDoubleClick" />
-                                <Setter Property="HeaderTemplate">
-                                    <Setter.Value>
-                                        <DataTemplate>
-                                            <StackPanel Orientation="Horizontal">
-                                                <Image
-                                                    Width="20"
-                                                    Margin="3"
-                                                    Source="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type TreeViewItem}}, Path=Tag, Converter={x:Static local:HeaderToImageConverter.Instance}}" />
-                                                <TextBlock VerticalAlignment="Center" Text="{Binding}" />
-                                            </StackPanel>
-                                        </DataTemplate>
-                                    </Setter.Value>
-                                </Setter>
-                            </Style>
-                        </TreeView.Resources>
-                    </TreeView>
-                </StackPanel>
-
-            </Grid>
-            <Grid
-                x:Name="prGrid"
-                Grid.Row="1"
                 Grid.RowSpan="3"
-                Grid.Column="3"
-                Width="auto"
-                Height="auto"
-                HorizontalAlignment="Center"
-                VerticalAlignment="Center"
-                Panel.ZIndex="1"
-                Background="White"
-                Visibility="Collapsed">
-                <StackPanel>
-                    <Label
-                        Margin="10,10,10,5"
-                        HorizontalAlignment="Center"
-                        Background="White"
-                        Content="Image is being prepared ..."
-                        FontSize="12"
-                        Foreground="Black" />
-                    <ProgressBar
-                        Width="300"
-                        Height="20"
-                        Margin="10,5,10,10"
-                        Background="White"
-                        BorderBrush="Gray"
-                        BorderThickness="1"
-                        Foreground="LawnGreen"
-                        IsIndeterminate="True"
-                        Maximum="100"
-                        Minimum="0" />
-                </StackPanel>
-            </Grid>
+                Grid.Column="4"
+                Margin="5"
+                Panel.ZIndex="3">
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Command="{Binding AddRectangle}"
+                    IsEnabled="{Binding IsEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="{Binding IconPath}" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="New Rectangle (Alt + R)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Command="{Binding UndoCommand}"
+                    IsEnabled="{Binding UndoEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/undo.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Undo (Ctrl + Z)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Command="{Binding RedoCommand}"
+                    IsEnabled="{Binding UndoEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/redo.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Redo (Ctrl + Y)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Command="{Binding DuplicateCommand}"
+                    IsEnabled="{Binding IsEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/duplicate.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Duplicate Rectangle (Ctrl + D)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Command="{Binding DeleteCommand}" 
+                    IsEnabled="{Binding IsEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/delete.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Delete Rectangle (Del)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Click="MenuItem_ZoomIn"
+                    IsEnabled="{Binding IsEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/zoom_in.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Zoom in (Ctrl + +)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Click="MenuItem_ZoomOut"
+                    IsEnabled="{Binding IsEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/zoom_out.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Zoom out (Ctrl + -)" />
+                    </Button.ToolTip>
+                </Button>
+                <Button
+                    Width="22"
+                    Height="22"
+                    Margin="5,10,5,10"
+                    BorderBrush="Transparent"
+                    Click="MenuItem_Reset"
+                    IsEnabled="{Binding IsEnabled}">
+                    <Button.Template>
+                        <ControlTemplate>
+                            <Image Margin="2" Source="/Icons/fit.png" />
+                        </ControlTemplate>
+                    </Button.Template>
+                    <Button.ToolTip>
+                        <TextBlock Text="Fit to width (Ctrl + 0)" />
+                    </Button.ToolTip>
+                </Button>
+            </StackPanel>
+            
+            
 
-            <Label
-                Name="txtBox"
-                Grid.Row="3"
-                Grid.Column="3"
-                Width="auto"
-                Height="auto"
-                Margin="0,0,10,10"
-                Padding="3"
-                HorizontalAlignment="Right"
-                VerticalAlignment="Bottom"
-                Panel.ZIndex="3"
-                Background="White"
-                BorderBrush="Black"
-                BorderThickness="1"
-                FontWeight="Bold" />
-            <Label
-                Name="txtBox1"
-                Grid.Row="3"
-                Grid.Column="3"
-                Width="auto"
-                Height="auto"
-                Margin="10,0,0,10"
-                Padding="3"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
-                Panel.ZIndex="3"
-                Background="White"
-                BorderBrush="Black"
-                BorderThickness="1"
-                FontWeight="Bold" />
 
 
-            <Border
-                Grid.Row="0"
-                Grid.RowSpan="4"
-                Grid.Column="3"
-                Grid.ColumnSpan="1"
-                Panel.ZIndex="0"
-                BorderBrush="Gray"
-                BorderThickness="1.5">
-                <local:ZoomBorder
-                    x:Name="zoomBorder"
-                    Background="LightGray"
-                    ClipToBounds="True">
-                    <Canvas
-                        x:Name="cnvImage"
-                        Width="{Binding ActualWidth, ElementName=imgPreview}"
-                        Height="{Binding ActualHeight, ElementName=imgPreview}"
-                        ClipToBounds="True"
-                        PreviewMouseDown="ImgCamera_MouseDown"
-                        MouseEnter="cnvImage_MouseEnter"
-                        MouseLeave="cnvImage_MouseLeave"
-                        MouseMove="ImgCamera_MouseMove"
-                        PreviewMouseUp="ImgCamera_MouseUp">
-
-                        <Image
-                            x:Name="imgPreview"
-                            Width="auto"
-                            Height="auto"
-                            ClipToBounds="True"
-                            Source="{Binding ImagePath, Converter={StaticResource nullImageConverter}}" />
-
-                        <ItemsControl
-                            x:Name="ad"
-                            Width="{Binding ActualWidth, ElementName=imgPreview}"
-                            Height="{Binding ActualHeight, ElementName=imgPreview}"
-                            HorizontalAlignment="Center"
-                            VerticalAlignment="Center"
-                            Background="Transparent"
-                            ItemsSource="{Binding RectanglesView, UpdateSourceTrigger=PropertyChanged}"
-                            Panel.ZIndex="1">
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border
-                                        BorderThickness="{Binding StrokeThickness}">
-                                        <Border.BorderBrush>
-                                            <DrawingBrush Viewport="{Binding Viewport}" ViewportUnits="Absolute" TileMode="{Binding ViewportTileMode}">
-                                                <DrawingBrush.Drawing>
-                                                    <DrawingGroup>
-                                                        <GeometryDrawing Brush="{Binding Stroke}">
-                                                            <GeometryDrawing.Geometry>
-                                                                <GeometryGroup>
-                                                                    <RectangleGeometry Rect="0,0,50,50" />
-                                                                    <RectangleGeometry Rect="50,50,50,50" />
-                                                                </GeometryGroup>
-                                                            </GeometryDrawing.Geometry>
-                                                        </GeometryDrawing>
-                                                    </DrawingGroup>
-                                                </DrawingBrush.Drawing>
-                                            </DrawingBrush>
-                                        </Border.BorderBrush>
-                                        <Border.RenderTransform>
-                                            <TranslateTransform X="{Binding XLeftBorder}" Y="{Binding YTopBorder}"  />
-                                        </Border.RenderTransform>
-                                        <Rectangle
-                                        Width="{Binding Width}"
-                                        Height="{Binding Height}">
-                                            <Rectangle.Fill>
-                                                <SolidColorBrush Color="{Binding Fill}" Opacity="{Binding Opacity}" />
-                                            </Rectangle.Fill>
-                                        </Rectangle>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <Canvas 
-                                        Name="DrawCanvas"
-                                        HorizontalAlignment="Left"
-                                        VerticalAlignment="Top"
-                                        Width="{Binding ActualWidth, ElementName=imgPreview}"
-                                        Height="{Binding ActualHeight, ElementName=imgPreview}"
-                                        ClipToBounds="True"
-                                        IsItemsHost="True" 
-                                        Background="Transparent"
-                                        MouseDown="DrawCanvas_MouseDown"
-                                        MouseUp="DrawCanvas_MouseUp">
-                                    </Canvas>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                        </ItemsControl>
-
-                        <Line
-                            x:Name="horizontalLine"
-                            X1="0"
-                            X2="{Binding ActualWidth, ElementName=imgPreview}"
-                            Y1="-1"
-                            Y2="-1"
-                            Stroke="Black"
-                            StrokeThickness="0"/>
-                        <Line
-                            x:Name="verticalLine"
-                            X1="-1"
-                            X2="-1"
-                            Y1="0"
-                            Y2="{Binding ActualHeight, ElementName=imgPreview}"
-                            Stroke="Black"
-                            StrokeThickness="1"/>
-                    </Canvas>
-                </local:ZoomBorder>
-            </Border>
-
+            <!-- Grid.Column="7": -->
+            <!--                  -->
+            <!--  ______________  -->
+            
+            <!-- CropMode and ShowHide Buttons -->
             <StackPanel Grid.Row="0" Grid.Column="7">
-
                 <WrapPanel Margin="10,0,10,0">
                     <Button
                         x:Name="showHide"
@@ -1334,6 +1344,8 @@
                         <RowDefinition Height="auto" />
                         <RowDefinition Height="*" />
                     </Grid.RowDefinitions>
+                    
+                    <!-- WrapPanel with LabelSet functionalities -->
                     <WrapPanel
                         Margin="5,10,0,0"
                         Grid.Row="0">
@@ -1422,9 +1434,9 @@
                                 <TextBlock Text="Add Parameter Set" />
                             </Button.ToolTip>
                         </Button>
-
                     </WrapPanel>
 
+                    <!-- TreeView with List of all Labels and Subtypes-->
                     <TreeView
                         x:Name="labelTreeView"
                         Grid.Row="1"
